@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CloseTheLoop · Role Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#193458; --navy-deep:#0F2340; --navy-tint:#E8EDF5;
+  --bg:#F6F8FB; --card:#FFFFFF; --line:#E3E8F0; --line-strong:#C9D2DF;
+  --ink:#1C2733; --ink-2:#4A5768; --ink-3:#7B8794;
+  --ops:#0E7C66; --ops-bg:#E6F5F0; --ops-line:#9AD4C5;
+  --adm:#5548C8; --adm-bg:#EEECFB; --adm-line:#C3BDF0;
+  --read:#5F6B7A; --read-bg:#EEF1F5; --read-line:#CBD4DE;
+  --flag:#8A5A00; --flag-bg:#FBF1DC; --err:#A93226; --err-bg:#FCE8E6;
+  --radius:10px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 "Inter",system-ui,sans-serif}
+h1,h2,h3,h4{font-family:"Sora",sans-serif;font-weight:600;line-height:1.25;margin:0}
+.wrap{max-width:1120px;margin:0 auto;padding:0 22px}
+
+header.hero{background:var(--navy);color:#fff;padding:30px 0 0;border-bottom:4px solid var(--ops)}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#9DB4D6;margin:0 0 8px}
+.hero h1{font-size:26px;color:#fff}
+.hero p{color:#C3D2E8;max-width:680px;margin:10px 0 22px;font-size:14.5px}
+.tabs{display:flex;gap:6px}
+.tab{border:none;background:rgba(255,255,255,.08);color:#C3D2E8;font:500 14px "Inter";padding:11px 22px;border-radius:10px 10px 0 0;cursor:pointer}
+.tab.on{background:var(--bg);color:var(--navy);font-weight:600}
+
+main{padding:30px 0 60px}
+.pane{display:none}.pane.on{display:block}
+
+.grid{display:grid;grid-template-columns:340px 1fr;gap:22px;align-items:start}
+@media(max-width:860px){.grid{grid-template-columns:1fr}}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px}
+.gh{font-size:12px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);margin:0 0 10px}
+.gh2{font-size:12px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);margin:20px 0 8px}
+
+.rolepick{display:flex;flex-direction:column;gap:8px}
+.rp{display:flex;align-items:center;justify-content:space-between;border:1px solid var(--line-strong);border-radius:10px;padding:10px 14px;cursor:pointer;background:var(--card)}
+.rp:hover{border-color:var(--navy)}
+.rp.on{border:2px solid var(--navy);background:var(--navy-tint)}
+.rp .t{font-weight:600;font-size:14px}
+.rp .s{font-size:12px;color:var(--ink-2)}
+.rp .badge{font-size:11px;font-weight:600;padding:2px 9px;border-radius:10px}
+.b-ops{background:var(--ops-bg);color:var(--ops)} .b-adm{background:var(--adm-bg);color:var(--adm)} .b-read{background:var(--read-bg);color:var(--read)}
+
+select{width:100%;padding:9px 12px;border:1px solid var(--line-strong);border-radius:8px;font:14px "Inter";color:var(--ink);background:var(--card)}
+
+.tgl{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+.tgl:last-child{border-bottom:none}
+.tgl .n{font-weight:600;font-size:14px}
+.tgl .d{font-size:12.5px;color:var(--ink-2);margin-top:1px}
+.tgl .std{font-size:11px;color:var(--ink-3)}
+.sw{position:relative;width:44px;height:24px;flex:none;border-radius:12px;background:var(--line-strong);border:none;cursor:pointer;transition:background .15s;margin-top:2px}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left .15s;box-shadow:0 1px 2px rgba(0,0,0,.25)}
+.sw.on{background:var(--ops)}
+.sw.on::after{left:23px}
+.sw:disabled{opacity:.45;cursor:not-allowed}
+.dev{outline:2px solid var(--flag);outline-offset:2px;border-radius:12px}
+
+.msg{border-radius:8px;padding:9px 13px;font-size:13px;margin:8px 0}
+.msg.warn{background:var(--flag-bg);color:var(--flag)}
+.msg.err{background:var(--err-bg);color:var(--err)}
+.msg.ok{background:var(--ops-bg);color:var(--ops)}
+
+.chip{display:inline-block;font-size:12.5px;font-weight:600;padding:4px 12px;border-radius:14px;margin:0 6px 6px 0;border:1px solid}
+.c-ops{background:var(--ops-bg);color:var(--ops);border-color:var(--ops-line)}
+.c-adm{background:var(--adm-bg);color:var(--adm);border-color:var(--adm-line)}
+.c-read{background:var(--read-bg);color:var(--read);border-color:var(--read-line)}
+.c-flag{background:var(--flag-bg);color:var(--flag);border-color:#E8C98A}
+
+ul.pl{margin:4px 0 0;padding-left:20px;font-size:13.5px;color:var(--ink)}
+ul.pl li{margin:2px 0}
+textarea{width:100%;min-height:64px;border:1px solid var(--line-strong);border-radius:8px;padding:10px 12px;font:13.5px "Inter";color:var(--ink);resize:vertical}
+textarea:disabled{background:var(--bg);color:var(--ink-3)}
+.btn{border:none;border-radius:9px;padding:11px 22px;font:600 14px "Inter";cursor:pointer}
+.btn.primary{background:var(--navy);color:#fff}
+.btn.primary:disabled{background:var(--line-strong);cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--navy);border:1px solid var(--line-strong)}
+pre.payload{background:var(--navy-deep);color:#BFE3D6;border-radius:10px;padding:14px 16px;font:12.5px/1.55 ui-monospace,Menlo,Consolas,monospace;overflow:auto;margin:10px 0 0}
+.driftbar{display:flex;align-items:center;gap:10px;margin:0 0 6px}
+.driftnum{font-family:"Sora";font-size:22px;font-weight:600}
+
+/* ---------- previews ---------- */
+.prevpick{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 20px}
+.pv{border:1px solid var(--line-strong);background:var(--card);border-radius:20px;padding:8px 16px;font:500 13px "Inter";cursor:pointer;color:var(--ink-2)}
+.pv.on{background:var(--navy);border-color:var(--navy);color:#fff}
+.screen{display:none}.screen.on{display:block}
+.frame{border:1px solid var(--line-strong);border-radius:16px;overflow:hidden;background:var(--card);max-width:860px;box-shadow:0 10px 30px rgba(25,52,88,.10)}
+.frame.phone{max-width:390px}
+.appbar{background:var(--navy);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;font-size:14px}
+.appbar .brand{font-family:"Sora";font-weight:600}
+.appbar .who{font-size:11.5px;color:#9DB4D6}
+.subnav{display:flex;gap:0;border-bottom:1px solid var(--line);background:var(--card)}
+.subnav span{padding:10px 16px;font-size:13px;color:var(--ink-2);border-bottom:2px solid transparent}
+.subnav span.on{color:var(--navy);font-weight:600;border-bottom-color:var(--ops)}
+.body{padding:16px}
+.rowitem{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);border-radius:10px;padding:11px 14px;margin-bottom:9px;background:var(--card)}
+.rowitem .t{font-weight:600;font-size:13.5px}
+.rowitem .s{font-size:12px;color:var(--ink-2)}
+.pill{font-size:11px;font-weight:600;padding:2px 9px;border-radius:10px;white-space:nowrap}
+.p-red{background:var(--err-bg);color:var(--err)} .p-amb{background:var(--flag-bg);color:var(--flag)}
+.p-grn{background:var(--ops-bg);color:var(--ops)} .p-nav{background:var(--navy-tint);color:var(--navy)}
+.bigbtn{display:block;width:100%;border:none;border-radius:10px;background:var(--ops);color:#fff;font:600 14px "Inter";padding:13px;margin-top:6px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-bottom:14px}
+.kpi{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.kpi .n{font-family:"Sora";font-size:19px;font-weight:600;color:var(--navy)}
+.kpi .l{font-size:11px;color:var(--ink-2)}
+.cap{font-size:13px;color:var(--ink-2);max-width:860px;margin:14px 0 0}
+.cap b{color:var(--ink)}
+.gridcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.pcard{border:1px solid var(--line);border-radius:10px;padding:12px}
+.pcard .t{font-weight:600;font-size:13px}
+.pcard .s{font-size:11.5px;color:var(--ink-2)}
+.formrow{margin-bottom:12px}
+.formrow label{display:block;font-size:12.5px;font-weight:600;margin-bottom:4px}
+.formrow input,.formrow textarea{width:100%;border:1px solid var(--line-strong);border-radius:8px;padding:10px;font:13.5px "Inter"}
+.locked{display:flex;align-items:center;gap:8px;background:var(--bg);border:1px dashed var(--line-strong);border-radius:8px;padding:9px 12px;font-size:12.5px;color:var(--ink-3);margin-bottom:9px}
+footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);font-size:12.5px}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">DigitalPaani · CloseTheLoop</p>
+    <h1>Role Studio — configure roles with flexibility, kept in check</h1>
+    <p>Roles set the defaults. Capability bundles (the old roles, clubbed) can be toggled per user — every deviation needs a reason, respects dependencies, and is counted as drift.</p>
+    <div class="tabs">
+      <button class="tab on" onclick="tab(0)">⚙ Configure a user</button>
+      <button class="tab" onclick="tab(1)">🖥 UI previews per role</button>
+    </div>
+  </div>
+</header>
+
+<main>
+<div class="wrap">
+
+<!-- ============ PANE 1: CONFIGURATOR ============ -->
+<div class="pane on" id="pane0">
+  <div class="grid">
+    <div>
+      <div class="panel">
+        <div class="gh">1 · Pick a base role</div>
+        <div class="rolepick" id="rolepick"></div>
+        <div class="gh2">2 · Admin grant (optional)</div>
+        <select id="grantsel" onchange="setGrant(this.value)">
+          <option value="">No admin grant</option>
+          <option value="people">People Admin</option>
+          <option value="tech">Technical Admin</option>
+          <option value="fullsite">Full Site Admin (People + Technical)</option>
+          <option value="global">Global Admin (DP / Wapp staff)</option>
+        </select>
+        <div class="gh2">Assignment scope</div>
+        <select id="plantsel">
+          <option>STP — Sector 62, Noida</option>
+          <option>WTP — Knowledge Park</option>
+          <option>STP — Alpha 2</option>
+          <option>All plants in workspace</option>
+        </select>
+      </div>
+    </div>
+
+    <div>
+      <div class="panel">
+        <div class="gh">3 · Capability bundles — the old roles, clubbed and toggleable</div>
+        <p style="font-size:13px;color:var(--ink-2);margin:0 0 6px">Switches start at the role's standard. Anything you change is a <b>deviation</b> — it's outlined, counted, and needs a reason.</p>
+        <div id="toggles"></div>
+        <div id="guardmsgs"></div>
+      </div>
+
+      <div class="panel" style="margin-top:18px">
+        <div class="gh">4 · Result — kept in check</div>
+        <div class="driftbar"><span class="driftnum" id="driftn">0</span><span style="font-size:13px;color:var(--ink-2)" id="driftl">deviations from the standard role</span>
+          <button class="btn ghost" style="margin-left:auto;padding:7px 14px;font-size:12.5px" onclick="resetStd()">Reset to standard</button></div>
+        <div id="chips"></div>
+        <div class="gh2">Effective abilities</div>
+        <ul class="pl" id="effperm"></ul>
+        <div class="gh2">Reason for deviation <span id="reasonreq" style="color:var(--err)"></span></div>
+        <textarea id="reason" placeholder="Required only when the switches differ from the standard role — e.g. 'Client ops head requested logbook entry for this supervisor, approved by A. Loijos, ticket DP-1142'" oninput="render()"></textarea>
+        <div style="display:flex;gap:10px;align-items:center;margin-top:14px">
+          <button class="btn primary" id="savebtn" onclick="save()">Save assignment</button>
+          <span style="font-size:12.5px;color:var(--ink-3)" id="savehint"></span>
+        </div>
+        <pre class="payload" id="payload" style="display:none"></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ PANE 2: UI PREVIEWS ============ -->
+<div class="pane" id="pane1">
+  <div class="prevpick" id="prevpick"></div>
+  <div id="screens"></div>
+</div>
+
+</div>
+</main>
+
+<footer><div class="wrap">CloseTheLoop Role Studio · interactive prototype · DigitalPaani. Data model: role = default bundle set · user = role + overrides(+reason) · guardrails = dependencies, reason-required, drift visibility.</div></footer>
+
+<script>
+/* ================= DATA ================= */
+const BUNDLES={
+exec:{n:"Do the work",cat:"ops",d:"Run diagnostic steps, submit root cause, fix, enter data, execute tasks",old:"was: Operator Asset (workers), Tasks Only, Data Input, Tickets, Logbook Data Input",p:["Own issue sessions & execute steps","Submit root cause & remediation","Data / lab / logbook entry","Execute fixed & alert tasks","Raise manual issues"]},
+approve:{n:"Approve & close",cat:"ops",d:"Approve/reject gates, force-close, reopen, supervise the shift",old:"was: CSM Asset, Operator Asset (supervisors)",p:["Approve / reject any gate","Force-close (co-sign for auto issues)","Photo override, change RC, reopen","See all tasks & entries at the plant"],req:["exec"]},
+oversight:{n:"Multi-plant oversight",cat:"ops",d:"Watch many plants, deadline escalations, co-sign force-closes",old:"was: senior CSM profiles",p:["Multi-plant workspace","Co-signer for force-close","Deadline-only overdue alerts"],req:["approve"]},
+readPlant:{n:"Read one plant",cat:"read",d:"Dashboard, issue log, reports — view only",old:"was: Client Role, Client Asset, Visualization, Insights Only",p:["View plant dashboard & issue log","View reports & equipment history","Download dashboard report"]},
+portfolio:{n:"Read the portfolio",cat:"read",d:"Multi-plant overview for HQ / corporate",old:"was: Client Administrative, Unified Dashboard",p:["Portfolio overview dashboard"],req:["readPlant"]},
+people:{n:"Manage people",cat:"adm",d:"Users, rosters, shifts, grants",old:"was: View as Different User, Roster & Task list",p:["Invite / offboard users","Rosters & shift schedules","Assign / revoke grants","Directory & audit export"]},
+tech:{n:"Configure the plant",cat:"adm",d:"Rules, dashboards, sensors, routing, email",old:"was: E-mail, Sensor list, Events, Logbook Config, Analytical Engine, Triggers, T&T Config",p:["Dashboards & widgets","Issue / task rules & schedules","Sensor thresholds & routing chains","Site analytics formulas"]},
+templates:{n:"Global templates",cat:"adm",d:"Template library, publish to all sites, onboard sites",old:"was: Super Admin, Company List",p:["Create / publish global templates","Signal condition library","Onboard sites, company list"],req:["people","tech"]},
+};
+const FLAGS={
+backdate:{n:"Back-dated data entry",req:"tech",d:"Exception flag (pending M3)"},
+remote:{n:"IoT remote control",req:"tech",d:"Exception flag (pending M4)"},
+impersonate:{n:"View-as / impersonation",req:"people",d:"Support & audit flag"},
+};
+const ROLES={
+l1:{n:"L1 Operator",cat:"ops",s:"does the work",std:["exec"]},
+l3:{n:"L3 Lead",cat:"ops",s:"L1 + approves & closes",std:["exec","approve"]},
+l4:{n:"L4 Senior Lead",cat:"ops",s:"L3 + oversees many plants",std:["exec","approve","oversight"]},
+regular:{n:"Regular Non-op",cat:"read",s:"reads one plant",std:["readPlant"]},
+senior:{n:"Senior Non-op",cat:"read",s:"reads the whole portfolio",std:["readPlant","portfolio"]},
+};
+const GRANTS={people:["people"],tech:["tech"],fullsite:["people","tech"],global:["people","tech","templates"]};
+
+let baseRole="l1", grant="", state={}, flagsOn={};
+
+/* ================= CONFIGURATOR ================= */
+function stdSet(){
+  const s=new Set(ROLES[baseRole].std);
+  (GRANTS[grant]||[]).forEach(b=>s.add(b));
+  return s;
+}
+function initState(){ state={}; Object.keys(BUNDLES).forEach(b=>state[b]=stdSet().has(b)); flagsOn={}; document.getElementById("reason").value=""; }
+function setRole(r){ baseRole=r; initState(); render(); }
+function setGrant(g){ grant=g; initState(); render(); }
+function resetStd(){ initState(); render(); }
+
+function toggle(b){
+  const on=!state[b];
+  if(on){
+    (BUNDLES[b].req||[]).forEach(r=>{ if(!state[r]) state[r]=true; });
+    state[b]=true;
+  }else{
+    state[b]=false;
+    Object.keys(BUNDLES).forEach(k=>{ if((BUNDLES[k].req||[]).includes(b)&&state[k]) state[k]=false; });
+    Object.keys(FLAGS).forEach(f=>{ if(FLAGS[f].req===b) flagsOn[f]=false; });
+  }
+  render();
+}
+function toggleFlag(f){
+  if(!flagsOn[f] && !state[FLAGS[f].req]) return;
+  flagsOn[f]=!flagsOn[f]; render();
+}
+function deviations(){
+  const std=stdSet(); const dev=[];
+  Object.keys(BUNDLES).forEach(b=>{ if(state[b]!==std.has(b)) dev.push((state[b]?"+ ":"− ")+BUNDLES[b].n); });
+  Object.keys(FLAGS).forEach(f=>{ if(flagsOn[f]) dev.push("+ "+FLAGS[f].n); });
+  return dev;
+}
+function render(){
+  // role picker
+  document.getElementById("rolepick").innerHTML=Object.keys(ROLES).map(r=>{
+    const R=ROLES[r];
+    return `<div class="rp ${r===baseRole?"on":""}" onclick="setRole('${r}')">
+      <span><span class="t">${R.n}</span><br><span class="s">${R.s}</span></span>
+      <span class="badge b-${R.cat}">${R.cat==="ops"?"tier":"read-only"}</span></div>`;
+  }).join("");
+
+  // toggles
+  const std=stdSet();
+  let h="";
+  const order=["exec","approve","oversight","readPlant","portfolio","people","tech","templates"];
+  order.forEach(b=>{
+    const B=BUNDLES[b], on=state[b], isStd=std.has(b), devi=on!==isStd;
+    h+=`<div class="tgl">
+      <span><span class="n">${B.n}</span> <span class="chip c-${B.cat}" style="padding:1px 8px;font-size:10.5px;margin:0">${B.cat==="ops"?"operational":B.cat==="adm"?"admin":"read"}</span><br>
+      <span class="d">${B.d}</span><br><span class="std">${B.old} · standard for this role: ${isStd?"ON":"OFF"}</span></span>
+      <button class="sw ${on?"on":""} ${devi?"dev":""}" onclick="toggle('${b}')" aria-label="${B.n}"></button></div>`;
+  });
+  h+=`<div class="gh2">Exception flags (extra-sensitive, always a deviation)</div>`;
+  Object.keys(FLAGS).forEach(f=>{
+    const F=FLAGS[f], ok=state[F.req];
+    h+=`<div class="tgl"><span><span class="n">${F.n}</span><br><span class="d">${F.d} · requires "${BUNDLES[F.req].n}"</span></span>
+      <button class="sw ${flagsOn[f]?"on":""} ${flagsOn[f]?"dev":""}" ${ok?"":"disabled"} onclick="toggleFlag('${f}')"></button></div>`;
+  });
+  document.getElementById("toggles").innerHTML=h;
+
+  // guardrail messages
+  let g="";
+  if(state.approve&&!state.exec) g+=`<div class="msg err">Approve requires Do-the-work.</div>`;
+  if(state.oversight&&!state.approve) g+=`<div class="msg err">Oversight requires Approve.</div>`;
+  if(!state.exec&&(baseRole==="l1"||baseRole==="l3"||baseRole==="l4")) g+=`<div class="msg warn">You removed "Do the work" from an operational tier — this user can no longer run issues. Consider a Non-op role instead.</div>`;
+  if(state.templates) g+=`<div class="msg warn">Global templates affect every site. Restricted to DP / Wapp staff.</div>`;
+  if(Object.values(flagsOn).some(Boolean)) g+=`<div class="msg warn">Exception flags are audited individually and expire on role change.</div>`;
+  document.getElementById("guardmsgs").innerHTML=g;
+
+  // result
+  const dev=deviations();
+  document.getElementById("driftn").textContent=dev.length;
+  document.getElementById("driftn").style.color=dev.length? "var(--flag)":"var(--ops)";
+  document.getElementById("driftl").textContent=dev.length?("deviation"+(dev.length>1?"s":"")+" from the standard role: "+dev.join(", ")):"deviations — this user matches the standard role exactly";
+  let chips=`<span class="chip c-${ROLES[baseRole].cat==="ops"?"ops":"read"}">${ROLES[baseRole].n}</span>`;
+  if(grant) chips+=`<span class="chip c-adm">${{people:"People Admin",tech:"Technical Admin",fullsite:"Full Site Admin",global:"Global Admin"}[grant]}</span>`;
+  Object.keys(FLAGS).forEach(f=>{ if(flagsOn[f]) chips+=`<span class="chip c-flag">${FLAGS[f].n}</span>`; });
+  document.getElementById("chips").innerHTML=chips;
+  let eff="";
+  order.forEach(b=>{ if(state[b]) BUNDLES[b].p.forEach(p=>eff+=`<li>${p}</li>`); });
+  document.getElementById("effperm").innerHTML=eff||"<li>Nothing — this user can only log in.</li>";
+
+  // save gating
+  const reason=document.getElementById("reason").value.trim();
+  const need=dev.length>0;
+  document.getElementById("reasonreq").textContent=need&&!reason?"— required before saving":"";
+  const btn=document.getElementById("savebtn");
+  btn.disabled=need&&!reason;
+  document.getElementById("savehint").textContent=need?(reason?"Deviation will be stored with your reason and audited.":"Write why this user deviates from the standard role."):"Standard role — saves without a reason.";
+}
+function save(){
+  const std=stdSet();
+  const add=[],rem=[];
+  Object.keys(BUNDLES).forEach(b=>{ if(state[b]&&!std.has(b))add.push(b); if(!state[b]&&std.has(b))rem.push(b); });
+  const payload={userId:"demo-user-001",scope:document.getElementById("plantsel").value,baseRole:baseRole,grant:grant||null,
+    overrides:{add:add,remove:rem},flags:Object.keys(FLAGS).filter(f=>flagsOn[f]),
+    reason:document.getElementById("reason").value.trim()||null,requestedBy:"people-admin@digitalpaani.com",drift:deviations().length};
+  const el=document.getElementById("payload");
+  el.style.display="block";
+  el.textContent="// This is what gets stored on the user record\n"+JSON.stringify(payload,null,2);
+}
+
+/* ================= PREVIEWS ================= */
+const SCREENS=[
+{id:"l1",n:"L1 Operator",html:`
+<div class="frame phone">
+  <div class="appbar"><span class="brand">DigitalPaani</span><span class="who">Ramesh · L1 · STP Sector 62</span></div>
+  <div class="subnav"><span class="on">Overdue (3)</span><span>Open</span><span>My tasks</span></div>
+  <div class="body">
+    <div class="rowitem"><span><span class="t">MBBR blower trip</span><br><span class="s">Auto · raised 06:20 · step 2 of 5</span></span><span class="pill p-red">2h overdue</span></div>
+    <div class="rowitem"><span><span class="t">Inlet pH high</span><br><span class="s">Auto · raised 08:05 · awaiting RC</span></span><span class="pill p-amb">45m left</span></div>
+    <div class="rowitem"><span><span class="t">Chlorine dosing check</span><br><span class="s">Fixed task · daily 10:00</span></span><span class="pill p-grn">due 10:00</span></div>
+    <button class="bigbtn">▶ Resume: MBBR blower trip</button>
+  </div>
+</div>
+<p class="cap"><b>Why it looks like this:</b> L1 lands on the <b>Overdue tab</b> — worst first. Big single-action button to resume the active session. No approvals anywhere; submitting RC sends it to an L3. Gets all severities for this plant.</p>`},
+{id:"l3",n:"L3 Lead",html:`
+<div class="frame">
+  <div class="appbar"><span class="brand">DigitalPaani</span><span class="who">Sunita · L3 Lead · STP Sector 62</span></div>
+  <div class="subnav"><span class="on">Approvals (4)</span><span>Issues</span><span>Shift</span><span>Tasks</span></div>
+  <div class="body">
+    <div class="rowitem"><span><span class="t">Root cause: "Diffuser membrane clogged"</span><br><span class="s">MBBR blower trip · submitted by Ramesh · 12 min ago</span></span><span><span class="pill p-grn" style="margin-right:6px">Approve</span><span class="pill p-red">Reject</span></span></div>
+    <div class="rowitem"><span><span class="t">Manual close request</span><br><span class="s">Inlet screen jam · photo attached</span></span><span><span class="pill p-grn" style="margin-right:6px">Approve</span><span class="pill p-red">Reject</span></span></div>
+    <div class="rowitem"><span><span class="t">Force-close: sensor fault duplicate</span><br><span class="s">Auto-generated issue — needs your co-sign + 1 more</span></span><span class="pill p-amb">Co-sign</span></div>
+    <div class="rowitem"><span><span class="t">Photo override request</span><br><span class="s">Camera broken at outlet chamber</span></span><span class="pill p-nav">Review</span></div>
+  </div>
+</div>
+<p class="cap"><b>Why it looks like this:</b> L3 lands on the <b>approvals inbox</b> — their job is to unblock others. Everything L1 has is one tab away. Approval-overdue alerts start the moment something waits (T=0).</p>`},
+{id:"l4",n:"L4 Senior Lead",html:`
+<div class="frame">
+  <div class="appbar"><span class="brand">DigitalPaani</span><span class="who">Alexander · L4 · 6 plants</span></div>
+  <div class="subnav"><span class="on">Portfolio</span><span>Approvals (2)</span><span>Escalations</span></div>
+  <div class="body">
+    <div class="kpis"><div class="kpi"><div class="n">6</div><div class="l">plants</div></div><div class="kpi"><div class="n">11</div><div class="l">open issues</div></div><div class="kpi"><div class="n">2</div><div class="l">at deadline</div></div><div class="kpi"><div class="n">97%</div><div class="l">SLA this week</div></div></div>
+    <div class="rowitem"><span><span class="t">STP Sector 62</span><br><span class="s">3 open · 1 at resolution deadline</span></span><span class="pill p-red">attention</span></div>
+    <div class="rowitem"><span><span class="t">WTP Knowledge Park</span><br><span class="s">2 open · on track</span></span><span class="pill p-grn">healthy</span></div>
+    <div class="rowitem"><span><span class="t">STP Alpha 2</span><br><span class="s">6 open · approvals waiting 3h</span></span><span class="pill p-amb">watch</span></div>
+  </div>
+</div>
+<p class="cap"><b>Why it looks like this:</b> L4 sees <b>many plants at once</b> and is only alerted when things hit the resolution deadline — not every minor event. Can drop into any plant with full L3 powers, and co-signs force-closes.</p>`},
+{id:"people",n:"People Admin",html:`
+<div class="frame">
+  <div class="appbar"><span class="brand">DigitalPaani · Admin</span><span class="who">Priya · People Admin · STP Sector 62</span></div>
+  <div class="subnav"><span class="on">People</span><span>Rosters</span><span>Audit log</span></div>
+  <div class="body">
+    <div class="rowitem"><span><span class="t">Ramesh K.</span><br><span class="s">L1 Operator · 0 deviations</span></span><span><span class="pill p-nav" style="margin-right:6px">Edit</span><span class="pill p-grn">standard</span></span></div>
+    <div class="rowitem"><span><span class="t">Sunita M.</span><br><span class="s">L3 Lead + back-dated entry flag · 1 deviation</span></span><span><span class="pill p-nav" style="margin-right:6px">Edit</span><span class="pill p-amb">1 drift</span></span></div>
+    <div class="rowitem"><span><span class="t">Vendor: AquaFix (3 users)</span><br><span class="s">L1 · company=Vendor · work-order scope</span></span><span class="pill p-nav">Manage</span></div>
+    <button class="bigbtn" style="background:var(--navy)">+ Invite user</button>
+  </div>
+</div>
+<p class="cap"><b>Why it looks like this:</b> the roster is the home screen, and <b>drift is visible per user</b> — the guardrail from the configurator surfaces here. No plant-config tabs: People Admin can't touch rules or sensors.</p>`},
+{id:"tech",n:"Technical Admin",html:`
+<div class="frame">
+  <div class="appbar"><span class="brand">DigitalPaani · Admin</span><span class="who">Dev · Technical Admin · STP Sector 62</span></div>
+  <div class="subnav"><span class="on">Rules</span><span>Dashboards</span><span>Sensors</span><span>Routing & SLA</span></div>
+  <div class="body">
+    <div class="rowitem"><span><span class="t">Issue rule: DO &lt; 2 mg/l for 10 min</span><br><span class="s">Creates Major issue · diagnostic flow: Aeration v3</span></span><span class="pill p-grn">active</span></div>
+    <div class="rowitem"><span><span class="t">Task rule: Backwash filter</span><br><span class="s">Every 8h · assigned to shift roster</span></span><span class="pill p-grn">active</span></div>
+    <div class="rowitem"><span><span class="t">"Not this RC" reports (3 new)</span><br><span class="s">Operators disagree with suggested root cause</span></span><span class="pill p-amb">review</span></div>
+    <div class="rowitem"><span><span class="t">Sensor fault: outlet turbidity</span><br><span class="s">Flatline 6h — check calibration</span></span><span class="pill p-red">fault</span></div>
+  </div>
+</div>
+<p class="cap"><b>Why it looks like this:</b> Technical Admin is the <b>feedback sink</b> — false alarms, wrong-RC reports, and sensor faults land here so the plant's logic keeps improving. No people management anywhere.</p>`},
+{id:"fullsite",n:"Full Site Admin",html:`
+<div class="frame">
+  <div class="appbar"><span class="brand">DigitalPaani · Admin</span><span class="who">Mihir · Full Site Admin · STP Sector 62</span></div>
+  <div class="subnav"><span class="on">People</span><span class="on" style="border-bottom-color:var(--adm)">Technical</span><span>Audit log</span></div>
+  <div class="body">
+    <div class="gridcards">
+      <div class="pcard"><div class="t">14 users</div><div class="s">2 with drift</div></div>
+      <div class="pcard"><div class="t">23 rules</div><div class="s">3 need review</div></div>
+      <div class="pcard"><div class="t">4 rosters</div><div class="s">next gap: Sun night</div></div>
+      <div class="pcard"><div class="t">61 sensors</div><div class="s">1 fault</div></div>
+    </div>
+  </div>
+</div>
+<p class="cap"><b>Why it looks like this:</b> literally <b>both admin consoles in one</b> — the People and Technical tabs from the previous two screens, at a single site. Nothing more: no template library, no other sites.</p>`},
+{id:"global",n:"Global Admin",html:`
+<div class="frame">
+  <div class="appbar"><span class="brand">DigitalPaani · Global</span><span class="who">HQ · Global Admin · all sites</span></div>
+  <div class="subnav"><span class="on">Template library</span><span>Sites (38)</span><span>Companies</span></div>
+  <div class="body">
+    <div class="rowitem"><span><span class="t">Diagnostic tree: Aeration failure v3</span><br><span class="s">Used by 31 sites · draft v4 in review</span></span><span class="pill p-nav">Publish v4</span></div>
+    <div class="rowitem"><span><span class="t">Rule template: High inlet TSS</span><br><span class="s">Used by 22 sites</span></span><span class="pill p-nav">Edit</span></div>
+    <div class="rowitem"><span><span class="t">Onboard new site</span><br><span class="s">Wizard: sensors → rules → users</span></span><span class="pill p-grn">Start</span></div>
+  </div>
+</div>
+<p class="cap"><b>Why it looks like this:</b> Global Admin works on <b>things that affect every site</b> — templates, versions, onboarding. Site-level screens are one click away since they act as Full Site Admin anywhere.</p>`},
+{id:"regular",n:"Regular Non-op",html:`
+<div class="frame">
+  <div class="appbar"><span class="brand">DigitalPaani</span><span class="who">Client · Read-only · STP Sector 62</span></div>
+  <div class="subnav"><span class="on">Dashboard</span><span>Issue log</span><span>Reports</span></div>
+  <div class="body">
+    <div class="kpis"><div class="kpi"><div class="n">1.2 MLD</div><div class="l">treated today</div></div><div class="kpi"><div class="n">7.1</div><div class="l">outlet pH</div></div><div class="kpi"><div class="n">4</div><div class="l">issues this week</div></div><div class="kpi"><div class="n">↓ 9%</div><div class="l">power vs last wk</div></div></div>
+    <div class="locked">🔒 View-only — actions like approving, editing, or data entry are not part of this role</div>
+    <div class="rowitem"><span><span class="t">Weekly compliance report</span><br><span class="s">Generated Mon 06:00</span></span><span class="pill p-nav">Download</span></div>
+  </div>
+</div>
+<p class="cap"><b>Why it looks like this:</b> everything is visible, <b>nothing is pressable</b> except download. The lock banner sets expectations instead of hiding buttons that mysteriously fail.</p>`},
+{id:"senior",n:"Senior Non-op",html:`
+<div class="frame">
+  <div class="appbar"><span class="brand">DigitalPaani</span><span class="who">HQ · Read-only · 12 plants</span></div>
+  <div class="subnav"><span class="on">Portfolio</span><span>Compare</span><span>Reports</span></div>
+  <div class="body">
+    <div class="gridcards">
+      <div class="pcard"><div class="t">Noida cluster</div><div class="s">5 plants · 98% SLA</div></div>
+      <div class="pcard"><div class="t">Gurgaon cluster</div><div class="s">4 plants · 94% SLA</div></div>
+      <div class="pcard"><div class="t">Jaipur</div><div class="s">3 plants · 99% SLA</div></div>
+      <div class="pcard" style="border-color:var(--flag-bg);background:var(--flag-bg)"><div class="t">2 emergencies</div><div class="s">this month · resolved</div></div>
+    </div>
+  </div>
+</div>
+<p class="cap"><b>Why it looks like this:</b> the portfolio, not the plant, is the unit. Minor/Caution noise is <b>suppressed by default</b> — only Emergency and Major reach this person.</p>`},
+{id:"qr",n:"QR / Public (Phase 2)",html:`
+<div class="frame phone">
+  <div class="appbar"><span class="brand">DigitalPaani</span><span class="who">Anonymous · via QR</span></div>
+  <div class="body">
+    <p style="font-size:14px;margin:4px 0 14px"><b>Report a problem at STP Sector 62</b></p>
+    <div class="formrow"><label>What's wrong?</label><textarea placeholder="e.g. bad smell near the outlet since morning"></textarea></div>
+    <div class="formrow"><label>Photo (optional)</label><input type="text" placeholder="📷 Tap to add photo" readonly></div>
+    <button class="bigbtn">Submit — get a tracking token</button>
+    <div class="locked" style="margin-top:10px">No account needed. You'll receive a token like CTL-8842 to check status.</div>
+  </div>
+</div>
+<p class="cap"><b>Why it looks like this:</b> one form, one button, a token. No login, no lifecycle access — the complaint becomes an issue inside CloseTheLoop where an L1/L3 handles it.</p>`},
+];
+function tab(i){
+  document.querySelectorAll(".tab").forEach((t,j)=>t.classList.toggle("on",i===j));
+  document.querySelectorAll(".pane").forEach((p,j)=>p.classList.toggle("on",i===j));
+}
+function showScreen(id){
+  document.querySelectorAll(".pv").forEach(p=>p.classList.toggle("on",p.dataset.id===id));
+  document.querySelectorAll(".screen").forEach(s=>s.classList.toggle("on",s.id==="sc-"+id));
+}
+document.getElementById("prevpick").innerHTML=SCREENS.map(s=>`<button class="pv" data-id="${s.id}" onclick="showScreen('${s.id}')">${s.n}</button>`).join("");
+document.getElementById("screens").innerHTML=SCREENS.map(s=>`<div class="screen" id="sc-${s.id}">${s.html}</div>`).join("");
+showScreen("l1");
+initState(); render();
+</script>
+</body>
+</html>
