@@ -162,6 +162,23 @@ pre.payload{background:var(--navy-deep);color:#BFE3D6;border-radius:10px;padding
 .formrow label{display:block;font-size:12.5px;font-weight:600;margin-bottom:4px}
 .formrow input,.formrow textarea{width:100%;border:1px solid var(--line-strong);border-radius:8px;padding:10px;font:13.5px "Inter"}
 .locked{display:flex;align-items:center;gap:8px;background:var(--bg);border:1px dashed var(--line-strong);border-radius:8px;padding:9px 12px;font-size:12.5px;color:var(--ink-3);margin-bottom:9px}
+/* ---------- product modules ---------- */
+.mtable{width:100%;border-collapse:collapse;font-size:13px;min-width:680px}
+.mtable th{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);padding:8px 10px;border-bottom:2px solid var(--line-strong);text-align:center}
+.mtable th:first-child{text-align:left}
+.mtable td{padding:7px 10px;border-bottom:1px solid var(--line);text-align:center}
+.mtable td.pn{text-align:left;font-weight:600;font-size:13px;white-space:nowrap}
+.mtable tr.wsrow td{background:var(--bg);font-weight:600;text-align:left;color:var(--ink-2);font-size:11px;text-transform:uppercase;letter-spacing:.07em;padding:6px 10px}
+.mtable .inc{font-size:11px;font-weight:600;color:var(--ops)}
+.modcard{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--card)}
+.modcard .t{font-family:"Sora";font-size:14px;font-weight:600}
+.modcard .d{font-size:12.5px;color:var(--ink-2);margin:4px 0 8px}
+.modcard .m{font-size:11.5px;color:var(--ink-3)}
+.modlock{display:block;font-size:11px;color:var(--flag);margin-top:1px}
+.avail{display:inline-block;font-size:11px;font-weight:600;padding:2px 9px;border-radius:10px;margin:0 5px 5px 0;border:1px solid}
+.av-all{background:var(--ops-bg);color:var(--ops);border-color:var(--ops-line)}
+.av-some{background:var(--flag-bg);color:var(--flag);border-color:#E8C98A}
+.av-none{background:var(--read-bg);color:var(--ink-3);border-color:var(--read-line);text-decoration:line-through}
 footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);font-size:12.5px}
 </style>
 </head>
@@ -171,10 +188,11 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
   <div class="wrap">
     <p class="eyebrow">DigitalPaani · CloseTheLoop</p>
     <h1>Role Studio — configure roles with flexibility, kept in check</h1>
-    <p>Roles set the defaults. Capability bundles (the old roles, clubbed) can be toggled per user — every deviation needs a reason, respects dependencies, and is counted as drift.</p>
+    <p>Product modules set the ceiling per plant. Roles set the defaults per user. Overrides handle the exceptions — every deviation needs a reason, respects dependencies, and is counted as drift.</p>
     <div class="tabs">
-      <button class="tab on" onclick="tab(0)">⚙ Configure a user</button>
-      <button class="tab" onclick="tab(1)">🖥 UI previews per role</button>
+      <button class="tab on" onclick="tab(0)">📦 Product modules per plant</button>
+      <button class="tab" onclick="tab(1)">⚙ Configure a user</button>
+      <button class="tab" onclick="tab(2)">🖥 UI previews per role</button>
     </div>
   </div>
 </header>
@@ -182,8 +200,22 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
 <main>
 <div class="wrap">
 
-<!-- ============ PANE 1: CONFIGURATOR ============ -->
+<!-- ============ PANE 0: PRODUCT MODULES ============ -->
 <div class="pane on" id="pane0">
+  <div class="panel" style="margin-bottom:18px">
+    <div class="gh">The hierarchy — modules cap, roles default, overrides flex</div>
+    <p style="font-size:13.5px;color:var(--ink-2);margin:0 0 8px">We sell <b>product modules</b> to companies. A module is a sellable slice of the product that unlocks a set of permissions — and each permission still lives in its role type (work execution, approvals &amp; closure, plant visibility…). Modules are switched on <b>per plant</b> under the company's contract.</p>
+    <p style="font-size:13.5px;color:var(--ink-2);margin:0">A user's role + overrides say what they <i>may</i> do; the plant's modules say what <i>exists</i> there. Effective access at a plant = <b>user permission ∧ plant module</b>. Toggle the matrix below — the configurator and the UI previews respect it live.</p>
+  </div>
+  <div class="gridcards" id="modcatalog" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin-bottom:18px"></div>
+  <div class="panel">
+    <div class="gh">Plant entitlements — what each plant's contract includes</div>
+    <div style="overflow-x:auto"><table class="mtable" id="modmatrix"></table></div>
+  </div>
+</div>
+
+<!-- ============ PANE 1: CONFIGURATOR ============ -->
+<div class="pane" id="pane1">
   <div class="grid">
     <div>
       <div class="panel">
@@ -224,6 +256,7 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
         <div class="gh"><span class="stepnum">3</span>Review & save</div>
         <div class="driftbar"><span class="driftnum" id="driftn">0</span><span style="font-size:13px;color:var(--ink-2)" id="driftl"></span>
           <button class="btn ghost" style="margin-left:auto;padding:7px 14px;font-size:12.5px" onclick="resetStd()">Reset to standard</button></div>
+        <div id="capmsg"></div>
         <div class="hiddenblock" id="reasonblock">
           <div class="gh2">Reason for deviation <span id="reasonreq" style="color:var(--err)"></span></div>
           <textarea id="reason" placeholder="e.g. 'Client ops head requested logbook entry for this supervisor, approved by A. Loijos, ticket DP-1142'" oninput="render()"></textarea>
@@ -241,10 +274,15 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
 </div>
 
 <!-- ============ PANE 2: SMART UI PREVIEW ============ -->
-<div class="pane" id="pane1">
+<div class="pane" id="pane2">
   <div class="panel" style="margin-bottom:18px">
     <div class="gh">Smart preview — generated live from permissions, not hand-drawn per role</div>
-    <p style="font-size:13.5px;color:var(--ink-2);margin:0">Every navigation tab, button, and banner below is decided by a rule reading the permission state — so <b>any</b> combination you build in the configurator renders its exact UI here, including partial sets. Pick a preset, or preview whatever you've configured on the first tab. Click the tabs inside the mock app — they work.</p>
+    <p style="font-size:13.5px;color:var(--ink-2);margin:0">Every navigation tab, button, and banner below is decided by a rule reading the permission state — so <b>any</b> combination you build in the configurator renders its exact UI here, including partial sets. Pick a preset, or preview whatever you've configured on the configure tab. Then pick a <b>plant context</b>: the plant's licensed modules become the ceiling, exactly as at runtime. Click the tabs inside the mock app — they work.</p>
+  </div>
+  <div style="display:flex;gap:12px;align-items:center;margin:0 0 12px;flex-wrap:wrap">
+    <span class="gh" style="margin:0">Plant context</span>
+    <select id="prevplant" style="width:auto;min-width:280px" onchange="setPrevPlant(this.value)"></select>
+    <span id="prevmods"></span>
   </div>
   <div class="prevpick" id="prevpick"></div>
   <div id="smartframe"></div>
@@ -257,71 +295,106 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
 </div>
 </main>
 
-<footer><div class="wrap">CloseTheLoop Role Studio · interactive prototype · DigitalPaani. Data model: role = default bundle set · user = role + overrides(+reason) · guardrails = dependencies, reason-required, drift visibility.</div></footer>
+<footer><div class="wrap">CloseTheLoop Role Studio · interactive prototype · DigitalPaani. Data model: plant = licensed product modules (ceiling) · role = default bundle set · user = role + overrides(+reason) · effective access = user permission ∧ plant module · guardrails = dependencies, reason-required, drift visibility.</div></footer>
 
 <script>
 /* ================= DATA ================= */
 const SETS=[
 {id:"work",n:"Work execution",cat:"ops",d:"Day-to-day operating of issues, tasks and maintenance",old:"was: Operator Asset (workers), Tasks Only, Data Input, Tickets, Logbook Data Input",perms:[
- {id:"sessions",n:"Own issue sessions & run diagnostic steps"},
- {id:"rc",n:"Submit root cause & remediation"},
- {id:"media",n:"Photo / video capture during steps"},
- {id:"data",n:"Data, lab, water-quality & logbook entry"},
- {id:"tasks",n:"Execute fixed, alert & one-time tasks"},
- {id:"maintenance",n:"Perform & record maintenance"},
- {id:"raise",n:"Raise manual issues"},
- {id:"handoff",n:"Hand off / take over sessions"},
- {id:"checkin",n:"Check in / out of shift"},
- {id:"myshift",n:"See my shifts & roster"}]},
+ {id:"sessions",n:"Own issue sessions & run diagnostic steps",mod:"ops"},
+ {id:"rc",n:"Submit root cause & remediation",mod:"ops"},
+ {id:"media",n:"Photo / video capture during steps",mod:"ops"},
+ {id:"data",n:"Data, lab, water-quality & logbook entry",mod:"data"},
+ {id:"tasks",n:"Execute fixed, alert & one-time tasks",mod:"tasks"},
+ {id:"maintenance",n:"Perform & record maintenance",mod:"tasks"},
+ {id:"raise",n:"Raise manual issues",mod:"ops"},
+ {id:"handoff",n:"Hand off / take over sessions",mod:"ops"},
+ {id:"checkin",n:"Check in / out of shift",mod:"tasks"},
+ {id:"myshift",n:"See my shifts & roster",mod:"tasks"}]},
 {id:"approve",req:["work"],n:"Approvals & closure",cat:"ops",d:"Unblocking and supervising others",old:"was: CSM Asset, Operator Asset (supervisors)",perms:[
- {id:"gates",n:"Approve / reject gates (RC, remediation, close)"},
- {id:"selfapprove",n:"Self-approve own RC / manual close"},
- {id:"forceclose",n:"Force-close (co-sign needed for auto issues)"},
- {id:"reopen",n:"Reopen issues & change root cause"},
- {id:"override",n:"Photo override"},
- {id:"assign",n:"Create & assign one-off tasks and insights"},
- {id:"shiftview",n:"View all tasks & entries at the plant"}]},
+ {id:"gates",n:"Approve / reject gates (RC, remediation, close)",mod:"ops"},
+ {id:"selfapprove",n:"Self-approve own RC / manual close",mod:"ops"},
+ {id:"forceclose",n:"Force-close (co-sign needed for auto issues)",mod:"ops"},
+ {id:"reopen",n:"Reopen issues & change root cause",mod:"ops"},
+ {id:"override",n:"Photo override",mod:"ops"},
+ {id:"assign",n:"Create & assign one-off tasks and insights",mod:"tasks"},
+ {id:"shiftview",n:"View all tasks & entries at the plant",mod:"tasks"}]},
 {id:"oversight",req:["approve"],n:"Multi-plant oversight",cat:"ops",d:"Portfolio-level operations",old:"was: senior CSM profiles",perms:[
- {id:"multiws",n:"Multi-plant workspace"},
- {id:"cosign",n:"Eligible co-signer for force-close"},
- {id:"deadline",n:"Deadline-only escalation alerts"}]},
+ {id:"multiws",n:"Multi-plant workspace",mod:"ops"},
+ {id:"cosign",n:"Eligible co-signer for force-close",mod:"ops"},
+ {id:"deadline",n:"Deadline-only escalation alerts",mod:"ops"}]},
 {id:"readplant",n:"Plant visibility (read-only)",cat:"read",d:"Seeing one plant without acting \u00b7 standard for every plant-touching role",old:"was: Client Role, Client Asset, Visualization, Insights Only, Sensor Health Dashboard",perms:[
- {id:"dash",n:"Plant dashboard, issue log & sensor health"},
- {id:"layout",n:"Plant layout / digital twin"},
- {id:"insights",n:"Insights & events lists"},
- {id:"reports",n:"Reports, downloads & dashboard batches"},
- {id:"history",n:"Equipment & maintenance history"}]},
+ {id:"dash",n:"Plant dashboard, issue log & sensor health",mod:"core"},
+ {id:"layout",n:"Plant layout / digital twin",mod:"analytics"},
+ {id:"insights",n:"Insights & events lists",mod:"analytics"},
+ {id:"reports",n:"Reports, downloads & dashboard batches",mod:"analytics"},
+ {id:"history",n:"Equipment & maintenance history",mod:"tasks"}]},
 {id:"portfolio",req:["readplant"],n:"Portfolio visibility",cat:"read",d:"Seeing all plants at once",old:"was: Client Administrative, Unified Dashboard",perms:[
- {id:"overview",n:"Portfolio overview & plants list"},
- {id:"compare",n:"Compare plants & clusters"}]},
+ {id:"overview",n:"Portfolio overview & plants list",mod:"analytics"},
+ {id:"compare",n:"Compare plants & clusters",mod:"analytics"}]},
 {id:"people",n:"People management",cat:"adm",d:"Users, rosters, skills, groups",old:"was: View as Different User, Roster & Task list, Group/Workspace Management",perms:[
- {id:"invite",n:"Invite / edit / offboard users"},
- {id:"rosters",n:"Rosters & shift schedules"},
- {id:"skills",n:"Skills & competencies"},
- {id:"groups",n:"User groups & workspaces"},
- {id:"grants",n:"Assign / revoke roles & grants"},
- {id:"notif",n:"Per-user notification overrides"},
- {id:"audit",n:"Directory & audit-log export"}]},
+ {id:"invite",n:"Invite / edit / offboard users",mod:"core"},
+ {id:"rosters",n:"Rosters & shift schedules",mod:"tasks"},
+ {id:"skills",n:"Skills & competencies",mod:"core"},
+ {id:"groups",n:"User groups & workspaces",mod:"core"},
+ {id:"grants",n:"Assign / revoke roles & grants",mod:"core"},
+ {id:"notif",n:"Per-user notification overrides",mod:"core"},
+ {id:"audit",n:"Directory & audit-log export",mod:"core"}]},
 {id:"tech",n:"Plant configuration",cat:"adm",d:"The plant\u2019s logic, hardware and screens",old:"was: E-mail, Sensor list, Events, Logbook Config, Analytical Engine, Triggers, T&T Config, PLC/HMI",perms:[
- {id:"dashcfg",n:"Dashboards & widgets (plant + unified)"},
- {id:"ai",n:"AI widget generator"},
- {id:"rules",n:"Issue / task / trigger rules & schedules"},
- {id:"flows",n:"Diagnostic flows & workflows"},
- {id:"plant",n:"Plant details, layout, lab & test setup"},
- {id:"sensors",n:"Sensors, thresholds, data breaks & health"},
- {id:"iot",n:"PLC / HMI / data logger"},
- {id:"routing",n:"Notification routing, SLAs, escalation & auto email"},
- {id:"sitetpl",n:"Site templates (task, event, insight, logbook, data-input)"},
- {id:"formulas",n:"Site analytics formulas"}]},
+ {id:"dashcfg",n:"Dashboards & widgets (plant + unified)",mod:"analytics"},
+ {id:"ai",n:"AI widget generator",mod:"analytics"},
+ {id:"rules",n:"Issue / task / trigger rules & schedules",mod:"ops"},
+ {id:"flows",n:"Diagnostic flows & workflows",mod:"ops"},
+ {id:"plant",n:"Plant details, layout, lab & test setup",mod:"core"},
+ {id:"sensors",n:"Sensors, thresholds, data breaks & health",mod:"iot"},
+ {id:"iot",n:"PLC / HMI / data logger",mod:"iot"},
+ {id:"routing",n:"Notification routing, SLAs, escalation & auto email",mod:"ops"},
+ {id:"sitetpl",n:"Site templates (task, event, insight, logbook, data-input)",mod:"core"},
+ {id:"formulas",n:"Site analytics formulas",mod:"data"}]},
 {id:"templates",req:["people","tech"],n:"Global templates",cat:"adm",d:"Affects every site \u2014 DP / Wapp staff only",old:"was: Super Admin, Company List, System templates/triggers/workflows",perms:[
- {id:"library",n:"Global template & role governance (system task/trigger/workflow)"},
- {id:"publish",n:"Publish versions to all sites"},
- {id:"onboard",n:"Onboard sites, plants & company list"}]},
+ {id:"library",n:"Global template & role governance (system task/trigger/workflow)",mod:"core"},
+ {id:"publish",n:"Publish versions to all sites",mod:"core"},
+ {id:"onboard",n:"Onboard sites, plants & company list",mod:"core"}]},
 {id:"flags",n:"Exception flags",cat:"flag",alwaysDev:true,d:"Extra-sensitive \u2014 always a deviation, audited individually",old:"was: Back Dated Data Entry, Data Correction, Remote Control, Bi-Direction, View as Different User",perms:[
- {id:"backdate",n:"Back-dated entry & data correction",preq:"tech"},
- {id:"remote",n:"IoT remote control / bi-direction",preq:"tech"},
- {id:"impersonate",n:"View-as / impersonation",preq:"people"}]},
+ {id:"backdate",n:"Back-dated entry & data correction",preq:"tech",mod:"data"},
+ {id:"remote",n:"IoT remote control / bi-direction",preq:"tech",mod:"iot"},
+ {id:"impersonate",n:"View-as / impersonation",preq:"people",mod:"core"}]},
 ];
+/* ---- Product modules: sellable slices of the product, licensed per plant.
+   A module unlocks permissions ACROSS role types; roles/overrides work inside the ceiling. ---- */
+const MODULES=[
+ {id:"core",n:"Platform Core",icon:"\ud83e\udde9",always:true,d:"Ships with every contract \u2014 users, groups, grants, plant setup, basic plant dashboard, global governance."},
+ {id:"ops",n:"Issue Resolution",icon:"\ud83d\udd27",d:"The CloseTheLoop workflow \u2014 issue sessions, diagnostics, root cause, approvals, force-close, escalation rules."},
+ {id:"tasks",n:"Tasks, Shifts & Maintenance",icon:"\ud83d\udccb",d:"Fixed & one-off tasks, maintenance records & history, rosters, shifts and check-in."},
+ {id:"data",n:"Data, Lab & Logbook",icon:"\ud83e\uddea",d:"Lab, water-quality & logbook entry, back-dated corrections, site analytics formulas."},
+ {id:"analytics",n:"Dashboards & Analytics",icon:"\ud83d\udcca",d:"Custom dashboards, insights, reports, digital twin, portfolio comparison, AI widgets."},
+ {id:"iot",n:"IoT & Remote Control",icon:"\ud83d\udce1",d:"Sensors & thresholds, PLC / HMI / data loggers, remote operation."},
+];
+const modById=Object.fromEntries(MODULES.map(m=>[m.id,m]));
+const PERMMOD={}; SETS.forEach(s=>s.perms.forEach(p=>PERMMOD[s.id+"."+p.id]=p.mod||"core"));
+/* Per-plant entitlements (what the company bought) \u2014 editable in the Modules tab */
+let PLANTMODS={
+ "STP \u2014 Sector 62":["ops","tasks","data","analytics","iot"],
+ "WTP \u2014 Knowledge Park":["ops","tasks","data","analytics"],
+ "STP \u2014 Alpha 2":["ops","tasks"],
+ "STP \u2014 Pari Chowk":["ops","tasks","data"],
+ "STP \u2014 Cyber Park":["ops","tasks","data","analytics","iot"],
+ "WTP \u2014 Sector 29":["ops","data","analytics"],
+ "STP \u2014 Udyog Vihar":["ops","tasks"],
+ "STP \u2014 Sitapura":["ops","tasks","data","analytics","iot"],
+ "WTP \u2014 Mansarovar":["analytics"],
+ "Demo STP \u2014 Training":["ops","tasks","data","analytics","iot"],
+ "Demo WTP \u2014 Sales":["ops","tasks","data","analytics","iot"],
+};
+function plantMods(p){ return new Set(["core",...(PLANTMODS[p]||[])]); }
+function modAvail(mod){ /* across selected plants: all | some | none | na (no plants picked yet) */
+  if(mod==="core") return "all";
+  if(!selPlants.size) return "na";
+  let n=0; selPlants.forEach(p=>{ if(plantMods(p).has(mod)) n++; });
+  return n===selPlants.size?"all":(n?"some":"none");
+}
+function permAvail(key){ return modAvail(PERMMOD[key]); }
+function cappedKeys(){ return Object.keys(P).filter(k=>P[k]&&permAvail(k)==="none"); }
 const ROLES={
 l1:{n:"L1 Operator",cat:"ops",s:"does the work",std:["work","readplant"]},
 l3:{n:"L3 Lead",cat:"ops",s:"L1 + approves & closes",std:["work","approve","readplant"]},
@@ -443,7 +516,12 @@ function render(){
     const all=WORKSPACES[ws].plants;
     pc.textContent=`\u00b7 ${selPlants.size} of ${all.length} selected`;
     pb.innerHTML=`<button class="selall" onclick="selectAllPlants()">${selPlants.size===all.length?"Clear all":"Select all"}</button><br>`+
-      all.map((p,i)=>`<button class="plantchip ${selPlants.has(p)?"on":""}" onclick="togglePlant(${i})"><span class="tick">${selPlants.has(p)?"\u2713":""}</span>${p}</button>`).join("");
+      all.map((p,i)=>`<button class="plantchip ${selPlants.has(p)?"on":""}" onclick="togglePlant(${i})" title="Modules: ${[...plantMods(p)].map(m=>modById[m].n).join(", ")}"><span class="tick">${selPlants.has(p)?"\u2713":""}</span>${p} <span style="font-weight:400;opacity:.7">\u00b7 ${plantMods(p).size} mods</span></button>`).join("")+
+      (selPlants.size?`<div class="gh2" style="margin-top:12px">Modules at selected plants</div><div>`+MODULES.map(m=>{
+        const av=modAvail(m.id);
+        const lbl=m.always?`${m.n} \u00b7 included`:av==="all"?m.n:av==="some"?`${m.n} \u00b7 some plants`:`${m.n} \u00b7 not in plan`;
+        return `<span class="avail av-${av==="na"?"all":av}">${lbl}</span>`;
+      }).join("")+`</div><p style="font-size:11.5px;color:var(--ink-3);margin:4px 0 0">Set per plant on the \u201cProduct modules\u201d tab \u2014 modules are the ceiling this user's permissions work inside.</p>`:"");
   }
 
   // summary (level 1)
@@ -454,8 +532,10 @@ function render(){
   const activeSets=SETS.filter(s=>setState(s.id)!=="off").length;
   const activePerms=Object.values(P).filter(Boolean).length;
   const dev=deviations();
+  const capped=cappedKeys().length;
+  const capNote=capped?` · ⚠ ${capped} capped by plant modules`:"";
   document.getElementById("sumline").textContent=dev.length?`Customized setup — ${activeSets} permission sets, ${activePerms} abilities`:`Standard ${ROLES[baseRole].n}${grant?" + grant":""} — nothing to configure`;
-  document.getElementById("sumsub").textContent=dev.length?`${dev.length} deviation${dev.length>1?"s":""} from the standard role`:`${activeSets} permission sets · ${activePerms} abilities · most users should be saved exactly like this`;
+  document.getElementById("sumsub").textContent=(dev.length?`${dev.length} deviation${dev.length>1?"s":""} from the standard role`:`${activeSets} permission sets · ${activePerms} abilities · most users should be saved exactly like this`)+capNote;
 
   // customize (level 2 + 3)
   document.getElementById("custbtn").classList.toggle("open",custOpen);
@@ -470,8 +550,11 @@ function render(){
       const body=`<div class="desc">${s.d} · ${s.old}${(s.req||[]).length?` · needs: ${s.req.map(r=>setById[r].n).join(" + ")}`:""}</div>`+
         s.perms.map(p=>{
           const key=s.id+"."+p.id, cur=P[key], dv=cur!==isStdPerm(s.id,p.id);
-          const dis=s.id==="flags"&&p.preq&&setState(p.preq)!=="on";
-          return `<div class="prow"><span class="pn">${p.n}${p.preq?` <span style="font-size:11px;color:var(--ink-3)">(needs ${setById[p.preq].n})</span>`:""}</span>
+          const av=permAvail(key), mod=modById[PERMMOD[key]];
+          const dis=(s.id==="flags"&&p.preq&&setState(p.preq)!=="on")||(av==="none"&&!cur);
+          const modnote=av==="none"?`<span class="modlock">🔒 ${mod.n} module — not in the plan at any selected plant${cur?" · stays on the profile, no effect until upgraded":""}</span>`
+                       :(av==="some"&&cur)?`<span class="modlock">◐ ${mod.n} module — licensed at only some selected plants</span>`:"";
+          return `<div class="prow"><span class="pn">${p.n}${p.preq?` <span style="font-size:11px;color:var(--ink-3)">(needs ${setById[p.preq].n})</span>`:""}${modnote}</span>
             <button class="sw sm ${cur?"on":""} ${dv?"dev":""}" ${dis?"disabled":""} onclick="togglePerm('${s.id}','${p.id}')"></button></div>`;
         }).join("");
       return `<div class="acc ${openSets[s.id]?"open":""} ${devSet?"devset":""}">
@@ -493,12 +576,17 @@ function render(){
   document.getElementById("driftn").textContent=dev.length;
   document.getElementById("driftn").style.color=dev.length?"var(--flag)":"var(--ops)";
   document.getElementById("driftl").textContent=dev.length?("deviation"+(dev.length>1?"s":"")+": "+dev.slice(0,3).join(", ")+(dev.length>3?` and ${dev.length-3} more`:"")):"deviations — matches the standard role exactly";
+  const capMods=[...new Set(cappedKeys().map(k=>modById[PERMMOD[k]].n))];
+  document.getElementById("capmsg").innerHTML=capped?`<div class="msg warn">📦 ${capped} abilit${capped>1?"ies":"y"} in this profile ${capped>1?"are":"is"} capped by plant modules — ${capMods.join(", ")} ${capMods.length>1?"are":"is"} not in the plan at the selected plants. Capped abilities stay on the user's profile and switch on automatically if the plant's plan is upgraded.</div>`:"";
   document.getElementById("reasonblock").classList.toggle("open",dev.length>0);
   document.getElementById("effbtn").classList.toggle("open",effOpen);
   document.getElementById("effblock").classList.toggle("open",effOpen);
   if(effOpen){
     let eff="";
-    SETS.forEach(s=>s.perms.forEach(p=>{ if(P[s.id+"."+p.id]) eff+=`<li>${p.n}</li>`; }));
+    SETS.forEach(s=>s.perms.forEach(p=>{ const k=s.id+"."+p.id; if(!P[k]) return;
+      const av=permAvail(k), mod=modById[PERMMOD[k]];
+      eff+=`<li>${p.n}${av==="some"?` <span style="font-size:12px;color:var(--flag)">— only at selected plants with ${mod.n}</span>`:av==="none"?` <span style="font-size:12px;color:var(--ink-3)">— capped: ${mod.n} not licensed here</span>`:""}</li>`;
+    }));
     document.getElementById("effperm").innerHTML=eff||"<li>Nothing — this user can only log in.</li>";
   }
   const reason=document.getElementById("reason").value.trim();
@@ -513,17 +601,19 @@ function save(){
     const key=s.id+"."+p.id, cur=P[key], std=isStdPerm(s.id,p.id);
     if(cur&&!std) add.push(key); if(!cur&&std) rem.push(key);
   }));
+  const modulesByPlant={}; [...selPlants].forEach(p=>modulesByPlant[p]=[...plantMods(p)]);
   const payload={userId:"demo-user-001",scope:{workspace:WORKSPACES[ws].n,plants:[...selPlants]},baseRole:baseRole,grant:grant||null,
     overrides:{add:add,remove:rem},
-    reason:document.getElementById("reason").value.trim()||null,requestedBy:"people-admin@digitalpaani.com",drift:deviations().length};
+    reason:document.getElementById("reason").value.trim()||null,requestedBy:"people-admin@digitalpaani.com",drift:deviations().length,
+    entitlementContext:{modulesByPlant:modulesByPlant,cappedBySelectedPlants:cappedKeys()}};
   const el=document.getElementById("payload");
   el.style.display="block";
-  el.textContent="// This is what gets stored on the user record\n"+JSON.stringify(payload,null,2);
+  el.textContent="// Stored on the user record. entitlementContext is informational —\n// runtime check at a plant = user permission AND plant module.\n"+JSON.stringify(payload,null,2);
 }
 
 
 /* ================= SMART PREVIEW ENGINE ================= */
-let prevMode="live", prevTab=null;
+let prevMode="live", prevTab=null, prevPlant="all";
 const PRESETS=[
  {id:"live",label:"◉ Current configuration"},
  {id:"l1",label:"L1 Operator",role:"l1",grant:""},
@@ -639,12 +729,28 @@ function bodyFor(tabId,c,why){
 }
 function renderPreview(){
   document.getElementById("prevpick").innerHTML=PRESETS.map(p=>`<button class="pv ${prevMode===p.id?"on":""}" onclick="setPreset('${p.id}')">${p.label}</button>`).join("");
+  // plant-context selector: the plant's licensed modules become the ceiling
+  document.getElementById("prevplant").innerHTML=`<option value="all" ${prevPlant==="all"?"selected":""}>All modules — no plant ceiling</option>`+
+    Object.keys(WORKSPACES).map(w=>`<optgroup label="${WORKSPACES[w].n}">`+
+      WORKSPACES[w].plants.map(p=>`<option value="${p}" ${prevPlant===p?"selected":""}>${p} · ${plantMods(p).size} of ${MODULES.length} modules</option>`).join("")+`</optgroup>`).join("");
+  document.getElementById("prevmods").innerHTML=prevPlant==="all"?"":MODULES.map(m=>`<span class="avail av-${plantMods(prevPlant).has(m.id)?"all":"none"}">${m.n}</span>`).join("");
   const c=previewCtx();
-  const tabs=computeTabs(c);
   const why=[];
+  const modset=prevPlant==="all"?new Set(MODULES.map(m=>m.id)):plantMods(prevPlant);
+  const raw=c.P, effp={};
+  Object.keys(raw).forEach(k=>effp[k]=raw[k]&&modset.has(PERMMOD[k]));
+  c.P=effp;
+  if(prevPlant!=="all"){
+    MODULES.forEach(m=>{
+      if(modset.has(m.id)) return;
+      const hidden=Object.keys(raw).filter(k=>raw[k]&&PERMMOD[k]===m.id).length;
+      if(hidden) why.push(`📦 ${hidden} abilit${hidden>1?"ies":"y"} hidden at ${prevPlant} — “${m.n}” module is not in this plant's plan`);
+    });
+  }
+  const tabs=computeTabs(c);
   const land=landingTab(tabs);
   if(!prevTab||!tabs.find(t=>t.id===prevTab)) prevTab=land;
-  const roleN=ROLES[c.role].n+(c.grantId?" + "+{people:"People Admin",tech:"Technical Admin",fullsite:"Full Site Admin",global:"Global Admin"}[c.grantId]:"");
+  const roleN=ROLES[c.role].n+(c.grantId?" + "+{people:"People Admin",tech:"Technical Admin",fullsite:"Full Site Admin",global:"Global Admin"}[c.grantId]:"")+(prevPlant!=="all"?" @ "+prevPlant:"");
   let frame;
   if(!tabs.length){
     frame=`<div class="frame"><div class="appbar"><span class="brand">DigitalPaani</span><span class="who">${roleN}</span></div><div class="body">${mut("This user can log in but has no permissions \u2014 no screens to show")}</div></div>`;
@@ -664,12 +770,42 @@ function renderPreview(){
 }
 function setPreset(id){ prevMode=id; prevTab=null; renderPreview(); }
 function setPrevTab(id){ prevTab=id; renderPreview(); }
+function setPrevPlant(p){ prevPlant=p; prevTab=null; renderPreview(); }
+
+/* ================= PRODUCT MODULES TAB ================= */
+function renderModules(){
+  document.getElementById("modcatalog").innerHTML=MODULES.map(m=>{
+    const bySet={}; SETS.forEach(s=>s.perms.forEach(p=>{ if((p.mod||"core")===m.id) bySet[s.n]=(bySet[s.n]||0)+1; }));
+    const total=Object.values(bySet).reduce((a,b)=>a+b,0);
+    return `<div class="modcard"><div class="t">${m.icon} ${m.n}${m.always?` <span class="inc" style="font-size:10px;letter-spacing:.05em"> INCLUDED</span>`:""}</div>
+      <div class="d">${m.d}</div>
+      <div class="m">Unlocks ${total} abilities across role types: ${Object.entries(bySet).map(([n,c])=>`${n} (${c})`).join(" · ")}</div></div>`;
+  }).join("");
+  let h=`<tr><th>Plant</th>`+MODULES.map(m=>`<th>${m.icon} ${m.n}</th>`).join("")+`</tr>`;
+  Object.keys(WORKSPACES).forEach(w=>{
+    h+=`<tr class="wsrow"><td colspan="${MODULES.length+1}">${WORKSPACES[w].n}</td></tr>`;
+    WORKSPACES[w].plants.forEach(p=>{
+      h+=`<tr><td class="pn">${p}</td>`+MODULES.map(m=>{
+        if(m.always) return `<td><span class="inc">✓ included</span></td>`;
+        const on=(PLANTMODS[p]||[]).includes(m.id);
+        return `<td><button class="sw sm ${on?"on":""}" title="${m.n} at ${p}" onclick="toggleMod('${p}','${m.id}')"></button></td>`;
+      }).join("")+`</tr>`;
+    });
+  });
+  document.getElementById("modmatrix").innerHTML=h;
+}
+function toggleMod(p,mod){
+  const arr=PLANTMODS[p]||[];
+  PLANTMODS[p]=arr.includes(mod)?arr.filter(x=>x!==mod):[...arr,mod];
+  renderModules(); render();
+}
 function tab(i){
   document.querySelectorAll(".tab").forEach((t,j)=>t.classList.toggle("on",i===j));
   document.querySelectorAll(".pane").forEach((p,j)=>p.classList.toggle("on",i===j));
-  if(i===1) renderPreview();
+  if(i===0) renderModules();
+  if(i===2) renderPreview();
 }
-initState(); render();
+initState(); render(); renderModules();
 </script>
 </body>
 </html>

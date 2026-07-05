@@ -13,6 +13,17 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
 
 ## The v2 model (settled — do not redesign)
 
+- **Product modules cap everything (top of the hierarchy).** DigitalPaani sells
+  product modules to companies; modules are licensed **per plant** (`PLANTMODS`
+  in index.html, editable in the "Product modules" tab). 6 modules — see
+  `MODULES`: core (always included), ops (Issue Resolution), tasks (Tasks/Shifts/
+  Maintenance), data (Data/Lab/Logbook), analytics (Dashboards & Analytics),
+  iot (IoT & Remote Control). Every permission carries a `mod:` tag (`PERMMOD`);
+  modules cut ACROSS role-type sets on purpose (e.g. tasks module spans work,
+  approve, people, readplant). **Effective access at a plant = user permission
+  ∧ plant module.** The ceiling caps but never edits the user profile: capped
+  permissions stay saved and activate if the plant's plan is upgraded — so
+  per-user flexibility survives module changes.
 - **9 permission sets, 43 individual permissions** — see `SETS` in index.html.
   Sets: work, approve, oversight, readplant, portfolio, people, tech, templates, flags.
 - **5 base roles** = default set compositions (see `ROLES`):
@@ -29,8 +40,11 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
 - **Assignment scope**: workspace → multi-select plants. One tier per user per
   plant; at most one grant per user per site.
 - **Save payload shape** (backend contract — see `save()` in index.html):
-  `{userId, scope:{workspace, plants[]}, baseRole, grant, overrides:{add[],remove[]}, reason, drift}`
+  `{userId, scope:{workspace, plants[]}, baseRole, grant, overrides:{add[],remove[]}, reason, drift, entitlementContext:{modulesByPlant, cappedBySelectedPlants[]}}`
   Override keys are `set.permission` strings, e.g. `approve.forceclose`.
+  `entitlementContext` is informational — the runtime permission check at a
+  plant is always `user permission AND plant module`; entitlements live on the
+  plant/contract record, not the user.
 
 ## Hard-won decisions (do not regress)
 
