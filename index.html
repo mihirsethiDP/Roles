@@ -85,6 +85,48 @@ pre.payload{background:var(--navy-deep);color:#BFE3D6;border-radius:10px;padding
 .driftbar{display:flex;align-items:center;gap:10px;margin:0 0 6px}
 .driftnum{font-family:"Sora";font-size:22px;font-weight:600}
 
+/* ---------- chip selectors & plant multiselect ---------- */
+.chipsel{display:flex;flex-wrap:wrap;gap:8px}
+.gchip{border:1px solid var(--line-strong);background:var(--card);color:var(--ink-2);border-radius:18px;padding:7px 14px;font:500 13px "Inter";cursor:pointer}
+.gchip:hover{border-color:var(--adm)}
+.gchip.on{background:var(--adm);border-color:var(--adm);color:#fff;font-weight:600}
+.gchip.none.on{background:var(--ink-2);border-color:var(--ink-2)}
+.plantchip{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line-strong);background:var(--card);color:var(--ink-2);border-radius:18px;padding:7px 13px;font:500 13px "Inter";cursor:pointer;margin:0 8px 8px 0}
+.plantchip .tick{width:15px;height:15px;border:1.5px solid var(--line-strong);border-radius:4px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;color:#fff;flex:none}
+.plantchip.on{background:var(--ops-bg);border-color:var(--ops);color:#0A5A4A;font-weight:600}
+.plantchip.on .tick{background:var(--ops);border-color:var(--ops)}
+.fetching{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--ink-3);padding:10px 2px}
+.spin{width:14px;height:14px;border:2px solid var(--line-strong);border-top-color:var(--ops);border-radius:50%;animation:spin .7s linear infinite;flex:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+.selall{border:none;background:transparent;color:var(--navy);font:600 12px "Inter";cursor:pointer;padding:0 0 8px}
+/* ---------- progressive disclosure ---------- */
+.summary{background:var(--navy-tint);border:1px solid #CBD8EA;border-radius:12px;padding:16px 18px;margin:14px 0 0}
+.summary .big{font-family:"Sora";font-size:15px;font-weight:600;color:var(--navy)}
+.summary .sub{font-size:13px;color:var(--ink-2);margin-top:2px}
+.disclose{display:flex;align-items:center;gap:8px;border:none;background:transparent;color:var(--navy);font:600 13.5px "Inter";cursor:pointer;padding:10px 0 0}
+.disclose .chev{display:inline-block;transition:transform .15s}
+.disclose.open .chev{transform:rotate(90deg)}
+.hiddenblock{display:none}
+.hiddenblock.open{display:block}
+.acc{border:1px solid var(--line);border-radius:12px;margin-bottom:10px;background:var(--card);overflow:hidden}
+.acc.devset{border-color:#E8C98A;box-shadow:0 0 0 1px #E8C98A}
+.acch{display:flex;align-items:center;gap:12px;padding:12px 14px;cursor:pointer}
+.acch:hover{background:var(--bg)}
+.acch .chev{color:var(--ink-3);transition:transform .15s;font-size:12px}
+.acc.open .acch .chev{transform:rotate(90deg)}
+.acch .name{font-weight:600;font-size:14px}
+.acch .count{font-size:12px;color:var(--ink-2);margin-left:auto;white-space:nowrap}
+.accb{display:none;border-top:1px solid var(--line);padding:6px 14px 10px 40px;background:#FBFCFE}
+.acc.open .accb{display:block}
+.accb .desc{font-size:12.5px;color:var(--ink-3);margin:8px 0 4px}
+.prow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px dashed var(--line)}
+.prow:last-child{border-bottom:none}
+.prow .pn{font-size:13.5px}
+.sw.sm{width:36px;height:20px;border-radius:10px}
+.sw.sm::after{width:14px;height:14px}
+.sw.sm.on::after{left:19px}
+.sw.partial{background:#C98A00}
+.stepnum{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;background:var(--navy);color:#fff;border-radius:50%;font-size:12px;font-weight:600;margin-right:8px;flex:none}
 /* ---------- previews ---------- */
 .prevpick{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 20px}
 .pv{border:1px solid var(--line-strong);background:var(--card);border-radius:20px;padding:8px 16px;font:500 13px "Inter";cursor:pointer;color:var(--ink-2)}
@@ -145,44 +187,50 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
   <div class="grid">
     <div>
       <div class="panel">
-        <div class="gh">1 · Pick a base role</div>
+        <div class="gh"><span class="stepnum">1</span>Who is this user?</div>
         <div class="rolepick" id="rolepick"></div>
-        <div class="gh2">2 · Admin grant (optional)</div>
-        <select id="grantsel" onchange="setGrant(this.value)">
-          <option value="">No admin grant</option>
-          <option value="people">People Admin</option>
-          <option value="tech">Technical Admin</option>
-          <option value="fullsite">Full Site Admin (People + Technical)</option>
-          <option value="global">Global Admin (DP / Wapp staff)</option>
+        <div class="gh2">Admin grant (optional)</div>
+        <div class="chipsel" id="grantchips"></div>
+        <div class="gh2">Workspace</div>
+        <select id="wssel" onchange="selectWs(this.value)">
+          <option value="">Select a workspace…</option>
+          <option value="noida">Noida Cluster</option>
+          <option value="gurgaon">Gurgaon Cluster</option>
+          <option value="jaipur">Jaipur</option>
+          <option value="demo">Demo plants</option>
         </select>
-        <div class="gh2">Assignment scope</div>
-        <select id="plantsel">
-          <option>STP — Sector 62, Noida</option>
-          <option>WTP — Knowledge Park</option>
-          <option>STP — Alpha 2</option>
-          <option>All plants in workspace</option>
-        </select>
+        <div class="gh2">Plants <span id="plantcount" style="font-weight:400;color:var(--ink-3);text-transform:none;letter-spacing:0"></span></div>
+        <div id="plantbox"><p style="font-size:13px;color:var(--ink-3);margin:2px 0">Pick a workspace to fetch its plants.</p></div>
       </div>
     </div>
 
     <div>
       <div class="panel">
-        <div class="gh">3 · Capability bundles — the old roles, clubbed and toggleable</div>
-        <p style="font-size:13px;color:var(--ink-2);margin:0 0 6px">Switches start at the role's standard. Anything you change is a <b>deviation</b> — it's outlined, counted, and needs a reason.</p>
-        <div id="toggles"></div>
-        <div id="guardmsgs"></div>
+        <div class="gh"><span class="stepnum">2</span>Standard setup</div>
+        <div class="summary">
+          <div id="chips" style="margin-bottom:6px"></div>
+          <div class="big" id="sumline"></div>
+          <div class="sub" id="sumsub"></div>
+        </div>
+        <button class="disclose" id="custbtn" onclick="toggleCustomize()"><span class="chev">▶</span> Customize capabilities — open only if this user needs more or less than the standard</button>
+        <div class="hiddenblock" id="custblock">
+          <p style="font-size:13px;color:var(--ink-2);margin:10px 0 12px">Each group is a <b>set of permissions</b> with its own master switch. Open a group to fine-tune individual permissions. Anything different from the standard is a <b>deviation</b> — outlined amber, counted, and requiring a reason.</p>
+          <div id="accordions"></div>
+          <div id="guardmsgs"></div>
+        </div>
       </div>
 
       <div class="panel" style="margin-top:18px">
-        <div class="gh">4 · Result — kept in check</div>
-        <div class="driftbar"><span class="driftnum" id="driftn">0</span><span style="font-size:13px;color:var(--ink-2)" id="driftl">deviations from the standard role</span>
+        <div class="gh"><span class="stepnum">3</span>Review & save</div>
+        <div class="driftbar"><span class="driftnum" id="driftn">0</span><span style="font-size:13px;color:var(--ink-2)" id="driftl"></span>
           <button class="btn ghost" style="margin-left:auto;padding:7px 14px;font-size:12.5px" onclick="resetStd()">Reset to standard</button></div>
-        <div id="chips"></div>
-        <div class="gh2">Effective abilities</div>
-        <ul class="pl" id="effperm"></ul>
-        <div class="gh2">Reason for deviation <span id="reasonreq" style="color:var(--err)"></span></div>
-        <textarea id="reason" placeholder="Required only when the switches differ from the standard role — e.g. 'Client ops head requested logbook entry for this supervisor, approved by A. Loijos, ticket DP-1142'" oninput="render()"></textarea>
-        <div style="display:flex;gap:10px;align-items:center;margin-top:14px">
+        <div class="hiddenblock" id="reasonblock">
+          <div class="gh2">Reason for deviation <span id="reasonreq" style="color:var(--err)"></span></div>
+          <textarea id="reason" placeholder="e.g. 'Client ops head requested logbook entry for this supervisor, approved by A. Loijos, ticket DP-1142'" oninput="render()"></textarea>
+        </div>
+        <div class="disclose" onclick="toggleEff()" id="effbtn" style="cursor:pointer"><span class="chev">▶</span> See everything this user will be able to do</div>
+        <div class="hiddenblock" id="effblock"><ul class="pl" id="effperm" style="margin-top:8px"></ul></div>
+        <div style="display:flex;gap:10px;align-items:center;margin-top:16px">
           <button class="btn primary" id="savebtn" onclick="save()">Save assignment</button>
           <span style="font-size:12.5px;color:var(--ink-3)" id="savehint"></span>
         </div>
@@ -192,10 +240,18 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
   </div>
 </div>
 
-<!-- ============ PANE 2: UI PREVIEWS ============ -->
+<!-- ============ PANE 2: SMART UI PREVIEW ============ -->
 <div class="pane" id="pane1">
+  <div class="panel" style="margin-bottom:18px">
+    <div class="gh">Smart preview — generated live from permissions, not hand-drawn per role</div>
+    <p style="font-size:13.5px;color:var(--ink-2);margin:0">Every navigation tab, button, and banner below is decided by a rule reading the permission state — so <b>any</b> combination you build in the configurator renders its exact UI here, including partial sets. Pick a preset, or preview whatever you've configured on the first tab. Click the tabs inside the mock app — they work.</p>
+  </div>
   <div class="prevpick" id="prevpick"></div>
-  <div id="screens"></div>
+  <div id="smartframe"></div>
+  <div class="panel" style="margin-top:16px;max-width:860px">
+    <div class="gh">Why this UI looks the way it does</div>
+    <ul class="pl" id="whylist"></ul>
+  </div>
 </div>
 
 </div>
@@ -205,67 +261,168 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
 
 <script>
 /* ================= DATA ================= */
-const BUNDLES={
-exec:{n:"Do the work",cat:"ops",d:"Run diagnostic steps, submit root cause, fix, enter data, execute tasks",old:"was: Operator Asset (workers), Tasks Only, Data Input, Tickets, Logbook Data Input",p:["Own issue sessions & execute steps","Submit root cause & remediation","Data / lab / logbook entry","Execute fixed & alert tasks","Raise manual issues"]},
-approve:{n:"Approve & close",cat:"ops",d:"Approve/reject gates, force-close, reopen, supervise the shift",old:"was: CSM Asset, Operator Asset (supervisors)",p:["Approve / reject any gate","Force-close (co-sign for auto issues)","Photo override, change RC, reopen","See all tasks & entries at the plant"],req:["exec"]},
-oversight:{n:"Multi-plant oversight",cat:"ops",d:"Watch many plants, deadline escalations, co-sign force-closes",old:"was: senior CSM profiles",p:["Multi-plant workspace","Co-signer for force-close","Deadline-only overdue alerts"],req:["approve"]},
-readPlant:{n:"Read one plant",cat:"read",d:"Dashboard, issue log, reports — view only",old:"was: Client Role, Client Asset, Visualization, Insights Only",p:["View plant dashboard & issue log","View reports & equipment history","Download dashboard report"]},
-portfolio:{n:"Read the portfolio",cat:"read",d:"Multi-plant overview for HQ / corporate",old:"was: Client Administrative, Unified Dashboard",p:["Portfolio overview dashboard"],req:["readPlant"]},
-people:{n:"Manage people",cat:"adm",d:"Users, rosters, shifts, grants",old:"was: View as Different User, Roster & Task list",p:["Invite / offboard users","Rosters & shift schedules","Assign / revoke grants","Directory & audit export"]},
-tech:{n:"Configure the plant",cat:"adm",d:"Rules, dashboards, sensors, routing, email",old:"was: E-mail, Sensor list, Events, Logbook Config, Analytical Engine, Triggers, T&T Config",p:["Dashboards & widgets","Issue / task rules & schedules","Sensor thresholds & routing chains","Site analytics formulas"]},
-templates:{n:"Global templates",cat:"adm",d:"Template library, publish to all sites, onboard sites",old:"was: Super Admin, Company List",p:["Create / publish global templates","Signal condition library","Onboard sites, company list"],req:["people","tech"]},
-};
-const FLAGS={
-backdate:{n:"Back-dated data entry",req:"tech",d:"Exception flag (pending M3)"},
-remote:{n:"IoT remote control",req:"tech",d:"Exception flag (pending M4)"},
-impersonate:{n:"View-as / impersonation",req:"people",d:"Support & audit flag"},
-};
+const SETS=[
+{id:"work",n:"Work execution",cat:"ops",d:"Day-to-day operating of issues, tasks and maintenance",old:"was: Operator Asset (workers), Tasks Only, Data Input, Tickets, Logbook Data Input",perms:[
+ {id:"sessions",n:"Own issue sessions & run diagnostic steps"},
+ {id:"rc",n:"Submit root cause & remediation"},
+ {id:"media",n:"Photo / video capture during steps"},
+ {id:"data",n:"Data, lab, water-quality & logbook entry"},
+ {id:"tasks",n:"Execute fixed, alert & one-time tasks"},
+ {id:"maintenance",n:"Perform & record maintenance"},
+ {id:"raise",n:"Raise manual issues"},
+ {id:"handoff",n:"Hand off / take over sessions"},
+ {id:"checkin",n:"Check in / out of shift"},
+ {id:"myshift",n:"See my shifts & roster"}]},
+{id:"approve",req:["work"],n:"Approvals & closure",cat:"ops",d:"Unblocking and supervising others",old:"was: CSM Asset, Operator Asset (supervisors)",perms:[
+ {id:"gates",n:"Approve / reject gates (RC, remediation, close)"},
+ {id:"selfapprove",n:"Self-approve own RC / manual close"},
+ {id:"forceclose",n:"Force-close (co-sign needed for auto issues)"},
+ {id:"reopen",n:"Reopen issues & change root cause"},
+ {id:"override",n:"Photo override"},
+ {id:"assign",n:"Create & assign one-off tasks and insights"},
+ {id:"shiftview",n:"View all tasks & entries at the plant"}]},
+{id:"oversight",req:["approve"],n:"Multi-plant oversight",cat:"ops",d:"Portfolio-level operations",old:"was: senior CSM profiles",perms:[
+ {id:"multiws",n:"Multi-plant workspace"},
+ {id:"cosign",n:"Eligible co-signer for force-close"},
+ {id:"deadline",n:"Deadline-only escalation alerts"}]},
+{id:"readplant",n:"Plant visibility (read-only)",cat:"read",d:"Seeing one plant without acting \u00b7 standard for every plant-touching role",old:"was: Client Role, Client Asset, Visualization, Insights Only, Sensor Health Dashboard",perms:[
+ {id:"dash",n:"Plant dashboard, issue log & sensor health"},
+ {id:"layout",n:"Plant layout / digital twin"},
+ {id:"insights",n:"Insights & events lists"},
+ {id:"reports",n:"Reports, downloads & dashboard batches"},
+ {id:"history",n:"Equipment & maintenance history"}]},
+{id:"portfolio",req:["readplant"],n:"Portfolio visibility",cat:"read",d:"Seeing all plants at once",old:"was: Client Administrative, Unified Dashboard",perms:[
+ {id:"overview",n:"Portfolio overview & plants list"},
+ {id:"compare",n:"Compare plants & clusters"}]},
+{id:"people",n:"People management",cat:"adm",d:"Users, rosters, skills, groups",old:"was: View as Different User, Roster & Task list, Group/Workspace Management",perms:[
+ {id:"invite",n:"Invite / edit / offboard users"},
+ {id:"rosters",n:"Rosters & shift schedules"},
+ {id:"skills",n:"Skills & competencies"},
+ {id:"groups",n:"User groups & workspaces"},
+ {id:"grants",n:"Assign / revoke roles & grants"},
+ {id:"notif",n:"Per-user notification overrides"},
+ {id:"audit",n:"Directory & audit-log export"}]},
+{id:"tech",n:"Plant configuration",cat:"adm",d:"The plant\u2019s logic, hardware and screens",old:"was: E-mail, Sensor list, Events, Logbook Config, Analytical Engine, Triggers, T&T Config, PLC/HMI",perms:[
+ {id:"dashcfg",n:"Dashboards & widgets (plant + unified)"},
+ {id:"ai",n:"AI widget generator"},
+ {id:"rules",n:"Issue / task / trigger rules & schedules"},
+ {id:"flows",n:"Diagnostic flows & workflows"},
+ {id:"plant",n:"Plant details, layout, lab & test setup"},
+ {id:"sensors",n:"Sensors, thresholds, data breaks & health"},
+ {id:"iot",n:"PLC / HMI / data logger"},
+ {id:"routing",n:"Notification routing, SLAs, escalation & auto email"},
+ {id:"sitetpl",n:"Site templates (task, event, insight, logbook, data-input)"},
+ {id:"formulas",n:"Site analytics formulas"}]},
+{id:"templates",req:["people","tech"],n:"Global templates",cat:"adm",d:"Affects every site \u2014 DP / Wapp staff only",old:"was: Super Admin, Company List, System templates/triggers/workflows",perms:[
+ {id:"library",n:"Global template & role governance (system task/trigger/workflow)"},
+ {id:"publish",n:"Publish versions to all sites"},
+ {id:"onboard",n:"Onboard sites, plants & company list"}]},
+{id:"flags",n:"Exception flags",cat:"flag",alwaysDev:true,d:"Extra-sensitive \u2014 always a deviation, audited individually",old:"was: Back Dated Data Entry, Data Correction, Remote Control, Bi-Direction, View as Different User",perms:[
+ {id:"backdate",n:"Back-dated entry & data correction",preq:"tech"},
+ {id:"remote",n:"IoT remote control / bi-direction",preq:"tech"},
+ {id:"impersonate",n:"View-as / impersonation",preq:"people"}]},
+];
 const ROLES={
-l1:{n:"L1 Operator",cat:"ops",s:"does the work",std:["exec"]},
-l3:{n:"L3 Lead",cat:"ops",s:"L1 + approves & closes",std:["exec","approve"]},
-l4:{n:"L4 Senior Lead",cat:"ops",s:"L3 + oversees many plants",std:["exec","approve","oversight"]},
-regular:{n:"Regular Non-op",cat:"read",s:"reads one plant",std:["readPlant"]},
-senior:{n:"Senior Non-op",cat:"read",s:"reads the whole portfolio",std:["readPlant","portfolio"]},
+l1:{n:"L1 Operator",cat:"ops",s:"does the work",std:["work","readplant"]},
+l3:{n:"L3 Lead",cat:"ops",s:"L1 + approves & closes",std:["work","approve","readplant"]},
+l4:{n:"L4 Senior Lead",cat:"ops",s:"L3 + oversees many plants",std:["work","approve","oversight","readplant","portfolio"]},
+regular:{n:"Regular Non-op",cat:"read",s:"reads one plant",std:["readplant"]},
+senior:{n:"Senior Non-op",cat:"read",s:"reads the whole portfolio",std:["readplant","portfolio"]},
 };
 const GRANTS={people:["people"],tech:["tech"],fullsite:["people","tech"],global:["people","tech","templates"]};
+const setById=Object.fromEntries(SETS.map(s=>[s.id,s]));
 
-let baseRole="l1", grant="", state={}, flagsOn={};
-
-/* ================= CONFIGURATOR ================= */
-function stdSet(){
-  const s=new Set(ROLES[baseRole].std);
-  (GRANTS[grant]||[]).forEach(b=>s.add(b));
-  return s;
+let baseRole="l1", grant="", P={}, openSets={}, custOpen=false, effOpen=false;
+const WORKSPACES={
+noida:{n:"Noida Cluster",plants:["STP \u2014 Sector 62","WTP \u2014 Knowledge Park","STP \u2014 Alpha 2","STP \u2014 Pari Chowk"]},
+gurgaon:{n:"Gurgaon Cluster",plants:["STP \u2014 Cyber Park","WTP \u2014 Sector 29","STP \u2014 Udyog Vihar"]},
+jaipur:{n:"Jaipur",plants:["STP \u2014 Sitapura","WTP \u2014 Mansarovar"]},
+demo:{n:"Demo plants",plants:["Demo STP \u2014 Training","Demo WTP \u2014 Sales"]}};
+let ws="", wsLoading=false, selPlants=new Set();
+function selectWs(id){
+  ws=id; selPlants=new Set();
+  if(!id){ wsLoading=false; render(); return; }
+  wsLoading=true; render();
+  setTimeout(()=>{ wsLoading=false; render(); },700); // simulated fetch from /workspaces/{id}/plants
 }
-function initState(){ state={}; Object.keys(BUNDLES).forEach(b=>state[b]=stdSet().has(b)); flagsOn={}; document.getElementById("reason").value=""; }
+function togglePlant(idx){
+  const p=WORKSPACES[ws].plants[idx];
+  selPlants.has(p)?selPlants.delete(p):selPlants.add(p);
+  render();
+}
+function selectAllPlants(){
+  const all=WORKSPACES[ws].plants;
+  selPlants = selPlants.size===all.length ? new Set() : new Set(all);
+  render();
+}
+
+/* ================= HELPERS ================= */
+function stdSetIds(){ const s=new Set(ROLES[baseRole].std); (GRANTS[grant]||[]).forEach(x=>s.add(x)); return s; }
+function isStdPerm(setId,permId){ return setId!=="flags" && stdSetIds().has(setId); }
+function setState(setId){
+  const on=setById[setId].perms.filter(p=>P[setId+"."+p.id]).length;
+  const total=setById[setId].perms.length;
+  return on===0?"off":(on===total?"on":"partial");
+}
+function dependents(setId){ return SETS.filter(s=>(s.req||[]).includes(setId)).map(s=>s.id); }
+function setAll(setId,val){
+  setById[setId].perms.forEach(p=>{
+    if(setId==="flags"&&val&&p.preq&&setState(p.preq)==="off") return;
+    P[setId+"."+p.id]=val;
+  });
+}
+function enableWithDeps(setId){
+  (setById[setId].req||[]).forEach(r=>{ if(setState(r)!=="on") enableWithDeps(r); });
+  setAll(setId,true);
+}
+function disableCascade(setId){
+  setAll(setId,false);
+  dependents(setId).forEach(d=>{ if(setState(d)!=="off") disableCascade(d); });
+  if(setId==="people"||setId==="tech"){
+    setById.flags.perms.forEach(p=>{ if(p.preq===setId) P["flags."+p.id]=false; });
+    if(setState("templates")!=="off"&&setId!=="templates") disableCascade("templates");
+  }
+}
+/* ================= STATE ================= */
+function initState(){
+  P={}; SETS.forEach(s=>s.perms.forEach(p=>P[s.id+"."+p.id]=isStdPerm(s.id,p.id)));
+  document.getElementById("reason").value="";
+  document.getElementById("payload").style.display="none";
+}
 function setRole(r){ baseRole=r; initState(); render(); }
 function setGrant(g){ grant=g; initState(); render(); }
 function resetStd(){ initState(); render(); }
-
-function toggle(b){
-  const on=!state[b];
-  if(on){
-    (BUNDLES[b].req||[]).forEach(r=>{ if(!state[r]) state[r]=true; });
-    state[b]=true;
+function toggleCustomize(){ custOpen=!custOpen; render(); }
+function toggleEff(){ effOpen=!effOpen; render(); }
+function toggleAcc(id){ openSets[id]=!openSets[id]; render(); }
+function toggleSet(ev,id){
+  ev.stopPropagation();
+  const st=setState(id);
+  if(st==="on") disableCascade(id); else enableWithDeps(id);
+  render();
+}
+function togglePerm(setId,permId){
+  const key=setId+"."+permId, turningOn=!P[key];
+  if(turningOn){
+    (setById[setId].req||[]).forEach(r=>{ if(setState(r)!=="on") enableWithDeps(r); });
+    if(setId==="flags"){ const p=setById.flags.perms.find(x=>x.id===permId); if(p.preq&&setState(p.preq)!=="on") return; }
+    P[key]=true;
   }else{
-    state[b]=false;
-    Object.keys(BUNDLES).forEach(k=>{ if((BUNDLES[k].req||[]).includes(b)&&state[k]) state[k]=false; });
-    Object.keys(FLAGS).forEach(f=>{ if(FLAGS[f].req===b) flagsOn[f]=false; });
+    P[key]=false;
+    if(setState(setId)==="off") dependents(setId).forEach(d=>{ if(setState(d)!=="off") disableCascade(d); });
   }
   render();
 }
-function toggleFlag(f){
-  if(!flagsOn[f] && !state[FLAGS[f].req]) return;
-  flagsOn[f]=!flagsOn[f]; render();
-}
 function deviations(){
-  const std=stdSet(); const dev=[];
-  Object.keys(BUNDLES).forEach(b=>{ if(state[b]!==std.has(b)) dev.push((state[b]?"+ ":"− ")+BUNDLES[b].n); });
-  Object.keys(FLAGS).forEach(f=>{ if(flagsOn[f]) dev.push("+ "+FLAGS[f].n); });
+  const dev=[];
+  SETS.forEach(s=>s.perms.forEach(p=>{
+    const cur=P[s.id+"."+p.id], std=isStdPerm(s.id,p.id);
+    if(cur!==std) dev.push((cur?"+ ":"− ")+p.n);
+  }));
   return dev;
 }
+/* ================= RENDER ================= */
 function render(){
-  // role picker
   document.getElementById("rolepick").innerHTML=Object.keys(ROLES).map(r=>{
     const R=ROLES[r];
     return `<div class="rp ${r===baseRole?"on":""}" onclick="setRole('${r}')">
@@ -273,203 +430,245 @@ function render(){
       <span class="badge b-${R.cat}">${R.cat==="ops"?"tier":"read-only"}</span></div>`;
   }).join("");
 
-  // toggles
-  const std=stdSet();
-  let h="";
-  const order=["exec","approve","oversight","readPlant","portfolio","people","tech","templates"];
-  order.forEach(b=>{
-    const B=BUNDLES[b], on=state[b], isStd=std.has(b), devi=on!==isStd;
-    h+=`<div class="tgl">
-      <span><span class="n">${B.n}</span> <span class="chip c-${B.cat}" style="padding:1px 8px;font-size:10.5px;margin:0">${B.cat==="ops"?"operational":B.cat==="adm"?"admin":"read"}</span><br>
-      <span class="d">${B.d}</span><br><span class="std">${B.old} · standard for this role: ${isStd?"ON":"OFF"}</span></span>
-      <button class="sw ${on?"on":""} ${devi?"dev":""}" onclick="toggle('${b}')" aria-label="${B.n}"></button></div>`;
-  });
-  h+=`<div class="gh2">Exception flags (extra-sensitive, always a deviation)</div>`;
-  Object.keys(FLAGS).forEach(f=>{
-    const F=FLAGS[f], ok=state[F.req];
-    h+=`<div class="tgl"><span><span class="n">${F.n}</span><br><span class="d">${F.d} · requires "${BUNDLES[F.req].n}"</span></span>
-      <button class="sw ${flagsOn[f]?"on":""} ${flagsOn[f]?"dev":""}" ${ok?"":"disabled"} onclick="toggleFlag('${f}')"></button></div>`;
-  });
-  document.getElementById("toggles").innerHTML=h;
+  // grant chips
+  const GLIST=[["","No grant"],["people","People Admin"],["tech","Technical Admin"],["fullsite","Full Site Admin"],["global","Global Admin"]];
+  document.getElementById("grantchips").innerHTML=GLIST.map(g=>
+    `<button class="gchip ${g[0]===""?"none":""} ${grant===g[0]?"on":""}" onclick="setGrant('${g[0]}')">${g[1]}</button>`).join("");
 
-  // guardrail messages
-  let g="";
-  if(state.approve&&!state.exec) g+=`<div class="msg err">Approve requires Do-the-work.</div>`;
-  if(state.oversight&&!state.approve) g+=`<div class="msg err">Oversight requires Approve.</div>`;
-  if(!state.exec&&(baseRole==="l1"||baseRole==="l3"||baseRole==="l4")) g+=`<div class="msg warn">You removed "Do the work" from an operational tier — this user can no longer run issues. Consider a Non-op role instead.</div>`;
-  if(state.templates) g+=`<div class="msg warn">Global templates affect every site. Restricted to DP / Wapp staff.</div>`;
-  if(Object.values(flagsOn).some(Boolean)) g+=`<div class="msg warn">Exception flags are audited individually and expire on role change.</div>`;
-  document.getElementById("guardmsgs").innerHTML=g;
+  // plants
+  const pc=document.getElementById("plantcount"), pb=document.getElementById("plantbox");
+  if(!ws){ pc.textContent=""; pb.innerHTML=`<p style="font-size:13px;color:var(--ink-3);margin:2px 0">Pick a workspace to fetch its plants.</p>`; }
+  else if(wsLoading){ pc.textContent=""; pb.innerHTML=`<div class="fetching"><span class="spin"></span>Fetching plants in ${WORKSPACES[ws].n}\u2026</div>`; }
+  else{
+    const all=WORKSPACES[ws].plants;
+    pc.textContent=`\u00b7 ${selPlants.size} of ${all.length} selected`;
+    pb.innerHTML=`<button class="selall" onclick="selectAllPlants()">${selPlants.size===all.length?"Clear all":"Select all"}</button><br>`+
+      all.map((p,i)=>`<button class="plantchip ${selPlants.has(p)?"on":""}" onclick="togglePlant(${i})"><span class="tick">${selPlants.has(p)?"\u2713":""}</span>${p}</button>`).join("");
+  }
 
-  // result
-  const dev=deviations();
-  document.getElementById("driftn").textContent=dev.length;
-  document.getElementById("driftn").style.color=dev.length? "var(--flag)":"var(--ops)";
-  document.getElementById("driftl").textContent=dev.length?("deviation"+(dev.length>1?"s":"")+" from the standard role: "+dev.join(", ")):"deviations — this user matches the standard role exactly";
+  // summary (level 1)
   let chips=`<span class="chip c-${ROLES[baseRole].cat==="ops"?"ops":"read"}">${ROLES[baseRole].n}</span>`;
   if(grant) chips+=`<span class="chip c-adm">${{people:"People Admin",tech:"Technical Admin",fullsite:"Full Site Admin",global:"Global Admin"}[grant]}</span>`;
-  Object.keys(FLAGS).forEach(f=>{ if(flagsOn[f]) chips+=`<span class="chip c-flag">${FLAGS[f].n}</span>`; });
+  setById.flags.perms.forEach(p=>{ if(P["flags."+p.id]) chips+=`<span class="chip c-flag">${p.n}</span>`; });
   document.getElementById("chips").innerHTML=chips;
-  let eff="";
-  order.forEach(b=>{ if(state[b]) BUNDLES[b].p.forEach(p=>eff+=`<li>${p}</li>`); });
-  document.getElementById("effperm").innerHTML=eff||"<li>Nothing — this user can only log in.</li>";
+  const activeSets=SETS.filter(s=>setState(s.id)!=="off").length;
+  const activePerms=Object.values(P).filter(Boolean).length;
+  const dev=deviations();
+  document.getElementById("sumline").textContent=dev.length?`Customized setup — ${activeSets} permission sets, ${activePerms} abilities`:`Standard ${ROLES[baseRole].n}${grant?" + grant":""} — nothing to configure`;
+  document.getElementById("sumsub").textContent=dev.length?`${dev.length} deviation${dev.length>1?"s":""} from the standard role`:`${activeSets} permission sets · ${activePerms} abilities · most users should be saved exactly like this`;
 
-  // save gating
+  // customize (level 2 + 3)
+  document.getElementById("custbtn").classList.toggle("open",custOpen);
+  document.getElementById("custblock").classList.toggle("open",custOpen);
+  if(custOpen){
+    document.getElementById("accordions").innerHTML=SETS.map(s=>{
+      const st=setState(s.id);
+      const on=s.perms.filter(p=>P[s.id+"."+p.id]).length;
+      const stdOn=s.perms.filter(p=>isStdPerm(s.id,p.id)).length;
+      const devSet=s.perms.some(p=>P[s.id+"."+p.id]!==isStdPerm(s.id,p.id));
+      const catChip=s.cat==="flag"?`<span class="chip c-flag" style="padding:1px 8px;font-size:10.5px;margin:0">sensitive</span>`:`<span class="chip c-${s.cat}" style="padding:1px 8px;font-size:10.5px;margin:0">${s.cat==="ops"?"operational":s.cat==="adm"?"admin":"read"}</span>`;
+      const body=`<div class="desc">${s.d} · ${s.old}${(s.req||[]).length?` · needs: ${s.req.map(r=>setById[r].n).join(" + ")}`:""}</div>`+
+        s.perms.map(p=>{
+          const key=s.id+"."+p.id, cur=P[key], dv=cur!==isStdPerm(s.id,p.id);
+          const dis=s.id==="flags"&&p.preq&&setState(p.preq)!=="on";
+          return `<div class="prow"><span class="pn">${p.n}${p.preq?` <span style="font-size:11px;color:var(--ink-3)">(needs ${setById[p.preq].n})</span>`:""}</span>
+            <button class="sw sm ${cur?"on":""} ${dv?"dev":""}" ${dis?"disabled":""} onclick="togglePerm('${s.id}','${p.id}')"></button></div>`;
+        }).join("");
+      return `<div class="acc ${openSets[s.id]?"open":""} ${devSet?"devset":""}">
+        <div class="acch" onclick="toggleAcc('${s.id}')">
+          <span class="chev">▶</span><span class="name">${s.n}</span>${catChip}
+          <span class="count">${on}/${s.perms.length} on · standard: ${stdOn}/${s.perms.length}</span>
+          <button class="sw ${st==="on"?"on":""} ${st==="partial"?"partial":""} ${devSet?"dev":""}" onclick="toggleSet(event,'${s.id}')" title="Toggle whole set"></button>
+        </div>
+        <div class="accb">${body}</div></div>`;
+    }).join("");
+    let g="";
+    if(setState("work")==="off"&&ROLES[baseRole].cat==="ops") g+=`<div class="msg warn">Work execution is fully off for an operational tier — consider a read-only role instead.</div>`;
+    if(setState("templates")!=="off") g+=`<div class="msg warn">Global templates affect every site. Restricted to DP / Wapp staff.</div>`;
+    if(setById.flags.perms.some(p=>P["flags."+p.id])) g+=`<div class="msg warn">Exception flags are audited individually and expire on role change.</div>`;
+    document.getElementById("guardmsgs").innerHTML=g;
+  }
+
+  // review (level 1, expands on drift)
+  document.getElementById("driftn").textContent=dev.length;
+  document.getElementById("driftn").style.color=dev.length?"var(--flag)":"var(--ops)";
+  document.getElementById("driftl").textContent=dev.length?("deviation"+(dev.length>1?"s":"")+": "+dev.slice(0,3).join(", ")+(dev.length>3?` and ${dev.length-3} more`:"")):"deviations — matches the standard role exactly";
+  document.getElementById("reasonblock").classList.toggle("open",dev.length>0);
+  document.getElementById("effbtn").classList.toggle("open",effOpen);
+  document.getElementById("effblock").classList.toggle("open",effOpen);
+  if(effOpen){
+    let eff="";
+    SETS.forEach(s=>s.perms.forEach(p=>{ if(P[s.id+"."+p.id]) eff+=`<li>${p.n}</li>`; }));
+    document.getElementById("effperm").innerHTML=eff||"<li>Nothing — this user can only log in.</li>";
+  }
   const reason=document.getElementById("reason").value.trim();
   const need=dev.length>0;
   document.getElementById("reasonreq").textContent=need&&!reason?"— required before saving":"";
-  const btn=document.getElementById("savebtn");
-  btn.disabled=need&&!reason;
+  document.getElementById("savebtn").disabled=need&&!reason;
   document.getElementById("savehint").textContent=need?(reason?"Deviation will be stored with your reason and audited.":"Write why this user deviates from the standard role."):"Standard role — saves without a reason.";
 }
 function save(){
-  const std=stdSet();
   const add=[],rem=[];
-  Object.keys(BUNDLES).forEach(b=>{ if(state[b]&&!std.has(b))add.push(b); if(!state[b]&&std.has(b))rem.push(b); });
-  const payload={userId:"demo-user-001",scope:document.getElementById("plantsel").value,baseRole:baseRole,grant:grant||null,
-    overrides:{add:add,remove:rem},flags:Object.keys(FLAGS).filter(f=>flagsOn[f]),
+  SETS.forEach(s=>s.perms.forEach(p=>{
+    const key=s.id+"."+p.id, cur=P[key], std=isStdPerm(s.id,p.id);
+    if(cur&&!std) add.push(key); if(!cur&&std) rem.push(key);
+  }));
+  const payload={userId:"demo-user-001",scope:{workspace:WORKSPACES[ws].n,plants:[...selPlants]},baseRole:baseRole,grant:grant||null,
+    overrides:{add:add,remove:rem},
     reason:document.getElementById("reason").value.trim()||null,requestedBy:"people-admin@digitalpaani.com",drift:deviations().length};
   const el=document.getElementById("payload");
   el.style.display="block";
   el.textContent="// This is what gets stored on the user record\n"+JSON.stringify(payload,null,2);
 }
 
-/* ================= PREVIEWS ================= */
-const SCREENS=[
-{id:"l1",n:"L1 Operator",html:`
-<div class="frame phone">
-  <div class="appbar"><span class="brand">DigitalPaani</span><span class="who">Ramesh · L1 · STP Sector 62</span></div>
-  <div class="subnav"><span class="on">Overdue (3)</span><span>Open</span><span>My tasks</span></div>
-  <div class="body">
-    <div class="rowitem"><span><span class="t">MBBR blower trip</span><br><span class="s">Auto · raised 06:20 · step 2 of 5</span></span><span class="pill p-red">2h overdue</span></div>
-    <div class="rowitem"><span><span class="t">Inlet pH high</span><br><span class="s">Auto · raised 08:05 · awaiting RC</span></span><span class="pill p-amb">45m left</span></div>
-    <div class="rowitem"><span><span class="t">Chlorine dosing check</span><br><span class="s">Fixed task · daily 10:00</span></span><span class="pill p-grn">due 10:00</span></div>
-    <button class="bigbtn">▶ Resume: MBBR blower trip</button>
-  </div>
-</div>
-<p class="cap"><b>Why it looks like this:</b> L1 lands on the <b>Overdue tab</b> — worst first. Big single-action button to resume the active session. No approvals anywhere; submitting RC sends it to an L3. Gets all severities for this plant.</p>`},
-{id:"l3",n:"L3 Lead",html:`
-<div class="frame">
-  <div class="appbar"><span class="brand">DigitalPaani</span><span class="who">Sunita · L3 Lead · STP Sector 62</span></div>
-  <div class="subnav"><span class="on">Approvals (4)</span><span>Issues</span><span>Shift</span><span>Tasks</span></div>
-  <div class="body">
-    <div class="rowitem"><span><span class="t">Root cause: "Diffuser membrane clogged"</span><br><span class="s">MBBR blower trip · submitted by Ramesh · 12 min ago</span></span><span><span class="pill p-grn" style="margin-right:6px">Approve</span><span class="pill p-red">Reject</span></span></div>
-    <div class="rowitem"><span><span class="t">Manual close request</span><br><span class="s">Inlet screen jam · photo attached</span></span><span><span class="pill p-grn" style="margin-right:6px">Approve</span><span class="pill p-red">Reject</span></span></div>
-    <div class="rowitem"><span><span class="t">Force-close: sensor fault duplicate</span><br><span class="s">Auto-generated issue — needs your co-sign + 1 more</span></span><span class="pill p-amb">Co-sign</span></div>
-    <div class="rowitem"><span><span class="t">Photo override request</span><br><span class="s">Camera broken at outlet chamber</span></span><span class="pill p-nav">Review</span></div>
-  </div>
-</div>
-<p class="cap"><b>Why it looks like this:</b> L3 lands on the <b>approvals inbox</b> — their job is to unblock others. Everything L1 has is one tab away. Approval-overdue alerts start the moment something waits (T=0).</p>`},
-{id:"l4",n:"L4 Senior Lead",html:`
-<div class="frame">
-  <div class="appbar"><span class="brand">DigitalPaani</span><span class="who">Alexander · L4 · 6 plants</span></div>
-  <div class="subnav"><span class="on">Portfolio</span><span>Approvals (2)</span><span>Escalations</span></div>
-  <div class="body">
-    <div class="kpis"><div class="kpi"><div class="n">6</div><div class="l">plants</div></div><div class="kpi"><div class="n">11</div><div class="l">open issues</div></div><div class="kpi"><div class="n">2</div><div class="l">at deadline</div></div><div class="kpi"><div class="n">97%</div><div class="l">SLA this week</div></div></div>
-    <div class="rowitem"><span><span class="t">STP Sector 62</span><br><span class="s">3 open · 1 at resolution deadline</span></span><span class="pill p-red">attention</span></div>
-    <div class="rowitem"><span><span class="t">WTP Knowledge Park</span><br><span class="s">2 open · on track</span></span><span class="pill p-grn">healthy</span></div>
-    <div class="rowitem"><span><span class="t">STP Alpha 2</span><br><span class="s">6 open · approvals waiting 3h</span></span><span class="pill p-amb">watch</span></div>
-  </div>
-</div>
-<p class="cap"><b>Why it looks like this:</b> L4 sees <b>many plants at once</b> and is only alerted when things hit the resolution deadline — not every minor event. Can drop into any plant with full L3 powers, and co-signs force-closes.</p>`},
-{id:"people",n:"People Admin",html:`
-<div class="frame">
-  <div class="appbar"><span class="brand">DigitalPaani · Admin</span><span class="who">Priya · People Admin · STP Sector 62</span></div>
-  <div class="subnav"><span class="on">People</span><span>Rosters</span><span>Audit log</span></div>
-  <div class="body">
-    <div class="rowitem"><span><span class="t">Ramesh K.</span><br><span class="s">L1 Operator · 0 deviations</span></span><span><span class="pill p-nav" style="margin-right:6px">Edit</span><span class="pill p-grn">standard</span></span></div>
-    <div class="rowitem"><span><span class="t">Sunita M.</span><br><span class="s">L3 Lead + back-dated entry flag · 1 deviation</span></span><span><span class="pill p-nav" style="margin-right:6px">Edit</span><span class="pill p-amb">1 drift</span></span></div>
-    <div class="rowitem"><span><span class="t">Vendor: AquaFix (3 users)</span><br><span class="s">L1 · company=Vendor · work-order scope</span></span><span class="pill p-nav">Manage</span></div>
-    <button class="bigbtn" style="background:var(--navy)">+ Invite user</button>
-  </div>
-</div>
-<p class="cap"><b>Why it looks like this:</b> the roster is the home screen, and <b>drift is visible per user</b> — the guardrail from the configurator surfaces here. No plant-config tabs: People Admin can't touch rules or sensors.</p>`},
-{id:"tech",n:"Technical Admin",html:`
-<div class="frame">
-  <div class="appbar"><span class="brand">DigitalPaani · Admin</span><span class="who">Dev · Technical Admin · STP Sector 62</span></div>
-  <div class="subnav"><span class="on">Rules</span><span>Dashboards</span><span>Sensors</span><span>Routing & SLA</span></div>
-  <div class="body">
-    <div class="rowitem"><span><span class="t">Issue rule: DO &lt; 2 mg/l for 10 min</span><br><span class="s">Creates Major issue · diagnostic flow: Aeration v3</span></span><span class="pill p-grn">active</span></div>
-    <div class="rowitem"><span><span class="t">Task rule: Backwash filter</span><br><span class="s">Every 8h · assigned to shift roster</span></span><span class="pill p-grn">active</span></div>
-    <div class="rowitem"><span><span class="t">"Not this RC" reports (3 new)</span><br><span class="s">Operators disagree with suggested root cause</span></span><span class="pill p-amb">review</span></div>
-    <div class="rowitem"><span><span class="t">Sensor fault: outlet turbidity</span><br><span class="s">Flatline 6h — check calibration</span></span><span class="pill p-red">fault</span></div>
-  </div>
-</div>
-<p class="cap"><b>Why it looks like this:</b> Technical Admin is the <b>feedback sink</b> — false alarms, wrong-RC reports, and sensor faults land here so the plant's logic keeps improving. No people management anywhere.</p>`},
-{id:"fullsite",n:"Full Site Admin",html:`
-<div class="frame">
-  <div class="appbar"><span class="brand">DigitalPaani · Admin</span><span class="who">Mihir · Full Site Admin · STP Sector 62</span></div>
-  <div class="subnav"><span class="on">People</span><span class="on" style="border-bottom-color:var(--adm)">Technical</span><span>Audit log</span></div>
-  <div class="body">
-    <div class="gridcards">
-      <div class="pcard"><div class="t">14 users</div><div class="s">2 with drift</div></div>
-      <div class="pcard"><div class="t">23 rules</div><div class="s">3 need review</div></div>
-      <div class="pcard"><div class="t">4 rosters</div><div class="s">next gap: Sun night</div></div>
-      <div class="pcard"><div class="t">61 sensors</div><div class="s">1 fault</div></div>
-    </div>
-  </div>
-</div>
-<p class="cap"><b>Why it looks like this:</b> literally <b>both admin consoles in one</b> — the People and Technical tabs from the previous two screens, at a single site. Nothing more: no template library, no other sites.</p>`},
-{id:"global",n:"Global Admin",html:`
-<div class="frame">
-  <div class="appbar"><span class="brand">DigitalPaani · Global</span><span class="who">HQ · Global Admin · all sites</span></div>
-  <div class="subnav"><span class="on">Template library</span><span>Sites (38)</span><span>Companies</span></div>
-  <div class="body">
-    <div class="rowitem"><span><span class="t">Diagnostic tree: Aeration failure v3</span><br><span class="s">Used by 31 sites · draft v4 in review</span></span><span class="pill p-nav">Publish v4</span></div>
-    <div class="rowitem"><span><span class="t">Rule template: High inlet TSS</span><br><span class="s">Used by 22 sites</span></span><span class="pill p-nav">Edit</span></div>
-    <div class="rowitem"><span><span class="t">Onboard new site</span><br><span class="s">Wizard: sensors → rules → users</span></span><span class="pill p-grn">Start</span></div>
-  </div>
-</div>
-<p class="cap"><b>Why it looks like this:</b> Global Admin works on <b>things that affect every site</b> — templates, versions, onboarding. Site-level screens are one click away since they act as Full Site Admin anywhere.</p>`},
-{id:"regular",n:"Regular Non-op",html:`
-<div class="frame">
-  <div class="appbar"><span class="brand">DigitalPaani</span><span class="who">Client · Read-only · STP Sector 62</span></div>
-  <div class="subnav"><span class="on">Dashboard</span><span>Issue log</span><span>Reports</span></div>
-  <div class="body">
-    <div class="kpis"><div class="kpi"><div class="n">1.2 MLD</div><div class="l">treated today</div></div><div class="kpi"><div class="n">7.1</div><div class="l">outlet pH</div></div><div class="kpi"><div class="n">4</div><div class="l">issues this week</div></div><div class="kpi"><div class="n">↓ 9%</div><div class="l">power vs last wk</div></div></div>
-    <div class="locked">🔒 View-only — actions like approving, editing, or data entry are not part of this role</div>
-    <div class="rowitem"><span><span class="t">Weekly compliance report</span><br><span class="s">Generated Mon 06:00</span></span><span class="pill p-nav">Download</span></div>
-  </div>
-</div>
-<p class="cap"><b>Why it looks like this:</b> everything is visible, <b>nothing is pressable</b> except download. The lock banner sets expectations instead of hiding buttons that mysteriously fail.</p>`},
-{id:"senior",n:"Senior Non-op",html:`
-<div class="frame">
-  <div class="appbar"><span class="brand">DigitalPaani</span><span class="who">HQ · Read-only · 12 plants</span></div>
-  <div class="subnav"><span class="on">Portfolio</span><span>Compare</span><span>Reports</span></div>
-  <div class="body">
-    <div class="gridcards">
-      <div class="pcard"><div class="t">Noida cluster</div><div class="s">5 plants · 98% SLA</div></div>
-      <div class="pcard"><div class="t">Gurgaon cluster</div><div class="s">4 plants · 94% SLA</div></div>
-      <div class="pcard"><div class="t">Jaipur</div><div class="s">3 plants · 99% SLA</div></div>
-      <div class="pcard" style="border-color:var(--flag-bg);background:var(--flag-bg)"><div class="t">2 emergencies</div><div class="s">this month · resolved</div></div>
-    </div>
-  </div>
-</div>
-<p class="cap"><b>Why it looks like this:</b> the portfolio, not the plant, is the unit. Minor/Caution noise is <b>suppressed by default</b> — only Emergency and Major reach this person.</p>`},
-{id:"qr",n:"QR / Public (Phase 2)",html:`
-<div class="frame phone">
-  <div class="appbar"><span class="brand">DigitalPaani</span><span class="who">Anonymous · via QR</span></div>
-  <div class="body">
-    <p style="font-size:14px;margin:4px 0 14px"><b>Report a problem at STP Sector 62</b></p>
-    <div class="formrow"><label>What's wrong?</label><textarea placeholder="e.g. bad smell near the outlet since morning"></textarea></div>
-    <div class="formrow"><label>Photo (optional)</label><input type="text" placeholder="📷 Tap to add photo" readonly></div>
-    <button class="bigbtn">Submit — get a tracking token</button>
-    <div class="locked" style="margin-top:10px">No account needed. You'll receive a token like CTL-8842 to check status.</div>
-  </div>
-</div>
-<p class="cap"><b>Why it looks like this:</b> one form, one button, a token. No login, no lifecycle access — the complaint becomes an issue inside CloseTheLoop where an L1/L3 handles it.</p>`},
+
+/* ================= SMART PREVIEW ENGINE ================= */
+let prevMode="live", prevTab=null;
+const PRESETS=[
+ {id:"live",label:"◉ Current configuration"},
+ {id:"l1",label:"L1 Operator",role:"l1",grant:""},
+ {id:"l3",label:"L3 Lead",role:"l3",grant:""},
+ {id:"l4",label:"L4 Senior Lead",role:"l4",grant:""},
+ {id:"regular",label:"Regular Non-op",role:"regular",grant:""},
+ {id:"senior",label:"Senior Non-op",role:"senior",grant:""},
+ {id:"l1tech",label:"L1 + Technical Admin",role:"l1",grant:"tech"},
+ {id:"l3people",label:"L3 + People Admin",role:"l3",grant:"people"},
+ {id:"fullsite",label:"Full Site Admin only",role:"regular",grant:"fullsite"},
+ {id:"global",label:"Global Admin",role:"l3",grant:"global"},
 ];
+function buildStdP(role,grantId){
+  const std=new Set(ROLES[role].std); (GRANTS[grantId]||[]).forEach(x=>std.add(x));
+  const p={}; SETS.forEach(s=>s.perms.forEach(pr=>p[s.id+"."+pr.id]=(s.id!=="flags"&&std.has(s.id))));
+  return p;
+}
+function previewCtx(){
+  if(prevMode==="live") return {P:P,role:baseRole,grantId:grant,label:"your current configuration"};
+  const pr=PRESETS.find(x=>x.id===prevMode);
+  return {P:buildStdP(pr.role,pr.grant),role:pr.role,grantId:pr.grant,label:"standard "+pr.label};
+}
+function computeTabs(c){
+  const has=k=>!!c.P[k];
+  const tabs=[];
+  if(has("approve.gates")||has("approve.forceclose")||has("approve.override")) tabs.push({id:"approvals",n:"Approvals",why:"Approvals & closure is on"});
+  if(has("work.sessions")||has("work.rc")) tabs.push({id:"issues",n:"Issues",why:"Work execution is on"});
+  if(has("work.tasks")) tabs.push({id:"tasks",n:"My tasks",why:"Task execution is on"});
+  if(has("readplant.dash")||has("readplant.reports")||has("readplant.history")) tabs.push({id:"dashboard",n:"Dashboard",why:"Plant visibility is on"});
+  if(has("portfolio.overview")||has("portfolio.compare")) tabs.push({id:"portfolio",n:"Portfolio",why:"Portfolio visibility is on"});
+  if(SETS.find(s=>s.id==="people").perms.some(p=>has("people."+p.id))) tabs.push({id:"people",n:"People",why:"People management is on"});
+  if(SETS.find(s=>s.id==="tech").perms.some(p=>has("tech."+p.id))) tabs.push({id:"technical",n:"Technical",why:"Plant configuration is on"});
+  if(SETS.find(s=>s.id==="templates").perms.some(p=>has("templates."+p.id))) tabs.push({id:"templates",n:"Templates",why:"Global templates are on"});
+  return tabs;
+}
+function landingTab(tabs){
+  const pri=["approvals","issues","portfolio","dashboard","tasks","people","technical","templates"];
+  for(const p of pri){ const t=tabs.find(x=>x.id===p); if(t) return t.id; }
+  return null;
+}
+function row(t,s,right){ return `<div class="rowitem"><span><span class="t">${t}</span><br><span class="s">${s}</span></span><span>${right||""}</span></div>`; }
+function mut(txt){ return `<div class="locked">🔒 ${txt}</div>`; }
+function bodyFor(tabId,c,why){
+  const has=k=>!!c.P[k];
+  let b="";
+  if(tabId==="approvals"){
+    if(has("approve.gates")){ b+=row("Root cause: \u201cDiffuser membrane clogged\u201d","MBBR blower trip \u00b7 submitted by Ramesh \u00b7 12 min ago",`<span class="pill p-grn" style="margin-right:6px">Approve</span><span class="pill p-red">Reject</span>`);
+      b+=row("Manual close request","Inlet screen jam \u00b7 photo attached",`<span class="pill p-grn" style="margin-right:6px">Approve</span><span class="pill p-red">Reject</span>`);}
+    else { b+=mut("Gate approvals hidden \u2014 \u2018Approve / reject gates\u2019 is off"); why.push("Approve/Reject buttons hidden \u2014 gates permission is off"); }
+    if(has("approve.forceclose")) b+=row("Force-close: sensor fault duplicate","Auto-generated \u2014 needs co-sign",`<span class="pill p-amb">Co-sign</span>`);
+    else { b+=mut("Force-close hidden \u2014 not granted to this user"); why.push("Force-close row hidden \u2014 approve.forceclose is off"); }
+    if(has("approve.override")) b+=row("Photo override request","Camera broken at outlet chamber",`<span class="pill p-nav">Review</span>`);
+    if(has("approve.reopen")) b+=row("Closed yesterday: pump seal leak","Reopen if root cause was wrong",`<span class="pill p-nav">Reopen</span>`);
+    if(has("approve.assign")) b+=`<button class="bigbtn" style="background:var(--navy)">+ Create & assign a task</button>`;
+  }
+  if(tabId==="issues"){
+    b+=row("MBBR blower trip","Auto \u00b7 raised 06:20 \u00b7 step 2 of 5",`<span class="pill p-red">2h overdue</span>`);
+    b+=row("Inlet pH high","Auto \u00b7 raised 08:05 \u00b7 awaiting RC",`<span class="pill p-amb">45m left</span>`);
+    if(has("work.data")) b+=row("Lab results \u2014 inlet BOD","Enter today\u2019s reading"+(has("flags.backdate")?" \u00b7 back-dated entry enabled":""),`<span class="pill p-nav">Enter data</span>`);
+    if(has("flags.backdate")) why.push("Back-dated entry appears in data entry \u2014 exception flag is on");
+    if(has("work.maintenance")) b+=row("Maintenance: grease blower bearings","Monthly \u00b7 record after completion",`<span class="pill p-grn">Record</span>`);
+    if(has("work.handoff")) b+=row("Active session","You own \u2018MBBR blower trip\u2019",`<span class="pill p-nav">Hand off</span>`);
+    if(has("work.checkin")) b+=row("Shift","Checked in 06:02 \u00b7 ends 14:00",`<span class="pill p-nav">Check out</span>`);
+    if(has("work.sessions")) b+=`<button class="bigbtn">\u25b6 Resume: MBBR blower trip</button>`;
+    if(has("work.raise")) b+=`<button class="bigbtn" style="background:var(--navy);margin-top:8px">+ Raise a manual issue</button>`;
+    else why.push("\u2018Raise manual issue\u2019 button hidden \u2014 work.raise is off");
+  }
+  if(tabId==="tasks"){
+    b+=row("Chlorine dosing check","Fixed task \u00b7 daily 10:00",`<span class="pill p-grn">Start</span>`);
+    b+=row("Backwash filter","Every 8h \u00b7 due 14:00",`<span class="pill p-grn">Start</span>`);
+    if(has("work.myshift")) b+=row("My shifts","This week: Mon\u2013Fri, 06:00\u201314:00",`<span class="pill p-nav">Roster</span>`);
+  }
+  if(tabId==="dashboard"){
+    if(has("readplant.dash")) b+=`<div class="kpis"><div class="kpi"><div class="n">1.2 MLD</div><div class="l">treated today</div></div><div class="kpi"><div class="n">7.1</div><div class="l">outlet pH</div></div><div class="kpi"><div class="n">4</div><div class="l">issues this week</div></div><div class="kpi"><div class="n">\u2193 9%</div><div class="l">power vs last wk</div></div></div>`;
+    if(has("flags.remote")){ b+=row("Blower B2","Running \u00b7 remote control enabled",`<span class="pill p-red">Stop</span><span class="pill p-grn" style="margin-left:6px">Start</span>`); why.push("Remote start/stop controls visible \u2014 IoT flag is on"); }
+    if(has("readplant.layout")) b+=row("Plant layout / digital twin","Tap any tank for live readings",`<span class="pill p-nav">Open</span>`);
+    if(has("readplant.insights")) b+=row("Insights & events","3 active insights \u00b7 12 events today",`<span class="pill p-nav">View</span>`);
+    if(has("readplant.reports")) b+=row("Weekly compliance report","Generated Mon 06:00 \u00b7 batches included",`<span class="pill p-nav">Download</span>`);
+    if(has("readplant.history")) b+=row("Equipment history","Pump 3 \u00b7 last maintenance 12 Jun",`<span class="pill p-nav">View</span>`);
+    const canAct=has("work.sessions")||has("approve.gates");
+    if(!canAct){ b+=mut("View-only \u2014 acting on issues is not part of this user\u2019s permissions"); why.push("Read-only banner shown \u2014 no operational permissions"); }
+  }
+  if(tabId==="portfolio"){
+    if(has("portfolio.overview")) b+=`<div class="gridcards"><div class="pcard"><div class="t">Noida cluster</div><div class="s">5 plants \u00b7 98% SLA</div></div><div class="pcard"><div class="t">Gurgaon cluster</div><div class="s">4 plants \u00b7 94% SLA</div></div><div class="pcard"><div class="t">Jaipur</div><div class="s">3 plants \u00b7 99% SLA</div></div><div class="pcard"><div class="t">2 at deadline</div><div class="s">needs attention</div></div></div>`;
+    if(has("portfolio.compare")) b+=row("Compare plants","Energy \u00b7 SLA \u00b7 issues per MLD",`<span class="pill p-nav">Open</span>`);
+  }
+  if(tabId==="people"){
+    if(has("people.invite")){ b+=row("Ramesh K.","L1 Operator \u00b7 0 deviations",`<span class="pill p-nav" style="margin-right:6px">Edit</span><span class="pill p-grn">standard</span>`);
+      b+=row("Sunita M.","L3 Lead + back-date flag \u00b7 1 deviation",`<span class="pill p-nav" style="margin-right:6px">Edit</span><span class="pill p-amb">1 drift</span>`); }
+    if(has("people.rosters")) b+=row("Shift roster","Night gap Sunday \u2014 unassigned",`<span class="pill p-amb">Fix</span>`);
+    if(has("people.skills")) b+=row("Skills","Pump maintenance: 4 users \u00b7 Lab testing: 2",`<span class="pill p-nav">Manage</span>`);
+    if(has("people.groups")) b+=row("Groups & workspaces","Noida ops \u00b7 Vendor: AquaFix",`<span class="pill p-nav">Manage</span>`);
+    if(has("flags.impersonate")){ b+=row("View as user","Support: see Ramesh\u2019s screen",`<span class="pill p-nav">View as</span>`); why.push("View-as appears \u2014 impersonation flag is on"); }
+    if(has("people.invite")) b+=`<button class="bigbtn" style="background:var(--navy)">+ Invite user</button>`;
+  }
+  if(tabId==="technical"){
+    if(has("tech.rules")) b+=row("Issue rule: DO < 2 mg/l for 10 min","Creates Major issue \u00b7 flow: Aeration v3",`<span class="pill p-grn">active</span>`);
+    if(has("tech.flows")) b+=row("Diagnostic flow: Aeration failure","7 steps \u00b7 used by 4 rules",`<span class="pill p-nav">Edit flow</span>`);
+    if(has("tech.plant")) b+=row("Plant setup","Details \u00b7 layout \u00b7 lab & WQ parameters",`<span class="pill p-nav">Configure</span>`);
+    if(has("tech.iot")) b+=row("IoT hardware","PLC \u00b7 HMI \u00b7 data logger",`<span class="pill p-nav">Configure</span>`);
+    if(has("tech.sitetpl")) b+=row("Site templates","Task \u00b7 event \u00b7 insight \u00b7 logbook \u00b7 data-input",`<span class="pill p-nav">Manage</span>`);
+    if(has("tech.ai")) b+=row("AI widget generator","Describe a widget, get a dashboard block",`<span class="pill p-grn">Generate</span>`);
+    if(has("tech.sensors")) b+=row("Sensor fault: outlet turbidity","Flatline 6h \u2014 check calibration",`<span class="pill p-red">fault</span>`);
+    if(has("tech.routing")) b+=row("Escalation chain: Major issues","Operator \u2192 L3 (15m) \u2192 L4 (60m)",`<span class="pill p-nav">Edit</span>`);
+    if(has("tech.dashcfg")) b+=row("Dashboard: Plant overview","12 widgets",`<span class="pill p-nav">Configure</span>`);
+    if(has("tech.formulas")) b+=row("Formula: specific power (kWh/ML)","Site analytics",`<span class="pill p-nav">Edit</span>`);
+  }
+  if(tabId==="templates"){
+    if(has("templates.library")) b+=row("Diagnostic tree: Aeration failure v3","Used by 31 sites \u00b7 draft v4 in review",has("templates.publish")?`<span class="pill p-nav">Publish v4</span>`:`<span class="pill p-amb">draft only</span>`);
+    if(has("templates.onboard")) b+=row("Onboard new site","Wizard: sensors \u2192 rules \u2192 users",`<span class="pill p-grn">Start</span>`);
+  }
+  return b||mut("Nothing to show \u2014 no permissions feed this screen");
+}
+function renderPreview(){
+  document.getElementById("prevpick").innerHTML=PRESETS.map(p=>`<button class="pv ${prevMode===p.id?"on":""}" onclick="setPreset('${p.id}')">${p.label}</button>`).join("");
+  const c=previewCtx();
+  const tabs=computeTabs(c);
+  const why=[];
+  const land=landingTab(tabs);
+  if(!prevTab||!tabs.find(t=>t.id===prevTab)) prevTab=land;
+  const roleN=ROLES[c.role].n+(c.grantId?" + "+{people:"People Admin",tech:"Technical Admin",fullsite:"Full Site Admin",global:"Global Admin"}[c.grantId]:"");
+  let frame;
+  if(!tabs.length){
+    frame=`<div class="frame"><div class="appbar"><span class="brand">DigitalPaani</span><span class="who">${roleN}</span></div><div class="body">${mut("This user can log in but has no permissions \u2014 no screens to show")}</div></div>`;
+    why.push("No permission sets are on, so the app renders nothing after login");
+  }else{
+    why.push(`Landing screen is \u201c${tabs.find(t=>t.id===land).n}\u201d \u2014 highest-priority active set (approvals \u2192 issues \u2192 portfolio \u2192 dashboard \u2192 admin)`);
+    tabs.forEach(t=>why.push(`\u201c${t.n}\u201d tab exists because ${t.why}`));
+    const nav=tabs.map(t=>`<span class="${t.id===prevTab?"on":""}" style="cursor:pointer" onclick="setPrevTab('${t.id}')">${t.n}</span>`).join("");
+    const isPhone=tabs.length<=3&&(c.P["work.sessions"]||false)&&!c.grantId;
+    frame=`<div class="frame ${isPhone?"phone":""}"><div class="appbar"><span class="brand">DigitalPaani</span><span class="who">${roleN} \u00b7 ${prevMode==="live"?"as configured":"standard"}</span></div>
+      <div class="subnav">${nav}</div><div class="body">${bodyFor(prevTab,c,why)}</div></div>`;
+  }
+  const dev=prevMode==="live"?deviations().length:0;
+  if(dev) why.push(`${dev} deviation${dev>1?"s":""} from standard are reflected above \u2014 this preview is per-permission, not per-role`);
+  document.getElementById("smartframe").innerHTML=frame;
+  document.getElementById("whylist").innerHTML=why.map(w=>`<li>${w}</li>`).join("");
+}
+function setPreset(id){ prevMode=id; prevTab=null; renderPreview(); }
+function setPrevTab(id){ prevTab=id; renderPreview(); }
 function tab(i){
   document.querySelectorAll(".tab").forEach((t,j)=>t.classList.toggle("on",i===j));
   document.querySelectorAll(".pane").forEach((p,j)=>p.classList.toggle("on",i===j));
+  if(i===1) renderPreview();
 }
-function showScreen(id){
-  document.querySelectorAll(".pv").forEach(p=>p.classList.toggle("on",p.dataset.id===id));
-  document.querySelectorAll(".screen").forEach(s=>s.classList.toggle("on",s.id==="sc-"+id));
-}
-document.getElementById("prevpick").innerHTML=SCREENS.map(s=>`<button class="pv" data-id="${s.id}" onclick="showScreen('${s.id}')">${s.n}</button>`).join("");
-document.getElementById("screens").innerHTML=SCREENS.map(s=>`<div class="screen" id="sc-${s.id}">${s.html}</div>`).join("");
-showScreen("l1");
 initState(); render();
 </script>
 </body>

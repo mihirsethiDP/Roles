@@ -1,0 +1,122 @@
+Production permission,Module,Type,V2 home,Status/Note
+AIWidgetGenerator_Manage_A,GAI,administrative,tech.ai,GAP-FIXED: AI widget generator was missing
+Add-EditUser_Configuration_AE,UM,administrative,people.invite,covered
+AlertTask_Configuration_W,PC,assets,tech.rules,covered
+AlertTask_Templating_WE,PC,administrative,tech.sitetpl,GAP-FIXED
+AutoGenerateTickets_View_R,TK,assets,work.sessions,covered
+Bi-Direction_Usage_W,VBD,assets,flags.remote,covered (bi-direction = remote actuation)
+Check-in_Usage_WE,AT,administrative,work.checkin,GAP-FIXED: shift check-in was missing
+Company_Configuration_WE,CC,administrative,templates.onboard,covered
+DashboardList_Manage_AE,ANC,assets,tech.dashcfg,covered
+DashboardPage_Configuration_WE,ANC,assets,tech.dashcfg,covered
+DashboardPage_View_R,ANC,assets,readplant.dash,covered
+DataBreakList_View_R,DBA,administrative,tech.sensors,covered (folded: data breaks)
+DataCorrection_Manage_WE,DM,administrative,flags.backdate,GAP-FIXED: data correction merged into back-date flag
+DataInputBackdate_Usage_AE,PI,administrative,flags.backdate,covered
+DataInputDetails_View_R,PC,assets,work.data,covered
+DataInputTemplate_Manage_A,PI,administrative,tech.sitetpl,GAP-FIXED
+DataInputTemplate_Manage_D,PI,administrative,tech.sitetpl,GAP-FIXED
+DataInputTemplate_View_R,PI,administrative,tech.sitetpl,GAP-FIXED
+DataInputUse_Manage_A,PC,assets,work.data,covered
+DataInputUse_View_R,PC,assets,work.data,covered
+DataLogger_Configuration,IHR,administrative,tech.iot,GAP-FIXED
+DeleteUser_Manage_D,UM,administrative,people.invite,covered
+EventTemplate_Manage_A,TATM,administrative,tech.sitetpl,GAP-FIXED
+EventTemplate_View_R,TATM,administrative,tech.sitetpl,GAP-FIXED
+Events_View_R,TATM,administrative,readplant.insights,GAP-FIXED: events list view was missing
+FixedTask_Configuration_WE,PC,assets,tech.rules,covered
+FixedTask_Templating_WE,PC,administrative,tech.sitetpl,GAP-FIXED
+ForgetPassword_Usage_WE,AT,administrative,BASELINE,auth self-service for all users
+Formula_Configuration_WE,AE,assets,tech.formulas,covered
+GroupRole_Manage_WE,RM,administrative,RETIRED,free-form role creation replaced by fixed roles + per-user overrides
+Group_Configuration_WE,GM,administrative,people.groups,GAP-FIXED
+Group_Manage_A,GM,administrative,people.groups,GAP-FIXED
+Group_Manage_D,GM,administrative,people.groups,GAP-FIXED
+Group_View_R,GM,administrative,people.groups,GAP-FIXED: user groups & workspaces were missing
+HMI_Manage_A,PM,administrative,tech.iot,GAP-FIXED
+HMI_Manage_D,PM,administrative,tech.iot,GAP-FIXED
+HMI_Manage_R,PM,administrative,tech.iot,GAP-FIXED
+InsightTemplate_Manage_A,TATM,administrative,tech.sitetpl,GAP-FIXED
+InsightTemplate_Manage_D,TATM,administrative,tech.sitetpl,GAP-FIXED
+InsightTemplate_View_R,TATM,administrative,tech.sitetpl,GAP-FIXED
+Insights_Manage_A,TATM,administrative,approve.assign,GAP-FIXED: raising manual insights
+Insights_View_R,TATM,administrative,readplant.insights,GAP-FIXED: insights list view was missing
+LogbookConfiguration_Manage_A,LBMT,administrative,tech.sitetpl,GAP-FIXED
+LogbookConfiguration_Manage_D,LBMT,administrative,tech.sitetpl,GAP-FIXED
+LogbookConfiguration_View_R,LBMT,administrative,tech.sitetpl,GAP-FIXED
+LogbookDataInput_Usage_WE,LBMT,administrative,work.data,covered
+LogbookTemplate_Manage_A,LBMT,administrative,tech.sitetpl,GAP-FIXED
+LogbookTemplate_Manage_D,LBMT,administrative,tech.sitetpl,GAP-FIXED
+LogbookTemplate_View_R,LBMT,administrative,tech.sitetpl,GAP-FIXED
+ManualTickets_Configuration_WE,TK,administrative,work.raise,covered
+ManualTickets_Usage_WE,TK,assets,work.raise,covered
+OldVisualisation_View_R,VW,administrative,RETIRED,legacy
+OneTimeTask_Configuration_W,PC,assets,approve.assign,GAP-FIXED
+PLC_Manage_AE,PM,administrative,tech.iot,GAP-FIXED: PLC/HMI/data logger config was missing
+PLC_Manage_D,PM,administrative,tech.iot,GAP-FIXED
+PLC_Manage_R,PM,administrative,tech.iot,GAP-FIXED
+PermissionsList_View_R,UM,administrative,people.grants,covered
+PlantDetails_Configuration_WE,PC,assets,tech.plant,GAP-FIXED: plant details/lab/WQ/escalation setup was missing
+PlantEscalation_Configuration_WE,PC,assets,tech.routing,covered
+PlantLabTestResults_Configuration_WE,PC,assets,tech.plant,GAP-FIXED
+PlantLabTestResults_Usage_W,PC,assets,work.data,covered
+PlantLayout_Configuration_WE,PC,assets,tech.plant,GAP-FIXED
+PlantLayout_View_R,PC,assets,readplant.layout,GAP-FIXED: plant layout / digital twin view was missing
+PlantMaintaince_Configuration_WE,PC,assets,tech.plant,GAP-FIXED
+PlantMaintaince_Monitor_R,PC,assets,readplant.history,covered
+PlantMaintaince_Usage_W,PC,assets,work.maintenance,GAP-FIXED: maintenance execution was missing
+PlantsList_Manage_A,PM,administrative,templates.onboard,covered
+PlantsList_Manage_D,PM,administrative,templates.onboard,covered
+PlantsList_Manage_E,PM,administrative,templates.onboard,covered
+PlantsList_View_R,PM,administrative,portfolio.overview,covered (plant list view)
+RemoteControl_Usage,IHR,assets,flags.remote,covered
+RoleList_View_R,RM,administrative,people.grants,covered
+RosterManagement_Manage_A,TATM,assets,people.rosters,covered
+RosterManagement_Manage_D,TATM,assets,people.rosters,covered
+RosterManagement_View_R,TATM,assets,work.myshift,GAP-FIXED: operators viewing own shifts was missing
+SensorDetails_Configuration_WE,PC,assets,tech.sensors,covered
+SensorHealth_View_R,SHD,administrative,readplant.dash,covered (folded: sensor health view)
+Sensor_Configuration_WE,SC,administrative,tech.sensors,covered
+SkillManagement_Manage_A,TATM,administrative,people.skills,GAP-FIXED: skill management was missing
+SkillManagement_Manage_D,TATM,administrative,people.skills,GAP-FIXED
+SkillManagement_View_R,TATM,administrative,people.skills,GAP-FIXED
+StoreConfiguration_Configuration_WE,ST,administrative,PHASE2,Stores / inventory
+StoreManagement_Manage_WE,ST,administrative,PHASE2,Stores / inventory
+StoreManagement_Usage_WE,ST,administrative,PHASE2,Stores / inventory
+SystemRole_Manage_WE,RM,administrative,templates.library,covered (role governance goes global)
+TaskPage_Usage_W,TSK,assets,work.tasks,covered
+TaskTemplateSystem_Manage_A,TATM,administrative,templates.library,covered
+TaskTemplateSystem_Manage_D,TATM,administrative,templates.library,covered
+TaskTemplate_Manage_A,TATM,administrative,tech.sitetpl,GAP-FIXED: site-level templates were missing
+TaskTemplate_Manage_D,TATM,administrative,tech.sitetpl,GAP-FIXED
+TaskTemplate_View_R,TATM,administrative,tech.sitetpl,GAP-FIXED
+Tasks_Manage_A,TATM,assets,approve.assign,GAP-FIXED: creating/assigning one-off tasks was missing
+Tasks_Manage_D,TATM,assets,approve.assign,GAP-FIXED
+Tasks_View_R,TATM,assets,work.tasks,covered
+TriggerSystem_Manage_A,TATM,administrative,templates.library,covered
+TriggerSystem_Manage_D,TATM,administrative,templates.library,covered
+Trigger_Manage_A,TATM,administrative,tech.rules,covered
+Trigger_Manage_D,TATM,administrative,tech.rules,covered
+Trigger_View_R,TATM,administrative,tech.rules,covered
+UnifiedDashboardAutoEmail_Manage_WE,EM,administrative,tech.routing,covered
+UnifiedDashboardList_Manage_AE,UDB,administrative,tech.dashcfg,covered
+UnifiedDashboardPageBatch_Usage_R,UDBC,administrative,readplant.reports,GAP-FIXED: dashboard batches folded into reports
+UnifiedDashboardPageEvents_Usage_R,UDBC,administrative,readplant.insights,GAP-FIXED: dashboard events folded into insights
+UnifiedDashboardPage_Configuration_WE,UDB,administrative,tech.dashcfg,covered
+UnifiedDashboardPage_View_R,UDB,administrative,portfolio.overview,covered
+UnifiedDashboardReport_Usage_R,UDBC,administrative,readplant.reports,covered
+UserList_View_R,UM,administrative,people.audit,covered
+VideoTutorials_View_R,TU,administrative,BASELINE,training content for all users
+ViewAsUser_View_R,UM,administrative,flags.impersonate,covered
+Visualisation_Configuration_WE,VW,administrative,RETIRED,legacy
+Visualisation_View_R,VW,administrative,RETIRED,legacy visualisation workspace superseded by plant dashboard
+WaterQualityTestResults_Configuration_WE,PC,assets,tech.plant,GAP-FIXED
+WaterQualityTestResults_Usage_W,PC,assets,work.data,covered
+WorkflowSystem_Manage_A,TATM,administrative,templates.library,covered
+WorkflowSystem_Manage_D,TATM,administrative,templates.library,covered
+Workflow_Manage_A,TATM,administrative,tech.flows,GAP-FIXED: diagnostic flows/workflows were missing
+Workflow_Manage_D,TATM,administrative,tech.flows,GAP-FIXED
+Workflow_View_R,TATM,administrative,tech.flows,GAP-FIXED
+Workspace_Configuration_WE,WM,administrative,people.groups,GAP-FIXED
+Workspace_Manage_A,WM,administrative,people.groups,GAP-FIXED
+Workspace_View_R,WM,administrative,people.groups,GAP-FIXED
