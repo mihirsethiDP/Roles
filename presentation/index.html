@@ -158,7 +158,6 @@ textarea{width:100%;min-height:56px;border:1px solid var(--line-strong);border-r
 .rtable{width:100%;border-collapse:collapse;font-size:13px}
 .rtable th{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);text-align:left;padding:8px 10px;border-bottom:2px solid var(--line-strong)}
 .rtable td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
-pre.payload{background:var(--navy-deep);color:#BFE3D6;border-radius:10px;padding:14px 16px;font:12px/1.5 ui-monospace,Menlo,Consolas,monospace;overflow:auto;margin:12px 0 0;max-height:420px}
 footer{border-top:1px solid var(--line);padding:18px 0 40px;color:var(--ink-3);font-size:12.5px}
 footer a{color:var(--navy)}
 </style>
@@ -619,19 +618,8 @@ function renderReview(){
         <td>${dev.length?`<span class="chip c-flag" style="margin:0">${dev.length} deviation${dev.length>1?"s":""}</span><br><span style="font-size:11px;color:var(--ink-3)">${a.reason||""}</span>`:`<span class="chip c-ops" style="margin:0">standard</span>`}</td>
         <td>${tabs.map(t=>t===land?`<b>${t}</b>`:t).join(" · ")||"—"}</td></tr>`;
     }).join("")+`</table></div>`;
-  const payload={
-    plant:plant,
-    modules:[...mods],
-    note:"runtime check = user permission AND plant module",
-    assignments:saved.map(u=>{
-      const a=A[u.id], add=[], rem=[];
-      SETS.forEach(s=>s.perms.forEach(p=>{
-        const key=s.id+"."+p.id, cur=a.P[key], std=isStd(a,s.id,p.id);
-        if(cur&&!std) add.push(key); if(!cur&&std) rem.push(key);
-      }));
-      return {userId:u.id,name:u.name,baseRole:a.role,grant:a.grant||null,overrides:{add,remove:rem},reason:a.reason.trim()||null,drift:deviations(a).length};
-    })};
-  h+=`<div class="gh2">What gets stored</div><pre class="payload">${JSON.stringify(payload,null,2)}</pre>`;
+  const totalDrift=saved.reduce((n,u)=>n+deviations(A[u.id]).length,0);
+  h+=`<div class="msg ok" style="margin-top:16px">✓ ${plant} is ready: ${mods.size} modules licensed, ${saved.length} ${saved.length>1?"people":"person"} configured${totalDrift?`, ${totalDrift} exception${totalDrift>1?"s":""} — each recorded with its reason and audited`:", zero exceptions — everyone on standard roles"}. Anything the contract doesn't include simply doesn't exist for this team.</div>`;
   document.getElementById("review").innerHTML=h;
 }
 function renderAll(){
