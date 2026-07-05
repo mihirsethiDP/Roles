@@ -118,6 +118,10 @@ main{padding:26px 0 60px}
 .gchip:hover{border-color:var(--adm)}
 .gchip.on{background:var(--adm);border-color:var(--adm);color:#fff;font-weight:600}
 .gchip.none.on{background:var(--ink-2);border-color:var(--ink-2)}
+.granthelp{background:var(--adm-bg);border:1px solid var(--adm-line);border-radius:10px;padding:10px 13px;font-size:12.5px;line-height:1.55;color:#3F3789;margin-top:10px}
+.granthelp b{color:var(--adm)}
+.granthelp.none{background:var(--bg);border-color:var(--line);color:var(--ink-3)}
+.granthelp.none b{color:var(--ink-2)}
 
 /* accordions */
 .disclose{display:flex;align-items:center;gap:8px;border:none;background:transparent;color:var(--navy);font:600 13.5px "Inter";cursor:pointer;padding:12px 0 0}
@@ -314,6 +318,13 @@ const ROLES={
 };
 const GRANTS={people:["people"],tech:["tech"],fullsite:["people","tech"],global:["people","tech","templates"]};
 const GRANTNAMES={people:"People Admin",tech:"Technical Admin",fullsite:"Full Site Admin",global:"Global Admin"};
+const GRANTHELP={
+ "":{t:"No admin grant",d:"Right for most users. Grants add administration on top of the base role — they never change day-to-day operating permissions. Max one grant per user per site."},
+ people:{t:"People Admin — manages the humans",d:"Invite, edit & offboard users · rosters & shift schedules · skills · groups & workspaces · assign roles and grants · notification overrides · audit export. No access to plant logic or hardware."},
+ tech:{t:"Technical Admin — configures the plant",d:"Dashboards & widgets · issue / task / trigger rules · diagnostic flows · plant, lab & sensor setup · PLC / HMI / IoT · escalation routing · site templates & formulas. No user management."},
+ fullsite:{t:"Full Site Admin — People + Technical combined",d:"Everything both admins can do, for this site: the users and the plant configuration. Use when one person genuinely runs the whole site."},
+ global:{t:"Global Admin — DigitalPaani / Wapp staff only",d:"Full Site everywhere, plus global template governance, publishing versions to all sites, and onboarding new sites & companies. Affects every site — audited accordingly."},
+};
 const setById=Object.fromEntries(SETS.map(s=>[s.id,s]));
 const modById=Object.fromEntries(MODULES.map(m=>[m.id,m]));
 const PERMMOD={}; SETS.forEach(s=>s.perms.forEach(p=>PERMMOD[s.id+"."+p.id]=p.mod||"core"));
@@ -497,7 +508,15 @@ function renderUserPanel(){
       ${u.suggest===r?`<span class="chip c-nav" style="margin:0">suggested</span>`:""}</button>`).join("")+`</div>
   <div class="gh2">Admin grant (optional)</div><div class="chipsel">`+
     [["","No grant"],["people","People Admin"],["tech","Technical Admin"],["fullsite","Full Site Admin"],["global","Global Admin"]]
-    .map(g=>`<button class="gchip ${g[0]===""?"none":""} ${a.grant===g[0]?"on":""}" onclick="setGrant('${g[0]}')">${g[1]}</button>`).join("")+`</div>
+    .map(g=>`<button class="gchip ${g[0]===""?"none":""} ${a.grant===g[0]?"on":""}" title="${GRANTHELP[g[0]].t}" onclick="setGrant('${g[0]}')">${g[1]}</button>`).join("")+`</div>`;
+  const gh=GRANTHELP[a.grant];
+  let gcap="";
+  if(a.grant){
+    let tot=0,avOn=0;
+    GRANTS[a.grant].forEach(sid=>setById[sid].perms.forEach(p=>{ tot++; if(avail(sid+"."+p.id)) avOn++; }));
+    if(avOn<tot) gcap=` <span style="color:var(--flag)">📦 At ${plant}, ${avOn} of ${tot} abilities in this grant are inside the module ceiling — the rest would need modules not in the contract.</span>`;
+  }
+  h+=`<div class="granthelp${a.grant?"":" none"}"><b>${gh.t}.</b> ${gh.d}${gcap}</div>
   <div class="summary">
     <div class="big">${dev.length?`Customized — ${activeSets} sets, ${activePerms} abilities`:`Standard ${ROLES[a.role].n}${a.grant?" + "+GRANTNAMES[a.grant]:""}`}</div>
     <div class="sub">${dev.length?`${dev.length} deviation${dev.length>1?"s":""} from the standard`:`${activePerms} abilities inside this plant's module ceiling — most users save exactly like this`}</div>

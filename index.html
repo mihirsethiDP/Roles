@@ -91,6 +91,10 @@ pre.payload{background:var(--navy-deep);color:#BFE3D6;border-radius:10px;padding
 .gchip:hover{border-color:var(--adm)}
 .gchip.on{background:var(--adm);border-color:var(--adm);color:#fff;font-weight:600}
 .gchip.none.on{background:var(--ink-2);border-color:var(--ink-2)}
+.granthelp{background:var(--adm-bg);border:1px solid var(--adm-line);border-radius:10px;padding:10px 13px;font-size:12.5px;line-height:1.55;color:#3F3789;margin-top:10px}
+.granthelp b{color:var(--adm)}
+.granthelp.none{background:var(--bg);border-color:var(--line);color:var(--ink-3)}
+.granthelp.none b{color:var(--ink-2)}
 .plantchip{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line-strong);background:var(--card);color:var(--ink-2);border-radius:18px;padding:7px 13px;font:500 13px "Inter";cursor:pointer;margin:0 8px 8px 0}
 .plantchip .tick{width:15px;height:15px;border:1.5px solid var(--line-strong);border-radius:4px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;color:#fff;flex:none}
 .plantchip.on{background:var(--ops-bg);border-color:var(--ops);color:#0A5A4A;font-weight:600}
@@ -223,6 +227,7 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
         <div class="rolepick" id="rolepick"></div>
         <div class="gh2">Admin grant (optional)</div>
         <div class="chipsel" id="grantchips"></div>
+        <div class="granthelp" id="granthelp"></div>
         <div class="gh2">Workspace</div>
         <select id="wssel" onchange="selectWs(this.value)">
           <option value="">Select a workspace…</option>
@@ -403,6 +408,13 @@ regular:{n:"Regular Non-op",cat:"read",s:"reads one plant",std:["readplant"]},
 senior:{n:"Senior Non-op",cat:"read",s:"reads the whole portfolio",std:["readplant","portfolio"]},
 };
 const GRANTS={people:["people"],tech:["tech"],fullsite:["people","tech"],global:["people","tech","templates"]};
+const GRANTHELP={
+ "":{t:"No admin grant",d:"Right for most users. Grants add administration on top of the base role — they never change day-to-day operating permissions. Max one grant per user per site."},
+ people:{t:"People Admin — manages the humans",d:"Invite, edit & offboard users · rosters & shift schedules · skills · groups & workspaces · assign roles and grants · notification overrides · audit export. No access to plant logic or hardware."},
+ tech:{t:"Technical Admin — configures the plant",d:"Dashboards & widgets · issue / task / trigger rules · diagnostic flows · plant, lab & sensor setup · PLC / HMI / IoT · escalation routing · site templates & formulas. No user management."},
+ fullsite:{t:"Full Site Admin — People + Technical combined",d:"Everything both admins can do, for this site: the users and the plant configuration. Use when one person genuinely runs the whole site."},
+ global:{t:"Global Admin — DigitalPaani / Wapp staff only",d:"Full Site everywhere, plus global template governance, publishing versions to all sites, and onboarding new sites & companies. Affects every site — audited accordingly."},
+};
 const setById=Object.fromEntries(SETS.map(s=>[s.id,s]));
 
 let baseRole="l1", grant="", P={}, openSets={}, custOpen=false, effOpen=false;
@@ -503,10 +515,20 @@ function render(){
       <span class="badge b-${R.cat}">${R.cat==="ops"?"tier":"read-only"}</span></div>`;
   }).join("");
 
-  // grant chips
+  // grant chips + helper text so the implementer knows exactly what they're granting
   const GLIST=[["","No grant"],["people","People Admin"],["tech","Technical Admin"],["fullsite","Full Site Admin"],["global","Global Admin"]];
   document.getElementById("grantchips").innerHTML=GLIST.map(g=>
-    `<button class="gchip ${g[0]===""?"none":""} ${grant===g[0]?"on":""}" onclick="setGrant('${g[0]}')">${g[1]}</button>`).join("");
+    `<button class="gchip ${g[0]===""?"none":""} ${grant===g[0]?"on":""}" title="${GRANTHELP[g[0]].t}" onclick="setGrant('${g[0]}')">${g[1]}</button>`).join("");
+  const gh=GRANTHELP[grant];
+  let gcap="";
+  if(grant&&selPlants.size){
+    let tot=0,none=0;
+    GRANTS[grant].forEach(sid=>setById[sid].perms.forEach(p=>{ tot++; if(permAvail(sid+"."+p.id)==="none") none++; }));
+    if(none) gcap=` <span style="color:var(--flag)">📦 ${none} of ${tot} abilities in this grant are capped at the selected plants — module not licensed.</span>`;
+  }
+  const ghEl=document.getElementById("granthelp");
+  ghEl.className="granthelp"+(grant?"":" none");
+  ghEl.innerHTML=`<b>${gh.t}.</b> ${gh.d}${gcap}`;
 
   // plants
   const pc=document.getElementById("plantcount"), pb=document.getElementById("plantbox");
