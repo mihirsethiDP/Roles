@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CloseTheLoop · Plant Onboarding Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#193458; --navy-deep:#0F2340; --navy-tint:#E8EDF5;
+  --bg:#F6F8FB; --card:#FFFFFF; --line:#E3E8F0; --line-strong:#C9D2DF;
+  --ink:#1C2733; --ink-2:#4A5768; --ink-3:#7B8794;
+  --ops:#0E7C66; --ops-bg:#E6F5F0; --ops-line:#9AD4C5;
+  --adm:#5548C8; --adm-bg:#EEECFB; --adm-line:#C3BDF0;
+  --read:#5F6B7A; --read-bg:#EEF1F5; --read-line:#CBD4DE;
+  --flag:#8A5A00; --flag-bg:#FBF1DC; --err:#A93226; --err-bg:#FCE8E6;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 "Inter",system-ui,sans-serif}
+h1,h2,h3{font-family:"Sora",sans-serif;font-weight:600;line-height:1.25;margin:0}
+.wrap{max-width:1120px;margin:0 auto;padding:0 22px}
+header.hero{background:var(--navy);color:#fff;padding:26px 0 22px;border-bottom:4px solid var(--ops)}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#9DB4D6;margin:0 0 8px}
+.hero h1{font-size:24px;color:#fff}
+.hero p{color:#C3D2E8;max-width:720px;margin:8px 0 0;font-size:14px}
+main{padding:26px 0 60px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px}
+.gh{font-size:12px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);margin:0 0 10px}
+.gh2{font-size:12px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);margin:18px 0 8px}
+
+/* stepper */
+.stepper{display:flex;gap:0;margin:0 0 22px;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.step{flex:1;display:flex;align-items:center;gap:10px;padding:13px 16px;border-right:1px solid var(--line);cursor:pointer;background:var(--card);border-top:none;border-bottom:none;border-left:none;font:inherit;text-align:left;color:var(--ink-3)}
+.step:last-child{border-right:none}
+.step .num{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--line);color:var(--ink-3);font-weight:600;font-size:13px;flex:none}
+.step .t{font-weight:600;font-size:13px;color:var(--ink-3)}
+.step .s{font-size:11px;color:var(--ink-3);display:block}
+.step.on{background:var(--navy-tint)}
+.step.on .num{background:var(--navy);color:#fff}
+.step.on .t{color:var(--navy)}
+.step.done .num{background:var(--ops);color:#fff}
+.step.done .t{color:var(--ink)}
+.step:disabled{cursor:not-allowed;opacity:.55}
+.ctx{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 18px;font-size:13px;color:var(--ink-2)}
+.ctx .chip{margin:0}
+
+.pane{display:none}.pane.on{display:block}
+.navbtns{display:flex;gap:10px;margin-top:20px;align-items:center}
+.btn{border:none;border-radius:9px;padding:11px 22px;font:600 14px "Inter";cursor:pointer}
+.btn.primary{background:var(--navy);color:#fff}
+.btn.primary:disabled{background:var(--line-strong);cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--navy);border:1px solid var(--line-strong)}
+.btn.ops{background:var(--ops);color:#fff}
+.hint{font-size:12.5px;color:var(--ink-3)}
+
+/* chips */
+.chip{display:inline-block;font-size:12.5px;font-weight:600;padding:4px 12px;border-radius:14px;margin:0 6px 6px 0;border:1px solid}
+.c-ops{background:var(--ops-bg);color:var(--ops);border-color:var(--ops-line)}
+.c-adm{background:var(--adm-bg);color:var(--adm);border-color:var(--adm-line)}
+.c-read{background:var(--read-bg);color:var(--read);border-color:var(--read-line)}
+.c-flag{background:var(--flag-bg);color:var(--flag);border-color:#E8C98A}
+.c-nav{background:var(--navy-tint);color:var(--navy);border-color:#CBD8EA}
+
+/* step 1 plants */
+.wsgroup{margin-bottom:18px}
+.plantgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.plantcard{border:1px solid var(--line-strong);border-radius:12px;padding:14px 16px;background:var(--card);cursor:pointer;text-align:left;font:inherit}
+.plantcard:hover{border-color:var(--navy)}
+.plantcard.on{border:2px solid var(--navy);background:var(--navy-tint)}
+.plantcard .t{font-family:"Sora";font-weight:600;font-size:14.5px}
+.plantcard .s{font-size:12px;color:var(--ink-2);margin-top:3px}
+
+/* step 2 modules */
+.modgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.modcard{border:1px solid var(--line-strong);border-radius:12px;padding:16px;background:var(--card);position:relative}
+.modcard.on{border-color:var(--ops);background:var(--ops-bg)}
+.modcard.core{border-style:dashed;background:var(--bg)}
+.modcard .t{font-family:"Sora";font-size:14.5px;font-weight:600;padding-right:52px}
+.modcard .d{font-size:12.5px;color:var(--ink-2);margin:5px 0 8px}
+.modcard .m{font-size:11.5px;color:var(--ink-3)}
+.modcard .inc{font-size:10.5px;font-weight:600;color:var(--ops);letter-spacing:.05em}
+.sw{position:absolute;top:16px;right:16px;width:44px;height:24px;border-radius:12px;background:var(--line-strong);border:none;cursor:pointer;transition:background .15s}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left .15s;box-shadow:0 1px 2px rgba(0,0,0,.25)}
+.sw.on{background:var(--ops)}
+.sw.on::after{left:23px}
+.sw:disabled{opacity:.45;cursor:not-allowed}
+.sw.sm{position:static;width:36px;height:20px;border-radius:10px;flex:none}
+.sw.sm::after{width:14px;height:14px}
+.sw.sm.on::after{left:19px}
+.sw.partial{background:#C98A00}
+.dev{outline:2px solid var(--flag);outline-offset:2px;border-radius:12px}
+.counter{background:var(--navy-tint);border:1px solid #CBD8EA;border-radius:12px;padding:12px 16px;margin:16px 0 0;font-size:13.5px;color:var(--navy)}
+.counter b{font-family:"Sora";font-size:17px}
+
+/* step 3 people */
+.grid2{display:grid;grid-template-columns:330px 1fr;gap:20px;align-items:start}
+@media(max-width:880px){.grid2{grid-template-columns:1fr}}
+.usercard{display:flex;align-items:center;gap:12px;border:1px solid var(--line-strong);border-radius:12px;padding:11px 14px;background:var(--card);cursor:pointer;width:100%;font:inherit;text-align:left;margin-bottom:9px}
+.usercard:hover{border-color:var(--navy)}
+.usercard.on{border:2px solid var(--navy);background:var(--navy-tint)}
+.usercard .av{font-size:22px;flex:none}
+.usercard .t{font-weight:600;font-size:13.5px}
+.usercard .s{font-size:11.5px;color:var(--ink-2)}
+.usercard .badge{margin-left:auto;font-size:10.5px;font-weight:600;padding:2px 9px;border-radius:10px;white-space:nowrap;flex:none}
+.b-todo{background:var(--read-bg);color:var(--ink-3)}
+.b-done{background:var(--ops-bg);color:var(--ops)}
+.b-drift{background:var(--flag-bg);color:var(--flag)}
+
+.rolepick{display:flex;flex-direction:column;gap:7px}
+.rp{display:flex;align-items:center;justify-content:space-between;border:1px solid var(--line-strong);border-radius:10px;padding:9px 13px;cursor:pointer;background:var(--card);font:inherit;width:100%;text-align:left}
+.rp:hover{border-color:var(--navy)}
+.rp.on{border:2px solid var(--navy);background:var(--navy-tint)}
+.rp .t{font-weight:600;font-size:13.5px}
+.rp .s{font-size:11.5px;color:var(--ink-2)}
+.chipsel{display:flex;flex-wrap:wrap;gap:7px}
+.gchip{border:1px solid var(--line-strong);background:var(--card);color:var(--ink-2);border-radius:18px;padding:6px 13px;font:500 12.5px "Inter";cursor:pointer}
+.gchip:hover{border-color:var(--adm)}
+.gchip.on{background:var(--adm);border-color:var(--adm);color:#fff;font-weight:600}
+.gchip.none.on{background:var(--ink-2);border-color:var(--ink-2)}
+
+/* accordions */
+.disclose{display:flex;align-items:center;gap:8px;border:none;background:transparent;color:var(--navy);font:600 13.5px "Inter";cursor:pointer;padding:12px 0 0}
+.disclose .chev{display:inline-block;transition:transform .15s}
+.disclose.open .chev{transform:rotate(90deg)}
+.hiddenblock{display:none}
+.hiddenblock.open{display:block}
+.acc{border:1px solid var(--line);border-radius:12px;margin-bottom:9px;background:var(--card);overflow:hidden}
+.acc.devset{border-color:#E8C98A;box-shadow:0 0 0 1px #E8C98A}
+.acc.unavail{opacity:.6}
+.acch{display:flex;align-items:center;gap:11px;padding:11px 13px;cursor:pointer}
+.acch:hover{background:var(--bg)}
+.acch .chev{color:var(--ink-3);transition:transform .15s;font-size:12px}
+.acc.open .acch .chev{transform:rotate(90deg)}
+.acch .name{font-weight:600;font-size:13.5px}
+.acch .count{font-size:11.5px;color:var(--ink-2);margin-left:auto;white-space:nowrap}
+.accb{display:none;border-top:1px solid var(--line);padding:6px 13px 10px 38px;background:#FBFCFE}
+.acc.open .accb{display:block}
+.prow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px dashed var(--line)}
+.prow:last-child{border-bottom:none}
+.prow .pn{font-size:13px}
+.modlock{display:block;font-size:11px;color:var(--flag)}
+.summary{background:var(--navy-tint);border:1px solid #CBD8EA;border-radius:12px;padding:14px 16px;margin:12px 0 0}
+.summary .big{font-family:"Sora";font-size:14.5px;font-weight:600;color:var(--navy)}
+.summary .sub{font-size:12.5px;color:var(--ink-2);margin-top:2px}
+.msg{border-radius:8px;padding:9px 13px;font-size:13px;margin:10px 0 0}
+.msg.warn{background:var(--flag-bg);color:var(--flag)}
+.msg.ok{background:var(--ops-bg);color:var(--ops)}
+textarea{width:100%;min-height:56px;border:1px solid var(--line-strong);border-radius:8px;padding:9px 12px;font:13px "Inter";color:var(--ink);resize:vertical}
+.tabschip{display:inline-block;font-size:12px;font-weight:600;background:var(--navy);color:#fff;border-radius:8px;padding:4px 12px;margin:0 6px 6px 0}
+.tabschip.land{background:var(--ops)}
+
+/* step 4 review */
+.rtable{width:100%;border-collapse:collapse;font-size:13px}
+.rtable th{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);text-align:left;padding:8px 10px;border-bottom:2px solid var(--line-strong)}
+.rtable td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+pre.payload{background:var(--navy-deep);color:#BFE3D6;border-radius:10px;padding:14px 16px;font:12px/1.5 ui-monospace,Menlo,Consolas,monospace;overflow:auto;margin:12px 0 0;max-height:420px}
+footer{border-top:1px solid var(--line);padding:18px 0 40px;color:var(--ink-3);font-size:12.5px}
+footer a{color:var(--navy)}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">DigitalPaani · CloseTheLoop</p>
+    <h1>From contract to configured team — in three steps</h1>
+    <p>Pick a plant, switch on the product modules its contract includes, then give each person a role — with per-user flexibility kept in check. Everything downstream respects the module ceiling.</p>
+  </div>
+</header>
+
+<main>
+<div class="wrap">
+
+  <div class="stepper" id="stepper"></div>
+  <div class="ctx" id="ctx"></div>
+
+  <!-- STEP 1 · PLANT -->
+  <div class="pane" id="s1">
+    <div class="panel">
+      <div class="gh">Step 1 · Which plant are we setting up?</div>
+      <div id="plantpick"></div>
+      <div class="navbtns">
+        <button class="btn primary" id="next1" onclick="go(2)" disabled>Continue to modules →</button>
+        <span class="hint" id="hint1">Select a plant to continue.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2 · MODULES -->
+  <div class="pane" id="s2">
+    <div class="panel">
+      <div class="gh">Step 2 · Which product modules does this plant's contract include?</div>
+      <p style="font-size:13.5px;color:var(--ink-2);margin:0 0 14px">Modules are what we sell. Each one unlocks a set of permissions across role types — they become the <b>ceiling</b> every user at this plant works inside. Platform Core always ships.</p>
+      <div class="modgrid" id="modpick"></div>
+      <div class="counter" id="modcounter"></div>
+      <div class="navbtns">
+        <button class="btn ghost" onclick="go(1)">← Back</button>
+        <button class="btn primary" onclick="go(3)">Continue to people →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3 · PEOPLE -->
+  <div class="pane" id="s3">
+    <div class="grid2">
+      <div class="panel">
+        <div class="gh">Step 3 · The team at <span id="teamplant"></span></div>
+        <div id="userlist"></div>
+        <div class="navbtns" style="margin-top:14px">
+          <button class="btn ghost" onclick="go(2)">← Back</button>
+          <button class="btn primary" id="next3" onclick="go(4)" disabled>Review & finish →</button>
+        </div>
+        <p class="hint" id="hint3" style="margin:8px 0 0"></p>
+      </div>
+      <div class="panel" id="userpanel"></div>
+    </div>
+  </div>
+
+  <!-- STEP 4 · REVIEW -->
+  <div class="pane" id="s4">
+    <div class="panel">
+      <div class="gh">Step 4 · Review — one plant, one ceiling, a whole team configured</div>
+      <div id="review"></div>
+      <div class="navbtns">
+        <button class="btn ghost" onclick="go(3)">← Back</button>
+        <button class="btn ops" onclick="location.reload()">↺ Restart the demo</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+</main>
+
+<footer><div class="wrap">CloseTheLoop plant-onboarding demo · effective access at a plant = user permission ∧ plant module · <a href="../">open the full Role Studio</a></div></footer>
+
+<script>
+/* ================= DATA (same model as Role Studio) ================= */
+const SETS=[
+{id:"work",n:"Work execution",cat:"ops",d:"Day-to-day operating of issues, tasks and maintenance",perms:[
+ {id:"sessions",n:"Own issue sessions & run diagnostic steps",mod:"ops"},
+ {id:"rc",n:"Submit root cause & remediation",mod:"ops"},
+ {id:"media",n:"Photo / video capture during steps",mod:"ops"},
+ {id:"data",n:"Data, lab, water-quality & logbook entry",mod:"data"},
+ {id:"tasks",n:"Execute fixed, alert & one-time tasks",mod:"tasks"},
+ {id:"maintenance",n:"Perform & record maintenance",mod:"tasks"},
+ {id:"raise",n:"Raise manual issues",mod:"ops"},
+ {id:"handoff",n:"Hand off / take over sessions",mod:"ops"},
+ {id:"checkin",n:"Check in / out of shift",mod:"tasks"},
+ {id:"myshift",n:"See my shifts & roster",mod:"tasks"}]},
+{id:"approve",req:["work"],n:"Approvals & closure",cat:"ops",d:"Unblocking and supervising others",perms:[
+ {id:"gates",n:"Approve / reject gates (RC, remediation, close)",mod:"ops"},
+ {id:"selfapprove",n:"Self-approve own RC / manual close",mod:"ops"},
+ {id:"forceclose",n:"Force-close (co-sign needed for auto issues)",mod:"ops"},
+ {id:"reopen",n:"Reopen issues & change root cause",mod:"ops"},
+ {id:"override",n:"Photo override",mod:"ops"},
+ {id:"assign",n:"Create & assign one-off tasks and insights",mod:"tasks"},
+ {id:"shiftview",n:"View all tasks & entries at the plant",mod:"tasks"}]},
+{id:"oversight",req:["approve"],n:"Multi-plant oversight",cat:"ops",d:"Portfolio-level operations",perms:[
+ {id:"multiws",n:"Multi-plant workspace",mod:"ops"},
+ {id:"cosign",n:"Eligible co-signer for force-close",mod:"ops"},
+ {id:"deadline",n:"Deadline-only escalation alerts",mod:"ops"}]},
+{id:"readplant",n:"Plant visibility (read-only)",cat:"read",d:"Seeing one plant without acting",perms:[
+ {id:"dash",n:"Plant dashboard, issue log & sensor health",mod:"core"},
+ {id:"layout",n:"Plant layout / digital twin",mod:"analytics"},
+ {id:"insights",n:"Insights & events lists",mod:"analytics"},
+ {id:"reports",n:"Reports, downloads & dashboard batches",mod:"analytics"},
+ {id:"history",n:"Equipment & maintenance history",mod:"tasks"}]},
+{id:"portfolio",req:["readplant"],n:"Portfolio visibility",cat:"read",d:"Seeing all plants at once",perms:[
+ {id:"overview",n:"Portfolio overview & plants list",mod:"analytics"},
+ {id:"compare",n:"Compare plants & clusters",mod:"analytics"}]},
+{id:"people",n:"People management",cat:"adm",d:"Users, rosters, skills, groups",perms:[
+ {id:"invite",n:"Invite / edit / offboard users",mod:"core"},
+ {id:"rosters",n:"Rosters & shift schedules",mod:"tasks"},
+ {id:"skills",n:"Skills & competencies",mod:"core"},
+ {id:"groups",n:"User groups & workspaces",mod:"core"},
+ {id:"grants",n:"Assign / revoke roles & grants",mod:"core"},
+ {id:"notif",n:"Per-user notification overrides",mod:"core"},
+ {id:"audit",n:"Directory & audit-log export",mod:"core"}]},
+{id:"tech",n:"Plant configuration",cat:"adm",d:"The plant's logic, hardware and screens",perms:[
+ {id:"dashcfg",n:"Dashboards & widgets (plant + unified)",mod:"analytics"},
+ {id:"ai",n:"AI widget generator",mod:"analytics"},
+ {id:"rules",n:"Issue / task / trigger rules & schedules",mod:"ops"},
+ {id:"flows",n:"Diagnostic flows & workflows",mod:"ops"},
+ {id:"plant",n:"Plant details, layout, lab & test setup",mod:"core"},
+ {id:"sensors",n:"Sensors, thresholds, data breaks & health",mod:"iot"},
+ {id:"iot",n:"PLC / HMI / data logger",mod:"iot"},
+ {id:"routing",n:"Notification routing, SLAs, escalation & auto email",mod:"ops"},
+ {id:"sitetpl",n:"Site templates (task, event, insight, logbook, data-input)",mod:"core"},
+ {id:"formulas",n:"Site analytics formulas",mod:"data"}]},
+{id:"templates",req:["people","tech"],n:"Global templates",cat:"adm",d:"Affects every site — DP / Wapp staff only",perms:[
+ {id:"library",n:"Global template & role governance",mod:"core"},
+ {id:"publish",n:"Publish versions to all sites",mod:"core"},
+ {id:"onboard",n:"Onboard sites, plants & company list",mod:"core"}]},
+{id:"flags",n:"Exception flags",cat:"flag",alwaysDev:true,d:"Extra-sensitive — always a deviation, audited individually",perms:[
+ {id:"backdate",n:"Back-dated entry & data correction",preq:"tech",mod:"data"},
+ {id:"remote",n:"IoT remote control / bi-direction",preq:"tech",mod:"iot"},
+ {id:"impersonate",n:"View-as / impersonation",preq:"people",mod:"core"}]},
+];
+const MODULES=[
+ {id:"core",n:"Platform Core",icon:"🧩",always:true,d:"Ships with every contract — users, groups, grants, plant setup, basic plant dashboard, global governance."},
+ {id:"ops",n:"Issue Resolution",icon:"🔧",d:"The CloseTheLoop workflow — issue sessions, diagnostics, root cause, approvals, force-close, escalation rules."},
+ {id:"tasks",n:"Tasks, Shifts & Maintenance",icon:"📋",d:"Fixed & one-off tasks, maintenance records & history, rosters, shifts and check-in."},
+ {id:"data",n:"Data, Lab & Logbook",icon:"🧪",d:"Lab, water-quality & logbook entry, back-dated corrections, site analytics formulas."},
+ {id:"analytics",n:"Dashboards & Analytics",icon:"📊",d:"Custom dashboards, insights, reports, digital twin, portfolio comparison, AI widgets."},
+ {id:"iot",n:"IoT & Remote Control",icon:"📡",d:"Sensors & thresholds, PLC / HMI / data loggers, remote operation."},
+];
+const ROLES={
+ l1:{n:"L1 Operator",cat:"ops",s:"does the work",std:["work","readplant"]},
+ l3:{n:"L3 Lead",cat:"ops",s:"L1 + approves & closes",std:["work","approve","readplant"]},
+ l4:{n:"L4 Senior Lead",cat:"ops",s:"L3 + oversees many plants",std:["work","approve","oversight","readplant","portfolio"]},
+ regular:{n:"Regular Non-op",cat:"read",s:"reads one plant",std:["readplant"]},
+ senior:{n:"Senior Non-op",cat:"read",s:"reads the whole portfolio",std:["readplant","portfolio"]},
+};
+const GRANTS={people:["people"],tech:["tech"],fullsite:["people","tech"],global:["people","tech","templates"]};
+const GRANTNAMES={people:"People Admin",tech:"Technical Admin",fullsite:"Full Site Admin",global:"Global Admin"};
+const setById=Object.fromEntries(SETS.map(s=>[s.id,s]));
+const modById=Object.fromEntries(MODULES.map(m=>[m.id,m]));
+const PERMMOD={}; SETS.forEach(s=>s.perms.forEach(p=>PERMMOD[s.id+"."+p.id]=p.mod||"core"));
+const TOTALPERMS=SETS.reduce((a,s)=>a+s.perms.length,0);
+
+const WORKSPACES={
+ noida:{n:"Noida Cluster",plants:["STP — Sector 62","WTP — Knowledge Park","STP — Alpha 2","STP — Pari Chowk"]},
+ gurgaon:{n:"Gurgaon Cluster",plants:["STP — Cyber Park","WTP — Sector 29","STP — Udyog Vihar"]},
+ jaipur:{n:"Jaipur",plants:["STP — Sitapura","WTP — Mansarovar"]},
+ demo:{n:"Demo plants",plants:["Demo STP — Training","Demo WTP — Sales"]}};
+const CONTRACT_PREFILL={
+ "STP — Sector 62":["ops","tasks","data","analytics","iot"],
+ "WTP — Knowledge Park":["ops","tasks","data","analytics"],
+ "STP — Alpha 2":["ops","tasks"],
+ "STP — Pari Chowk":["ops","tasks","data"],
+ "STP — Cyber Park":["ops","tasks","data","analytics","iot"],
+ "WTP — Sector 29":["ops","data","analytics"],
+ "STP — Udyog Vihar":["ops","tasks"],
+ "STP — Sitapura":["ops","tasks","data","analytics","iot"],
+ "WTP — Mansarovar":["analytics"],
+ "Demo STP — Training":["ops","tasks","data","analytics","iot"],
+ "Demo WTP — Sales":["ops","tasks","data","analytics","iot"]};
+
+const USERS=[
+ {id:"u1",av:"👷",name:"Ramesh Kumar",title:"Plant operator · morning shift",suggest:"l1",grantSuggest:""},
+ {id:"u2",av:"🧰",name:"Sunita Mehra",title:"Shift supervisor",suggest:"l3",grantSuggest:""},
+ {id:"u3",av:"🗺️",name:"Arjun Patel",title:"Cluster ops manager",suggest:"l4",grantSuggest:""},
+ {id:"u4",av:"📈",name:"Priya Sharma",title:"Client sustainability head",suggest:"regular",grantSuggest:""},
+ {id:"u5",av:"🔌",name:"Vikram Desai",title:"Automation engineer (DigitalPaani)",suggest:"l1",grantSuggest:"tech"},
+];
+
+/* ================= STATE ================= */
+let step=1, plant=null, mods=new Set(["core"]);
+const A={}; // assignments by user id: {role,grant,P,reason,saved,openSets,custOpen}
+let activeUser=null;
+
+/* ================= CEILING & PERMISSION LOGIC ================= */
+function avail(key){ return mods.has(PERMMOD[key]); }
+function stdSetIds(a){ const s=new Set(ROLES[a.role].std); (GRANTS[a.grant]||[]).forEach(x=>s.add(x)); return s; }
+function isStd(a,setId,permId){ return setId!=="flags" && stdSetIds(a).has(setId) && avail(setId+"."+permId); }
+function initP(a){ a.P={}; SETS.forEach(s=>s.perms.forEach(p=>a.P[s.id+"."+p.id]=isStd(a,s.id,p.id))); a.reason=""; a.saved=false; }
+function availCount(setId){ return setById[setId].perms.filter(p=>avail(setId+"."+p.id)).length; }
+function setState(a,setId){
+  const av=setById[setId].perms.filter(p=>avail(setId+"."+p.id));
+  if(!av.length) return "na";
+  const on=av.filter(p=>a.P[setId+"."+p.id]).length;
+  return on===0?"off":(on===av.length?"on":"partial");
+}
+function dependents(setId){ return SETS.filter(s=>(s.req||[]).includes(setId)).map(s=>s.id); }
+function setAll(a,setId,val){
+  setById[setId].perms.forEach(p=>{
+    const key=setId+"."+p.id;
+    if(!avail(key)) return;
+    if(setId==="flags"&&val&&p.preq&&setState(a,p.preq)!=="on") return;
+    a.P[key]=val;
+  });
+}
+function enableWithDeps(a,setId){
+  (setById[setId].req||[]).forEach(r=>{ if(setState(a,r)!=="on"&&setState(a,r)!=="na") enableWithDeps(a,r); });
+  setAll(a,setId,true);
+}
+function disableCascade(a,setId){
+  setAll(a,setId,false);
+  dependents(setId).forEach(d=>{ if(setState(a,d)!=="off"&&setState(a,d)!=="na") disableCascade(a,d); });
+  if(setId==="people"||setId==="tech"){
+    setById.flags.perms.forEach(p=>{ if(p.preq===setId) a.P["flags."+p.id]=false; });
+    if(setState(a,"templates")==="on"||setState(a,"templates")==="partial") disableCascade(a,"templates");
+  }
+}
+function deviations(a){
+  const dev=[];
+  SETS.forEach(s=>s.perms.forEach(p=>{
+    const cur=a.P[s.id+"."+p.id], std=isStd(a,s.id,p.id);
+    if(cur!==std) dev.push((cur?"+ ":"− ")+p.n);
+  }));
+  return dev;
+}
+function computeTabs(P){
+  const has=k=>!!P[k]; const tabs=[];
+  if(has("approve.gates")||has("approve.forceclose")||has("approve.override")) tabs.push("Approvals");
+  if(has("work.sessions")||has("work.rc")) tabs.push("Issues");
+  if(has("work.tasks")) tabs.push("My tasks");
+  if(has("readplant.dash")||has("readplant.reports")||has("readplant.history")) tabs.push("Dashboard");
+  if(has("portfolio.overview")||has("portfolio.compare")) tabs.push("Portfolio");
+  if(setById.people.perms.some(p=>has("people."+p.id))) tabs.push("People");
+  if(setById.tech.perms.some(p=>has("tech."+p.id))) tabs.push("Technical");
+  if(setById.templates.perms.some(p=>has("templates."+p.id))) tabs.push("Templates");
+  return tabs;
+}
+function landing(tabs){
+  const pri=["Approvals","Issues","Portfolio","Dashboard","My tasks","People","Technical","Templates"];
+  return pri.find(p=>tabs.includes(p))||null;
+}
+
+/* ================= NAV ================= */
+function go(n){
+  if(n>=2&&!plant) return;
+  if(n===3){ USERS.forEach(u=>{ if(!A[u.id]){ A[u.id]={role:u.suggest,grant:u.grantSuggest,openSets:{},custOpen:false}; initP(A[u.id]); } else { clampToCeiling(A[u.id]); } }); if(!activeUser) activeUser=USERS[0].id; }
+  step=n; renderAll();
+}
+function clampToCeiling(a){ Object.keys(a.P).forEach(k=>{ if(!avail(k)) a.P[k]=false; }); }
+
+/* ================= RENDER ================= */
+function renderStepper(){
+  const steps=[["Plant","the site we're onboarding"],["Modules","what the contract includes"],["People","roles + flexibility"],["Review","ship it"]];
+  document.getElementById("stepper").innerHTML=steps.map((s,i)=>{
+    const n=i+1, done=n<step, on=n===step;
+    const reachable=n===1||(plant&&(n<=3||Object.values(A).some(a=>a.saved)));
+    return `<button class="step ${on?"on":""} ${done?"done":""}" ${reachable?"":"disabled"} onclick="go(${n})">
+      <span class="num">${done?"✓":n}</span><span><span class="t">${s[0]}</span><span class="s">${s[1]}</span></span></button>`;
+  }).join("");
+  const saved=Object.values(A).filter(a=>a.saved).length;
+  document.getElementById("ctx").innerHTML=
+    (plant?`<span class="chip c-nav">🏭 ${plant}</span>`:"")+
+    (plant?`<span class="chip c-ops">📦 ${mods.size} of ${MODULES.length} modules</span>`:"")+
+    (step>=3?`<span class="chip ${saved?"c-ops":"c-read"}">👥 ${saved} of ${USERS.length} users assigned</span>`:"");
+  document.querySelectorAll(".pane").forEach((p,i)=>p.classList.toggle("on",i+1===step));
+}
+function renderPlants(){
+  document.getElementById("plantpick").innerHTML=Object.keys(WORKSPACES).map(w=>
+    `<div class="wsgroup"><div class="gh2" style="margin-top:6px">${WORKSPACES[w].n}</div><div class="plantgrid">`+
+    WORKSPACES[w].plants.map(p=>`<button class="plantcard ${plant===p?"on":""}" onclick="pickPlant('${p}')">
+      <div class="t">${p}</div><div class="s">${p.startsWith("WTP")?"Water treatment":p.startsWith("Demo")?"Demo environment":"Sewage treatment"} · ${WORKSPACES[w].n}</div></button>`).join("")+
+    `</div></div>`).join("");
+  document.getElementById("next1").disabled=!plant;
+  document.getElementById("hint1").textContent=plant?`${plant} selected.`:"Select a plant to continue.";
+}
+function pickPlant(p){
+  if(plant!==p){
+    plant=p; mods=new Set(["core",...(CONTRACT_PREFILL[p]||[])]);
+    Object.keys(A).forEach(k=>delete A[k]); activeUser=null; // new plant → fresh team setup
+  }
+  renderAll();
+}
+function renderModules(){
+  document.getElementById("modpick").innerHTML=MODULES.map(m=>{
+    const bySet={}; SETS.forEach(s=>s.perms.forEach(p=>{ if((p.mod||"core")===m.id) bySet[s.n]=(bySet[s.n]||0)+1; }));
+    const total=Object.values(bySet).reduce((a,b)=>a+b,0);
+    const on=mods.has(m.id);
+    return `<div class="modcard ${on?"on":""} ${m.always?"core":""}">
+      <div class="t">${m.icon} ${m.n} ${m.always?`<span class="inc">INCLUDED</span>`:""}</div>
+      <div class="d">${m.d}</div>
+      <div class="m">Unlocks ${total} abilities: ${Object.entries(bySet).map(([n,c])=>`${n} (${c})`).join(" · ")}</div>
+      <button class="sw ${on?"on":""}" ${m.always?"disabled":""} onclick="toggleModule('${m.id}')"></button></div>`;
+  }).join("");
+  const availTotal=Object.keys(PERMMOD).filter(k=>avail(k)).length;
+  document.getElementById("modcounter").innerHTML=`This contract makes <b>${availTotal}</b> of ${TOTALPERMS} abilities available at ${plant||"this plant"} — the ceiling every role and override works inside.`;
+}
+function toggleModule(id){
+  mods.has(id)?mods.delete(id):mods.add(id);
+  Object.values(A).forEach(a=>clampToCeiling(a));
+  renderAll();
+}
+function renderUsers(){
+  document.getElementById("teamplant").textContent=plant||"—";
+  document.getElementById("userlist").innerHTML=USERS.map(u=>{
+    const a=A[u.id];
+    const dev=a?deviations(a).length:0;
+    const badge=!a||!a.saved?`<span class="badge b-todo">not set</span>`
+      :dev?`<span class="badge b-drift">${ROLES[a.role].n} · ${dev} drift</span>`
+      :`<span class="badge b-done">${ROLES[a.role].n}${a.grant?" +"+GRANTNAMES[a.grant].split(" ")[0]:""} ✓</span>`;
+    return `<button class="usercard ${activeUser===u.id?"on":""}" onclick="pickUser('${u.id}')">
+      <span class="av">${u.av}</span><span><span class="t">${u.name}</span><br><span class="s">${u.title}</span></span>${badge}</button>`;
+  }).join("");
+  const saved=Object.values(A).filter(a=>a.saved).length;
+  document.getElementById("next3").disabled=!saved;
+  document.getElementById("hint3").textContent=saved?`${saved} of ${USERS.length} assigned — you can review now or finish the team.`:"Save at least one assignment to continue.";
+  renderUserPanel();
+}
+function pickUser(id){ activeUser=id; renderAll(); }
+function renderUserPanel(){
+  const u=USERS.find(x=>x.id===activeUser), a=A[activeUser];
+  if(!u||!a){ document.getElementById("userpanel").innerHTML=`<p class="hint">Pick a team member.</p>`; return; }
+  const dev=deviations(a);
+  const activeSets=SETS.filter(s=>["on","partial"].includes(setState(a,s.id))).length;
+  const activePerms=Object.values(a.P).filter(Boolean).length;
+  const tabs=computeTabs(a.P), land=landing(tabs);
+  let h=`<div class="gh">${u.av} ${u.name} — pick a role, tune if needed</div>
+  <div class="rolepick">`+Object.keys(ROLES).map(r=>`<button class="rp ${a.role===r?"on":""}" onclick="setRole('${r}')">
+      <span><span class="t">${ROLES[r].n}</span><br><span class="s">${ROLES[r].s}</span></span>
+      ${u.suggest===r?`<span class="chip c-nav" style="margin:0">suggested</span>`:""}</button>`).join("")+`</div>
+  <div class="gh2">Admin grant (optional)</div><div class="chipsel">`+
+    [["","No grant"],["people","People Admin"],["tech","Technical Admin"],["fullsite","Full Site Admin"],["global","Global Admin"]]
+    .map(g=>`<button class="gchip ${g[0]===""?"none":""} ${a.grant===g[0]?"on":""}" onclick="setGrant('${g[0]}')">${g[1]}</button>`).join("")+`</div>
+  <div class="summary">
+    <div class="big">${dev.length?`Customized — ${activeSets} sets, ${activePerms} abilities`:`Standard ${ROLES[a.role].n}${a.grant?" + "+GRANTNAMES[a.grant]:""}`}</div>
+    <div class="sub">${dev.length?`${dev.length} deviation${dev.length>1?"s":""} from the standard`:`${activePerms} abilities inside this plant's module ceiling — most users save exactly like this`}</div>
+  </div>`;
+  h+=`<div class="gh2" style="margin-top:14px">What ${u.name.split(" ")[0]} will see in the app</div><div>`+
+    (tabs.length?tabs.map(t=>`<span class="tabschip ${t===land?"land":""}">${t}${t===land?" · lands here":""}</span>`).join(""):`<span class="hint">Nothing — no abilities on.</span>`)+`</div>`;
+  h+=`<button class="disclose ${a.custOpen?"open":""}" onclick="toggleCust()"><span class="chev">▶</span> Customize capabilities — the flexibility, kept in check</button>
+  <div class="hiddenblock ${a.custOpen?"open":""}">`;
+  if(a.custOpen){
+    h+=SETS.map(s=>{
+      const st=setState(a,s.id);
+      const avC=availCount(s.id);
+      const on=s.perms.filter(p=>a.P[s.id+"."+p.id]).length;
+      const devSet=s.perms.some(p=>a.P[s.id+"."+p.id]!==isStd(a,s.id,p.id));
+      const capped=s.perms.length-avC;
+      const body=`<div style="font-size:12px;color:var(--ink-3);margin:8px 0 4px">${s.d}${(s.req||[]).length?` · needs: ${s.req.map(r=>setById[r].n).join(" + ")}`:""}</div>`+
+        s.perms.map(p=>{
+          const key=s.id+"."+p.id, cur=a.P[key], dv=cur!==isStd(a,s.id,p.id);
+          const av=avail(key), m=modById[PERMMOD[key]];
+          const disFlag=s.id==="flags"&&p.preq&&setState(a,p.preq)!=="on";
+          return `<div class="prow"><span class="pn">${p.n}${p.preq?` <span style="font-size:11px;color:var(--ink-3)">(needs ${setById[p.preq].n})</span>`:""}
+            ${av?"":`<span class="modlock">📦 needs ${m.n} — not in this plant's contract</span>`}</span>
+            <button class="sw sm ${cur?"on":""} ${dv?"dev":""}" ${(!av||disFlag)?"disabled":""} onclick="togglePerm('${s.id}','${p.id}')"></button></div>`;
+        }).join("");
+      return `<div class="acc ${a.openSets[s.id]?"open":""} ${devSet?"devset":""} ${avC===0?"unavail":""}">
+        <div class="acch" onclick="toggleAcc('${s.id}')">
+          <span class="chev">▶</span><span class="name">${s.n}</span>
+          ${s.cat==="flag"?`<span class="chip c-flag" style="padding:1px 8px;font-size:10.5px;margin:0">sensitive</span>`:""}
+          <span class="count">${avC===0?"📦 no module":`${on}/${avC} on${capped?` · ${capped} capped`:""}`}</span>
+          <button class="sw sm ${st==="on"?"on":""} ${st==="partial"?"partial":""} ${devSet?"dev":""}" ${st==="na"?"disabled":""} onclick="event.stopPropagation();toggleSet('${s.id}')"></button>
+        </div><div class="accb">${body}</div></div>`;
+    }).join("");
+    if(setById.flags.perms.some(p=>a.P["flags."+p.id])) h+=`<div class="msg warn">Exception flags are audited individually and expire on role change.</div>`;
+  }
+  h+=`</div>`;
+  if(dev.length){
+    h+=`<div class="gh2">Reason for deviation <span style="color:var(--err)">${a.reason.trim()?"":"— required"}</span></div>
+    <textarea oninput="setReason(this.value)" placeholder="e.g. 'Client ops head requested logbook entry for this supervisor, ticket DP-1142'">${a.reason}</textarea>`;
+  }
+  h+=`<div class="navbtns">
+    <button class="btn primary" ${dev.length&&!a.reason.trim()?"disabled":""} onclick="saveUser()">${a.saved?"✓ Saved — save again":"Save assignment"}</button>
+    <button class="btn ghost" onclick="resetUser()">Reset to standard</button>
+    <span class="hint">${dev.length?(a.reason.trim()?"Deviation stored with reason, counted as drift.":"Write why this user deviates."):"Standard role — saves without a reason."}</span>
+  </div>`;
+  if(a.saved&&!dev.length) h+=`<div class="msg ok">Saved as standard ${ROLES[a.role].n} — zero drift.</div>`;
+  document.getElementById("userpanel").innerHTML=h;
+}
+function setRole(r){ const a=A[activeUser]; a.role=r; initP(a); renderAll(); }
+function setGrant(g){ const a=A[activeUser]; a.grant=g; initP(a); renderAll(); }
+function toggleCust(){ A[activeUser].custOpen=!A[activeUser].custOpen; renderAll(); }
+function toggleAcc(id){ A[activeUser].openSets[id]=!A[activeUser].openSets[id]; renderAll(); }
+function toggleSet(id){
+  const a=A[activeUser], st=setState(a,id);
+  if(st==="na") return;
+  if(st==="on") disableCascade(a,id); else enableWithDeps(a,id);
+  a.saved=false; renderAll();
+}
+function togglePerm(setId,permId){
+  const a=A[activeUser], key=setId+"."+permId;
+  if(!avail(key)) return;
+  const turningOn=!a.P[key];
+  if(turningOn){
+    (setById[setId].req||[]).forEach(r=>{ if(setState(a,r)!=="on"&&setState(a,r)!=="na") enableWithDeps(a,r); });
+    if(setId==="flags"){ const p=setById.flags.perms.find(x=>x.id===permId); if(p.preq&&setState(a,p.preq)!=="on") return; }
+    a.P[key]=true;
+  }else{
+    a.P[key]=false;
+    if(setState(a,setId)==="off") dependents(setId).forEach(d=>{ if(setState(a,d)!=="off"&&setState(a,d)!=="na") disableCascade(a,d); });
+  }
+  a.saved=false; renderAll();
+}
+function setReason(v){ A[activeUser].reason=v; renderUserPanel(); renderUsers2(); }
+function renderUsers2(){ /* light refresh of save button state without full rerender losing textarea focus */
+  const a=A[activeUser]; const dev=deviations(a);
+  const btn=document.querySelector("#userpanel .btn.primary");
+  if(btn) btn.disabled=dev.length>0&&!a.reason.trim();
+}
+function saveUser(){
+  const a=A[activeUser]; a.saved=true;
+  const idx=USERS.findIndex(u=>u.id===activeUser);
+  const next=USERS.find((u,i)=>i>idx&&!(A[u.id]&&A[u.id].saved))||USERS.find(u=>!(A[u.id]&&A[u.id].saved));
+  if(next) activeUser=next.id;
+  renderAll();
+}
+function resetUser(){ const a=A[activeUser]; initP(a); a.custOpen=false; renderAll(); }
+
+function renderReview(){
+  const saved=USERS.filter(u=>A[u.id]&&A[u.id].saved);
+  let h=`<div style="margin-bottom:14px"><span class="chip c-nav">🏭 ${plant}</span>`+
+    MODULES.filter(m=>mods.has(m.id)).map(m=>`<span class="chip c-ops">${m.icon} ${m.n}</span>`).join("")+
+    MODULES.filter(m=>!mods.has(m.id)).map(m=>`<span class="chip c-read" style="text-decoration:line-through">${m.n}</span>`).join("")+`</div>`;
+  if(!saved.length){ h+=`<p class="hint">No assignments saved yet — go back to step 3.</p>`; document.getElementById("review").innerHTML=h; return; }
+  h+=`<div style="overflow-x:auto"><table class="rtable"><tr><th>User</th><th>Role + grant</th><th>Abilities</th><th>Drift</th><th>App navigation</th></tr>`+
+    saved.map(u=>{
+      const a=A[u.id], dev=deviations(a), tabs=computeTabs(a.P), land=landing(tabs);
+      const abilities=Object.values(a.P).filter(Boolean).length;
+      return `<tr><td><b>${u.av} ${u.name}</b><br><span style="color:var(--ink-3);font-size:11.5px">${u.title}</span></td>
+        <td>${ROLES[a.role].n}${a.grant?"<br>+ "+GRANTNAMES[a.grant]:""}</td>
+        <td>${abilities} on</td>
+        <td>${dev.length?`<span class="chip c-flag" style="margin:0">${dev.length} deviation${dev.length>1?"s":""}</span><br><span style="font-size:11px;color:var(--ink-3)">${a.reason||""}</span>`:`<span class="chip c-ops" style="margin:0">standard</span>`}</td>
+        <td>${tabs.map(t=>t===land?`<b>${t}</b>`:t).join(" · ")||"—"}</td></tr>`;
+    }).join("")+`</table></div>`;
+  const payload={
+    plant:plant,
+    modules:[...mods],
+    note:"runtime check = user permission AND plant module",
+    assignments:saved.map(u=>{
+      const a=A[u.id], add=[], rem=[];
+      SETS.forEach(s=>s.perms.forEach(p=>{
+        const key=s.id+"."+p.id, cur=a.P[key], std=isStd(a,s.id,p.id);
+        if(cur&&!std) add.push(key); if(!cur&&std) rem.push(key);
+      }));
+      return {userId:u.id,name:u.name,baseRole:a.role,grant:a.grant||null,overrides:{add,remove:rem},reason:a.reason.trim()||null,drift:deviations(a).length};
+    })};
+  h+=`<div class="gh2">What gets stored</div><pre class="payload">${JSON.stringify(payload,null,2)}</pre>`;
+  document.getElementById("review").innerHTML=h;
+}
+function renderAll(){
+  renderStepper();
+  if(step===1) renderPlants();
+  if(step===2) renderModules();
+  if(step===3) renderUsers();
+  if(step===4) renderReview();
+}
+renderAll();
+</script>
+</body>
+</html>
