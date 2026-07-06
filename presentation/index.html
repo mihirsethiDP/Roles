@@ -101,6 +101,10 @@ h2.q{font-size:25px;color:var(--navy)}
 .rperson .nm{font-weight:600}
 .rperson .st{margin-left:auto;font-size:15px}
 .railcta{width:100%;margin-top:12px;border:1px solid var(--ops-line);background:var(--ops-bg);color:var(--ops);border-radius:10px;padding:10px;font:600 12.5px "Inter";cursor:pointer}
+.railadd{width:100%;margin-top:8px;border:1px dashed var(--line-strong);background:transparent;color:var(--navy);border-radius:10px;padding:10px;font:600 12.5px "Inter";cursor:pointer}
+.railadd:hover{border-color:var(--navy)}
+.addform label{display:block;font-size:12.5px;font-weight:600;margin:14px 0 5px}
+.addform input{width:100%;border:1px solid var(--line-strong);border-radius:10px;padding:11px 13px;font:14px "Inter";color:var(--ink)}
 .focus{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px;box-shadow:var(--shadow)}
 .fhead{display:flex;align-items:center;gap:14px;margin-bottom:18px}
 .fhead .av{font-size:34px}
@@ -213,6 +217,7 @@ footer a{color:var(--navy)}
         <div class="h" id="railh"></div>
         <div id="raillist"></div>
         <button class="railcta" id="acceptall" onclick="acceptRest()"></button>
+        <button class="railadd" onclick="startAdd()">＋ Add a person</button>
       </div>
       <div class="focus" id="focus"></div>
     </div>
@@ -353,6 +358,22 @@ const USERS=[
 /* ================= STATE ================= */
 let step=1, cluster=null, plant=null, mods=new Set(["core"]);
 const A={}; let activeUser=null;
+let adding=false, addSeq=5;
+const AVPOOL=["🧑‍🔧","👩‍🔬","🧑‍💼","👨‍🏭","👩‍💻","🧑‍🔬"];
+function startAdd(){ adding=true; renderAll(); }
+function cancelAdd(){ adding=false; renderAll(); }
+function addPerson(){
+  const name=document.getElementById("np_name").value.trim();
+  if(!name) return;
+  const title=document.getElementById("np_title").value.trim()||"Team member";
+  addSeq++;
+  const u={id:"u"+addSeq,av:AVPOOL[addSeq%AVPOOL.length],name:name,title:title,suggest:null,grantSuggest:"",added:true};
+  USERS.push(u);
+  A[u.id]={role:"l1",grant:"",openSets:{},custOpen:false,admOpen:false,altOpen:true};
+  initP(A[u.id]);
+  adding=false; activeUser=u.id;
+  renderAll();
+}
 
 /* ================= ENGINE (identical guardrails) ================= */
 function avail(key){ return mods.has(PERMMOD[key]); }
@@ -418,7 +439,7 @@ function savedCount(){ return Object.values(A).filter(a=>a.saved).length; }
 /* ================= NAV & PROGRESS (goal gradient) ================= */
 function go(n){
   if(n>=2&&!plant) return;
-  if(n===3){ USERS.forEach(u=>{ if(!A[u.id]){ A[u.id]={role:u.suggest,grant:u.grantSuggest,openSets:{},custOpen:false,admOpen:!!u.grantSuggest,altOpen:false}; initP(A[u.id]); } else clampToCeiling(A[u.id]); }); if(!activeUser) activeUser=USERS[0].id; }
+  if(n===3){ USERS.forEach(u=>{ if(!A[u.id]){ A[u.id]={role:u.suggest||"l1",grant:u.grantSuggest,openSets:{},custOpen:false,admOpen:!!u.grantSuggest,altOpen:!u.suggest}; initP(A[u.id]); } else clampToCeiling(A[u.id]); }); if(!activeUser) activeUser=USERS[0].id; }
   step=n; renderAll();
   window.scrollTo({top:0,behavior:"smooth"});
   if(n===4) confetti();
@@ -495,7 +516,7 @@ function renderS3(){
       <span class="st">${a&&a.saved?(dev?"⚠️":"✅"):"·"}</span></button>`;
   }).join("");
   const btn=document.getElementById("acceptall");
-  const acceptable=USERS.filter(u=>A[u.id]&&!A[u.id].saved&&deviations(A[u.id]).length===0).length;
+  const acceptable=USERS.filter(u=>u.suggest&&A[u.id]&&!A[u.id].saved&&deviations(A[u.id]).length===0).length;
   btn.style.display=left&&acceptable?"block":"none";
   btn.textContent=`⚡ Quick-finish: accept suggestions for ${acceptable} left`;
   document.getElementById("next3").disabled=!done;
@@ -504,10 +525,20 @@ function renderS3(){
 }
 function pickUser(id){ activeUser=id; renderAll(); }
 function acceptRest(){
-  USERS.forEach(u=>{ const a=A[u.id]; if(a&&!a.saved&&deviations(a).length===0) a.saved=true; });
+  USERS.forEach(u=>{ if(!u.suggest) return; const a=A[u.id]; if(a&&!a.saved&&deviations(a).length===0) a.saved=true; });
   renderAll();
 }
 function renderFocus(){
+  if(adding){
+    document.getElementById("focus").innerHTML=`<div class="fhead"><span class="av">🆕</span><span><span class="t">Add a person</span><br><span class="s">They'll join the roster at ${plant} — you'll pick their role right after.</span></span></div>
+      <div class="addform">
+        <label>Name</label><input id="np_name" placeholder="e.g. Kavita Rao">
+        <label>What do they do?</label><input id="np_title" placeholder="e.g. Lab technician · day shift">
+        <div class="navrow"><button class="cta" onclick="addPerson()">Add to the team →</button><button class="ghost" onclick="cancelAdd()">Cancel</button></div>
+        <p class="hint" style="margin-top:12px">New people start with no access — nothing is granted until you choose a role and save.</p>
+      </div>`;
+    return;
+  }
   const u=USERS.find(x=>x.id===activeUser), a=A[activeUser];
   if(!u||!a){ document.getElementById("focus").innerHTML=`<p class="hint">Pick a team member.</p>`; return; }
   const dev=deviations(a);
@@ -515,20 +546,26 @@ function renderFocus(){
   let h=`<div class="fhead"><span class="av">${u.av}</span><span><span class="t">${u.name}</span><br><span class="s">${u.title}</span></span></div>`;
 
   // The one distinctive element: the suggestion (Von Restorff), acceptable in one tap (Tesler/Hick)
-  const isSuggested=a.role===u.suggest&&a.grant===u.grantSuggest&&dev.length===0;
-  h+=`<div class="suggest"><span class="tag">★ SUGGESTED</span>
-    <div class="t">${ROLES[u.suggest].n}${u.grantSuggest?" + "+GRANTNAMES[u.grantSuggest]:""}</div>
-    <div class="s">${ROLES[u.suggest].s}${u.grantSuggest?" · also "+GRANTHELP[u.grantSuggest].t.split("—")[1]:""}</div>
-    ${a.saved&&isSuggested?`<span class="chip c-ops">✓ Accepted</span>`
-      :`<button class="cta go" onclick="acceptSuggested()">✓ Looks right${savedCount()<USERS.length-1?" — next person":""}</button>`}
-  </div>`;
+  const isSuggested=!!u.suggest&&a.role===u.suggest&&a.grant===u.grantSuggest&&dev.length===0;
+  if(u.suggest){
+    h+=`<div class="suggest"><span class="tag">★ SUGGESTED</span>
+      <div class="t">${ROLES[u.suggest].n}${u.grantSuggest?" + "+GRANTNAMES[u.grantSuggest]:""}</div>
+      <div class="s">${ROLES[u.suggest].s}${u.grantSuggest?" · also "+GRANTHELP[u.grantSuggest].t.split("—")[1]:""}</div>
+      ${a.saved&&isSuggested?`<span class="chip c-ops">✓ Accepted</span>`
+        :`<button class="cta go" onclick="acceptSuggested()">✓ Looks right${savedCount()<USERS.length-1?" — next person":""}</button>`}
+    </div>`;
+  }else{
+    h+=`<div class="suggest" style="border-color:#CBD8EA;background:var(--navy-tint)"><span class="tag" style="background:var(--navy)">＋ NEW PERSON</span>
+      <div class="t">Choose ${u.name.split(" ")[0]}'s role</div>
+      <div class="s">Added just now — pick from the groups below. A standard role saves without a reason.</div></div>`;
+  }
 
   // What they'll see — concrete, plain (cognitive load)
   h+=`<div class="seesrow"><span class="hint" style="display:block;margin-bottom:6px">${u.name.split(" ")[0]} will open the app to:</span>`+
     (tabs.length?tabs.map(t=>`<span class="seechip ${t===land?"land":""}">${t}${t===land?" · home":""}</span>`).join(""):`<span class="hint">Nothing yet.</span>`)+`</div>`;
 
   // Everything below is optional depth (progressive disclosure)
-  h+=`<button class="disclose ${a.altOpen?"open":""}" onclick="tg('altOpen')"><span class="chev">▶</span> Choose a different role</button>
+  h+=`<button class="disclose ${a.altOpen?"open":""}" onclick="tg('altOpen')"><span class="chev">▶</span> ${u.suggest?"Choose a different role":"Choose their role"}</button>
   <div class="block ${a.altOpen?"open":""}">
     <div class="grouplabel">Operates the plant</div>`+
     ["l1","l3","l4"].map(r=>rolePick(r,a,u)).join("")+
@@ -646,7 +683,7 @@ function saveUser(){
 }
 function resetUser(){
   const u=USERS.find(x=>x.id===activeUser), a=A[activeUser];
-  a.role=u.suggest; a.grant=u.grantSuggest; initP(a); a.custOpen=false; a.altOpen=false;
+  a.role=u.suggest||a.role; a.grant=u.grantSuggest; initP(a); a.custOpen=false; a.altOpen=!u.suggest;
   renderAll();
 }
 
