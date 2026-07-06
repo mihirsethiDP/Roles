@@ -242,7 +242,8 @@ const SETS=[
  {id:"raise",n:"Raise manual issues",mod:"ops"},
  {id:"handoff",n:"Hand off / take over sessions",mod:"ops"},
  {id:"checkin",n:"Check in / out of shift",mod:"tasks"},
- {id:"myshift",n:"See my shifts & roster",mod:"tasks"}]},
+ {id:"myshift",n:"See my shifts & roster",mod:"tasks"},
+ {id:"inventory",n:"Add / remove inventory items (usage, expiry, purchase)",mod:"inv"}]},
 {id:"approve",req:["work"],n:"Approvals & closure",cat:"ops",d:"Unblocking and supervising others",perms:[
  {id:"gates",n:"Approve / reject gates (RC, remediation, close)",mod:"ops"},
  {id:"selfapprove",n:"Self-approve own RC / manual close",mod:"ops"},
@@ -250,7 +251,8 @@ const SETS=[
  {id:"reopen",n:"Reopen issues & change root cause",mod:"ops"},
  {id:"override",n:"Photo override",mod:"ops"},
  {id:"assign",n:"Create & assign one-off tasks and insights",mod:"tasks"},
- {id:"shiftview",n:"View all tasks & entries at the plant",mod:"tasks"}]},
+ {id:"shiftview",n:"View all tasks & entries at the plant",mod:"tasks"},
+ {id:"invlogs",n:"Inventory item logs — every movement at the plant",mod:"inv"}]},
 {id:"oversight",req:["approve"],n:"Multi-plant oversight",cat:"ops",d:"Portfolio-level operations",perms:[
  {id:"multiws",n:"Multi-plant workspace",mod:"ops"},
  {id:"cosign",n:"Eligible co-signer for force-close",mod:"ops"},
@@ -299,6 +301,7 @@ const MODULES=[
  {id:"data",n:"Data, Lab & Logbook",icon:"🧪",d:"Lab results, water quality & logbooks",can:"Record lab & logbook data"},
  {id:"analytics",n:"Dashboards & Analytics",icon:"📊",d:"Reports, insights & portfolio views",can:"See dashboards, reports & insights"},
  {id:"iot",n:"IoT & Remote Control",icon:"📡",d:"Sensors, PLC/HMI & remote operation",can:"Monitor & control equipment remotely"},
+ {id:"inv",n:"Inventory Management",icon:"🧯",d:"Consumables & spares — usage, expiry, purchases & logs",can:"Track consumables, spares & purchases"},
 ];
 const ROLES={
  l1:{n:"L1 Operator",grp:"ops",s:"does the work",std:["work","readplant"]},
@@ -326,17 +329,17 @@ const WORKSPACES={
  jaipur:{n:"Jaipur",plants:["STP — Sitapura","WTP — Mansarovar"]},
  demo:{n:"Demo plants",plants:["Demo STP — Training","Demo WTP — Sales"]}};
 const CONTRACT_PREFILL={
- "STP — Sector 62":["ops","tasks","data","analytics","iot"],
+ "STP — Sector 62":["ops","tasks","data","analytics","iot","inv"],
  "WTP — Knowledge Park":["ops","tasks","data","analytics"],
  "STP — Alpha 2":["ops","tasks"],
- "STP — Pari Chowk":["ops","tasks","data"],
- "STP — Cyber Park":["ops","tasks","data","analytics","iot"],
+ "STP — Pari Chowk":["ops","tasks","data","inv"],
+ "STP — Cyber Park":["ops","tasks","data","analytics","iot","inv"],
  "WTP — Sector 29":["ops","data","analytics"],
  "STP — Udyog Vihar":["ops","tasks"],
- "STP — Sitapura":["ops","tasks","data","analytics","iot"],
+ "STP — Sitapura":["ops","tasks","data","analytics","iot","inv"],
  "WTP — Mansarovar":["analytics"],
- "Demo STP — Training":["ops","tasks","data","analytics","iot"],
- "Demo WTP — Sales":["ops","tasks","data","analytics","iot"]};
+ "Demo STP — Training":["ops","tasks","data","analytics","iot","inv"],
+ "Demo WTP — Sales":["ops","tasks","data","analytics","iot","inv"]};
 
 const USERS=[
  {id:"u1",av:"👷",name:"Ramesh Kumar",title:"Plant operator · morning shift",suggest:"l1",grantSuggest:""},
@@ -396,6 +399,7 @@ function computeTabs(P){
   if(has("approve.gates")||has("approve.forceclose")||has("approve.override")) tabs.push("Approvals");
   if(has("work.sessions")||has("work.rc")) tabs.push("Issues");
   if(has("work.tasks")) tabs.push("My tasks");
+  if(has("work.inventory")||has("approve.invlogs")) tabs.push("Inventory");
   if(has("readplant.dash")||has("readplant.reports")||has("readplant.history")) tabs.push("Dashboard");
   if(has("portfolio.overview")||has("portfolio.compare")) tabs.push("Portfolio");
   if(setById.people.perms.some(p=>has("people."+p.id))) tabs.push("People");
@@ -404,7 +408,7 @@ function computeTabs(P){
   return tabs;
 }
 function landing(tabs){
-  const pri=["Approvals","Issues","Portfolio","Dashboard","My tasks","People","Technical","Templates"];
+  const pri=["Approvals","Issues","Portfolio","Dashboard","My tasks","Inventory","People","Technical","Templates"];
   return pri.find(p=>tabs.includes(p))||null;
 }
 function clampToCeiling(a){ Object.keys(a.P).forEach(k=>{ if(!avail(k)) a.P[k]=false; }); }

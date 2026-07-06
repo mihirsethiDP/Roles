@@ -15,10 +15,14 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
 
 - **Product modules cap everything (top of the hierarchy).** DigitalPaani sells
   product modules to companies; modules are licensed **per plant** (`PLANTMODS`
-  in index.html, editable in the "Product modules" tab). 6 modules — see
+  in index.html, editable in the "Product modules" tab). 7 modules — see
   `MODULES`: core (always included), ops (Issue Resolution), tasks (Tasks/Shifts/
   Maintenance), data (Data/Lab/Logbook), analytics (Dashboards & Analytics),
-  iot (IoT & Remote Control). Every permission carries a `mod:` tag (`PERMMOD`);
+  iot (IoT & Remote Control), inv (Inventory Management — added 2026-07,
+  supersedes the old "Stores/Inventory = Phase 2" deferral; `work.inventory`
+  gives operators add/remove on usage/expiry/purchase, `approve.invlogs` gives
+  supervisors the movement log — both net-new to the backend, like APPR).
+  Every permission carries a `mod:` tag (`PERMMOD`);
   modules cut ACROSS role-type sets on purpose (e.g. tasks module spans work,
   approve, people, readplant). **Effective access at a plant = user permission
   ∧ plant module.** The ceiling caps but never edits the user profile: capped
@@ -58,8 +62,9 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
    merge). Never invent permissions; extend from the CSV.
 3. **Deliberate retirements** (document, don't "fix"): free-form role creation
    (GroupRole_Manage) replaced by fixed roles + overrides; legacy Visualisation
-   Workspace superseded; Stores/Inventory = Phase 2; forget-password and video
-   tutorials are platform baseline, not permissions.
+   Workspace superseded; forget-password and video tutorials are platform
+   baseline, not permissions. (Stores/Inventory was deferred here until
+   2026-07 — now shipped as the `inv` product module, see above.)
 4. **Approval permissions are net-new to the backend** — nothing in the legacy
    121 expresses approve/force-close/reopen. New sub-feature needed (e.g. APPR).
 5. **Smart preview is rule-driven, not per-role mockups** — every tab/button/banner

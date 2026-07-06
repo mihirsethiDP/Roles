@@ -315,7 +315,8 @@ const SETS=[
  {id:"raise",n:"Raise manual issues",mod:"ops"},
  {id:"handoff",n:"Hand off / take over sessions",mod:"ops"},
  {id:"checkin",n:"Check in / out of shift",mod:"tasks"},
- {id:"myshift",n:"See my shifts & roster",mod:"tasks"}]},
+ {id:"myshift",n:"See my shifts & roster",mod:"tasks"},
+ {id:"inventory",n:"Add / remove inventory items (usage, expiry, purchase)",mod:"inv"}]},
 {id:"approve",req:["work"],n:"Approvals & closure",cat:"ops",d:"Unblocking and supervising others",old:"was: CSM Asset, Operator Asset (supervisors)",perms:[
  {id:"gates",n:"Approve / reject gates (RC, remediation, close)",mod:"ops"},
  {id:"selfapprove",n:"Self-approve own RC / manual close",mod:"ops"},
@@ -323,7 +324,8 @@ const SETS=[
  {id:"reopen",n:"Reopen issues & change root cause",mod:"ops"},
  {id:"override",n:"Photo override",mod:"ops"},
  {id:"assign",n:"Create & assign one-off tasks and insights",mod:"tasks"},
- {id:"shiftview",n:"View all tasks & entries at the plant",mod:"tasks"}]},
+ {id:"shiftview",n:"View all tasks & entries at the plant",mod:"tasks"},
+ {id:"invlogs",n:"Inventory item logs — every movement at the plant",mod:"inv"}]},
 {id:"oversight",req:["approve"],n:"Multi-plant oversight",cat:"ops",d:"Portfolio-level operations",old:"was: senior CSM profiles",perms:[
  {id:"multiws",n:"Multi-plant workspace",mod:"ops"},
  {id:"cosign",n:"Eligible co-signer for force-close",mod:"ops"},
@@ -374,22 +376,23 @@ const MODULES=[
  {id:"data",n:"Data, Lab & Logbook",icon:"\ud83e\uddea",d:"Lab, water-quality & logbook entry, back-dated corrections, site analytics formulas."},
  {id:"analytics",n:"Dashboards & Analytics",icon:"\ud83d\udcca",d:"Custom dashboards, insights, reports, digital twin, portfolio comparison, AI widgets."},
  {id:"iot",n:"IoT & Remote Control",icon:"\ud83d\udce1",d:"Sensors & thresholds, PLC / HMI / data loggers, remote operation."},
+ {id:"inv",n:"Inventory Management",icon:"\ud83e\uddef",d:"Stock of consumables & spares \u2014 usage, expiry, purchases, and a movement log for supervisors."},
 ];
 const modById=Object.fromEntries(MODULES.map(m=>[m.id,m]));
 const PERMMOD={}; SETS.forEach(s=>s.perms.forEach(p=>PERMMOD[s.id+"."+p.id]=p.mod||"core"));
 /* Per-plant entitlements (what the company bought) \u2014 editable in the Modules tab */
 let PLANTMODS={
- "STP \u2014 Sector 62":["ops","tasks","data","analytics","iot"],
+ "STP \u2014 Sector 62":["ops","tasks","data","analytics","iot","inv"],
  "WTP \u2014 Knowledge Park":["ops","tasks","data","analytics"],
  "STP \u2014 Alpha 2":["ops","tasks"],
- "STP \u2014 Pari Chowk":["ops","tasks","data"],
- "STP \u2014 Cyber Park":["ops","tasks","data","analytics","iot"],
+ "STP \u2014 Pari Chowk":["ops","tasks","data","inv"],
+ "STP \u2014 Cyber Park":["ops","tasks","data","analytics","iot","inv"],
  "WTP \u2014 Sector 29":["ops","data","analytics"],
  "STP \u2014 Udyog Vihar":["ops","tasks"],
- "STP \u2014 Sitapura":["ops","tasks","data","analytics","iot"],
+ "STP \u2014 Sitapura":["ops","tasks","data","analytics","iot","inv"],
  "WTP \u2014 Mansarovar":["analytics"],
- "Demo STP \u2014 Training":["ops","tasks","data","analytics","iot"],
- "Demo WTP \u2014 Sales":["ops","tasks","data","analytics","iot"],
+ "Demo STP \u2014 Training":["ops","tasks","data","analytics","iot","inv"],
+ "Demo WTP \u2014 Sales":["ops","tasks","data","analytics","iot","inv"],
 };
 function plantMods(p){ return new Set(["core",...(PLANTMODS[p]||[])]); }
 function modAvail(mod){ /* across selected plants: all | some | none | na (no plants picked yet) */
@@ -664,6 +667,7 @@ function computeTabs(c){
   if(has("approve.gates")||has("approve.forceclose")||has("approve.override")) tabs.push({id:"approvals",n:"Approvals",why:"Approvals & closure is on"});
   if(has("work.sessions")||has("work.rc")) tabs.push({id:"issues",n:"Issues",why:"Work execution is on"});
   if(has("work.tasks")) tabs.push({id:"tasks",n:"My tasks",why:"Task execution is on"});
+  if(has("work.inventory")||has("approve.invlogs")) tabs.push({id:"inventory",n:"Inventory",why:"Inventory management is on"});
   if(has("readplant.dash")||has("readplant.reports")||has("readplant.history")) tabs.push({id:"dashboard",n:"Dashboard",why:"Plant visibility is on"});
   if(has("portfolio.overview")||has("portfolio.compare")) tabs.push({id:"portfolio",n:"Portfolio",why:"Portfolio visibility is on"});
   if(SETS.find(s=>s.id==="people").perms.some(p=>has("people."+p.id))) tabs.push({id:"people",n:"People",why:"People management is on"});
@@ -672,7 +676,7 @@ function computeTabs(c){
   return tabs;
 }
 function landingTab(tabs){
-  const pri=["approvals","issues","portfolio","dashboard","tasks","people","technical","templates"];
+  const pri=["approvals","issues","portfolio","dashboard","tasks","inventory","people","technical","templates"];
   for(const p of pri){ const t=tabs.find(x=>x.id===p); if(t) return t.id; }
   return null;
 }
@@ -707,6 +711,19 @@ function bodyFor(tabId,c,why){
     b+=row("Chlorine dosing check","Fixed task \u00b7 daily 10:00",`<span class="pill p-grn">Start</span>`);
     b+=row("Backwash filter","Every 8h \u00b7 due 14:00",`<span class="pill p-grn">Start</span>`);
     if(has("work.myshift")) b+=row("My shifts","This week: Mon\u2013Fri, 06:00\u201314:00",`<span class="pill p-nav">Roster</span>`);
+  }
+  if(tabId==="inventory"){
+    if(has("work.inventory")){
+      b+=row("Chlorine drums","12 in stock \u00b7 last used today 09:40",`<span class="pill p-red" style="margin-right:6px">\u2212 Use</span><span class="pill p-grn">+ Add</span>`);
+      b+=row("PAC coagulant","Expires in 6 days \u2014 remove if unusable",`<span class="pill p-amb">Remove \u00b7 expired</span>`);
+      b+=row("Polymer (50 kg bags)","3 left \u00b7 reorder point reached",`<span class="pill p-grn">+ Record purchase</span>`);
+      why.push("Add / remove item actions shown \u2014 work.inventory is on (operator view)");
+    } else { b+=mut("Add / remove items hidden \u2014 work.inventory is off"); why.push("Item actions hidden \u2014 work.inventory is off"); }
+    if(has("approve.invlogs")){
+      b+=row("Inventory log \u2014 today","Ramesh: \u22122 chlorine drums (usage) \u00b7 Vikram: +50 kg polymer (purchase)",`<span class="pill p-nav">Full log</span>`);
+      b+=row("Inventory log \u2014 this week","14 movements \u00b7 1 expiry removal \u00b7 2 purchases",`<span class="pill p-nav">Export</span>`);
+      why.push("Movement logs shown \u2014 approve.invlogs is on (supervisor view)");
+    } else { b+=mut("Movement logs hidden \u2014 supervisors only (approve.invlogs)"); why.push("Inventory logs hidden \u2014 approve.invlogs is off"); }
   }
   if(tabId==="dashboard"){
     if(has("readplant.dash")) b+=`<div class="kpis"><div class="kpi"><div class="n">1.2 MLD</div><div class="l">treated today</div></div><div class="kpi"><div class="n">7.1</div><div class="l">outlet pH</div></div><div class="kpi"><div class="n">4</div><div class="l">issues this week</div></div><div class="kpi"><div class="n">\u2193 9%</div><div class="l">power vs last wk</div></div></div>`;
