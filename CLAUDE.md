@@ -15,10 +15,14 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
 
 - **Product modules cap everything (top of the hierarchy).** DigitalPaani sells
   product modules to companies; modules are licensed **per plant** (`PLANTMODS`
-  in index.html, editable in the "Product modules" tab). 7 modules — see
+  in index.html, editable in the "Product modules" tab). 8 modules — see
   `MODULES`: core (always included), ops (Issue Resolution), tasks (Tasks/Shifts/
   Maintenance), data (Data/Lab/Logbook), analytics (Dashboards & Analytics),
-  iot (IoT & Remote Control), inv (Inventory Management — added 2026-07,
+  iot (IoT & Remote Control), floc (Floc Detector — **permissionless hardware
+  add-on**: `noperm:true`, no `mod:` tag points to it; exists purely as a plant
+  entitlement so contracts track what's sold; never caps or grants anything
+  user-side — this is the pattern for future hardware SKUs), inv (Inventory
+  Management — added 2026-07,
   supersedes the old "Stores/Inventory = Phase 2" deferral; `work.inventory`
   gives operators add/remove on usage/expiry/purchase, `approve.invlogs` gives
   supervisors the movement log — both net-new to the backend, like APPR).

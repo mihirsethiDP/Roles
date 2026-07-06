@@ -377,22 +377,23 @@ const MODULES=[
  {id:"analytics",n:"Dashboards & Analytics",icon:"\ud83d\udcca",d:"Custom dashboards, insights, reports, digital twin, portfolio comparison, AI widgets."},
  {id:"iot",n:"IoT & Remote Control",icon:"\ud83d\udce1",d:"Sensors & thresholds, PLC / HMI / data loggers, remote operation."},
  {id:"inv",n:"Inventory Management",icon:"\ud83e\uddef",d:"Stock of consumables & spares \u2014 usage, expiry, purchases, and a movement log for supervisors."},
+ {id:"floc",n:"Floc Detector",icon:"\ud83d\udd2c",noperm:true,d:"Hardware add-on \u2014 floc detection at the plant. Carries no user permissions; lives on the contract so sales & support know what's installed where."},
 ];
 const modById=Object.fromEntries(MODULES.map(m=>[m.id,m]));
 const PERMMOD={}; SETS.forEach(s=>s.perms.forEach(p=>PERMMOD[s.id+"."+p.id]=p.mod||"core"));
 /* Per-plant entitlements (what the company bought) \u2014 editable in the Modules tab */
 let PLANTMODS={
- "STP \u2014 Sector 62":["ops","tasks","data","analytics","iot","inv"],
- "WTP \u2014 Knowledge Park":["ops","tasks","data","analytics"],
+ "STP \u2014 Sector 62":["ops","tasks","data","analytics","iot","inv","floc"],
+ "WTP \u2014 Knowledge Park":["ops","tasks","data","analytics","floc"],
  "STP \u2014 Alpha 2":["ops","tasks"],
  "STP \u2014 Pari Chowk":["ops","tasks","data","inv"],
  "STP \u2014 Cyber Park":["ops","tasks","data","analytics","iot","inv"],
  "WTP \u2014 Sector 29":["ops","data","analytics"],
  "STP \u2014 Udyog Vihar":["ops","tasks"],
- "STP \u2014 Sitapura":["ops","tasks","data","analytics","iot","inv"],
+ "STP \u2014 Sitapura":["ops","tasks","data","analytics","iot","inv","floc"],
  "WTP \u2014 Mansarovar":["analytics"],
- "Demo STP \u2014 Training":["ops","tasks","data","analytics","iot","inv"],
- "Demo WTP \u2014 Sales":["ops","tasks","data","analytics","iot","inv"],
+ "Demo STP \u2014 Training":["ops","tasks","data","analytics","iot","inv","floc"],
+ "Demo WTP \u2014 Sales":["ops","tasks","data","analytics","iot","inv","floc"],
 };
 function plantMods(p){ return new Set(["core",...(PLANTMODS[p]||[])]); }
 function modAvail(mod){ /* across selected plants: all | some | none | na (no plants picked yet) */
@@ -816,9 +817,12 @@ function renderModules(){
   document.getElementById("modcatalog").innerHTML=MODULES.map(m=>{
     const bySet={}; SETS.forEach(s=>s.perms.forEach(p=>{ if((p.mod||"core")===m.id) bySet[s.n]=(bySet[s.n]||0)+1; }));
     const total=Object.values(bySet).reduce((a,b)=>a+b,0);
-    return `<div class="modcard"><div class="t">${m.icon} ${m.n}${m.always?` <span class="inc" style="font-size:10px;letter-spacing:.05em"> INCLUDED</span>`:""}</div>
+    const tag=m.always?` <span class="inc" style="font-size:10px;letter-spacing:.05em"> INCLUDED</span>`:m.noperm?` <span class="chip c-flag" style="padding:1px 8px;font-size:10px;margin:0;letter-spacing:.05em">HARDWARE ADD-ON</span>`:"";
+    const mline=m.noperm?`Plant-level entitlement only — tracks what's sold; grants no user permissions, so it never appears in a role or override.`
+      :`Unlocks ${total} abilities across role types: ${Object.entries(bySet).map(([n,c])=>`${n} (${c})`).join(" · ")}`;
+    return `<div class="modcard"><div class="t">${m.icon} ${m.n}${tag}</div>
       <div class="d">${m.d}</div>
-      <div class="m">Unlocks ${total} abilities across role types: ${Object.entries(bySet).map(([n,c])=>`${n} (${c})`).join(" · ")}</div></div>`;
+      <div class="m">${mline}</div></div>`;
   }).join("");
   let h=`<tr><th>Plant</th>`+MODULES.map(m=>`<th>${m.icon} ${m.n}</th>`).join("")+`</tr>`;
   Object.keys(WORKSPACES).forEach(w=>{

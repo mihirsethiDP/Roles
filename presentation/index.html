@@ -302,6 +302,7 @@ const MODULES=[
  {id:"analytics",n:"Dashboards & Analytics",icon:"📊",d:"Reports, insights & portfolio views",can:"See dashboards, reports & insights"},
  {id:"iot",n:"IoT & Remote Control",icon:"📡",d:"Sensors, PLC/HMI & remote operation",can:"Monitor & control equipment remotely"},
  {id:"inv",n:"Inventory Management",icon:"🧯",d:"Consumables & spares — usage, expiry, purchases & logs",can:"Track consumables, spares & purchases"},
+ {id:"floc",n:"Floc Detector",icon:"🔬",noperm:true,d:"Hardware add-on at the plant — no user permissions, tracked on the contract"},
 ];
 const ROLES={
  l1:{n:"L1 Operator",grp:"ops",s:"does the work",std:["work","readplant"]},
@@ -329,17 +330,17 @@ const WORKSPACES={
  jaipur:{n:"Jaipur",plants:["STP — Sitapura","WTP — Mansarovar"]},
  demo:{n:"Demo plants",plants:["Demo STP — Training","Demo WTP — Sales"]}};
 const CONTRACT_PREFILL={
- "STP — Sector 62":["ops","tasks","data","analytics","iot","inv"],
- "WTP — Knowledge Park":["ops","tasks","data","analytics"],
+ "STP — Sector 62":["ops","tasks","data","analytics","iot","inv","floc"],
+ "WTP — Knowledge Park":["ops","tasks","data","analytics","floc"],
  "STP — Alpha 2":["ops","tasks"],
  "STP — Pari Chowk":["ops","tasks","data","inv"],
  "STP — Cyber Park":["ops","tasks","data","analytics","iot","inv"],
  "WTP — Sector 29":["ops","data","analytics"],
  "STP — Udyog Vihar":["ops","tasks"],
- "STP — Sitapura":["ops","tasks","data","analytics","iot","inv"],
+ "STP — Sitapura":["ops","tasks","data","analytics","iot","inv","floc"],
  "WTP — Mansarovar":["analytics"],
- "Demo STP — Training":["ops","tasks","data","analytics","iot","inv"],
- "Demo WTP — Sales":["ops","tasks","data","analytics","iot","inv"]};
+ "Demo STP — Training":["ops","tasks","data","analytics","iot","inv","floc"],
+ "Demo WTP — Sales":["ops","tasks","data","analytics","iot","inv","floc"]};
 
 const USERS=[
  {id:"u1",av:"👷",name:"Ramesh Kumar",title:"Plant operator · morning shift",suggest:"l1",grantSuggest:""},
@@ -472,11 +473,11 @@ function renderS2(){
     const on=mods.has(m.id);
     return `<div class="pick modrow ${on?"on":""}" style="cursor:default">
       <span class="ico">${m.icon}</span>
-      <span><span class="t">${m.n}</span><br><span class="s">${m.d}</span></span>
+      <span><span class="t">${m.n}${m.noperm?` <span class="rec">HARDWARE</span>`:""}</span><br><span class="s">${m.d}</span></span>
       <button class="sw ${on?"on":""} tail" onclick="toggleModule('${m.id}')"></button></div>`;
   }).join("");
-  const cans=MODULES.filter(m=>mods.has(m.id)&&!m.always).map(m=>`<span class="chip c-ops">✓ ${m.can}</span>`).join("");
-  const cants=MODULES.filter(m=>!mods.has(m.id)).map(m=>`<span class="chip c-read">✕ ${m.can}</span>`).join("");
+  const cans=MODULES.filter(m=>mods.has(m.id)&&!m.always&&!m.noperm).map(m=>`<span class="chip c-ops">✓ ${m.can}</span>`).join("");
+  const cants=MODULES.filter(m=>!mods.has(m.id)&&!m.noperm).map(m=>`<span class="chip c-read">✕ ${m.can}</span>`).join("");
   document.getElementById("canchips").innerHTML=(cans||`<span class="none">Only the basics — no modules switched on.</span>`)+cants;
 }
 function toggleModule(id){
