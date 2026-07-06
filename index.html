@@ -231,8 +231,8 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
         <div class="gh2">Workspace</div>
         <select id="wssel" onchange="selectWs(this.value)">
           <option value="">Select a workspace…</option>
-          <option value="noida">Noida Cluster</option>
-          <option value="gurgaon">Gurgaon Cluster</option>
+          <option value="noida">Noida Workspace</option>
+          <option value="gurgaon">Gurgaon Workspace</option>
           <option value="jaipur">Jaipur</option>
           <option value="demo">Demo plants</option>
         </select>
@@ -338,7 +338,7 @@ const SETS=[
  {id:"history",n:"Equipment & maintenance history",mod:"tasks"}]},
 {id:"portfolio",req:["readplant"],n:"Portfolio visibility",cat:"read",d:"Seeing all plants at once",old:"was: Client Administrative, Unified Dashboard",perms:[
  {id:"overview",n:"Portfolio overview & plants list",mod:"analytics"},
- {id:"compare",n:"Compare plants & clusters",mod:"analytics"}]},
+ {id:"compare",n:"Compare plants & workspaces",mod:"analytics"}]},
 {id:"people",n:"People management",cat:"adm",d:"Users, rosters, skills, groups",old:"was: View as Different User, Roster & Task list, Group/Workspace Management",perms:[
  {id:"invite",n:"Invite / edit / offboard users",mod:"core"},
  {id:"rosters",n:"Rosters & shift schedules",mod:"tasks"},
@@ -423,8 +423,8 @@ const setById=Object.fromEntries(SETS.map(s=>[s.id,s]));
 
 let baseRole="l1", grant="", P={}, openSets={}, custOpen=false, effOpen=false;
 const WORKSPACES={
-noida:{n:"Noida Cluster",plants:["STP \u2014 Sector 62","WTP \u2014 Knowledge Park","STP \u2014 Alpha 2","STP \u2014 Pari Chowk"]},
-gurgaon:{n:"Gurgaon Cluster",plants:["STP \u2014 Cyber Park","WTP \u2014 Sector 29","STP \u2014 Udyog Vihar"]},
+noida:{n:"Noida Workspace",plants:["STP \u2014 Sector 62","WTP \u2014 Knowledge Park","STP \u2014 Alpha 2","STP \u2014 Pari Chowk"]},
+gurgaon:{n:"Gurgaon Workspace",plants:["STP \u2014 Cyber Park","WTP \u2014 Sector 29","STP \u2014 Udyog Vihar"]},
 jaipur:{n:"Jaipur",plants:["STP \u2014 Sitapura","WTP \u2014 Mansarovar"]},
 demo:{n:"Demo plants",plants:["Demo STP \u2014 Training","Demo WTP \u2014 Sales"]}};
 let ws="", wsLoading=false, selPlants=new Set();
@@ -737,7 +737,7 @@ function bodyFor(tabId,c,why){
     if(!canAct){ b+=mut("View-only \u2014 acting on issues is not part of this user\u2019s permissions"); why.push("Read-only banner shown \u2014 no operational permissions"); }
   }
   if(tabId==="portfolio"){
-    if(has("portfolio.overview")) b+=`<div class="gridcards"><div class="pcard"><div class="t">Noida cluster</div><div class="s">5 plants \u00b7 98% SLA</div></div><div class="pcard"><div class="t">Gurgaon cluster</div><div class="s">4 plants \u00b7 94% SLA</div></div><div class="pcard"><div class="t">Jaipur</div><div class="s">3 plants \u00b7 99% SLA</div></div><div class="pcard"><div class="t">2 at deadline</div><div class="s">needs attention</div></div></div>`;
+    if(has("portfolio.overview")) b+=`<div class="gridcards"><div class="pcard"><div class="t">Noida workspace</div><div class="s">5 plants \u00b7 98% SLA</div></div><div class="pcard"><div class="t">Gurgaon workspace</div><div class="s">4 plants \u00b7 94% SLA</div></div><div class="pcard"><div class="t">Jaipur</div><div class="s">3 plants \u00b7 99% SLA</div></div><div class="pcard"><div class="t">2 at deadline</div><div class="s">needs attention</div></div></div>`;
     if(has("portfolio.compare")) b+=row("Compare plants","Energy \u00b7 SLA \u00b7 issues per MLD",`<span class="pill p-nav">Open</span>`);
   }
   if(tabId==="people"){

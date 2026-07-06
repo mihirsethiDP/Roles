@@ -187,8 +187,8 @@ footer a{color:var(--navy)}
   <div class="screen" id="s1">
     <span class="timehint">⏱ Setting up a plant takes about 2 minutes</span>
     <h2 class="q">Where are we setting up?</h2>
-    <p class="sub">Pick the region, then the plant. Its contract fills in everything else.</p>
-    <div class="chiprow" id="clusterrow" style="margin-bottom:18px"></div>
+    <p class="sub">Pick a workspace — each one holds one or more plants — then the plant. Its contract fills in everything else.</p>
+    <div class="chiprow" id="wsrow" style="margin-bottom:18px"></div>
     <div class="pickgrid" id="plantgrid"></div>
     <div class="navrow"><button class="cta" id="next1" onclick="go(2)" disabled>Continue →</button></div>
   </div>
@@ -270,7 +270,7 @@ const SETS=[
  {id:"history",n:"Equipment & maintenance history",mod:"tasks"}]},
 {id:"portfolio",req:["readplant"],n:"Portfolio visibility",cat:"read",d:"Seeing all plants at once",perms:[
  {id:"overview",n:"Portfolio overview & plants list",mod:"analytics"},
- {id:"compare",n:"Compare plants & clusters",mod:"analytics"}]},
+ {id:"compare",n:"Compare plants & workspaces",mod:"analytics"}]},
 {id:"people",n:"People management",cat:"adm",d:"Users, rosters, skills, groups",perms:[
  {id:"invite",n:"Invite / edit / offboard users",mod:"core"},
  {id:"rosters",n:"Rosters & shift schedules",mod:"tasks"},
@@ -330,8 +330,8 @@ const modById=Object.fromEntries(MODULES.map(m=>[m.id,m]));
 const PERMMOD={}; SETS.forEach(s=>s.perms.forEach(p=>PERMMOD[s.id+"."+p.id]=p.mod||"core"));
 
 const WORKSPACES={
- noida:{n:"Noida Cluster",plants:["STP — Sector 62","WTP — Knowledge Park","STP — Alpha 2","STP — Pari Chowk"]},
- gurgaon:{n:"Gurgaon Cluster",plants:["STP — Cyber Park","WTP — Sector 29","STP — Udyog Vihar"]},
+ noida:{n:"Noida Workspace",plants:["STP — Sector 62","WTP — Knowledge Park","STP — Alpha 2","STP — Pari Chowk"]},
+ gurgaon:{n:"Gurgaon Workspace",plants:["STP — Cyber Park","WTP — Sector 29","STP — Udyog Vihar"]},
  jaipur:{n:"Jaipur",plants:["STP — Sitapura","WTP — Mansarovar"]},
  demo:{n:"Demo plants",plants:["Demo STP — Training","Demo WTP — Sales"]}};
 const CONTRACT_PREFILL={
@@ -350,13 +350,13 @@ const CONTRACT_PREFILL={
 const USERS=[
  {id:"u1",av:"👷",name:"Ramesh Kumar",title:"Plant operator · morning shift",suggest:"l1",grantSuggest:""},
  {id:"u2",av:"🧰",name:"Sunita Mehra",title:"Shift supervisor",suggest:"l3",grantSuggest:""},
- {id:"u3",av:"🗺️",name:"Arjun Patel",title:"Cluster ops manager",suggest:"l4",grantSuggest:""},
+ {id:"u3",av:"🗺️",name:"Arjun Patel",title:"Workspace ops manager",suggest:"l4",grantSuggest:""},
  {id:"u4",av:"📈",name:"Priya Sharma",title:"Client sustainability head",suggest:"regular",grantSuggest:""},
  {id:"u5",av:"🔌",name:"Vikram Desai",title:"Automation engineer (DigitalPaani)",suggest:"l1",grantSuggest:"tech"},
 ];
 
 /* ================= STATE ================= */
-let step=1, cluster=null, plant=null, mods=new Set(["core"]);
+let step=1, workspace=null, plant=null, mods=new Set(["core"]);
 const A={}; let activeUser=null;
 let adding=false, addSeq=5;
 const AVPOOL=["🧑‍🔧","👩‍🔬","🧑‍💼","👨‍🏭","👩‍💻","🧑‍🔬"];
@@ -470,11 +470,11 @@ function renderTop(){
   document.querySelectorAll(".screen").forEach((s,i)=>s.classList.toggle("on",i+1===step));
 }
 function renderS1(){
-  document.getElementById("clusterrow").innerHTML=Object.keys(WORKSPACES).map(w=>
-    `<button class="gchip ${cluster===w?"on":""}" style="${cluster===w?"background:var(--navy);border-color:var(--navy)":""}" onclick="pickCluster('${w}')">${WORKSPACES[w].n}</button>`).join("");
+  document.getElementById("wsrow").innerHTML=Object.keys(WORKSPACES).map(w=>
+    `<button class="gchip ${workspace===w?"on":""}" style="${workspace===w?"background:var(--navy);border-color:var(--navy)":""}" onclick="pickWorkspace('${w}')" title="${WORKSPACES[w].plants.length} plant${WORKSPACES[w].plants.length>1?"s":""}">${WORKSPACES[w].n} · ${WORKSPACES[w].plants.length}</button>`).join("");
   const pg=document.getElementById("plantgrid");
-  if(!cluster){ pg.innerHTML=`<p class="hint" style="grid-column:1/-1">Pick a region above.</p>`; }
-  else pg.innerHTML=WORKSPACES[cluster].plants.map(p=>{
+  if(!workspace){ pg.innerHTML=`<p class="hint" style="grid-column:1/-1">Pick a workspace above.</p>`; }
+  else pg.innerHTML=WORKSPACES[workspace].plants.map(p=>{
     const rec=p==="Demo WTP — Sales";
     return `<button class="pick ${plant===p?"on":""}" onclick="pickPlant('${p}')">
       <span class="radio"></span><span class="ico">🏭</span>
@@ -483,7 +483,7 @@ function renderS1(){
   }).join("");
   document.getElementById("next1").disabled=!plant;
 }
-function pickCluster(w){ cluster=w; renderAll(); }
+function pickWorkspace(w){ workspace=w; renderAll(); }
 function pickPlant(p){
   if(plant!==p){ plant=p; mods=new Set(["core",...(CONTRACT_PREFILL[p]||[])]); Object.keys(A).forEach(k=>delete A[k]); activeUser=null; }
   renderAll();
