@@ -64,6 +64,21 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
   `entitlementContext` is informational — the runtime permission check at a
   plant is always `user permission AND plant module`; entitlements live on the
   plant/contract record, not the user.
+- **Product name (owner ruling 2026-07-13): "User Center — Roles &
+  Permissions".** "CloseTheLoop" stays only as the internal project codename
+  in docs — it must not appear in any UI string of either prototype.
+- **Personas** (index.html hero toggle): 🌐 DigitalPaani Admin (Global) sees
+  everything; 🏭 Site supervisor (People Admin @ STP — Sector 62, `SITE_SCOPE`)
+  sees only their site — scoped directory/review/preview, read-only module
+  matrix (ADR-003 gating), Global grant chip locked. All scoping flows through
+  `inScope`/`scopedPlants`/`scopedPeople`.
+- **Custom roles = add-only live-linked bundles** (`PACKS`,
+  `createCustomRole`) — NOT catalog forks: base role + named extra abilities +
+  one recorded reason, bulk-applied to many people/plants in one audited
+  action; exception flags are refused by design; retiring revokes everywhere
+  at once; the review why-chain names the bundle (provenance via
+  `asg[plant].packKeys`). Global persona gets ⚡ whole-cluster select chips
+  (per company) in the plant picker and the pack builder.
 - **User Center** (index.html tab 1) — the person registry everything drives
   from: `PEOPLE` (5 seeds + add-person), directory with KPIs/search/filters,
   person profile = the per-plant assignment editor bound to that record
