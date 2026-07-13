@@ -67,6 +67,23 @@ select{padding:8px 11px;border:1px solid var(--line-strong);border-radius:8px;fo
 .arowsum{font-size:12.5px;color:var(--ink-2);padding:0 14px 11px}
 .arowsum b{color:var(--navy)}
 .lensdesc{font-size:12px;color:var(--ink-3);margin:-8px 0 14px}
+/* ---------- user center ---------- */
+.ucbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px}
+.ucbar input[type=text]{flex:1;min-width:200px;border:1px solid var(--line-strong);border-radius:9px;padding:10px 13px;font:13.5px "Inter";color:var(--ink)}
+.urow{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 16px;margin-bottom:10px;cursor:pointer;font:inherit;box-shadow:0 1px 3px rgba(25,52,88,.05)}
+.urow:hover{border-color:var(--navy)}
+.urow .av{font-size:26px;flex:none}
+.urow .nm{font-weight:600;font-size:14.5px}
+.urow .tt{font-size:12px;color:var(--ink-2)}
+.urow .mid{flex:1;min-width:200px}
+.urow .chips{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.tierchip{font-size:11px;font-weight:600;padding:3px 9px;border-radius:9px;background:var(--navy-tint);color:var(--navy);white-space:nowrap}
+.addform2{background:var(--bg);border:1px dashed var(--line-strong);border-radius:12px;padding:14px;margin-top:12px}
+.addform2 input{border:1px solid var(--line-strong);border-radius:9px;padding:10px 13px;font:13.5px "Inter";margin:0 8px 8px 0;min-width:220px}
+.profhead{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.profhead .av{font-size:30px}
+.profhead .nm{font-family:"Sora";font-size:17px;font-weight:600}
+.profhead .tt{font-size:12.5px;color:var(--ink-2)}
 .msg{border-radius:8px;padding:9px 13px;font-size:13px;margin:8px 0}
 .msg.warn{background:var(--flag-bg);color:var(--flag)}
 .msg.err{background:var(--err-bg);color:var(--err)}
@@ -222,7 +239,7 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
     <p>Three ideas, one order: <b>plants</b> carry what the company bought · <b>people</b> get a role per plant · <b>review</b> shows everything at a glance. Amber always means a deviation. Grey always means "not in this plant's plan".</p>
     <div class="tabs">
       <button class="tab on" onclick="tab(0)">1 · Plants & modules</button>
-      <button class="tab" onclick="tab(1)">2 · Configure a user</button>
+      <button class="tab" onclick="tab(1)">2 · User Center</button>
       <button class="tab" onclick="tab(2)">3 · Access review</button>
       <button class="tab" onclick="tab(3)">4 · UI previews</button>
     </div>
@@ -236,7 +253,7 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
 <div class="pane on" id="pane0">
   <div class="panel" style="margin-bottom:18px">
     <div class="gh">The hierarchy — modules cap, tiers default, exceptions flex</div>
-    <p style="font-size:13.5px;color:var(--ink-2);margin:0 0 8px">We sell <b>product modules</b> to companies. A module is a sellable slice of the product that unlocks permissions — each permission still lives in its role type. Modules are switched on <b>per plant</b>, on the plant record itself: the plant carries its company label and its module flags. There is no workspace or group in between.</p>
+    <p style="font-size:13.5px;color:var(--ink-2);margin:0 0 8px">We sell <b>product modules</b> to companies. A module is a sellable slice of the product that unlocks permissions — each permission still lives in its role type. Modules are switched on <b>per plant</b>, on the plant record itself: the plant carries its company label and its module flags. There is no container of any kind in between — people connect straight to plants.</p>
     <p style="font-size:13.5px;color:var(--ink-2);margin:0">Effective access at a plant = <b>user permission ∧ plant module</b>. Module flags are written only here (Global Admin at onboarding; Technical Admin afterward) — every other screen reads them.</p>
   </div>
   <div class="gridcards" id="modcatalog" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin-bottom:18px"></div>
@@ -247,8 +264,44 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
   </div>
 </div>
 
-<!-- ============ PANE 1: CONFIGURATOR ============ -->
+<!-- ============ PANE 1: USER CENTER ============ -->
 <div class="pane" id="pane1">
+
+  <!-- directory -->
+  <div id="ucdir">
+    <div class="panel" style="margin-bottom:18px">
+      <div class="gh">User Center — everyone lives here, everything drives from here</div>
+      <div class="help"><span class="i">💡</span><span>Every screen starts from a <b>person</b>. Open someone to edit their per-plant roles; the Access review and UI previews follow whoever you pick. Adding, changing and saving all land in the change log.</span></div>
+      <div class="kpis" id="uckpis"></div>
+      <div class="ucbar">
+        <input type="text" id="ucsearch" placeholder="Search name or title…" oninput="render()">
+        <select id="ucfplant" onchange="render()"></select>
+        <select id="ucfstate" onchange="render()">
+          <option value="">Everyone</option>
+          <option value="dev">With deviations</option>
+          <option value="grant">With admin grants</option>
+          <option value="capped">With capped abilities</option>
+        </select>
+        <button class="btn primary" onclick="startAddPerson()">＋ Add person</button>
+      </div>
+      <div id="ucaddform"></div>
+    </div>
+    <div id="uclist"></div>
+  </div>
+
+  <!-- profile -->
+  <div id="ucprofile" style="display:none">
+    <div class="panel" style="margin-bottom:18px">
+      <div class="profhead">
+        <button class="btn ghost" onclick="backToDirectory()">← All people</button>
+        <span class="av" id="ucav"></span>
+        <span><span class="nm" id="ucnm"></span><br><span class="tt" id="uctt"></span></span>
+        <span style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn ghost" onclick="jumpReview()">🔍 See in Access review</button>
+          <button class="btn ghost" onclick="jumpPreview()">🖥 Preview as this person</button>
+        </span>
+      </div>
+    </div>
   <div class="grid">
     <div>
       <div class="panel">
@@ -286,6 +339,7 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
       </div>
     </div>
   </div>
+  </div><!-- /ucprofile -->
 </div>
 
 <!-- ============ PANE 2: ACCESS REVIEW ============ -->
@@ -455,7 +509,66 @@ function plantMods(p){ return new Set(["core",...(PLANTMODS[p]||[])]); }
 function coName(p){ return COMPANIES[PLANTCO[p]]; }
 function plantsByCompany(){ const g={}; ALLPLANTS.forEach(p=>{ (g[PLANTCO[p]]=g[PLANTCO[p]]||[]).push(p); }); return g; }
 
-/* ================= CONFIGURATOR STATE — per-plant assignments ================= */
+/* ================= USER CENTER — the people registry everything drives from ================= */
+function isStdG(tier,g,setId){ if(setId==="flags") return false; const s=new Set(ROLES[tier].std); (GRANTS[g]||[]).forEach(x=>s.add(x)); return s.has(setId); }
+function mkPerson(id,av,n,t,co,grantId,rows){
+  const p={id:id,av:av,n:n,t:t,co:co,grant:grantId,asg:{},lastSaved:null};
+  rows.forEach(r=>{
+    const a={tier:r.tier,P:{},reason:r.reason||"",openSets:{},open:false};
+    SETS.forEach(s=>s.perms.forEach(pr=>a.P[s.id+"."+pr.id]=isStdG(r.tier,grantId,s.id)));
+    (r.add||[]).forEach(k=>a.P[k]=true);
+    (r.remove||[]).forEach(k=>a.P[k]=false);
+    p.asg[r.plant]=a;
+  });
+  return p;
+}
+let PEOPLE=[
+ mkPerson("asha","🧰","Asha Verma","Shift supervisor","greengrid","",[
+   {plant:"STP — Sector 62",tier:"l3",add:["flags.backdate"],reason:"Lab migration backfill, approved A. Loijos, DP-1188"},
+   {plant:"WTP — Mansarovar",tier:"regular"}]),
+ mkPerson("vikram","🔌","Vikram Desai","Automation engineer","aquacore","tech",[
+   {plant:"STP — Cyber Park",tier:"l3"},
+   {plant:"STP — Udyog Vihar",tier:"l3",remove:["approve.selfapprove"],reason:"Four-eyes rule at client site, DP-1201"}]),
+ mkPerson("ramesh","👷","Ramesh Kumar","Plant operator","greengrid","",[
+   {plant:"STP — Alpha 2",tier:"l1"}]),
+ mkPerson("priya","📈","Priya Sharma","Sustainability head","jmc","",[
+   {plant:"STP — Sitapura",tier:"senior"},
+   {plant:"WTP — Mansarovar",tier:"senior"}]),
+ mkPerson("kavita","👩‍🔬","Kavita Rao","Lab technician","demo","",[
+   {plant:"Demo STP — Training",tier:"l1"}]),
+];
+let cur=null, addingP=false, addSeq=0;
+const AVPOOL=["🧑‍🔧","👩‍💻","🧑‍💼","👨‍🏭","🧑‍🔬"];
+function devCount(person,plant){
+  const a=person.asg[plant]; if(!a) return 0; let n=0;
+  SETS.forEach(s=>s.perms.forEach(pr=>{ const k=s.id+"."+pr.id; if(a.P[k]!==isStdG(a.tier,person.grant,s.id)) n++; }));
+  return n;
+}
+function personDrift(person){ return Object.keys(person.asg).reduce((n,pl)=>n+devCount(person,pl),0); }
+function personCapped(person){
+  return Object.keys(person.asg).reduce((n,pl)=>n+Object.keys(person.asg[pl].P).filter(k=>person.asg[pl].P[k]&&!avail(k,pl)).length,0);
+}
+function selectPerson(id){
+  cur=PEOPLE.find(x=>x.id===id);
+  grant=cur.grant; ASG=cur.asg; selPlants=new Set(Object.keys(cur.asg));
+  addingP=false; render();
+}
+function backToDirectory(){ cur=null; render(); }
+function startAddPerson(){ addingP=!addingP; render(); }
+function addPersonSubmit(){
+  const n=document.getElementById("np_name").value.trim();
+  if(!n) return;
+  const t=document.getElementById("np_title").value.trim()||"Team member";
+  addSeq++;
+  const p=mkPerson("new"+addSeq,AVPOOL[addSeq%AVPOOL.length],n,t,"greengrid","",[]);
+  PEOPLE.push(p);
+  AUDIT.unshift({w:"now",t:`${n} added to the directory — no access yet (nothing granted until plants are assigned and saved)`});
+  addingP=false; selectPerson(p.id);
+}
+function jumpReview(){ if(cur){ reviewPerson=cur.id; lens="person"; whySel=null; openRevSets=null; } tab(2); }
+function jumpPreview(){ prevMode="live"; prevTab=null; tab(3); }
+
+/* ================= ASSIGNMENT EDITOR STATE (bound to the selected person) ================= */
 let grant="", selPlants=new Set(), ASG={}, lastTier="l1", grantOpen=false;
 function toggleGrantOpen(){ grantOpen=!grantOpen; render(); }
 function avail(key,plant){ return plantMods(plant).has(PERMMOD[key]); }
@@ -479,7 +592,7 @@ function togglePlantSel(plant){
 }
 function setTier(plant,t){ lastTier=t; initAsg(plant,t); render(); }
 function setAllTiers(t){ if(!t) return; lastTier=t; selPlants.forEach(p=>initAsg(p,t)); render(); }
-function setGrant(g){ grant=g; selPlants.forEach(p=>initAsg(p,ASG[p].tier)); render(); }
+function setGrant(g){ grant=g; if(cur) cur.grant=g; selPlants.forEach(p=>initAsg(p,ASG[p].tier)); render(); }
 function resetStd(){ selPlants.forEach(p=>initAsg(p,ASG[p].tier)); document.getElementById("payload").style.display="none"; render(); }
 function toggleOpen(plant){ ASG[plant].open=!ASG[plant].open; render(); }
 function toggleAcc(plant,setId){ ASG[plant].openSets[setId]=!ASG[plant].openSets[setId]; render(); }
@@ -539,8 +652,14 @@ function deviations(a){
 function cappedKeys(a,plant){ return Object.keys(a.P).filter(k=>a.P[k]&&!avail(k,plant)); }
 function setReason(plant,v){ ASG[plant].reason=v; renderSaveState(); }
 
-/* ================= RENDER: CONFIGURATOR ================= */
+/* ================= RENDER: USER CENTER ================= */
 function render(){
+  const dir=document.getElementById("ucdir"), prof=document.getElementById("ucprofile");
+  if(!cur){ dir.style.display=""; prof.style.display="none"; renderDirectory(); return; }
+  dir.style.display="none"; prof.style.display="";
+  document.getElementById("ucav").textContent=cur.av;
+  document.getElementById("ucnm").textContent=cur.n;
+  document.getElementById("uctt").textContent=`${cur.t} · ${COMPANIES[cur.co]||cur.co}${cur.grant?" · "+GRANTNAMES[cur.grant]:""}`;
   // plant picker grouped by company
   const groups=plantsByCompany();
   document.getElementById("plantbox").innerHTML=Object.keys(groups).map(co=>
@@ -604,6 +723,48 @@ function render(){
 
   // drift summary + save
   renderSaveState();
+}
+function renderDirectory(){
+  const totalRows=PEOPLE.reduce((n,p)=>n+Object.keys(p.asg).length,0);
+  const withDev=PEOPLE.filter(p=>personDrift(p)>0).length;
+  const withGrant=PEOPLE.filter(p=>p.grant).length;
+  const withCap=PEOPLE.filter(p=>personCapped(p)>0).length;
+  document.getElementById("uckpis").innerHTML=
+    `<div class="kpi"><div class="n">${PEOPLE.length}</div><div class="l">people</div></div>
+     <div class="kpi"><div class="n">${totalRows}</div><div class="l">plant assignments</div></div>
+     <div class="kpi"><div class="n">${withGrant}</div><div class="l">admin grants</div></div>
+     <div class="kpi"><div class="n" style="color:${withDev?"var(--flag)":"var(--ops)"}">${withDev}</div><div class="l">with deviations</div></div>
+     <div class="kpi"><div class="n">${withCap}</div><div class="l">with capped abilities</div></div>`;
+  const fp=document.getElementById("ucfplant");
+  if(!fp.options.length) fp.innerHTML=`<option value="">All plants</option>`+ALLPLANTS.map(p=>`<option value="${p}">${p}</option>`).join("");
+  document.getElementById("ucaddform").innerHTML=addingP?
+    `<div class="addform2"><b style="font-size:13px">New person</b> <span style="font-size:12px;color:var(--ink-3)">— they start with no access; nothing is granted until you assign plants and save.</span><br>
+     <input id="np_name" placeholder="Name — e.g. Kavita Rao">
+     <input id="np_title" placeholder="What do they do? — e.g. Lab technician">
+     <button class="btn primary" onclick="addPersonSubmit()">Add & open</button>
+     <button class="btn ghost" onclick="startAddPerson()">Cancel</button></div>`:"";
+  const q=(document.getElementById("ucsearch").value||"").toLowerCase();
+  const fplant=fp.value, fstate=document.getElementById("ucfstate").value;
+  const rows=PEOPLE.filter(p=>{
+    if(q&&!(p.n.toLowerCase().includes(q)||p.t.toLowerCase().includes(q))) return false;
+    if(fplant&&!p.asg[fplant]) return false;
+    if(fstate==="dev"&&!personDrift(p)) return false;
+    if(fstate==="grant"&&!p.grant) return false;
+    if(fstate==="capped"&&!personCapped(p)) return false;
+    return true;
+  });
+  document.getElementById("uclist").innerHTML=rows.length?rows.map(p=>{
+    const drift=personDrift(p), cap=personCapped(p);
+    const tiers=Object.keys(p.asg).map(pl=>`<span class="tierchip" title="${pl} · ${coName(pl)}">${ROLES[p.asg[pl].tier].n.replace(" Operator","").replace(" Lead","")} @ ${pl.replace("STP — ","").replace("WTP — ","").replace("Demo ","")}</span>`).join("");
+    return `<button class="urow" onclick="selectPerson('${p.id}')">
+      <span class="av">${p.av}</span>
+      <span class="mid"><span class="nm">${p.n}</span><br><span class="tt">${p.t} · ${COMPANIES[p.co]||p.co}</span></span>
+      <span class="chips">${tiers||`<span class="tierchip" style="background:var(--bg);color:var(--ink-3)">no plants yet</span>`}
+        ${p.grant?`<span class="chip c-adm" style="margin:0">${GRANTNAMES[p.grant]}</span>`:""}
+        ${drift?`<span class="badge b-drift">${drift} deviation${drift>1?"s":""}</span>`:`<span class="badge b-ok">standard</span>`}
+        ${cap?`<span class="badge b-cap">📦 ${cap}</span>`:""}
+      </span></button>`;
+  }).join(""):`<div class="emptystate">Nobody matches — clear the search or filters.</div>`;
 }
 function renderCustomize(plant,a){
   let h=`<div class="help" style="margin-top:0"><span class="i">💡</span><span>You're fine-tuning <b>${ROLES[a.tier].n}</b> at <b>${plant}</b> only — deviations here apply to this plant, nowhere else. Each group is a set of permissions with a master switch; open a group for individual toggles. Anything different from the standard turns <b>amber</b> and needs a reason.</span></div>`;
@@ -676,60 +837,27 @@ function save(){
   });
   const modulesByPlant={}, cappedByPlant={};
   [...selPlants].forEach(p=>{ modulesByPlant[p]=[...plantMods(p)]; const c=cappedKeys(ASG[p],p); if(c.length) cappedByPlant[p]=c; });
-  const payload={userId:"demo-user-001",assignments:assignments,grant:grant||null,
+  const payload={userId:cur?cur.id:"demo-user-001",person:cur?cur.n:null,company:cur?(COMPANIES[cur.co]||cur.co):null,
+    assignments:assignments,grant:grant||null,
     requestedBy:"people-admin@digitalpaani.com",
     entitlementContext:{modulesByPlant:modulesByPlant,cappedByPlant:cappedByPlant}};
   const el=document.getElementById("payload");
   el.style.display="block";
   el.textContent="// Stored on the user record — one row per (person, plant): different tiers\n// at different plants are first-class. entitlementContext is informational;\n// the runtime check at a plant is always: user permission AND plant module.\n"+JSON.stringify(payload,null,2);
-  AUDIT.unshift({w:"now",t:`demo-user-001 saved: ${assignments.map(x=>`${ROLES[x.tier].n} @ ${x.plant}${x.drift?` (+${x.drift} dev)`:""}`).join(" · ")}${grant?` · grant: ${GRANTNAMES[grant]}`:""}`});
+  if(cur) cur.lastSaved="this session";
+  AUDIT.unshift({w:"now",t:`${cur?cur.n:"demo-user-001"} saved: ${assignments.map(x=>`${ROLES[x.tier].n} @ ${x.plant}${x.drift?` (+${x.drift} dev)`:""}`).join(" · ")||"no plant assignments"}${grant?` · grant: ${GRANTNAMES[grant]}`:""}`});
 }
 
-/* ================= ACCESS REVIEW ================= */
-const SEEDPEOPLE=[
- {id:"asha",n:"Asha Verma",t:"Shift supervisor",grant:"",
-  asg:{"STP — Sector 62":{tier:"l3",add:["flags.backdate"],remove:[],reason:"Lab migration backfill, approved A. Loijos, DP-1188"},
-       "WTP — Mansarovar":{tier:"regular",add:[],remove:[],reason:""}}},
- {id:"vikram",n:"Vikram Desai",t:"Automation engineer",grant:"tech",
-  asg:{"STP — Cyber Park":{tier:"l3",add:[],remove:[],reason:""},
-       "STP — Udyog Vihar":{tier:"l3",add:[],remove:["approve.selfapprove"],reason:"Four-eyes rule at client site, DP-1201"}}},
- {id:"ramesh",n:"Ramesh Kumar",t:"Plant operator",grant:"",
-  asg:{"STP — Alpha 2":{tier:"l1",add:[],remove:[],reason:""}}},
-];
+/* ================= ACCESS REVIEW — reads the same PEOPLE registry ================= */
 let lens="person", reviewPerson="asha", reviewPlant=ALLPLANTS[0], whySel=null, openRevSets=null, capQuery="";
-function isStdG(tier,g,setId){ if(setId==="flags") return false; const s=new Set(ROLES[tier].std); (GRANTS[g]||[]).forEach(x=>s.add(x)); return s.has(setId); }
-function reviewPeople(){
-  const ppl=SEEDPEOPLE.map(x=>x);
-  if(selPlants.size){
-    const asg={};
-    selPlants.forEach(p=>{
-      const a=ASG[p], add=[], rem=[];
-      SETS.forEach(s=>s.perms.forEach(pr=>{
-        const key=s.id+"."+pr.id;
-        if(a.P[key]&&!isStdFor(a.tier,s.id)) add.push(key);
-        if(!a.P[key]&&isStdFor(a.tier,s.id)) rem.push(key);
-      }));
-      asg[p]={tier:a.tier,add:add,remove:rem,reason:a.reason};
-    });
-    ppl.unshift({id:"live",n:"demo-user-001",t:"currently in the configurator",grant:grant,asg:asg,live:true});
-  }
-  return ppl;
-}
-function personP(person,plant,key){ /* profile truth for one permission */
-  const a=person.asg[plant]; if(!a) return false;
-  const setId=key.split(".")[0];
-  let v=isStdG(a.tier,person.grant,setId);
-  if(a.add.includes(key)) v=true;
-  if(a.remove.includes(key)) v=false;
-  return v;
-}
+function reviewPeople(){ return PEOPLE; }
+function personP(person,plant,key){ const a=person.asg[plant]; return a?!!a.P[key]:false; }
 function cellState(person,plant,key){
   const a=person.asg[plant]; if(!a) return "off";
-  const setId=key.split(".")[0];
-  const std=isStdG(a.tier,person.grant,setId);
-  const on=personP(person,plant,key);
+  const std=isStdG(a.tier,person.grant,key.split(".")[0]);
+  const on=!!a.P[key];
   if(on&&!avail(key,plant)) return "capped";
-  if(on&&std&&!a.add.includes(key)) return "on";
+  if(on&&std) return "on";
   if(on) return "added";
   if(!on&&std) return "removed";
   return "off";
@@ -771,7 +899,7 @@ function renderPersonLens(ppl){
     <span class="gh" style="margin:0">Person</span>
     <select onchange="setRevPerson(this.value)">${ppl.map(x=>`<option value="${x.id}" ${x.id===reviewPerson?"selected":""}>${x.n} — ${x.t}</option>`).join("")}</select>
     ${person.grant?`<span class="chip c-adm" style="margin:0">${GRANTNAMES[person.grant]} · all assigned plants</span>`:""}
-    ${person.live?`<span class="chip c-nav" style="margin:0">◉ live from the configurator</span>`:""}
+    ${cur&&cur.id===person.id?`<span class="chip c-nav" style="margin:0">◉ open in the User Center</span>`:""}
   </div>`;
   if(!plants.length) return h+`<p class="hint" style="font-size:13px;color:var(--ink-3)">No plants assigned.</p>`;
   // default set expansion: open sets that carry any non-plain state
@@ -823,7 +951,7 @@ function renderPlantLens(ppl){
     const a=x.asg[reviewPlant];
     const dev=a.add.length+a.remove.length;
     const cap=SETS.flatMap(s=>s.perms.map(p=>s.id+"."+p.id)).filter(k=>personP(x,reviewPlant,k)&&!avail(k,reviewPlant)).length;
-    return `<div class="rowitem"><span><span class="t">${x.n}</span> ${x.live?`<span class="chip c-nav" style="margin:0;padding:1px 8px;font-size:10.5px">live</span>`:""}<br><span class="s">${x.t}${x.grant?" · "+GRANTNAMES[x.grant]:""}</span></span>
+    return `<div class="rowitem"><span><span class="t">${x.n}</span> ${cur&&cur.id===x.id?`<span class="chip c-nav" style="margin:0;padding:1px 8px;font-size:10.5px">editing</span>`:""}<br><span class="s">${x.t}${x.grant?" · "+GRANTNAMES[x.grant]:""}</span></span>
       <span><span class="pill p-nav" style="margin-right:6px">${ROLES[a.tier].n}</span>${dev?`<span class="pill p-amb" style="margin-right:6px">${dev} exception${dev>1?"s":""}</span>`:`<span class="pill p-grn" style="margin-right:6px">standard</span>`}${cap?`<span class="pill" style="background:var(--read-bg);color:var(--ink-3)">📦 ${cap} capped</span>`:""}</span></div>`;
   }).join("");
   // capability query — "who can X here?"
@@ -852,7 +980,7 @@ function renderPlantLens(ppl){
 /* ================= SMART PREVIEW ENGINE ================= */
 let prevMode="live", prevTab=null, prevPlant="all";
 const PRESETS=[
- {id:"live",label:"◉ Current configuration"},
+ {id:"live",label:"◉ Selected person"},
  {id:"l1",label:"L1 Operator",role:"l1",grant:""},
  {id:"l3",label:"L3 Lead",role:"l3",grant:""},
  {id:"l4",label:"L4 Senior Lead",role:"l4",grant:""},
@@ -870,9 +998,14 @@ function buildStdP(role,grantId){
 }
 function previewCtx(){
   if(prevMode==="live"){
-    const ctxPlant=(prevPlant!=="all"&&selPlants.has(prevPlant))?prevPlant:(selPlants.size?[...selPlants][0]:null);
-    if(ctxPlant){ const a=ASG[ctxPlant]; return {P:{...a.P},role:a.tier,grantId:grant,label:`your configuration at ${ctxPlant}`}; }
-    return {P:buildStdP("l1",grant),role:"l1",grantId:grant,label:"standard L1 (no plants selected yet)"};
+    const person=cur||PEOPLE.find(x=>x.id===reviewPerson)||PEOPLE[0];
+    const plants=Object.keys(person.asg);
+    if(plants.length){
+      const ctxPlant=(prevPlant!=="all"&&person.asg[prevPlant])?prevPlant:plants[0];
+      const a=person.asg[ctxPlant];
+      return {P:{...a.P},role:a.tier,grantId:person.grant,label:`${person.n} at ${ctxPlant}`,who:person.n};
+    }
+    return {P:buildStdP("l1",person.grant),role:"l1",grantId:person.grant,label:`${person.n} (no plants assigned yet)`,who:person.n};
   }
   const pr=PRESETS.find(x=>x.id===prevMode);
   return {P:buildStdP(pr.role,pr.grant),role:pr.role,grantId:pr.grant,label:"standard "+pr.label};
@@ -1004,7 +1137,7 @@ function renderPreview(){
   const tabs=computeTabs(c);
   const land=landingTab(tabs);
   if(!prevTab||!tabs.find(t=>t.id===prevTab)) prevTab=land;
-  const roleN=ROLES[c.role].n+(c.grantId?" + "+GRANTNAMES[c.grantId]:"")+(prevPlant!=="all"?" @ "+prevPlant:"");
+  const roleN=(c.who?c.who+" · ":"")+ROLES[c.role].n+(c.grantId?" + "+GRANTNAMES[c.grantId]:"")+(prevPlant!=="all"?" @ "+prevPlant:"");
   let frame;
   if(!tabs.length){
     frame=`<div class="frame"><div class="appbar"><span class="brand">DigitalPaani</span><span class="who">${roleN}</span></div><div class="body">${mut("This user can log in but has no permissions — no screens to show")}</div></div>`;

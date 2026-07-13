@@ -64,6 +64,13 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
   `entitlementContext` is informational — the runtime permission check at a
   plant is always `user permission AND plant module`; entitlements live on the
   plant/contract record, not the user.
+- **User Center** (index.html tab 1) — the person registry everything drives
+  from: `PEOPLE` (5 seeds + add-person), directory with KPIs/search/filters,
+  person profile = the per-plant assignment editor bound to that record
+  (`cur`; `ASG`/`grant` are views onto `cur.asg`/`cur.grant`), save writes
+  back to the registry + `AUDIT`. Access review reads `PEOPLE` directly
+  (`reviewPeople()===PEOPLE`, no fork); the smart preview's "Selected person"
+  preset renders whoever is open. New people start with zero access.
 - **Access Review tab** (index.html tab 2) — the reviewer cross-check surface
   demanded by PRD §8 #1 / PM-brief US-5 / the owner: person lens (capability ×
   plant matrix, 5 cell states: ✓ default · ✚ added · ⊘ removed · ▢ capped ·
@@ -102,9 +109,10 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
 
 ## Files
 
-- `index.html` — Role Studio: progressive-disclosure configurator (role → summary
-  → customize; set master toggles with partial state; per-permission toggles) +
-  smart UI preview engine. Single self-contained file, vanilla JS, no build step.
+- `index.html` — Role Studio: plants & modules record · User Center (people
+  directory → per-plant assignment editor with progressive disclosure) ·
+  Access Review · smart UI preview engine. Single self-contained file,
+  vanilla JS, no build step.
   DigitalPaani navy #193458, ops teal #0E7C66, admin purple #5548C8.
 - `coverage-map.csv` — all 121 legacy permission tags → v2 home + status.
 - `README.md` — GitHub Pages deploy steps (repo: github.com/mihirsethiDP/Roles;
