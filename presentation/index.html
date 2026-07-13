@@ -187,7 +187,7 @@ footer a{color:var(--navy)}
   <div class="screen" id="s1">
     <span class="timehint">⏱ Setting up a plant takes about 2 minutes</span>
     <h2 class="q">Where are we setting up?</h2>
-    <p class="sub">Pick a workspace — each one holds one or more plants — then the plant. Its contract fills in everything else.</p>
+    <p class="sub">Plants are grouped by the company that owns them — the company is a label on the plant, nothing more. Pick the plant; its contract fills in everything else.</p>
     <div class="chiprow" id="wsrow" style="margin-bottom:18px"></div>
     <div class="pickgrid" id="plantgrid"></div>
     <div class="navrow"><button class="cta" id="next1" onclick="go(2)" disabled>Continue →</button></div>
@@ -259,7 +259,7 @@ const SETS=[
  {id:"shiftview",n:"View all tasks & entries at the plant",mod:"tasks"},
  {id:"invlogs",n:"Inventory item logs — every movement at the plant",mod:"inv"}]},
 {id:"oversight",req:["approve"],n:"Multi-plant oversight",cat:"ops",d:"Portfolio-level operations",perms:[
- {id:"multiws",n:"Multi-plant workspace",mod:"ops"},
+ {id:"multiws",n:"Multi-plant view",mod:"ops"},
  {id:"cosign",n:"Eligible co-signer for force-close",mod:"ops"},
  {id:"deadline",n:"Deadline-only escalation alerts",mod:"ops"}]},
 {id:"readplant",n:"Plant visibility (read-only)",cat:"read",d:"Seeing one plant without acting",perms:[
@@ -270,12 +270,12 @@ const SETS=[
  {id:"history",n:"Equipment & maintenance history",mod:"tasks"}]},
 {id:"portfolio",req:["readplant"],n:"Portfolio visibility",cat:"read",d:"Seeing all plants at once",perms:[
  {id:"overview",n:"Portfolio overview & plants list",mod:"analytics"},
- {id:"compare",n:"Compare plants & workspaces",mod:"analytics"}]},
+ {id:"compare",n:"Compare plants & companies",mod:"analytics"}]},
 {id:"people",n:"People management",cat:"adm",d:"Users, rosters, skills, groups",perms:[
  {id:"invite",n:"Invite / edit / offboard users",mod:"core"},
  {id:"rosters",n:"Rosters & shift schedules",mod:"tasks"},
  {id:"skills",n:"Skills & competencies",mod:"core"},
- {id:"groups",n:"User groups & workspaces",mod:"core"},
+ {id:"groups",n:"Plant rosters & directories",mod:"core"},
  {id:"grants",n:"Assign / revoke roles & grants",mod:"core"},
  {id:"notif",n:"Per-user notification overrides",mod:"core"},
  {id:"audit",n:"Directory & audit-log export",mod:"core"}]},
@@ -329,11 +329,13 @@ const setById=Object.fromEntries(SETS.map(s=>[s.id,s]));
 const modById=Object.fromEntries(MODULES.map(m=>[m.id,m]));
 const PERMMOD={}; SETS.forEach(s=>s.perms.forEach(p=>PERMMOD[s.id+"."+p.id]=p.mod||"core"));
 
-const WORKSPACES={
- noida:{n:"Noida Workspace",plants:["STP — Sector 62","WTP — Knowledge Park","STP — Alpha 2","STP — Pari Chowk"]},
- gurgaon:{n:"Gurgaon Workspace",plants:["STP — Cyber Park","WTP — Sector 29","STP — Udyog Vihar"]},
- jaipur:{n:"Jaipur",plants:["STP — Sitapura","WTP — Mansarovar"]},
- demo:{n:"Demo plants",plants:["Demo STP — Training","Demo WTP — Sales"]}};
+/* Company is a label on the plant (ADR-002) — plants are grouped by owning company, no container entity */
+const COMPANIES={
+ greengrid:{n:"GreenGrid Utilities",plants:["STP — Sector 62","WTP — Knowledge Park","STP — Alpha 2","STP — Pari Chowk"]},
+ aquacore:{n:"AquaCore O&M",plants:["STP — Cyber Park","WTP — Sector 29","STP — Udyog Vihar"]},
+ jmc:{n:"Jaipur Municipal Corp",plants:["STP — Sitapura","WTP — Mansarovar"]},
+ demo:{n:"DigitalPaani Demo",plants:["Demo STP — Training","Demo WTP — Sales"]}};
+const WORKSPACES=COMPANIES; // legacy alias, kept for test harnesses
 const CONTRACT_PREFILL={
  "STP — Sector 62":["ops","tasks","data","analytics","iot","inv","floc"],
  "WTP — Knowledge Park":["ops","tasks","data","analytics","floc"],
@@ -350,7 +352,7 @@ const CONTRACT_PREFILL={
 const USERS=[
  {id:"u1",av:"👷",name:"Ramesh Kumar",title:"Plant operator · morning shift",suggest:"l1",grantSuggest:""},
  {id:"u2",av:"🧰",name:"Sunita Mehra",title:"Shift supervisor",suggest:"l3",grantSuggest:""},
- {id:"u3",av:"🗺️",name:"Arjun Patel",title:"Workspace ops manager",suggest:"l4",grantSuggest:""},
+ {id:"u3",av:"🗺️",name:"Arjun Patel",title:"Regional ops manager",suggest:"l4",grantSuggest:""},
  {id:"u4",av:"📈",name:"Priya Sharma",title:"Client sustainability head",suggest:"regular",grantSuggest:""},
  {id:"u5",av:"🔌",name:"Vikram Desai",title:"Automation engineer (DigitalPaani)",suggest:"l1",grantSuggest:"tech"},
 ];
@@ -470,11 +472,11 @@ function renderTop(){
   document.querySelectorAll(".screen").forEach((s,i)=>s.classList.toggle("on",i+1===step));
 }
 function renderS1(){
-  document.getElementById("wsrow").innerHTML=Object.keys(WORKSPACES).map(w=>
-    `<button class="gchip ${workspace===w?"on":""}" style="${workspace===w?"background:var(--navy);border-color:var(--navy)":""}" onclick="pickWorkspace('${w}')" title="${WORKSPACES[w].plants.length} plant${WORKSPACES[w].plants.length>1?"s":""}">${WORKSPACES[w].n} · ${WORKSPACES[w].plants.length}</button>`).join("");
+  document.getElementById("wsrow").innerHTML=Object.keys(COMPANIES).map(w=>
+    `<button class="gchip ${workspace===w?"on":""}" style="${workspace===w?"background:var(--navy);border-color:var(--navy)":""}" onclick="pickWorkspace('${w}')" title="${COMPANIES[w].plants.length} plant${COMPANIES[w].plants.length>1?"s":""}">${COMPANIES[w].n} · ${COMPANIES[w].plants.length}</button>`).join("");
   const pg=document.getElementById("plantgrid");
-  if(!workspace){ pg.innerHTML=`<p class="hint" style="grid-column:1/-1">Pick a workspace above.</p>`; }
-  else pg.innerHTML=WORKSPACES[workspace].plants.map(p=>{
+  if(!workspace){ pg.innerHTML=`<p class="hint" style="grid-column:1/-1">Pick a company above.</p>`; }
+  else pg.innerHTML=COMPANIES[workspace].plants.map(p=>{
     const rec=p==="Demo WTP — Sales";
     return `<button class="pick ${plant===p?"on":""}" onclick="pickPlant('${p}')">
       <span class="radio"></span><span class="ico">🏭</span>

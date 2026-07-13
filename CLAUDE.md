@@ -45,14 +45,33 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
   flags→parent grant fully on), mandatory reason for any deviation, visible
   drift count. Overrides are exceptions with a shelf life — flags expire on
   role change; recurring identical overrides signal the role standard should change.
-- **Assignment scope**: workspace → multi-select plants. One tier per user per
-  plant; at most one grant per user per site.
-- **Save payload shape** (backend contract — see `save()` in index.html):
-  `{userId, scope:{workspace, plants[]}, baseRole, grant, overrides:{add[],remove[]}, reason, drift, entitlementContext:{modulesByPlant, cappedBySelectedPlants[]}}`
+- **Assignment scope (owner ruling 2026-07-13, per ADR-002): no containers.**
+  Company is a LABEL on the plant record (`PLANTCO`/`COMPANIES`), never an
+  entity — "Company is actually the Plant." People are assigned directly to
+  plants; pickers group plants by company label. The word "workspace" is
+  retired from all UI (per-permission labels included).
+- **Per-plant assignments (owner ruling 2026-07-13): a person holds a tier
+  PER PLANT** — `ASG` in index.html, one row per (person, plant), different
+  capacities at different plants are first-class (74 real users in the
+  migration data need this). Overrides and their mandatory reason are scoped
+  per plant; drift is counted per plant; guardrail cascades run per
+  assignment. Grant stays account-level (max one per user per site). The old
+  "split vs edit the group assignment" open question is dissolved — you edit
+  rows.
+- **Save payload shape v2** (backend contract — see `save()` in index.html):
+  `{userId, assignments:[{plant, company, tier, overrides:{add[],remove[]}, reason, drift}], grant, entitlementContext:{modulesByPlant, cappedByPlant}}`
   Override keys are `set.permission` strings, e.g. `approve.forceclose`.
   `entitlementContext` is informational — the runtime permission check at a
   plant is always `user permission AND plant module`; entitlements live on the
   plant/contract record, not the user.
+- **Access Review tab** (index.html tab 2) — the reviewer cross-check surface
+  demanded by PRD §8 #1 / PM-brief US-5 / the owner: person lens (capability ×
+  plant matrix, 5 cell states: ✓ default · ✚ added · ⊘ removed · ▢ capped ·
+  − off) with a click-through **why-chain** sentence per cell; plant lens
+  (roster, "who can do X here?" capability query that respects the module
+  ceiling, changed-recently audit list). Seeded people incl. the live
+  configurator state. Amber ALWAYS means deviation; grey ALWAYS means module
+  not licensed.
 
 ## Hard-won decisions (do not regress)
 
@@ -107,8 +126,12 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
 
 - Split index.html into modules only if it grows further; keep static hosting.
 - Add notification-preset preview (bell mock per role/severity).
-- Prototype the edit flow: user has same tier on 4 plants, needs a different
-  tier on one — split vs edit the group assignment (open design question).
+- Phase 2 of IMPROVEMENT-PLAN.md (local, gitignored — internal): PM-brief
+  one-pagers (cluster tree with (node, tier) rows / add-only Exception Packs /
+  stamp cloning / shielded templates), migration script spec, worksheet rev-2
+  (inventory routing + per-plant splits for the 74 mixed-capacity users),
+  SETS↔CAPS reconciliation, request roles-permissions.md + GAP-ANALYSIS.md
+  from Alex.
 - Generate backend spec: Mongo schema for roles/bundles/assignments/overrides,
   new APPR permissions, route→permission map completion (165 routes unmapped
   in the legacy Routes Permission sheet; 17 mapped tags are invalid).

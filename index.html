@@ -20,46 +20,37 @@
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 "Inter",system-ui,sans-serif}
 h1,h2,h3,h4{font-family:"Sora",sans-serif;font-weight:600;line-height:1.25;margin:0}
-.wrap{max-width:1120px;margin:0 auto;padding:0 22px}
+.wrap{max-width:1160px;margin:0 auto;padding:0 22px}
 
 header.hero{background:var(--navy);color:#fff;padding:30px 0 0;border-bottom:4px solid var(--ops)}
 .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#9DB4D6;margin:0 0 8px}
 .hero h1{font-size:26px;color:#fff}
-.hero p{color:#C3D2E8;max-width:680px;margin:10px 0 22px;font-size:14.5px}
-.tabs{display:flex;gap:6px}
-.tab{border:none;background:rgba(255,255,255,.08);color:#C3D2E8;font:500 14px "Inter";padding:11px 22px;border-radius:10px 10px 0 0;cursor:pointer}
+.hero p{color:#C3D2E8;max-width:760px;margin:10px 0 22px;font-size:14.5px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tab{border:none;background:rgba(255,255,255,.08);color:#C3D2E8;font:500 14px "Inter";padding:11px 20px;border-radius:10px 10px 0 0;cursor:pointer}
 .tab.on{background:var(--bg);color:var(--navy);font-weight:600}
 
 main{padding:30px 0 60px}
 .pane{display:none}.pane.on{display:block}
 
 .grid{display:grid;grid-template-columns:340px 1fr;gap:22px;align-items:start}
-@media(max-width:860px){.grid{grid-template-columns:1fr}}
+@media(max-width:880px){.grid{grid-template-columns:1fr}}
 .panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px}
 .gh{font-size:12px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);margin:0 0 10px}
 .gh2{font-size:12px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);margin:20px 0 8px}
 
-.rolepick{display:flex;flex-direction:column;gap:8px}
-.rp{display:flex;align-items:center;justify-content:space-between;border:1px solid var(--line-strong);border-radius:10px;padding:10px 14px;cursor:pointer;background:var(--card)}
-.rp:hover{border-color:var(--navy)}
-.rp.on{border:2px solid var(--navy);background:var(--navy-tint)}
-.rp .t{font-weight:600;font-size:14px}
-.rp .s{font-size:12px;color:var(--ink-2)}
-.rp .badge{font-size:11px;font-weight:600;padding:2px 9px;border-radius:10px}
-.b-ops{background:var(--ops-bg);color:var(--ops)} .b-adm{background:var(--adm-bg);color:var(--adm)} .b-read{background:var(--read-bg);color:var(--read)}
+select{padding:8px 11px;border:1px solid var(--line-strong);border-radius:8px;font:13.5px "Inter";color:var(--ink);background:var(--card)}
 
-select{width:100%;padding:9px 12px;border:1px solid var(--line-strong);border-radius:8px;font:14px "Inter";color:var(--ink);background:var(--card)}
-
-.tgl{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
-.tgl:last-child{border-bottom:none}
-.tgl .n{font-weight:600;font-size:14px}
-.tgl .d{font-size:12.5px;color:var(--ink-2);margin-top:1px}
-.tgl .std{font-size:11px;color:var(--ink-3)}
+.tglrow{display:flex;align-items:center;gap:10px}
 .sw{position:relative;width:44px;height:24px;flex:none;border-radius:12px;background:var(--line-strong);border:none;cursor:pointer;transition:background .15s;margin-top:2px}
 .sw::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left .15s;box-shadow:0 1px 2px rgba(0,0,0,.25)}
 .sw.on{background:var(--ops)}
 .sw.on::after{left:23px}
 .sw:disabled{opacity:.45;cursor:not-allowed}
+.sw.sm{width:36px;height:20px;border-radius:10px}
+.sw.sm::after{width:14px;height:14px}
+.sw.sm.on::after{left:19px}
+.sw.partial{background:#C98A00}
 .dev{outline:2px solid var(--flag);outline-offset:2px;border-radius:12px}
 
 .msg{border-radius:8px;padding:9px 13px;font-size:13px;margin:8px 0}
@@ -72,20 +63,20 @@ select{width:100%;padding:9px 12px;border:1px solid var(--line-strong);border-ra
 .c-adm{background:var(--adm-bg);color:var(--adm);border-color:var(--adm-line)}
 .c-read{background:var(--read-bg);color:var(--read);border-color:var(--read-line)}
 .c-flag{background:var(--flag-bg);color:var(--flag);border-color:#E8C98A}
+.c-nav{background:var(--navy-tint);color:var(--navy);border-color:#CBD8EA}
 
 ul.pl{margin:4px 0 0;padding-left:20px;font-size:13.5px;color:var(--ink)}
 ul.pl li{margin:2px 0}
-textarea{width:100%;min-height:64px;border:1px solid var(--line-strong);border-radius:8px;padding:10px 12px;font:13.5px "Inter";color:var(--ink);resize:vertical}
-textarea:disabled{background:var(--bg);color:var(--ink-3)}
+textarea{width:100%;min-height:56px;border:1px solid var(--line-strong);border-radius:8px;padding:10px 12px;font:13px "Inter";color:var(--ink);resize:vertical}
 .btn{border:none;border-radius:9px;padding:11px 22px;font:600 14px "Inter";cursor:pointer}
 .btn.primary{background:var(--navy);color:#fff}
 .btn.primary:disabled{background:var(--line-strong);cursor:not-allowed}
 .btn.ghost{background:transparent;color:var(--navy);border:1px solid var(--line-strong)}
-pre.payload{background:var(--navy-deep);color:#BFE3D6;border-radius:10px;padding:14px 16px;font:12.5px/1.55 ui-monospace,Menlo,Consolas,monospace;overflow:auto;margin:10px 0 0}
+pre.payload{background:var(--navy-deep);color:#BFE3D6;border-radius:10px;padding:14px 16px;font:12.5px/1.55 ui-monospace,Menlo,Consolas,monospace;overflow:auto;margin:10px 0 0;max-height:420px}
 .driftbar{display:flex;align-items:center;gap:10px;margin:0 0 6px}
 .driftnum{font-family:"Sora";font-size:22px;font-weight:600}
 
-/* ---------- chip selectors & plant multiselect ---------- */
+/* ---------- chips & plant picker ---------- */
 .chipsel{display:flex;flex-wrap:wrap;gap:8px}
 .gchip{border:1px solid var(--line-strong);background:var(--card);color:var(--ink-2);border-radius:18px;padding:7px 14px;font:500 13px "Inter";cursor:pointer}
 .gchip:hover{border-color:var(--adm)}
@@ -95,42 +86,93 @@ pre.payload{background:var(--navy-deep);color:#BFE3D6;border-radius:10px;padding
 .granthelp b{color:var(--adm)}
 .granthelp.none{background:var(--bg);border-color:var(--line);color:var(--ink-3)}
 .granthelp.none b{color:var(--ink-2)}
+.cohead{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);margin:12px 0 6px}
 .plantchip{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line-strong);background:var(--card);color:var(--ink-2);border-radius:18px;padding:7px 13px;font:500 13px "Inter";cursor:pointer;margin:0 8px 8px 0}
 .plantchip .tick{width:15px;height:15px;border:1.5px solid var(--line-strong);border-radius:4px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;color:#fff;flex:none}
 .plantchip.on{background:var(--ops-bg);border-color:var(--ops);color:#0A5A4A;font-weight:600}
 .plantchip.on .tick{background:var(--ops);border-color:var(--ops)}
-.fetching{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--ink-3);padding:10px 2px}
-.spin{width:14px;height:14px;border:2px solid var(--line-strong);border-top-color:var(--ops);border-radius:50%;animation:spin .7s linear infinite;flex:none}
-@keyframes spin{to{transform:rotate(360deg)}}
-.selall{border:none;background:transparent;color:var(--navy);font:600 12px "Inter";cursor:pointer;padding:0 0 8px}
-/* ---------- progressive disclosure ---------- */
-.summary{background:var(--navy-tint);border:1px solid #CBD8EA;border-radius:12px;padding:16px 18px;margin:14px 0 0}
-.summary .big{font-family:"Sora";font-size:15px;font-weight:600;color:var(--navy)}
-.summary .sub{font-size:13px;color:var(--ink-2);margin-top:2px}
-.disclose{display:flex;align-items:center;gap:8px;border:none;background:transparent;color:var(--navy);font:600 13.5px "Inter";cursor:pointer;padding:10px 0 0}
-.disclose .chev{display:inline-block;transition:transform .15s}
+
+/* ---------- per-plant assignment rows ---------- */
+.arow{border:1px solid var(--line);border-radius:12px;background:var(--card);margin-bottom:10px;overflow:hidden}
+.arow.devset{border-color:#E8C98A;box-shadow:0 0 0 1px #E8C98A}
+.arowh{display:flex;align-items:center;gap:12px;padding:12px 14px;flex-wrap:wrap}
+.arowh .pn{font-weight:600;font-size:14px}
+.arowh .co{font-size:11.5px;color:var(--ink-3)}
+.arowh select{margin-left:auto}
+.badge{font-size:11px;font-weight:600;padding:2px 9px;border-radius:10px;white-space:nowrap}
+.b-drift{background:var(--flag-bg);color:var(--flag)}
+.b-cap{background:var(--read-bg);color:var(--ink-3)}
+.b-ok{background:var(--ops-bg);color:var(--ops)}
+.disclose{display:flex;align-items:center;gap:8px;border:none;background:transparent;color:var(--navy);font:600 13px "Inter";cursor:pointer;padding:0}
+.disclose .chev{display:inline-block;transition:transform .15s;font-size:11px}
 .disclose.open .chev{transform:rotate(90deg)}
-.hiddenblock{display:none}
-.hiddenblock.open{display:block}
+.arowb{display:none;border-top:1px solid var(--line);padding:12px 14px;background:#FBFCFE}
+.arow.open .arowb{display:block}
+.setall{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink-2);margin:0 0 12px;flex-wrap:wrap}
+
 .acc{border:1px solid var(--line);border-radius:12px;margin-bottom:10px;background:var(--card);overflow:hidden}
 .acc.devset{border-color:#E8C98A;box-shadow:0 0 0 1px #E8C98A}
-.acch{display:flex;align-items:center;gap:12px;padding:12px 14px;cursor:pointer}
+.acch{display:flex;align-items:center;gap:12px;padding:11px 14px;cursor:pointer}
 .acch:hover{background:var(--bg)}
 .acch .chev{color:var(--ink-3);transition:transform .15s;font-size:12px}
 .acc.open .acch .chev{transform:rotate(90deg)}
-.acch .name{font-weight:600;font-size:14px}
+.acch .name{font-weight:600;font-size:13.5px}
 .acch .count{font-size:12px;color:var(--ink-2);margin-left:auto;white-space:nowrap}
-.accb{display:none;border-top:1px solid var(--line);padding:6px 14px 10px 40px;background:#FBFCFE}
+.accb{display:none;border-top:1px solid var(--line);padding:6px 14px 10px 40px;background:#fff}
 .acc.open .accb{display:block}
 .accb .desc{font-size:12.5px;color:var(--ink-3);margin:8px 0 4px}
 .prow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px dashed var(--line)}
 .prow:last-child{border-bottom:none}
 .prow .pn{font-size:13.5px}
-.sw.sm{width:36px;height:20px;border-radius:10px}
-.sw.sm::after{width:14px;height:14px}
-.sw.sm.on::after{left:19px}
-.sw.partial{background:#C98A00}
-.stepnum{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;background:var(--navy);color:#fff;border-radius:50%;font-size:12px;font-weight:600;margin-right:8px;flex:none}
+.modlock{display:block;font-size:11px;color:var(--flag)}
+
+/* ---------- product modules ---------- */
+.mtable{width:100%;border-collapse:collapse;font-size:13px;min-width:760px}
+.mtable th{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);padding:8px 10px;border-bottom:2px solid var(--line-strong);text-align:center}
+.mtable th:first-child,.mtable th:nth-child(2){text-align:left}
+.mtable td{padding:7px 10px;border-bottom:1px solid var(--line);text-align:center}
+.mtable td.pn{text-align:left;font-weight:600;font-size:13px;white-space:nowrap}
+.mtable td.co{text-align:left;font-size:12px;color:var(--ink-2);white-space:nowrap}
+.mtable tr.wsrow td{background:var(--bg);font-weight:600;text-align:left;color:var(--ink-2);font-size:11px;text-transform:uppercase;letter-spacing:.07em;padding:6px 10px}
+.mtable .inc{font-size:11px;font-weight:600;color:var(--ops)}
+.modcard{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--card)}
+.modcard .t{font-family:"Sora";font-size:14px;font-weight:600}
+.modcard .d{font-size:12.5px;color:var(--ink-2);margin:4px 0 8px}
+.modcard .m{font-size:11.5px;color:var(--ink-3)}
+.gridcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.avail{display:inline-block;font-size:11px;font-weight:600;padding:2px 9px;border-radius:10px;margin:0 5px 5px 0;border:1px solid}
+.av-all{background:var(--ops-bg);color:var(--ops);border-color:var(--ops-line)}
+.av-some{background:var(--flag-bg);color:var(--flag);border-color:#E8C98A}
+.av-none{background:var(--read-bg);color:var(--ink-3);border-color:var(--read-line);text-decoration:line-through}
+
+/* ---------- access review ---------- */
+.lens{display:flex;gap:8px;margin:0 0 16px;flex-wrap:wrap}
+.lens .pv{border:1px solid var(--line-strong);background:var(--card);border-radius:20px;padding:8px 16px;font:500 13px "Inter";cursor:pointer;color:var(--ink-2)}
+.lens .pv.on{background:var(--navy);border-color:var(--navy);color:#fff}
+.rtable{width:100%;border-collapse:collapse;font-size:13px}
+.rtable th{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);padding:9px 10px;border-bottom:2px solid var(--line-strong);text-align:center;background:var(--card);position:sticky;top:0}
+.rtable th:first-child{text-align:left}
+.rtable td{padding:6px 10px;border-bottom:1px solid var(--line);text-align:center}
+.rtable td.pn{text-align:left;font-size:13px}
+.rtable tr.setrow td{background:var(--navy-tint);cursor:pointer;font-weight:600;text-align:left;color:var(--navy);font-size:12.5px}
+.rtable tr.setrow td .mini{font-weight:500;color:var(--ink-2);font-size:11.5px}
+.cell{display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:24px;border-radius:7px;font-size:12.5px;font-weight:600;cursor:pointer;border:1px solid transparent;background:transparent;padding:0 6px}
+.cell:hover{border-color:var(--navy)}
+.st-on{color:var(--ops);background:var(--ops-bg)}
+.st-added{color:var(--flag);background:var(--flag-bg)}
+.st-removed{color:var(--flag);background:#fff;border:1px dashed var(--amber-line,#E8C98A)}
+.st-capped{color:var(--ink-3);background:var(--read-bg)}
+.st-off{color:var(--line-strong)}
+.whybox{border:1px solid #CBD8EA;background:var(--navy-tint);border-radius:12px;padding:13px 16px;font-size:13.5px;margin:14px 0 0;color:var(--ink)}
+.whybox b{color:var(--navy)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--ink-2);margin:12px 0 0;align-items:center}
+.rowitem{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);border-radius:10px;padding:11px 14px;margin-bottom:9px;background:var(--card)}
+.rowitem .t{font-weight:600;font-size:13.5px}
+.rowitem .s{font-size:12px;color:var(--ink-2)}
+.pill{font-size:11px;font-weight:600;padding:2px 9px;border-radius:10px;white-space:nowrap}
+.p-red{background:var(--err-bg);color:var(--err)} .p-amb{background:var(--flag-bg);color:var(--flag)}
+.p-grn{background:var(--ops-bg);color:var(--ops)} .p-nav{background:var(--navy-tint);color:var(--navy)}
+
 /* ---------- previews ---------- */
 .prevpick{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 20px}
 .pv{border:1px solid var(--line-strong);background:var(--card);border-radius:20px;padding:8px 16px;font:500 13px "Inter";cursor:pointer;color:var(--ink-2)}
@@ -145,44 +187,15 @@ pre.payload{background:var(--navy-deep);color:#BFE3D6;border-radius:10px;padding
 .subnav span{padding:10px 16px;font-size:13px;color:var(--ink-2);border-bottom:2px solid transparent}
 .subnav span.on{color:var(--navy);font-weight:600;border-bottom-color:var(--ops)}
 .body{padding:16px}
-.rowitem{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);border-radius:10px;padding:11px 14px;margin-bottom:9px;background:var(--card)}
-.rowitem .t{font-weight:600;font-size:13.5px}
-.rowitem .s{font-size:12px;color:var(--ink-2)}
-.pill{font-size:11px;font-weight:600;padding:2px 9px;border-radius:10px;white-space:nowrap}
-.p-red{background:var(--err-bg);color:var(--err)} .p-amb{background:var(--flag-bg);color:var(--flag)}
-.p-grn{background:var(--ops-bg);color:var(--ops)} .p-nav{background:var(--navy-tint);color:var(--navy)}
 .bigbtn{display:block;width:100%;border:none;border-radius:10px;background:var(--ops);color:#fff;font:600 14px "Inter";padding:13px;margin-top:6px}
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-bottom:14px}
 .kpi{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
 .kpi .n{font-family:"Sora";font-size:19px;font-weight:600;color:var(--navy)}
 .kpi .l{font-size:11px;color:var(--ink-2)}
-.cap{font-size:13px;color:var(--ink-2);max-width:860px;margin:14px 0 0}
-.cap b{color:var(--ink)}
-.gridcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
 .pcard{border:1px solid var(--line);border-radius:10px;padding:12px}
 .pcard .t{font-weight:600;font-size:13px}
 .pcard .s{font-size:11.5px;color:var(--ink-2)}
-.formrow{margin-bottom:12px}
-.formrow label{display:block;font-size:12.5px;font-weight:600;margin-bottom:4px}
-.formrow input,.formrow textarea{width:100%;border:1px solid var(--line-strong);border-radius:8px;padding:10px;font:13.5px "Inter"}
 .locked{display:flex;align-items:center;gap:8px;background:var(--bg);border:1px dashed var(--line-strong);border-radius:8px;padding:9px 12px;font-size:12.5px;color:var(--ink-3);margin-bottom:9px}
-/* ---------- product modules ---------- */
-.mtable{width:100%;border-collapse:collapse;font-size:13px;min-width:680px}
-.mtable th{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);padding:8px 10px;border-bottom:2px solid var(--line-strong);text-align:center}
-.mtable th:first-child{text-align:left}
-.mtable td{padding:7px 10px;border-bottom:1px solid var(--line);text-align:center}
-.mtable td.pn{text-align:left;font-weight:600;font-size:13px;white-space:nowrap}
-.mtable tr.wsrow td{background:var(--bg);font-weight:600;text-align:left;color:var(--ink-2);font-size:11px;text-transform:uppercase;letter-spacing:.07em;padding:6px 10px}
-.mtable .inc{font-size:11px;font-weight:600;color:var(--ops)}
-.modcard{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--card)}
-.modcard .t{font-family:"Sora";font-size:14px;font-weight:600}
-.modcard .d{font-size:12.5px;color:var(--ink-2);margin:4px 0 8px}
-.modcard .m{font-size:11.5px;color:var(--ink-3)}
-.modlock{display:block;font-size:11px;color:var(--flag);margin-top:1px}
-.avail{display:inline-block;font-size:11px;font-weight:600;padding:2px 9px;border-radius:10px;margin:0 5px 5px 0;border:1px solid}
-.av-all{background:var(--ops-bg);color:var(--ops);border-color:var(--ops-line)}
-.av-some{background:var(--flag-bg);color:var(--flag);border-color:#E8C98A}
-.av-none{background:var(--read-bg);color:var(--ink-3);border-color:var(--read-line);text-decoration:line-through}
 footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);font-size:12.5px}
 </style>
 </head>
@@ -191,12 +204,13 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
 <header class="hero">
   <div class="wrap">
     <p class="eyebrow">DigitalPaani · CloseTheLoop</p>
-    <h1>Role Studio — configure roles with flexibility, kept in check</h1>
-    <p>Product modules set the ceiling per plant. Roles set the defaults per user. Overrides handle the exceptions — every deviation needs a reason, respects dependencies, and is counted as drift.</p>
+    <h1>Role Studio — per-plant roles, with flexibility kept in check</h1>
+    <p>Modules set the ceiling per plant. Each person holds a tier <b>per plant</b> — different capacities at different plants are first-class, not a workaround. Every deviation needs a reason, respects dependencies, and is counted as drift. Company is a label on the plant, never a container.</p>
     <div class="tabs">
-      <button class="tab on" onclick="tab(0)">📦 Product modules per plant</button>
+      <button class="tab on" onclick="tab(0)">🏭 Plants & modules</button>
       <button class="tab" onclick="tab(1)">⚙ Configure a user</button>
-      <button class="tab" onclick="tab(2)">🖥 UI previews per role</button>
+      <button class="tab" onclick="tab(2)">🔍 Access review</button>
+      <button class="tab" onclick="tab(3)">🖥 UI previews</button>
     </div>
   </div>
 </header>
@@ -204,16 +218,16 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
 <main>
 <div class="wrap">
 
-<!-- ============ PANE 0: PRODUCT MODULES ============ -->
+<!-- ============ PANE 0: PLANTS & MODULES ============ -->
 <div class="pane on" id="pane0">
   <div class="panel" style="margin-bottom:18px">
-    <div class="gh">The hierarchy — modules cap, roles default, overrides flex</div>
-    <p style="font-size:13.5px;color:var(--ink-2);margin:0 0 8px">We sell <b>product modules</b> to companies. A module is a sellable slice of the product that unlocks a set of permissions — and each permission still lives in its role type (work execution, approvals &amp; closure, plant visibility…). Modules are switched on <b>per plant</b> under the company's contract.</p>
-    <p style="font-size:13.5px;color:var(--ink-2);margin:0">A user's role + overrides say what they <i>may</i> do; the plant's modules say what <i>exists</i> there. Effective access at a plant = <b>user permission ∧ plant module</b>. Toggle the matrix below — the configurator and the UI previews respect it live.</p>
+    <div class="gh">The hierarchy — modules cap, tiers default, exceptions flex</div>
+    <p style="font-size:13.5px;color:var(--ink-2);margin:0 0 8px">We sell <b>product modules</b> to companies. A module is a sellable slice of the product that unlocks permissions — each permission still lives in its role type. Modules are switched on <b>per plant</b>, on the plant record itself: the plant carries its company label and its module flags. There is no workspace or group in between.</p>
+    <p style="font-size:13.5px;color:var(--ink-2);margin:0">Effective access at a plant = <b>user permission ∧ plant module</b>. Module flags are written only here (Global Admin at onboarding; Technical Admin afterward) — every other screen reads them.</p>
   </div>
   <div class="gridcards" id="modcatalog" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin-bottom:18px"></div>
   <div class="panel">
-    <div class="gh">Plant entitlements — what each plant's contract includes</div>
+    <div class="gh">Plant records — company label + licensed modules</div>
     <div style="overflow-x:auto"><table class="mtable" id="modmatrix"></table></div>
   </div>
 </div>
@@ -223,53 +237,29 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
   <div class="grid">
     <div>
       <div class="panel">
-        <div class="gh"><span class="stepnum">1</span>Who is this user?</div>
-        <div class="rolepick" id="rolepick"></div>
-        <div class="gh2">Admin grant (optional)</div>
+        <div class="gh">1 · Which plants?</div>
+        <p style="font-size:12.5px;color:var(--ink-3);margin:0 0 4px">Grouped by the company on each plant record.</p>
+        <div id="plantbox"></div>
+        <div class="gh2">Admin grant (optional · applies at every assigned plant)</div>
         <div class="chipsel" id="grantchips"></div>
         <div class="granthelp" id="granthelp"></div>
-        <div class="gh2">Workspace</div>
-        <select id="wssel" onchange="selectWs(this.value)">
-          <option value="">Select a workspace…</option>
-          <option value="noida">Noida Workspace</option>
-          <option value="gurgaon">Gurgaon Workspace</option>
-          <option value="jaipur">Jaipur</option>
-          <option value="demo">Demo plants</option>
-        </select>
-        <div class="gh2">Plants <span id="plantcount" style="font-weight:400;color:var(--ink-3);text-transform:none;letter-spacing:0"></span></div>
-        <div id="plantbox"><p style="font-size:13px;color:var(--ink-3);margin:2px 0">Pick a workspace to fetch its plants.</p></div>
       </div>
     </div>
 
     <div>
       <div class="panel">
-        <div class="gh"><span class="stepnum">2</span>Standard setup</div>
-        <div class="summary">
-          <div id="chips" style="margin-bottom:6px"></div>
-          <div class="big" id="sumline"></div>
-          <div class="sub" id="sumsub"></div>
-        </div>
-        <button class="disclose" id="custbtn" onclick="toggleCustomize()"><span class="chev">▶</span> Customize capabilities — open only if this user needs more or less than the standard</button>
-        <div class="hiddenblock" id="custblock">
-          <p style="font-size:13px;color:var(--ink-2);margin:10px 0 12px">Each group is a <b>set of permissions</b> with its own master switch. Open a group to fine-tune individual permissions. Anything different from the standard is a <b>deviation</b> — outlined amber, counted, and requiring a reason.</p>
-          <div id="accordions"></div>
-          <div id="guardmsgs"></div>
-        </div>
+        <div class="gh">2 · A tier per plant — this is the flexibility</div>
+        <div id="setallbox"></div>
+        <div id="arows"><p style="font-size:13px;color:var(--ink-3);margin:2px 0">Pick plants on the left — each becomes its own assignment row.</p></div>
       </div>
 
       <div class="panel" style="margin-top:18px">
-        <div class="gh"><span class="stepnum">3</span>Review & save</div>
+        <div class="gh">3 · Review & save</div>
         <div class="driftbar"><span class="driftnum" id="driftn">0</span><span style="font-size:13px;color:var(--ink-2)" id="driftl"></span>
-          <button class="btn ghost" style="margin-left:auto;padding:7px 14px;font-size:12.5px" onclick="resetStd()">Reset to standard</button></div>
+          <button class="btn ghost" style="margin-left:auto;padding:7px 14px;font-size:12.5px" onclick="resetStd()">Reset all to standard</button></div>
         <div id="capmsg"></div>
-        <div class="hiddenblock" id="reasonblock">
-          <div class="gh2">Reason for deviation <span id="reasonreq" style="color:var(--err)"></span></div>
-          <textarea id="reason" placeholder="e.g. 'Client ops head requested logbook entry for this supervisor, approved by A. Loijos, ticket DP-1142'" oninput="render()"></textarea>
-        </div>
-        <div class="disclose" onclick="toggleEff()" id="effbtn" style="cursor:pointer"><span class="chev">▶</span> See everything this user will be able to do</div>
-        <div class="hiddenblock" id="effblock"><ul class="pl" id="effperm" style="margin-top:8px"></ul></div>
-        <div style="display:flex;gap:10px;align-items:center;margin-top:16px">
-          <button class="btn primary" id="savebtn" onclick="save()">Save assignment</button>
+        <div style="display:flex;gap:10px;align-items:center;margin-top:14px">
+          <button class="btn primary" id="savebtn" onclick="save()">Save assignments</button>
           <span style="font-size:12.5px;color:var(--ink-3)" id="savehint"></span>
         </div>
         <pre class="payload" id="payload" style="display:none"></pre>
@@ -278,11 +268,24 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
   </div>
 </div>
 
-<!-- ============ PANE 2: SMART UI PREVIEW ============ -->
+<!-- ============ PANE 2: ACCESS REVIEW ============ -->
 <div class="pane" id="pane2">
   <div class="panel" style="margin-bottom:18px">
+    <div class="gh">Access review — the cross-check surface</div>
+    <p style="font-size:13.5px;color:var(--ink-2);margin:0">One screen answers <b>“what can this person do, at which plant, right now — and why?”</b> Every cell is computed from tier ∧ plant module, plus audited exceptions. Click any cell for its why-chain. Amber always means a deviation; grey always means the module isn't licensed.</p>
+  </div>
+  <div class="lens">
+    <button class="pv on" id="lens-person" onclick="setLens('person')">👤 Person lens</button>
+    <button class="pv" id="lens-plant" onclick="setLens('plant')">🏭 Plant lens</button>
+  </div>
+  <div class="panel" id="reviewbody"></div>
+</div>
+
+<!-- ============ PANE 3: SMART UI PREVIEW ============ -->
+<div class="pane" id="pane3">
+  <div class="panel" style="margin-bottom:18px">
     <div class="gh">Smart preview — generated live from permissions, not hand-drawn per role</div>
-    <p style="font-size:13.5px;color:var(--ink-2);margin:0">Every navigation tab, button, and banner below is decided by a rule reading the permission state — so <b>any</b> combination you build in the configurator renders its exact UI here, including partial sets. Pick a preset, or preview whatever you've configured on the configure tab. Then pick a <b>plant context</b>: the plant's licensed modules become the ceiling, exactly as at runtime. Click the tabs inside the mock app — they work.</p>
+    <p style="font-size:13.5px;color:var(--ink-2);margin:0">Every navigation tab, button, and banner below is decided by a rule reading the permission state. Pick a preset, or preview the configurator's live state. The plant context applies that plant's module ceiling, exactly as at runtime.</p>
   </div>
   <div style="display:flex;gap:12px;align-items:center;margin:0 0 12px;flex-wrap:wrap">
     <span class="gh" style="margin:0">Plant context</span>
@@ -300,7 +303,7 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
 </div>
 </main>
 
-<footer><div class="wrap">CloseTheLoop Role Studio · interactive prototype · DigitalPaani. Data model: plant = licensed product modules (ceiling) · role = default bundle set · user = role + overrides(+reason) · effective access = user permission ∧ plant module · guardrails = dependencies, reason-required, drift visibility.</div></footer>
+<footer><div class="wrap">CloseTheLoop Role Studio · interactive prototype · DigitalPaani. Data model: plant = company label + licensed modules (ceiling) · person = per-plant assignments [{plant, tier, exceptions}] + one grant · effective access = user permission ∧ plant module · guardrails = dependencies, reason-required, drift visibility.</div></footer>
 
 <script>
 /* ================= DATA ================= */
@@ -327,10 +330,10 @@ const SETS=[
  {id:"shiftview",n:"View all tasks & entries at the plant",mod:"tasks"},
  {id:"invlogs",n:"Inventory item logs — every movement at the plant",mod:"inv"}]},
 {id:"oversight",req:["approve"],n:"Multi-plant oversight",cat:"ops",d:"Portfolio-level operations",old:"was: senior CSM profiles",perms:[
- {id:"multiws",n:"Multi-plant workspace",mod:"ops"},
+ {id:"multiws",n:"Multi-plant view",mod:"ops"},
  {id:"cosign",n:"Eligible co-signer for force-close",mod:"ops"},
  {id:"deadline",n:"Deadline-only escalation alerts",mod:"ops"}]},
-{id:"readplant",n:"Plant visibility (read-only)",cat:"read",d:"Seeing one plant without acting \u00b7 standard for every plant-touching role",old:"was: Client Role, Client Asset, Visualization, Insights Only, Sensor Health Dashboard",perms:[
+{id:"readplant",n:"Plant visibility (read-only)",cat:"read",d:"Seeing one plant without acting · standard for every plant-touching role",old:"was: Client Role, Client Asset, Visualization, Insights Only, Sensor Health Dashboard",perms:[
  {id:"dash",n:"Plant dashboard, issue log & sensor health",mod:"core"},
  {id:"layout",n:"Plant layout / digital twin",mod:"analytics"},
  {id:"insights",n:"Insights & events lists",mod:"analytics"},
@@ -338,16 +341,16 @@ const SETS=[
  {id:"history",n:"Equipment & maintenance history",mod:"tasks"}]},
 {id:"portfolio",req:["readplant"],n:"Portfolio visibility",cat:"read",d:"Seeing all plants at once",old:"was: Client Administrative, Unified Dashboard",perms:[
  {id:"overview",n:"Portfolio overview & plants list",mod:"analytics"},
- {id:"compare",n:"Compare plants & workspaces",mod:"analytics"}]},
-{id:"people",n:"People management",cat:"adm",d:"Users, rosters, skills, groups",old:"was: View as Different User, Roster & Task list, Group/Workspace Management",perms:[
+ {id:"compare",n:"Compare plants & companies",mod:"analytics"}]},
+{id:"people",n:"People management",cat:"adm",d:"Users, rosters, skills",old:"was: View as Different User, Roster & Task list",perms:[
  {id:"invite",n:"Invite / edit / offboard users",mod:"core"},
  {id:"rosters",n:"Rosters & shift schedules",mod:"tasks"},
  {id:"skills",n:"Skills & competencies",mod:"core"},
- {id:"groups",n:"User groups & workspaces",mod:"core"},
+ {id:"groups",n:"Plant rosters & directories",mod:"core"},
  {id:"grants",n:"Assign / revoke roles & grants",mod:"core"},
  {id:"notif",n:"Per-user notification overrides",mod:"core"},
  {id:"audit",n:"Directory & audit-log export",mod:"core"}]},
-{id:"tech",n:"Plant configuration",cat:"adm",d:"The plant\u2019s logic, hardware and screens",old:"was: E-mail, Sensor list, Events, Logbook Config, Analytical Engine, Triggers, T&T Config, PLC/HMI",perms:[
+{id:"tech",n:"Plant configuration",cat:"adm",d:"The plant's logic, hardware and screens",old:"was: E-mail, Sensor list, Events, Logbook Config, Analytical Engine, Triggers, T&T Config, PLC/HMI",perms:[
  {id:"dashcfg",n:"Dashboards & widgets (plant + unified)",mod:"analytics"},
  {id:"ai",n:"AI widget generator",mod:"analytics"},
  {id:"rules",n:"Issue / task / trigger rules & schedules",mod:"ops"},
@@ -358,52 +361,28 @@ const SETS=[
  {id:"routing",n:"Notification routing, SLAs, escalation & auto email",mod:"ops"},
  {id:"sitetpl",n:"Site templates (task, event, insight, logbook, data-input)",mod:"core"},
  {id:"formulas",n:"Site analytics formulas",mod:"data"}]},
-{id:"templates",req:["people","tech"],n:"Global templates",cat:"adm",d:"Affects every site \u2014 DP / Wapp staff only",old:"was: Super Admin, Company List, System templates/triggers/workflows",perms:[
+{id:"templates",req:["people","tech"],n:"Global templates",cat:"adm",d:"Affects every site — DP / Wapp staff only",old:"was: Super Admin, Company List, System templates/triggers/workflows",perms:[
  {id:"library",n:"Global template & role governance (system task/trigger/workflow)",mod:"core"},
  {id:"publish",n:"Publish versions to all sites",mod:"core"},
  {id:"onboard",n:"Onboard sites, plants & company list",mod:"core"}]},
-{id:"flags",n:"Exception flags",cat:"flag",alwaysDev:true,d:"Extra-sensitive \u2014 always a deviation, audited individually",old:"was: Back Dated Data Entry, Data Correction, Remote Control, Bi-Direction, View as Different User",perms:[
+{id:"flags",n:"Exception flags",cat:"flag",alwaysDev:true,d:"Extra-sensitive — always a deviation, audited individually",old:"was: Back Dated Data Entry, Data Correction, Remote Control, Bi-Direction, View as Different User",perms:[
  {id:"backdate",n:"Back-dated entry & data correction",preq:"tech",mod:"data"},
  {id:"remote",n:"IoT remote control / bi-direction",preq:"tech",mod:"iot"},
  {id:"impersonate",n:"View-as / impersonation",preq:"people",mod:"core"}]},
 ];
-/* ---- Product modules: sellable slices of the product, licensed per plant.
-   A module unlocks permissions ACROSS role types; roles/overrides work inside the ceiling. ---- */
+/* ---- Product modules: sellable slices, licensed per plant (ADR-003: flags live on the Plant record). ---- */
 const MODULES=[
- {id:"core",n:"Platform Core",icon:"\ud83e\udde9",always:true,d:"Ships with every contract \u2014 users, groups, grants, plant setup, basic plant dashboard, global governance."},
- {id:"ops",n:"Issue Resolution",icon:"\ud83d\udd27",d:"The CloseTheLoop workflow \u2014 issue sessions, diagnostics, root cause, approvals, force-close, escalation rules."},
- {id:"tasks",n:"Tasks, Shifts & Maintenance",icon:"\ud83d\udccb",d:"Fixed & one-off tasks, maintenance records & history, rosters, shifts and check-in."},
- {id:"data",n:"Data, Lab & Logbook",icon:"\ud83e\uddea",d:"Lab, water-quality & logbook entry, back-dated corrections, site analytics formulas."},
- {id:"analytics",n:"Dashboards & Analytics",icon:"\ud83d\udcca",d:"Custom dashboards, insights, reports, digital twin, portfolio comparison, AI widgets."},
- {id:"iot",n:"IoT & Remote Control",icon:"\ud83d\udce1",d:"Sensors & thresholds, PLC / HMI / data loggers, remote operation."},
- {id:"inv",n:"Inventory Management",icon:"\ud83e\uddef",d:"Stock of consumables & spares \u2014 usage, expiry, purchases, and a movement log for supervisors."},
- {id:"floc",n:"Floc Detector",icon:"\ud83d\udd2c",noperm:true,d:"Hardware add-on \u2014 floc detection at the plant. Carries no user permissions; lives on the contract so sales & support know what's installed where."},
+ {id:"core",n:"Platform Core",icon:"🧩",always:true,d:"Ships with every contract — users, grants, plant setup, basic plant dashboard, global governance."},
+ {id:"ops",n:"Issue Resolution",icon:"🔧",d:"The CloseTheLoop workflow — issue sessions, diagnostics, root cause, approvals, force-close, escalation rules."},
+ {id:"tasks",n:"Tasks, Shifts & Maintenance",icon:"📋",d:"Fixed & one-off tasks, maintenance records & history, rosters, shifts and check-in."},
+ {id:"data",n:"Data, Lab & Logbook",icon:"🧪",d:"Lab, water-quality & logbook entry, back-dated corrections, site analytics formulas."},
+ {id:"analytics",n:"Dashboards & Analytics",icon:"📊",d:"Custom dashboards, insights, reports, digital twin, portfolio comparison, AI widgets."},
+ {id:"iot",n:"IoT & Remote Control",icon:"📡",d:"Sensors & thresholds, PLC / HMI / data loggers, remote operation."},
+ {id:"inv",n:"Inventory Management",icon:"🧯",d:"Stock of consumables & spares — usage, expiry, purchases, and a movement log for supervisors."},
+ {id:"floc",n:"Floc Detector",icon:"🔬",noperm:true,d:"Hardware add-on — floc detection at the plant. Carries no user permissions; lives on the contract so sales & support know what's installed where."},
 ];
 const modById=Object.fromEntries(MODULES.map(m=>[m.id,m]));
 const PERMMOD={}; SETS.forEach(s=>s.perms.forEach(p=>PERMMOD[s.id+"."+p.id]=p.mod||"core"));
-/* Per-plant entitlements (what the company bought) \u2014 editable in the Modules tab */
-let PLANTMODS={
- "STP \u2014 Sector 62":["ops","tasks","data","analytics","iot","inv","floc"],
- "WTP \u2014 Knowledge Park":["ops","tasks","data","analytics","floc"],
- "STP \u2014 Alpha 2":["ops","tasks"],
- "STP \u2014 Pari Chowk":["ops","tasks","data","inv"],
- "STP \u2014 Cyber Park":["ops","tasks","data","analytics","iot","inv"],
- "WTP \u2014 Sector 29":["ops","data","analytics"],
- "STP \u2014 Udyog Vihar":["ops","tasks"],
- "STP \u2014 Sitapura":["ops","tasks","data","analytics","iot","inv","floc"],
- "WTP \u2014 Mansarovar":["analytics"],
- "Demo STP \u2014 Training":["ops","tasks","data","analytics","iot","inv","floc"],
- "Demo WTP \u2014 Sales":["ops","tasks","data","analytics","iot","inv","floc"],
-};
-function plantMods(p){ return new Set(["core",...(PLANTMODS[p]||[])]); }
-function modAvail(mod){ /* across selected plants: all | some | none | na (no plants picked yet) */
-  if(mod==="core") return "all";
-  if(!selPlants.size) return "na";
-  let n=0; selPlants.forEach(p=>{ if(plantMods(p).has(mod)) n++; });
-  return n===selPlants.size?"all":(n?"some":"none");
-}
-function permAvail(key){ return modAvail(PERMMOD[key]); }
-function cappedKeys(){ return Object.keys(P).filter(k=>P[k]&&permAvail(k)==="none"); }
 const ROLES={
 l1:{n:"L1 Operator",cat:"ops",s:"does the work",std:["work","readplant"]},
 l3:{n:"L3 Lead",cat:"ops",s:"L1 + approves & closes",std:["work","approve","readplant"]},
@@ -412,114 +391,135 @@ regular:{n:"Regular Non-op",cat:"read",s:"reads one plant",std:["readplant"]},
 senior:{n:"Senior Non-op",cat:"read",s:"reads the whole portfolio",std:["readplant","portfolio"]},
 };
 const GRANTS={people:["people"],tech:["tech"],fullsite:["people","tech"],global:["people","tech","templates"]};
+const GRANTNAMES={people:"People Admin",tech:"Technical Admin",fullsite:"Full Site Admin",global:"Global Admin"};
 const GRANTHELP={
  "":{t:"No admin grant",d:"Right for most users. Grants add administration on top of the base role — they never change day-to-day operating permissions. Max one grant per user per site."},
- people:{t:"People Admin — manages the humans",d:"Invite, edit & offboard users · rosters & shift schedules · skills · groups & workspaces · assign roles and grants · notification overrides · audit export. No access to plant logic or hardware."},
- tech:{t:"Technical Admin — configures the plant",d:"Dashboards & widgets · issue / task / trigger rules · diagnostic flows · plant, lab & sensor setup · PLC / HMI / IoT · escalation routing · site templates & formulas. No user management."},
+ people:{t:"People Admin — manages the humans",d:"Invite, edit & offboard users · rosters & shift schedules · skills · assign roles and grants · notification overrides · audit export. No access to plant logic or hardware."},
+ tech:{t:"Technical Admin — configures the plant",d:"Dashboards & widgets · issue / task / trigger rules · diagnostic flows · plant, lab & sensor setup · PLC / HMI / IoT · escalation routing · site templates & formulas. No user management. Also the grant that may edit a plant's module flags after onboarding."},
  fullsite:{t:"Full Site Admin — People + Technical combined",d:"Everything both admins can do, for this site: the users and the plant configuration. Use when one person genuinely runs the whole site."},
  global:{t:"Global Admin — DigitalPaani / Wapp staff only",d:"Full Site everywhere, plus global template governance, publishing versions to all sites, and onboarding new sites & companies. Affects every site — audited accordingly."},
 };
 const setById=Object.fromEntries(SETS.map(s=>[s.id,s]));
 
-let baseRole="l1", grant="", P={}, openSets={}, custOpen=false, effOpen=false;
-const WORKSPACES={
-noida:{n:"Noida Workspace",plants:["STP \u2014 Sector 62","WTP \u2014 Knowledge Park","STP \u2014 Alpha 2","STP \u2014 Pari Chowk"]},
-gurgaon:{n:"Gurgaon Workspace",plants:["STP \u2014 Cyber Park","WTP \u2014 Sector 29","STP \u2014 Udyog Vihar"]},
-jaipur:{n:"Jaipur",plants:["STP \u2014 Sitapura","WTP \u2014 Mansarovar"]},
-demo:{n:"Demo plants",plants:["Demo STP \u2014 Training","Demo WTP \u2014 Sales"]}};
-let ws="", wsLoading=false, selPlants=new Set();
-function selectWs(id){
-  ws=id; selPlants=new Set();
-  if(!id){ wsLoading=false; render(); return; }
-  wsLoading=true; render();
-  setTimeout(()=>{ wsLoading=false; render(); },700); // simulated fetch from /workspaces/{id}/plants
-}
-function togglePlant(idx){
-  const p=WORKSPACES[ws].plants[idx];
-  selPlants.has(p)?selPlants.delete(p):selPlants.add(p);
-  render();
-}
-function selectAllPlants(){
-  const all=WORKSPACES[ws].plants;
-  selPlants = selPlants.size===all.length ? new Set() : new Set(all);
-  render();
-}
+/* ---- Plant records: company is a LABEL on the plant (ADR-002) — never a container. ---- */
+const COMPANIES={greengrid:"GreenGrid Utilities",aquacore:"AquaCore O&M",jmc:"Jaipur Municipal Corp",demo:"DigitalPaani Demo"};
+const PLANTCO={
+ "STP — Sector 62":"greengrid","WTP — Knowledge Park":"greengrid","STP — Alpha 2":"greengrid","STP — Pari Chowk":"greengrid",
+ "STP — Cyber Park":"aquacore","WTP — Sector 29":"aquacore","STP — Udyog Vihar":"aquacore",
+ "STP — Sitapura":"jmc","WTP — Mansarovar":"jmc",
+ "Demo STP — Training":"demo","Demo WTP — Sales":"demo"};
+let PLANTMODS={
+ "STP — Sector 62":["ops","tasks","data","analytics","iot","inv","floc"],
+ "WTP — Knowledge Park":["ops","tasks","data","analytics","floc"],
+ "STP — Alpha 2":["ops","tasks"],
+ "STP — Pari Chowk":["ops","tasks","data","inv"],
+ "STP — Cyber Park":["ops","tasks","data","analytics","iot","inv"],
+ "WTP — Sector 29":["ops","data","analytics"],
+ "STP — Udyog Vihar":["ops","tasks"],
+ "STP — Sitapura":["ops","tasks","data","analytics","iot","inv","floc"],
+ "WTP — Mansarovar":["analytics"],
+ "Demo STP — Training":["ops","tasks","data","analytics","iot","inv","floc"],
+ "Demo WTP — Sales":["ops","tasks","data","analytics","iot","inv","floc"],
+};
+const ALLPLANTS=Object.keys(PLANTCO);
+function plantMods(p){ return new Set(["core",...(PLANTMODS[p]||[])]); }
+function coName(p){ return COMPANIES[PLANTCO[p]]; }
+function plantsByCompany(){ const g={}; ALLPLANTS.forEach(p=>{ (g[PLANTCO[p]]=g[PLANTCO[p]]||[]).push(p); }); return g; }
 
-/* ================= HELPERS ================= */
-function stdSetIds(){ const s=new Set(ROLES[baseRole].std); (GRANTS[grant]||[]).forEach(x=>s.add(x)); return s; }
-function isStdPerm(setId,permId){ return setId!=="flags" && stdSetIds().has(setId); }
-function setState(setId){
-  const on=setById[setId].perms.filter(p=>P[setId+"."+p.id]).length;
+/* ================= CONFIGURATOR STATE — per-plant assignments ================= */
+let grant="", selPlants=new Set(), ASG={}, lastTier="l1";
+function avail(key,plant){ return plantMods(plant).has(PERMMOD[key]); }
+function modAvail(mod){ /* across selected plants: all | some | none | na */
+  if(mod==="core") return "all";
+  if(!selPlants.size) return "na";
+  let n=0; selPlants.forEach(p=>{ if(plantMods(p).has(mod)) n++; });
+  return n===selPlants.size?"all":(n?"some":"none");
+}
+function stdSetsFor(tier){ const s=new Set(ROLES[tier].std); (GRANTS[grant]||[]).forEach(x=>s.add(x)); return s; }
+function isStdFor(tier,setId){ return setId!=="flags"&&stdSetsFor(tier).has(setId); }
+function initAsg(plant,tier){
+  const keep=ASG[plant]||{};
+  ASG[plant]={tier:tier,P:{},reason:"",openSets:keep.openSets||{},open:keep.open||false};
+  SETS.forEach(s=>s.perms.forEach(pr=>ASG[plant].P[s.id+"."+pr.id]=isStdFor(tier,s.id)));
+}
+function togglePlantSel(plant){
+  if(selPlants.has(plant)){ selPlants.delete(plant); delete ASG[plant]; }
+  else { selPlants.add(plant); initAsg(plant,lastTier); }
+  render();
+}
+function setTier(plant,t){ lastTier=t; initAsg(plant,t); render(); }
+function setAllTiers(t){ if(!t) return; lastTier=t; selPlants.forEach(p=>initAsg(p,t)); render(); }
+function setGrant(g){ grant=g; selPlants.forEach(p=>initAsg(p,ASG[p].tier)); render(); }
+function resetStd(){ selPlants.forEach(p=>initAsg(p,ASG[p].tier)); document.getElementById("payload").style.display="none"; render(); }
+function toggleOpen(plant){ ASG[plant].open=!ASG[plant].open; render(); }
+function toggleAcc(plant,setId){ ASG[plant].openSets[setId]=!ASG[plant].openSets[setId]; render(); }
+
+/* guardrails — operate on one assignment */
+function setState(a,setId){
+  const on=setById[setId].perms.filter(p=>a.P[setId+"."+p.id]).length;
   const total=setById[setId].perms.length;
   return on===0?"off":(on===total?"on":"partial");
 }
 function dependents(setId){ return SETS.filter(s=>(s.req||[]).includes(setId)).map(s=>s.id); }
-function setAll(setId,val){
+function setAll(a,setId,val){
   setById[setId].perms.forEach(p=>{
-    if(setId==="flags"&&val&&p.preq&&setState(p.preq)==="off") return;
-    P[setId+"."+p.id]=val;
+    if(setId==="flags"&&val&&p.preq&&setState(a,p.preq)==="off") return;
+    a.P[setId+"."+p.id]=val;
   });
 }
-function enableWithDeps(setId){
-  (setById[setId].req||[]).forEach(r=>{ if(setState(r)!=="on") enableWithDeps(r); });
-  setAll(setId,true);
+function enableWithDeps(a,setId){
+  (setById[setId].req||[]).forEach(r=>{ if(setState(a,r)!=="on") enableWithDeps(a,r); });
+  setAll(a,setId,true);
 }
-function disableCascade(setId){
-  setAll(setId,false);
-  dependents(setId).forEach(d=>{ if(setState(d)!=="off") disableCascade(d); });
+function disableCascade(a,setId){
+  setAll(a,setId,false);
+  dependents(setId).forEach(d=>{ if(setState(a,d)!=="off") disableCascade(a,d); });
   if(setId==="people"||setId==="tech"){
-    setById.flags.perms.forEach(p=>{ if(p.preq===setId) P["flags."+p.id]=false; });
-    if(setState("templates")!=="off"&&setId!=="templates") disableCascade("templates");
+    setById.flags.perms.forEach(p=>{ if(p.preq===setId) a.P["flags."+p.id]=false; });
+    if(setState(a,"templates")!=="off") disableCascade(a,"templates");
   }
 }
-/* ================= STATE ================= */
-function initState(){
-  P={}; SETS.forEach(s=>s.perms.forEach(p=>P[s.id+"."+p.id]=isStdPerm(s.id,p.id)));
-  document.getElementById("reason").value="";
-  document.getElementById("payload").style.display="none";
-}
-function setRole(r){ baseRole=r; initState(); render(); }
-function setGrant(g){ grant=g; initState(); render(); }
-function resetStd(){ initState(); render(); }
-function toggleCustomize(){ custOpen=!custOpen; render(); }
-function toggleEff(){ effOpen=!effOpen; render(); }
-function toggleAcc(id){ openSets[id]=!openSets[id]; render(); }
-function toggleSet(ev,id){
+function toggleSet(ev,plant,setId){
   ev.stopPropagation();
-  const st=setState(id);
-  if(st==="on") disableCascade(id); else enableWithDeps(id);
+  const a=ASG[plant], st=setState(a,setId);
+  if(st==="on") disableCascade(a,setId); else enableWithDeps(a,setId);
   render();
 }
-function togglePerm(setId,permId){
-  const key=setId+"."+permId, turningOn=!P[key];
+function togglePerm(plant,setId,permId){
+  const a=ASG[plant], key=setId+"."+permId, turningOn=!a.P[key];
   if(turningOn){
-    (setById[setId].req||[]).forEach(r=>{ if(setState(r)!=="on") enableWithDeps(r); });
-    if(setId==="flags"){ const p=setById.flags.perms.find(x=>x.id===permId); if(p.preq&&setState(p.preq)!=="on") return; }
-    P[key]=true;
+    if(!avail(key,plant)) return; // can't switch ON something the plant isn't licensed for
+    (setById[setId].req||[]).forEach(r=>{ if(setState(a,r)!=="on") enableWithDeps(a,r); });
+    if(setId==="flags"){ const p=setById.flags.perms.find(x=>x.id===permId); if(p.preq&&setState(a,p.preq)!=="on") return; }
+    a.P[key]=true;
   }else{
-    P[key]=false;
-    if(setState(setId)==="off") dependents(setId).forEach(d=>{ if(setState(d)!=="off") disableCascade(d); });
+    a.P[key]=false;
+    if(setState(a,setId)==="off") dependents(setId).forEach(d=>{ if(setState(a,d)!=="off") disableCascade(a,d); });
   }
   render();
 }
-function deviations(){
+function deviations(a){
   const dev=[];
   SETS.forEach(s=>s.perms.forEach(p=>{
-    const cur=P[s.id+"."+p.id], std=isStdPerm(s.id,p.id);
+    const cur=a.P[s.id+"."+p.id], std=isStdFor(a.tier,s.id);
     if(cur!==std) dev.push((cur?"+ ":"− ")+p.n);
   }));
   return dev;
 }
-/* ================= RENDER ================= */
-function render(){
-  document.getElementById("rolepick").innerHTML=Object.keys(ROLES).map(r=>{
-    const R=ROLES[r];
-    return `<div class="rp ${r===baseRole?"on":""}" onclick="setRole('${r}')">
-      <span><span class="t">${R.n}</span><br><span class="s">${R.s}</span></span>
-      <span class="badge b-${R.cat}">${R.cat==="ops"?"tier":"read-only"}</span></div>`;
-  }).join("");
+function cappedKeys(a,plant){ return Object.keys(a.P).filter(k=>a.P[k]&&!avail(k,plant)); }
+function setReason(plant,v){ ASG[plant].reason=v; renderSaveState(); }
 
-  // grant chips + helper text so the implementer knows exactly what they're granting
+/* ================= RENDER: CONFIGURATOR ================= */
+function render(){
+  // plant picker grouped by company
+  const groups=plantsByCompany();
+  document.getElementById("plantbox").innerHTML=Object.keys(groups).map(co=>
+    `<div class="cohead">${COMPANIES[co]}</div>`+groups[co].map(p=>
+      `<button class="plantchip ${selPlants.has(p)?"on":""}" onclick="togglePlantSel('${p}')" title="Modules: ${[...plantMods(p)].map(m=>modById[m].n).join(", ")}">
+        <span class="tick">${selPlants.has(p)?"✓":""}</span>${p} <span style="font-weight:400;opacity:.7">· ${plantMods(p).size} mods</span></button>`).join("")
+  ).join("");
+
+  // grant chips + helper
   const GLIST=[["","No grant"],["people","People Admin"],["tech","Technical Admin"],["fullsite","Full Site Admin"],["global","Global Admin"]];
   document.getElementById("grantchips").innerHTML=GLIST.map(g=>
     `<button class="gchip ${g[0]===""?"none":""} ${grant===g[0]?"on":""}" title="${GRANTHELP[g[0]].t}" onclick="setGrant('${g[0]}')">${g[1]}</button>`).join("");
@@ -527,116 +527,281 @@ function render(){
   let gcap="";
   if(grant&&selPlants.size){
     let tot=0,none=0;
-    GRANTS[grant].forEach(sid=>setById[sid].perms.forEach(p=>{ tot++; if(permAvail(sid+"."+p.id)==="none") none++; }));
+    GRANTS[grant].forEach(sid=>setById[sid].perms.forEach(p=>{ tot++; if(modAvail(PERMMOD[sid+"."+p.id])==="none") none++; }));
     if(none) gcap=` <span style="color:var(--flag)">📦 ${none} of ${tot} abilities in this grant are capped at the selected plants — module not licensed.</span>`;
   }
   const ghEl=document.getElementById("granthelp");
   ghEl.className="granthelp"+(grant?"":" none");
   ghEl.innerHTML=`<b>${gh.t}.</b> ${gh.d}${gcap}`;
 
-  // plants
-  const pc=document.getElementById("plantcount"), pb=document.getElementById("plantbox");
-  if(!ws){ pc.textContent=""; pb.innerHTML=`<p style="font-size:13px;color:var(--ink-3);margin:2px 0">Pick a workspace to fetch its plants.</p>`; }
-  else if(wsLoading){ pc.textContent=""; pb.innerHTML=`<div class="fetching"><span class="spin"></span>Fetching plants in ${WORKSPACES[ws].n}\u2026</div>`; }
-  else{
-    const all=WORKSPACES[ws].plants;
-    pc.textContent=`\u00b7 ${selPlants.size} of ${all.length} selected`;
-    pb.innerHTML=`<button class="selall" onclick="selectAllPlants()">${selPlants.size===all.length?"Clear all":"Select all"}</button><br>`+
-      all.map((p,i)=>`<button class="plantchip ${selPlants.has(p)?"on":""}" onclick="togglePlant(${i})" title="Modules: ${[...plantMods(p)].map(m=>modById[m].n).join(", ")}"><span class="tick">${selPlants.has(p)?"\u2713":""}</span>${p} <span style="font-weight:400;opacity:.7">\u00b7 ${plantMods(p).size} mods</span></button>`).join("")+
-      (selPlants.size?`<div class="gh2" style="margin-top:12px">Modules at selected plants</div><div>`+MODULES.map(m=>{
-        const av=modAvail(m.id);
-        const lbl=m.always?`${m.n} \u00b7 included`:av==="all"?m.n:av==="some"?`${m.n} \u00b7 some plants`:`${m.n} \u00b7 not in plan`;
-        return `<span class="avail av-${av==="na"?"all":av}">${lbl}</span>`;
-      }).join("")+`</div><p style="font-size:11.5px;color:var(--ink-3);margin:4px 0 0">Set per plant on the \u201cProduct modules\u201d tab \u2014 modules are the ceiling this user's permissions work inside.</p>`:"");
-  }
+  // set-all quick action
+  document.getElementById("setallbox").innerHTML=selPlants.size>1?
+    `<div class="setall">Quick set — every plant to
+      <select onchange="setAllTiers(this.value);this.value=''"><option value="">choose a tier…</option>${Object.keys(ROLES).map(r=>`<option value="${r}">${ROLES[r].n}</option>`).join("")}</select>
+      <span class="hint" style="font-size:12px;color:var(--ink-3)">then adjust any plant that differs — that's the point.</span></div>`:"";
 
-  // summary (level 1)
-  let chips=`<span class="chip c-${ROLES[baseRole].cat==="ops"?"ops":"read"}">${ROLES[baseRole].n}</span>`;
-  if(grant) chips+=`<span class="chip c-adm">${{people:"People Admin",tech:"Technical Admin",fullsite:"Full Site Admin",global:"Global Admin"}[grant]}</span>`;
-  setById.flags.perms.forEach(p=>{ if(P["flags."+p.id]) chips+=`<span class="chip c-flag">${p.n}</span>`; });
-  document.getElementById("chips").innerHTML=chips;
-  const activeSets=SETS.filter(s=>setState(s.id)!=="off").length;
-  const activePerms=Object.values(P).filter(Boolean).length;
-  const dev=deviations();
-  const capped=cappedKeys().length;
-  const capNote=capped?` · ⚠ ${capped} capped by plant modules`:"";
-  document.getElementById("sumline").textContent=dev.length?`Customized setup — ${activeSets} permission sets, ${activePerms} abilities`:`Standard ${ROLES[baseRole].n}${grant?" + grant":""} — nothing to configure`;
-  document.getElementById("sumsub").textContent=(dev.length?`${dev.length} deviation${dev.length>1?"s":""} from the standard role`:`${activeSets} permission sets · ${activePerms} abilities · most users should be saved exactly like this`)+capNote;
+  // assignment rows
+  const rowsEl=document.getElementById("arows");
+  if(!selPlants.size){ rowsEl.innerHTML=`<p style="font-size:13px;color:var(--ink-3);margin:2px 0">Pick plants on the left — each becomes its own assignment row.</p>`; }
+  else rowsEl.innerHTML=[...selPlants].map(plant=>{
+    const a=ASG[plant], dev=deviations(a), capped=cappedKeys(a,plant).length;
+    const body=a.open?renderCustomize(plant,a):"";
+    return `<div class="arow ${dev.length?"devset":""} ${a.open?"open":""}">
+      <div class="arowh">
+        <span><span class="pn">${plant}</span><br><span class="co">${coName(plant)} · ${plantMods(plant).size} modules</span></span>
+        ${dev.length?`<span class="badge b-drift">${dev.length} deviation${dev.length>1?"s":""}</span>`:`<span class="badge b-ok">standard</span>`}
+        ${capped?`<span class="badge b-cap">📦 ${capped} capped</span>`:""}
+        <select onchange="setTier('${plant}',this.value)">${Object.keys(ROLES).map(r=>`<option value="${r}" ${a.tier===r?"selected":""}>${ROLES[r].n}</option>`).join("")}</select>
+        <button class="disclose ${a.open?"open":""}" onclick="toggleOpen('${plant}')"><span class="chev">▶</span> Customize</button>
+      </div>
+      <div class="arowb">${body}</div></div>`;
+  }).join("");
 
-  // customize (level 2 + 3)
-  document.getElementById("custbtn").classList.toggle("open",custOpen);
-  document.getElementById("custblock").classList.toggle("open",custOpen);
-  if(custOpen){
-    document.getElementById("accordions").innerHTML=SETS.map(s=>{
-      const st=setState(s.id);
-      const on=s.perms.filter(p=>P[s.id+"."+p.id]).length;
-      const stdOn=s.perms.filter(p=>isStdPerm(s.id,p.id)).length;
-      const devSet=s.perms.some(p=>P[s.id+"."+p.id]!==isStdPerm(s.id,p.id));
-      const catChip=s.cat==="flag"?`<span class="chip c-flag" style="padding:1px 8px;font-size:10.5px;margin:0">sensitive</span>`:`<span class="chip c-${s.cat}" style="padding:1px 8px;font-size:10.5px;margin:0">${s.cat==="ops"?"operational":s.cat==="adm"?"admin":"read"}</span>`;
-      const body=`<div class="desc">${s.d} · ${s.old}${(s.req||[]).length?` · needs: ${s.req.map(r=>setById[r].n).join(" + ")}`:""}</div>`+
-        s.perms.map(p=>{
-          const key=s.id+"."+p.id, cur=P[key], dv=cur!==isStdPerm(s.id,p.id);
-          const av=permAvail(key), mod=modById[PERMMOD[key]];
-          const dis=(s.id==="flags"&&p.preq&&setState(p.preq)!=="on")||(av==="none"&&!cur);
-          const modnote=av==="none"?`<span class="modlock">🔒 ${mod.n} module — not in the plan at any selected plant${cur?" · stays on the profile, no effect until upgraded":""}</span>`
-                       :(av==="some"&&cur)?`<span class="modlock">◐ ${mod.n} module — licensed at only some selected plants</span>`:"";
-          return `<div class="prow"><span class="pn">${p.n}${p.preq?` <span style="font-size:11px;color:var(--ink-3)">(needs ${setById[p.preq].n})</span>`:""}${modnote}</span>
-            <button class="sw sm ${cur?"on":""} ${dv?"dev":""}" ${dis?"disabled":""} onclick="togglePerm('${s.id}','${p.id}')"></button></div>`;
-        }).join("");
-      return `<div class="acc ${openSets[s.id]?"open":""} ${devSet?"devset":""}">
-        <div class="acch" onclick="toggleAcc('${s.id}')">
-          <span class="chev">▶</span><span class="name">${s.n}</span>${catChip}
-          <span class="count">${on}/${s.perms.length} on · standard: ${stdOn}/${s.perms.length}</span>
-          <button class="sw ${st==="on"?"on":""} ${st==="partial"?"partial":""} ${devSet?"dev":""}" onclick="toggleSet(event,'${s.id}')" title="Toggle whole set"></button>
-        </div>
-        <div class="accb">${body}</div></div>`;
-    }).join("");
-    let g="";
-    if(setState("work")==="off"&&ROLES[baseRole].cat==="ops") g+=`<div class="msg warn">Work execution is fully off for an operational tier — consider a read-only role instead.</div>`;
-    if(setState("templates")!=="off") g+=`<div class="msg warn">Global templates affect every site. Restricted to DP / Wapp staff.</div>`;
-    if(setById.flags.perms.some(p=>P["flags."+p.id])) g+=`<div class="msg warn">Exception flags are audited individually and expire on role change.</div>`;
-    document.getElementById("guardmsgs").innerHTML=g;
-  }
-
-  // review (level 1, expands on drift)
-  document.getElementById("driftn").textContent=dev.length;
-  document.getElementById("driftn").style.color=dev.length?"var(--flag)":"var(--ops)";
-  document.getElementById("driftl").textContent=dev.length?("deviation"+(dev.length>1?"s":"")+": "+dev.slice(0,3).join(", ")+(dev.length>3?` and ${dev.length-3} more`:"")):"deviations — matches the standard role exactly";
-  const capMods=[...new Set(cappedKeys().map(k=>modById[PERMMOD[k]].n))];
-  document.getElementById("capmsg").innerHTML=capped?`<div class="msg warn">📦 ${capped} abilit${capped>1?"ies":"y"} in this profile ${capped>1?"are":"is"} capped by plant modules — ${capMods.join(", ")} ${capMods.length>1?"are":"is"} not in the plan at the selected plants. Capped abilities stay on the user's profile and switch on automatically if the plant's plan is upgraded.</div>`:"";
-  document.getElementById("reasonblock").classList.toggle("open",dev.length>0);
-  document.getElementById("effbtn").classList.toggle("open",effOpen);
-  document.getElementById("effblock").classList.toggle("open",effOpen);
-  if(effOpen){
-    let eff="";
-    SETS.forEach(s=>s.perms.forEach(p=>{ const k=s.id+"."+p.id; if(!P[k]) return;
-      const av=permAvail(k), mod=modById[PERMMOD[k]];
-      eff+=`<li>${p.n}${av==="some"?` <span style="font-size:12px;color:var(--flag)">— only at selected plants with ${mod.n}</span>`:av==="none"?` <span style="font-size:12px;color:var(--ink-3)">— capped: ${mod.n} not licensed here</span>`:""}</li>`;
-    }));
-    document.getElementById("effperm").innerHTML=eff||"<li>Nothing — this user can only log in.</li>";
-  }
-  const reason=document.getElementById("reason").value.trim();
-  const need=dev.length>0;
-  document.getElementById("reasonreq").textContent=need&&!reason?"— required before saving":"";
-  document.getElementById("savebtn").disabled=need&&!reason;
-  document.getElementById("savehint").textContent=need?(reason?"Deviation will be stored with your reason and audited.":"Write why this user deviates from the standard role."):"Standard role — saves without a reason.";
+  // drift summary + save
+  renderSaveState();
 }
+function renderCustomize(plant,a){
+  let h=`<p style="font-size:12.5px;color:var(--ink-2);margin:0 0 10px">Fine-tune <b>${ROLES[a.tier].n}</b> at <b>${plant}</b> only. Deviations here apply to this plant, nowhere else.</p>`;
+  h+=SETS.map(s=>{
+    const st=setState(a,s.id);
+    const on=s.perms.filter(p=>a.P[s.id+"."+p.id]).length;
+    const stdOn=isStdFor(a.tier,s.id)?s.perms.length:0;
+    const devSet=s.perms.some(p=>a.P[s.id+"."+p.id]!==isStdFor(a.tier,s.id));
+    const catChip=s.cat==="flag"?`<span class="chip c-flag" style="padding:1px 8px;font-size:10.5px;margin:0">sensitive</span>`:`<span class="chip c-${s.cat==="ops"?"ops":s.cat==="adm"?"adm":"read"}" style="padding:1px 8px;font-size:10.5px;margin:0">${s.cat==="ops"?"operational":s.cat==="adm"?"admin":"read"}</span>`;
+    const body=`<div class="desc">${s.d} · ${s.old}${(s.req||[]).length?` · needs: ${s.req.map(r=>setById[r].n).join(" + ")}`:""}</div>`+
+      s.perms.map(p=>{
+        const key=s.id+"."+p.id, cur=a.P[key], dv=cur!==isStdFor(a.tier,s.id);
+        const av=avail(key,plant), mod=modById[PERMMOD[key]];
+        const disFlag=s.id==="flags"&&p.preq&&setState(a,p.preq)!=="on";
+        const dis=disFlag||(!av&&!cur);
+        const note=!av?`<span class="modlock">📦 ${mod.n} — not licensed at ${plant}${cur?" · stays on the profile, no effect until upgraded":""}</span>`:"";
+        return `<div class="prow"><span class="pn">${p.n}${p.preq?` <span style="font-size:11px;color:var(--ink-3)">(needs ${setById[p.preq].n})</span>`:""}${note}</span>
+          <button class="sw sm ${cur?"on":""} ${dv?"dev":""}" ${dis?"disabled":""} onclick="togglePerm('${plant}','${s.id}','${p.id}')"></button></div>`;
+      }).join("");
+    return `<div class="acc ${a.openSets[s.id]?"open":""} ${devSet?"devset":""}">
+      <div class="acch" onclick="toggleAcc('${plant}','${s.id}')">
+        <span class="chev">▶</span><span class="name">${s.n}</span>${catChip}
+        <span class="count">${on}/${s.perms.length} on · standard: ${stdOn}/${s.perms.length}</span>
+        <button class="sw ${st==="on"?"on":""} ${st==="partial"?"partial":""} ${devSet?"dev":""}" onclick="toggleSet(event,'${plant}','${s.id}')" title="Toggle whole set"></button>
+      </div>
+      <div class="accb">${body}</div></div>`;
+  }).join("");
+  const dev=deviations(a);
+  let g="";
+  if(setState(a,"work")==="off"&&ROLES[a.tier].cat==="ops") g+=`<div class="msg warn">Work execution is fully off for an operational tier — consider a read-only tier at this plant instead.</div>`;
+  if(setState(a,"templates")!=="off") g+=`<div class="msg warn">Global templates affect every site. Restricted to DP / Wapp staff.</div>`;
+  if(setById.flags.perms.some(p=>a.P["flags."+p.id])) g+=`<div class="msg warn">Exception flags are audited individually and expire on role change.</div>`;
+  h+=g;
+  if(dev.length){
+    h+=`<div class="gh2">Reason for deviation at ${plant} <span style="color:var(--err)">${a.reason.trim()?"":"— required"}</span></div>
+      <textarea oninput="setReason('${plant}',this.value)" placeholder="e.g. 'Client ops head requested logbook entry for this supervisor at this plant, ticket DP-1142'">${a.reason}</textarea>`;
+  }
+  return h;
+}
+function renderSaveState(){
+  let totalDev=0, blocked=[], capNotes=[];
+  selPlants.forEach(p=>{
+    const a=ASG[p], dev=deviations(a);
+    totalDev+=dev.length;
+    if(dev.length&&!a.reason.trim()) blocked.push(p);
+    const capped=cappedKeys(a,p);
+    if(capped.length) capNotes.push(`${p}: ${capped.length} (${[...new Set(capped.map(k=>modById[PERMMOD[k]].n))].join(", ")})`);
+  });
+  document.getElementById("driftn").textContent=totalDev;
+  document.getElementById("driftn").style.color=totalDev?"var(--flag)":"var(--ops)";
+  document.getElementById("driftl").textContent=totalDev?`deviation${totalDev>1?"s":""} across ${[...selPlants].filter(p=>deviations(ASG[p]).length).length} plant${[...selPlants].filter(p=>deviations(ASG[p]).length).length>1?"s":""} — each needs its own reason`:"deviations — every plant matches its tier standard";
+  document.getElementById("capmsg").innerHTML=capNotes.length?`<div class="msg warn">📦 Capped by plant modules — ${capNotes.join(" · ")}. Capped abilities stay on the profile and activate if the plant's plan is upgraded.</div>`:"";
+  const canSave=selPlants.size>0&&!blocked.length;
+  document.getElementById("savebtn").disabled=!canSave;
+  document.getElementById("savehint").textContent=!selPlants.size?"Pick at least one plant.":blocked.length?`Write a reason for: ${blocked.join(", ")}.`:totalDev?"Deviations will be stored with their reasons and audited.":"All standard — saves without a reason.";
+}
+let AUDIT=[
+ {w:"seed",t:"Asha Verma: exception (+ back-dated entry) at STP — Sector 62 · reason 'Lab migration backfill, DP-1188' · by A. Sharma"},
+ {w:"seed",t:"Vikram Desai: exception (− self-approve) at STP — Udyog Vihar · reason 'Four-eyes rule at client site, DP-1201' · by S. Singh"},
+ {w:"seed",t:"Plant record edited: WTP — Mansarovar → Analytics only (contract renewal) · by Global Admin"},
+];
 function save(){
-  const add=[],rem=[];
-  SETS.forEach(s=>s.perms.forEach(p=>{
-    const key=s.id+"."+p.id, cur=P[key], std=isStdPerm(s.id,p.id);
-    if(cur&&!std) add.push(key); if(!cur&&std) rem.push(key);
-  }));
-  const modulesByPlant={}; [...selPlants].forEach(p=>modulesByPlant[p]=[...plantMods(p)]);
-  const payload={userId:"demo-user-001",scope:{workspace:WORKSPACES[ws].n,plants:[...selPlants]},baseRole:baseRole,grant:grant||null,
-    overrides:{add:add,remove:rem},
-    reason:document.getElementById("reason").value.trim()||null,requestedBy:"people-admin@digitalpaani.com",drift:deviations().length,
-    entitlementContext:{modulesByPlant:modulesByPlant,cappedBySelectedPlants:cappedKeys()}};
+  const assignments=[...selPlants].map(p=>{
+    const a=ASG[p], add=[], rem=[];
+    SETS.forEach(s=>s.perms.forEach(pr=>{
+      const key=s.id+"."+pr.id, cur=a.P[key], std=isStdFor(a.tier,s.id);
+      if(cur&&!std) add.push(key); if(!cur&&std) rem.push(key);
+    }));
+    return {plant:p,company:coName(p),tier:a.tier,overrides:{add:add,remove:rem},reason:a.reason.trim()||null,drift:deviations(a).length};
+  });
+  const modulesByPlant={}, cappedByPlant={};
+  [...selPlants].forEach(p=>{ modulesByPlant[p]=[...plantMods(p)]; const c=cappedKeys(ASG[p],p); if(c.length) cappedByPlant[p]=c; });
+  const payload={userId:"demo-user-001",assignments:assignments,grant:grant||null,
+    requestedBy:"people-admin@digitalpaani.com",
+    entitlementContext:{modulesByPlant:modulesByPlant,cappedByPlant:cappedByPlant}};
   const el=document.getElementById("payload");
   el.style.display="block";
-  el.textContent="// Stored on the user record. entitlementContext is informational —\n// runtime check at a plant = user permission AND plant module.\n"+JSON.stringify(payload,null,2);
+  el.textContent="// Stored on the user record — one row per (person, plant): different tiers\n// at different plants are first-class. entitlementContext is informational;\n// the runtime check at a plant is always: user permission AND plant module.\n"+JSON.stringify(payload,null,2);
+  AUDIT.unshift({w:"now",t:`demo-user-001 saved: ${assignments.map(x=>`${ROLES[x.tier].n} @ ${x.plant}${x.drift?` (+${x.drift} dev)`:""}`).join(" · ")}${grant?` · grant: ${GRANTNAMES[grant]}`:""}`});
 }
 
+/* ================= ACCESS REVIEW ================= */
+const SEEDPEOPLE=[
+ {id:"asha",n:"Asha Verma",t:"Shift supervisor",grant:"",
+  asg:{"STP — Sector 62":{tier:"l3",add:["flags.backdate"],remove:[],reason:"Lab migration backfill, approved A. Loijos, DP-1188"},
+       "WTP — Mansarovar":{tier:"regular",add:[],remove:[],reason:""}}},
+ {id:"vikram",n:"Vikram Desai",t:"Automation engineer",grant:"tech",
+  asg:{"STP — Cyber Park":{tier:"l3",add:[],remove:[],reason:""},
+       "STP — Udyog Vihar":{tier:"l3",add:[],remove:["approve.selfapprove"],reason:"Four-eyes rule at client site, DP-1201"}}},
+ {id:"ramesh",n:"Ramesh Kumar",t:"Plant operator",grant:"",
+  asg:{"STP — Alpha 2":{tier:"l1",add:[],remove:[],reason:""}}},
+];
+let lens="person", reviewPerson="asha", reviewPlant=ALLPLANTS[0], whySel=null, openRevSets=null, capQuery="";
+function isStdG(tier,g,setId){ if(setId==="flags") return false; const s=new Set(ROLES[tier].std); (GRANTS[g]||[]).forEach(x=>s.add(x)); return s.has(setId); }
+function reviewPeople(){
+  const ppl=SEEDPEOPLE.map(x=>x);
+  if(selPlants.size){
+    const asg={};
+    selPlants.forEach(p=>{
+      const a=ASG[p], add=[], rem=[];
+      SETS.forEach(s=>s.perms.forEach(pr=>{
+        const key=s.id+"."+pr.id;
+        if(a.P[key]&&!isStdFor(a.tier,s.id)) add.push(key);
+        if(!a.P[key]&&isStdFor(a.tier,s.id)) rem.push(key);
+      }));
+      asg[p]={tier:a.tier,add:add,remove:rem,reason:a.reason};
+    });
+    ppl.unshift({id:"live",n:"demo-user-001",t:"currently in the configurator",grant:grant,asg:asg,live:true});
+  }
+  return ppl;
+}
+function personP(person,plant,key){ /* profile truth for one permission */
+  const a=person.asg[plant]; if(!a) return false;
+  const setId=key.split(".")[0];
+  let v=isStdG(a.tier,person.grant,setId);
+  if(a.add.includes(key)) v=true;
+  if(a.remove.includes(key)) v=false;
+  return v;
+}
+function cellState(person,plant,key){
+  const a=person.asg[plant]; if(!a) return "off";
+  const setId=key.split(".")[0];
+  const std=isStdG(a.tier,person.grant,setId);
+  const on=personP(person,plant,key);
+  if(on&&!avail(key,plant)) return "capped";
+  if(on&&std&&!a.add.includes(key)) return "on";
+  if(on) return "added";
+  if(!on&&std) return "removed";
+  return "off";
+}
+const CELL={on:["✓","st-on"],added:["✚","st-added"],removed:["⊘","st-removed"],capped:["▢","st-capped"],off:["−","st-off"]};
+function whyChain(person,plant,key){
+  const a=person.asg[plant], st=cellState(person,plant,key);
+  const setId=key.split(".")[0], perm=setById[setId].perms.find(p=>setId+"."+p.id===key), mod=modById[PERMMOD[key]];
+  const tierN=ROLES[a.tier].n, setN=setById[setId].n;
+  const grantN=person.grant?GRANTNAMES[person.grant]:null;
+  const viaGrant=person.grant&&(GRANTS[person.grant]||[]).includes(setId);
+  const src=viaGrant?`${grantN} grant`:`${tierN} tier`;
+  if(st==="on") return `<b>Active.</b> ${src} includes <b>${setN}</b> ∧ <b>${mod.n}</b> module is licensed at ${plant} → “${perm.n}” works here.`;
+  if(st==="added") return `<b>Active — by exception.</b> “${perm.n}” is not standard for ${tierN} at this plant. Added deliberately — reason on record: <i>“${a.reason||"(reason pending)"}”</i>. Counted as drift; expires on role change.`;
+  if(st==="removed") return `<b>Withheld — by exception.</b> ${tierN} normally includes “${perm.n}”, but it was removed at ${plant} — reason: <i>“${a.reason||"(reason pending)"}”</i>. Removing it here does not affect ${person.n.split(" ")[0]}'s other plants.`;
+  if(st==="capped") return `<b>In the profile, inactive here.</b> The ${viaGrant?grantN+" grant":tierN+" profile"} carries “${perm.n}”, but <b>${mod.n}</b> is not in ${plant}'s contract. It stays saved and switches on automatically if the plan is upgraded. It is never silently deleted.`;
+  return `<b>Not granted.</b> “${perm.n}” is not part of ${tierN}${grantN?" or the "+grantN+" grant":""} — and no exception adds it at ${plant}.`;
+}
+function setLens(l){ lens=l; whySel=null; renderReview(); }
+function setRevPerson(id){ reviewPerson=id; whySel=null; openRevSets=null; renderReview(); }
+function setRevPlant(p){ reviewPlant=p; whySel=null; renderReview(); }
+function setWhy(pid,plant,key){ whySel={pid:pid,plant:plant,key:key}; renderReview(); }
+function toggleRevSet(setId){ openRevSets.has(setId)?openRevSets.delete(setId):openRevSets.add(setId); renderReview(); }
+function setCapQuery(v){ capQuery=v; renderReview(); }
+function renderReview(){
+  document.getElementById("lens-person").classList.toggle("on",lens==="person");
+  document.getElementById("lens-plant").classList.toggle("on",lens==="plant");
+  const ppl=reviewPeople();
+  if(!ppl.find(x=>x.id===reviewPerson)) reviewPerson=ppl[0].id;
+  document.getElementById("reviewbody").innerHTML=lens==="person"?renderPersonLens(ppl):renderPlantLens(ppl);
+}
+function renderPersonLens(ppl){
+  const person=ppl.find(x=>x.id===reviewPerson);
+  const plants=Object.keys(person.asg);
+  let h=`<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px">
+    <span class="gh" style="margin:0">Person</span>
+    <select onchange="setRevPerson(this.value)">${ppl.map(x=>`<option value="${x.id}" ${x.id===reviewPerson?"selected":""}>${x.n} — ${x.t}</option>`).join("")}</select>
+    ${person.grant?`<span class="chip c-adm" style="margin:0">${GRANTNAMES[person.grant]} · all assigned plants</span>`:""}
+    ${person.live?`<span class="chip c-nav" style="margin:0">◉ live from the configurator</span>`:""}
+  </div>`;
+  if(!plants.length) return h+`<p class="hint" style="font-size:13px;color:var(--ink-3)">No plants assigned.</p>`;
+  // default set expansion: open sets that carry any non-plain state
+  if(!openRevSets){
+    openRevSets=new Set();
+    SETS.forEach(s=>{ if(s.perms.some(p=>plants.some(pl=>["added","removed","capped"].includes(cellState(person,pl,s.id+"."+p.id))))) openRevSets.add(s.id); });
+    if(!openRevSets.size) openRevSets.add("work");
+  }
+  h+=`<div style="overflow-x:auto"><table class="rtable"><tr><th style="min-width:260px">Ability</th>`+
+    plants.map(pl=>`<th>${pl}<br><span style="font-weight:400;text-transform:none;letter-spacing:0">${ROLES[person.asg[pl].tier].n} · ${coName(pl)}</span></th>`).join("")+`</tr>`;
+  SETS.forEach(s=>{
+    const open=openRevSets.has(s.id);
+    const mini=plants.map(pl=>{
+      const states=s.perms.map(p=>cellState(person,pl,s.id+"."+p.id));
+      const on=states.filter(x=>x==="on").length, add=states.filter(x=>x==="added").length,
+            rem=states.filter(x=>x==="removed").length, cap=states.filter(x=>x==="capped").length;
+      let parts=[]; if(on)parts.push(on+"✓"); if(add)parts.push(add+"✚"); if(rem)parts.push(rem+"⊘"); if(cap)parts.push(cap+"▢");
+      return `<td class="mini" style="font-size:11.5px;color:var(--ink-2)">${parts.join(" ")||"—"}</td>`;
+    }).join("");
+    h+=`<tr class="setrow" onclick="toggleRevSet('${s.id}')"><td>${open?"▾":"▸"} ${s.n} <span class="mini">· ${s.perms.length} abilities</span></td>${mini}</tr>`;
+    if(open) s.perms.forEach(p=>{
+      const key=s.id+"."+p.id;
+      h+=`<tr><td class="pn">${p.n}</td>`+plants.map(pl=>{
+        const st=cellState(person,pl,key), [g,cls]=CELL[st];
+        return `<td><button class="cell ${cls}" onclick="setWhy('${person.id}','${pl}','${key}')" title="click for the why-chain">${g}</button></td>`;
+      }).join("")+`</tr>`;
+    });
+  });
+  h+=`</table></div>`;
+  h+=`<div class="legend"><b style="color:var(--ink-2)">Legend:</b>
+    <span><span class="cell st-on">✓</span> tier / grant default</span>
+    <span><span class="cell st-added">✚</span> added by exception (reasoned, audited)</span>
+    <span><span class="cell st-removed">⊘</span> removed by exception</span>
+    <span><span class="cell st-capped">▢</span> capped — module not licensed at that plant</span>
+    <span><span class="cell st-off">−</span> not granted</span></div>`;
+  if(whySel&&whySel.pid===person.id){
+    h+=`<div class="whybox">${whyChain(person,whySel.plant,whySel.key)}</div>`;
+  } else {
+    h+=`<div class="whybox" style="background:var(--bg);border-color:var(--line);color:var(--ink-3)">Click any cell to see its why-chain — the one-sentence answer an auditor needs.</div>`;
+  }
+  return h;
+}
+function renderPlantLens(ppl){
+  let h=`<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px">
+    <span class="gh" style="margin:0">Plant</span>
+    <select onchange="setRevPlant(this.value)">${ALLPLANTS.map(p=>`<option value="${p}" ${p===reviewPlant?"selected":""}>${p} — ${coName(p)}</option>`).join("")}</select>
+    <span class="chip c-nav" style="margin:0">📦 ${[...plantMods(reviewPlant)].map(m=>modById[m].n).join(" · ")}</span>
+  </div>`;
+  const roster=ppl.filter(x=>x.asg[reviewPlant]);
+  h+=`<div class="gh2" style="margin-top:4px">Roster — who holds what here</div>`;
+  if(!roster.length) h+=`<p style="font-size:13px;color:var(--ink-3)">Nobody is assigned to this plant.</p>`;
+  else h+=roster.map(x=>{
+    const a=x.asg[reviewPlant];
+    const dev=a.add.length+a.remove.length;
+    const cap=SETS.flatMap(s=>s.perms.map(p=>s.id+"."+p.id)).filter(k=>personP(x,reviewPlant,k)&&!avail(k,reviewPlant)).length;
+    return `<div class="rowitem"><span><span class="t">${x.n}</span> ${x.live?`<span class="chip c-nav" style="margin:0;padding:1px 8px;font-size:10.5px">live</span>`:""}<br><span class="s">${x.t}${x.grant?" · "+GRANTNAMES[x.grant]:""}</span></span>
+      <span><span class="pill p-nav" style="margin-right:6px">${ROLES[a.tier].n}</span>${dev?`<span class="pill p-amb" style="margin-right:6px">${dev} exception${dev>1?"s":""}</span>`:`<span class="pill p-grn" style="margin-right:6px">standard</span>`}${cap?`<span class="pill" style="background:var(--read-bg);color:var(--ink-3)">📦 ${cap} capped</span>`:""}</span></div>`;
+  }).join("");
+  // capability query — "who can X here?"
+  const allPerms=SETS.flatMap(s=>s.perms.map(p=>({key:s.id+"."+p.id,n:p.n,set:s.n})));
+  h+=`<div class="gh2">Capability query — “who can do this here?”</div>
+    <select onchange="setCapQuery(this.value)" style="min-width:320px"><option value="">Pick an ability…</option>${allPerms.map(p=>`<option value="${p.key}" ${capQuery===p.key?"selected":""}>${p.set} · ${p.n}</option>`).join("")}</select>`;
+  if(capQuery){
+    const mod=modById[PERMMOD[capQuery]];
+    if(!avail(capQuery,reviewPlant)){
+      h+=`<div class="msg warn" style="margin-top:10px">📦 Nobody — “${allPerms.find(p=>p.key===capQuery).n}” needs the ${mod.n} module, which is not in ${reviewPlant}'s contract. No role or exception can bypass the ceiling.</div>`;
+    } else {
+      const who=roster.filter(x=>personP(x,reviewPlant,capQuery));
+      h+=who.length?`<div style="margin-top:10px">`+who.map(x=>{
+        const st=cellState(x,reviewPlant,capQuery);
+        return `<div class="rowitem"><span class="t">${x.n}</span><span class="s">${st==="added"?"via exception — "+(x.asg[reviewPlant].reason||""):st==="on"?"via "+(x.grant&&(GRANTS[x.grant]||[]).includes(capQuery.split(".")[0])?GRANTNAMES[x.grant]+" grant":ROLES[x.asg[reviewPlant].tier].n+" tier"):""}</span></div>`;
+      }).join("")+`</div>`:`<div class="msg ok" style="margin-top:10px">Nobody at this plant — the module is licensed, but no one's tier or exceptions include it.</div>`;
+    }
+  }
+  h+=`<div class="gh2">Changed recently — what a reviewer checks first</div>`+
+    AUDIT.map(e=>`<div class="rowitem"><span class="s">${e.t}</span><span class="pill ${e.w==="now"?"p-amb":"p-nav"}">${e.w==="now"?"this session":"earlier"}</span></div>`).join("");
+  return h;
+}
 
 /* ================= SMART PREVIEW ENGINE ================= */
 let prevMode="live", prevTab=null, prevPlant="all";
@@ -658,7 +823,11 @@ function buildStdP(role,grantId){
   return p;
 }
 function previewCtx(){
-  if(prevMode==="live") return {P:P,role:baseRole,grantId:grant,label:"your current configuration"};
+  if(prevMode==="live"){
+    const ctxPlant=(prevPlant!=="all"&&selPlants.has(prevPlant))?prevPlant:(selPlants.size?[...selPlants][0]:null);
+    if(ctxPlant){ const a=ASG[ctxPlant]; return {P:{...a.P},role:a.tier,grantId:grant,label:`your configuration at ${ctxPlant}`}; }
+    return {P:buildStdP("l1",grant),role:"l1",grantId:grant,label:"standard L1 (no plants selected yet)"};
+  }
   const pr=PRESETS.find(x=>x.id===prevMode);
   return {P:buildStdP(pr.role,pr.grant),role:pr.role,grantId:pr.grant,label:"standard "+pr.label};
 }
@@ -687,92 +856,91 @@ function bodyFor(tabId,c,why){
   const has=k=>!!c.P[k];
   let b="";
   if(tabId==="approvals"){
-    if(has("approve.gates")){ b+=row("Root cause: \u201cDiffuser membrane clogged\u201d","MBBR blower trip \u00b7 submitted by Ramesh \u00b7 12 min ago",`<span class="pill p-grn" style="margin-right:6px">Approve</span><span class="pill p-red">Reject</span>`);
-      b+=row("Manual close request","Inlet screen jam \u00b7 photo attached",`<span class="pill p-grn" style="margin-right:6px">Approve</span><span class="pill p-red">Reject</span>`);}
-    else { b+=mut("Gate approvals hidden \u2014 \u2018Approve / reject gates\u2019 is off"); why.push("Approve/Reject buttons hidden \u2014 gates permission is off"); }
-    if(has("approve.forceclose")) b+=row("Force-close: sensor fault duplicate","Auto-generated \u2014 needs co-sign",`<span class="pill p-amb">Co-sign</span>`);
-    else { b+=mut("Force-close hidden \u2014 not granted to this user"); why.push("Force-close row hidden \u2014 approve.forceclose is off"); }
+    if(has("approve.gates")){ b+=row("Root cause: “Diffuser membrane clogged”","MBBR blower trip · submitted by Ramesh · 12 min ago",`<span class="pill p-grn" style="margin-right:6px">Approve</span><span class="pill p-red">Reject</span>`);
+      b+=row("Manual close request","Inlet screen jam · photo attached",`<span class="pill p-grn" style="margin-right:6px">Approve</span><span class="pill p-red">Reject</span>`);}
+    else { b+=mut("Gate approvals hidden — ‘Approve / reject gates’ is off"); why.push("Approve/Reject buttons hidden — gates permission is off"); }
+    if(has("approve.forceclose")) b+=row("Force-close: sensor fault duplicate","Auto-generated — needs co-sign",`<span class="pill p-amb">Co-sign</span>`);
+    else { b+=mut("Force-close hidden — not granted to this user"); why.push("Force-close row hidden — approve.forceclose is off"); }
     if(has("approve.override")) b+=row("Photo override request","Camera broken at outlet chamber",`<span class="pill p-nav">Review</span>`);
     if(has("approve.reopen")) b+=row("Closed yesterday: pump seal leak","Reopen if root cause was wrong",`<span class="pill p-nav">Reopen</span>`);
     if(has("approve.assign")) b+=`<button class="bigbtn" style="background:var(--navy)">+ Create & assign a task</button>`;
   }
   if(tabId==="issues"){
-    b+=row("MBBR blower trip","Auto \u00b7 raised 06:20 \u00b7 step 2 of 5",`<span class="pill p-red">2h overdue</span>`);
-    b+=row("Inlet pH high","Auto \u00b7 raised 08:05 \u00b7 awaiting RC",`<span class="pill p-amb">45m left</span>`);
-    if(has("work.data")) b+=row("Lab results \u2014 inlet BOD","Enter today\u2019s reading"+(has("flags.backdate")?" \u00b7 back-dated entry enabled":""),`<span class="pill p-nav">Enter data</span>`);
-    if(has("flags.backdate")) why.push("Back-dated entry appears in data entry \u2014 exception flag is on");
-    if(has("work.maintenance")) b+=row("Maintenance: grease blower bearings","Monthly \u00b7 record after completion",`<span class="pill p-grn">Record</span>`);
-    if(has("work.handoff")) b+=row("Active session","You own \u2018MBBR blower trip\u2019",`<span class="pill p-nav">Hand off</span>`);
-    if(has("work.checkin")) b+=row("Shift","Checked in 06:02 \u00b7 ends 14:00",`<span class="pill p-nav">Check out</span>`);
-    if(has("work.sessions")) b+=`<button class="bigbtn">\u25b6 Resume: MBBR blower trip</button>`;
+    b+=row("MBBR blower trip","Auto · raised 06:20 · step 2 of 5",`<span class="pill p-red">2h overdue</span>`);
+    b+=row("Inlet pH high","Auto · raised 08:05 · awaiting RC",`<span class="pill p-amb">45m left</span>`);
+    if(has("work.data")) b+=row("Lab results — inlet BOD","Enter today's reading"+(has("flags.backdate")?" · back-dated entry enabled":""),`<span class="pill p-nav">Enter data</span>`);
+    if(has("flags.backdate")) why.push("Back-dated entry appears in data entry — exception flag is on");
+    if(has("work.maintenance")) b+=row("Maintenance: grease blower bearings","Monthly · record after completion",`<span class="pill p-grn">Record</span>`);
+    if(has("work.handoff")) b+=row("Active session","You own ‘MBBR blower trip’",`<span class="pill p-nav">Hand off</span>`);
+    if(has("work.checkin")) b+=row("Shift","Checked in 06:02 · ends 14:00",`<span class="pill p-nav">Check out</span>`);
+    if(has("work.sessions")) b+=`<button class="bigbtn">▶ Resume: MBBR blower trip</button>`;
     if(has("work.raise")) b+=`<button class="bigbtn" style="background:var(--navy);margin-top:8px">+ Raise a manual issue</button>`;
-    else why.push("\u2018Raise manual issue\u2019 button hidden \u2014 work.raise is off");
+    else why.push("‘Raise manual issue’ button hidden — work.raise is off");
   }
   if(tabId==="tasks"){
-    b+=row("Chlorine dosing check","Fixed task \u00b7 daily 10:00",`<span class="pill p-grn">Start</span>`);
-    b+=row("Backwash filter","Every 8h \u00b7 due 14:00",`<span class="pill p-grn">Start</span>`);
-    if(has("work.myshift")) b+=row("My shifts","This week: Mon\u2013Fri, 06:00\u201314:00",`<span class="pill p-nav">Roster</span>`);
+    b+=row("Chlorine dosing check","Fixed task · daily 10:00",`<span class="pill p-grn">Start</span>`);
+    b+=row("Backwash filter","Every 8h · due 14:00",`<span class="pill p-grn">Start</span>`);
+    if(has("work.myshift")) b+=row("My shifts","This week: Mon–Fri, 06:00–14:00",`<span class="pill p-nav">Roster</span>`);
   }
   if(tabId==="inventory"){
     if(has("work.inventory")){
-      b+=row("Chlorine drums","12 in stock \u00b7 last used today 09:40",`<span class="pill p-red" style="margin-right:6px">\u2212 Use</span><span class="pill p-grn">+ Add</span>`);
-      b+=row("PAC coagulant","Expires in 6 days \u2014 remove if unusable",`<span class="pill p-amb">Remove \u00b7 expired</span>`);
-      b+=row("Polymer (50 kg bags)","3 left \u00b7 reorder point reached",`<span class="pill p-grn">+ Record purchase</span>`);
-      why.push("Add / remove item actions shown \u2014 work.inventory is on (operator view)");
-    } else { b+=mut("Add / remove items hidden \u2014 work.inventory is off"); why.push("Item actions hidden \u2014 work.inventory is off"); }
+      b+=row("Chlorine drums","12 in stock · last used today 09:40",`<span class="pill p-red" style="margin-right:6px">− Use</span><span class="pill p-grn">+ Add</span>`);
+      b+=row("PAC coagulant","Expires in 6 days — remove if unusable",`<span class="pill p-amb">Remove · expired</span>`);
+      b+=row("Polymer (50 kg bags)","3 left · reorder point reached",`<span class="pill p-grn">+ Record purchase</span>`);
+      why.push("Add / remove item actions shown — work.inventory is on (operator view)");
+    } else { b+=mut("Add / remove items hidden — work.inventory is off"); why.push("Item actions hidden — work.inventory is off"); }
     if(has("approve.invlogs")){
-      b+=row("Inventory log \u2014 today","Ramesh: \u22122 chlorine drums (usage) \u00b7 Vikram: +50 kg polymer (purchase)",`<span class="pill p-nav">Full log</span>`);
-      b+=row("Inventory log \u2014 this week","14 movements \u00b7 1 expiry removal \u00b7 2 purchases",`<span class="pill p-nav">Export</span>`);
-      why.push("Movement logs shown \u2014 approve.invlogs is on (supervisor view)");
-    } else { b+=mut("Movement logs hidden \u2014 supervisors only (approve.invlogs)"); why.push("Inventory logs hidden \u2014 approve.invlogs is off"); }
+      b+=row("Inventory log — today","Ramesh: −2 chlorine drums (usage) · Vikram: +50 kg polymer (purchase)",`<span class="pill p-nav">Full log</span>`);
+      b+=row("Inventory log — this week","14 movements · 1 expiry removal · 2 purchases",`<span class="pill p-nav">Export</span>`);
+      why.push("Movement logs shown — approve.invlogs is on (supervisor view)");
+    } else { b+=mut("Movement logs hidden — supervisors only (approve.invlogs)"); why.push("Inventory logs hidden — approve.invlogs is off"); }
   }
   if(tabId==="dashboard"){
-    if(has("readplant.dash")) b+=`<div class="kpis"><div class="kpi"><div class="n">1.2 MLD</div><div class="l">treated today</div></div><div class="kpi"><div class="n">7.1</div><div class="l">outlet pH</div></div><div class="kpi"><div class="n">4</div><div class="l">issues this week</div></div><div class="kpi"><div class="n">\u2193 9%</div><div class="l">power vs last wk</div></div></div>`;
-    if(has("flags.remote")){ b+=row("Blower B2","Running \u00b7 remote control enabled",`<span class="pill p-red">Stop</span><span class="pill p-grn" style="margin-left:6px">Start</span>`); why.push("Remote start/stop controls visible \u2014 IoT flag is on"); }
+    if(has("readplant.dash")) b+=`<div class="kpis"><div class="kpi"><div class="n">1.2 MLD</div><div class="l">treated today</div></div><div class="kpi"><div class="n">7.1</div><div class="l">outlet pH</div></div><div class="kpi"><div class="n">4</div><div class="l">issues this week</div></div><div class="kpi"><div class="n">↓ 9%</div><div class="l">power vs last wk</div></div></div>`;
+    if(has("flags.remote")){ b+=row("Blower B2","Running · remote control enabled",`<span class="pill p-red">Stop</span><span class="pill p-grn" style="margin-left:6px">Start</span>`); why.push("Remote start/stop controls visible — IoT flag is on"); }
     if(has("readplant.layout")) b+=row("Plant layout / digital twin","Tap any tank for live readings",`<span class="pill p-nav">Open</span>`);
-    if(has("readplant.insights")) b+=row("Insights & events","3 active insights \u00b7 12 events today",`<span class="pill p-nav">View</span>`);
-    if(has("readplant.reports")) b+=row("Weekly compliance report","Generated Mon 06:00 \u00b7 batches included",`<span class="pill p-nav">Download</span>`);
-    if(has("readplant.history")) b+=row("Equipment history","Pump 3 \u00b7 last maintenance 12 Jun",`<span class="pill p-nav">View</span>`);
+    if(has("readplant.insights")) b+=row("Insights & events","3 active insights · 12 events today",`<span class="pill p-nav">View</span>`);
+    if(has("readplant.reports")) b+=row("Weekly compliance report","Generated Mon 06:00 · batches included",`<span class="pill p-nav">Download</span>`);
+    if(has("readplant.history")) b+=row("Equipment history","Pump 3 · last maintenance 12 Jun",`<span class="pill p-nav">View</span>`);
     const canAct=has("work.sessions")||has("approve.gates");
-    if(!canAct){ b+=mut("View-only \u2014 acting on issues is not part of this user\u2019s permissions"); why.push("Read-only banner shown \u2014 no operational permissions"); }
+    if(!canAct){ b+=mut("View-only — acting on issues is not part of this user's permissions"); why.push("Read-only banner shown — no operational permissions"); }
   }
   if(tabId==="portfolio"){
-    if(has("portfolio.overview")) b+=`<div class="gridcards"><div class="pcard"><div class="t">Noida workspace</div><div class="s">5 plants \u00b7 98% SLA</div></div><div class="pcard"><div class="t">Gurgaon workspace</div><div class="s">4 plants \u00b7 94% SLA</div></div><div class="pcard"><div class="t">Jaipur</div><div class="s">3 plants \u00b7 99% SLA</div></div><div class="pcard"><div class="t">2 at deadline</div><div class="s">needs attention</div></div></div>`;
-    if(has("portfolio.compare")) b+=row("Compare plants","Energy \u00b7 SLA \u00b7 issues per MLD",`<span class="pill p-nav">Open</span>`);
+    if(has("portfolio.overview")) b+=`<div class="gridcards"><div class="pcard"><div class="t">GreenGrid Utilities</div><div class="s">4 plants · 98% SLA</div></div><div class="pcard"><div class="t">AquaCore O&M</div><div class="s">3 plants · 94% SLA</div></div><div class="pcard"><div class="t">Jaipur Municipal</div><div class="s">2 plants · 99% SLA</div></div><div class="pcard"><div class="t">2 at deadline</div><div class="s">needs attention</div></div></div>`;
+    if(has("portfolio.compare")) b+=row("Compare plants","Energy · SLA · issues per MLD",`<span class="pill p-nav">Open</span>`);
   }
   if(tabId==="people"){
-    if(has("people.invite")){ b+=row("Ramesh K.","L1 Operator \u00b7 0 deviations",`<span class="pill p-nav" style="margin-right:6px">Edit</span><span class="pill p-grn">standard</span>`);
-      b+=row("Sunita M.","L3 Lead + back-date flag \u00b7 1 deviation",`<span class="pill p-nav" style="margin-right:6px">Edit</span><span class="pill p-amb">1 drift</span>`); }
-    if(has("people.rosters")) b+=row("Shift roster","Night gap Sunday \u2014 unassigned",`<span class="pill p-amb">Fix</span>`);
-    if(has("people.skills")) b+=row("Skills","Pump maintenance: 4 users \u00b7 Lab testing: 2",`<span class="pill p-nav">Manage</span>`);
-    if(has("people.groups")) b+=row("Groups & workspaces","Noida ops \u00b7 Vendor: AquaFix",`<span class="pill p-nav">Manage</span>`);
-    if(has("flags.impersonate")){ b+=row("View as user","Support: see Ramesh\u2019s screen",`<span class="pill p-nav">View as</span>`); why.push("View-as appears \u2014 impersonation flag is on"); }
+    if(has("people.invite")){ b+=row("Ramesh K.","L1 Operator · 0 deviations",`<span class="pill p-nav" style="margin-right:6px">Edit</span><span class="pill p-grn">standard</span>`);
+      b+=row("Asha V.","L3 at Sector 62 · Non-op at Mansarovar · 1 exception",`<span class="pill p-nav" style="margin-right:6px">Edit</span><span class="pill p-amb">1 drift</span>`); }
+    if(has("people.rosters")) b+=row("Shift roster","Night gap Sunday — unassigned",`<span class="pill p-amb">Fix</span>`);
+    if(has("people.skills")) b+=row("Skills","Pump maintenance: 4 users · Lab testing: 2",`<span class="pill p-nav">Manage</span>`);
+    if(has("flags.impersonate")){ b+=row("View as user","Support: see Ramesh's screen",`<span class="pill p-nav">View as</span>`); why.push("View-as appears — impersonation flag is on"); }
     if(has("people.invite")) b+=`<button class="bigbtn" style="background:var(--navy)">+ Invite user</button>`;
   }
   if(tabId==="technical"){
-    if(has("tech.rules")) b+=row("Issue rule: DO < 2 mg/l for 10 min","Creates Major issue \u00b7 flow: Aeration v3",`<span class="pill p-grn">active</span>`);
-    if(has("tech.flows")) b+=row("Diagnostic flow: Aeration failure","7 steps \u00b7 used by 4 rules",`<span class="pill p-nav">Edit flow</span>`);
-    if(has("tech.plant")) b+=row("Plant setup","Details \u00b7 layout \u00b7 lab & WQ parameters",`<span class="pill p-nav">Configure</span>`);
-    if(has("tech.iot")) b+=row("IoT hardware","PLC \u00b7 HMI \u00b7 data logger",`<span class="pill p-nav">Configure</span>`);
-    if(has("tech.sitetpl")) b+=row("Site templates","Task \u00b7 event \u00b7 insight \u00b7 logbook \u00b7 data-input",`<span class="pill p-nav">Manage</span>`);
+    if(has("tech.rules")) b+=row("Issue rule: DO < 2 mg/l for 10 min","Creates Major issue · flow: Aeration v3",`<span class="pill p-grn">active</span>`);
+    if(has("tech.flows")) b+=row("Diagnostic flow: Aeration failure","7 steps · used by 4 rules",`<span class="pill p-nav">Edit flow</span>`);
+    if(has("tech.plant")) b+=row("Plant setup","Details · layout · lab & WQ parameters",`<span class="pill p-nav">Configure</span>`);
+    if(has("tech.iot")) b+=row("IoT hardware","PLC · HMI · data logger",`<span class="pill p-nav">Configure</span>`);
+    if(has("tech.sitetpl")) b+=row("Site templates","Task · event · insight · logbook · data-input",`<span class="pill p-nav">Manage</span>`);
     if(has("tech.ai")) b+=row("AI widget generator","Describe a widget, get a dashboard block",`<span class="pill p-grn">Generate</span>`);
-    if(has("tech.sensors")) b+=row("Sensor fault: outlet turbidity","Flatline 6h \u2014 check calibration",`<span class="pill p-red">fault</span>`);
-    if(has("tech.routing")) b+=row("Escalation chain: Major issues","Operator \u2192 L3 (15m) \u2192 L4 (60m)",`<span class="pill p-nav">Edit</span>`);
+    if(has("tech.sensors")) b+=row("Sensor fault: outlet turbidity","Flatline 6h — check calibration",`<span class="pill p-red">fault</span>`);
+    if(has("tech.routing")) b+=row("Escalation chain: Major issues","Operator → L3 (15m) → L4 (60m)",`<span class="pill p-nav">Edit</span>`);
     if(has("tech.dashcfg")) b+=row("Dashboard: Plant overview","12 widgets",`<span class="pill p-nav">Configure</span>`);
     if(has("tech.formulas")) b+=row("Formula: specific power (kWh/ML)","Site analytics",`<span class="pill p-nav">Edit</span>`);
   }
   if(tabId==="templates"){
-    if(has("templates.library")) b+=row("Diagnostic tree: Aeration failure v3","Used by 31 sites \u00b7 draft v4 in review",has("templates.publish")?`<span class="pill p-nav">Publish v4</span>`:`<span class="pill p-amb">draft only</span>`);
-    if(has("templates.onboard")) b+=row("Onboard new site","Wizard: sensors \u2192 rules \u2192 users",`<span class="pill p-grn">Start</span>`);
+    if(has("templates.library")) b+=row("Diagnostic tree: Aeration failure v3","Used by 31 sites · draft v4 in review",has("templates.publish")?`<span class="pill p-nav">Publish v4</span>`:`<span class="pill p-amb">draft only</span>`);
+    if(has("templates.onboard")) b+=row("Onboard new site","Wizard: sensors → rules → users",`<span class="pill p-grn">Start</span>`);
   }
-  return b||mut("Nothing to show \u2014 no permissions feed this screen");
+  return b||mut("Nothing to show — no permissions feed this screen");
 }
 function renderPreview(){
   document.getElementById("prevpick").innerHTML=PRESETS.map(p=>`<button class="pv ${prevMode===p.id?"on":""}" onclick="setPreset('${p.id}')">${p.label}</button>`).join("");
-  // plant-context selector: the plant's licensed modules become the ceiling
+  const groups=plantsByCompany();
   document.getElementById("prevplant").innerHTML=`<option value="all" ${prevPlant==="all"?"selected":""}>All modules — no plant ceiling</option>`+
-    Object.keys(WORKSPACES).map(w=>`<optgroup label="${WORKSPACES[w].n}">`+
-      WORKSPACES[w].plants.map(p=>`<option value="${p}" ${prevPlant===p?"selected":""}>${p} · ${plantMods(p).size} of ${MODULES.length} modules</option>`).join("")+`</optgroup>`).join("");
+    Object.keys(groups).map(co=>`<optgroup label="${COMPANIES[co]}">`+
+      groups[co].map(p=>`<option value="${p}" ${prevPlant===p?"selected":""}>${p} · ${plantMods(p).size} of ${MODULES.length} modules</option>`).join("")+`</optgroup>`).join("");
   document.getElementById("prevmods").innerHTML=prevPlant==="all"?"":MODULES.map(m=>`<span class="avail av-${plantMods(prevPlant).has(m.id)?"all":"none"}">${m.n}</span>`).join("");
   const c=previewCtx();
   const why=[];
@@ -790,21 +958,19 @@ function renderPreview(){
   const tabs=computeTabs(c);
   const land=landingTab(tabs);
   if(!prevTab||!tabs.find(t=>t.id===prevTab)) prevTab=land;
-  const roleN=ROLES[c.role].n+(c.grantId?" + "+{people:"People Admin",tech:"Technical Admin",fullsite:"Full Site Admin",global:"Global Admin"}[c.grantId]:"")+(prevPlant!=="all"?" @ "+prevPlant:"");
+  const roleN=ROLES[c.role].n+(c.grantId?" + "+GRANTNAMES[c.grantId]:"")+(prevPlant!=="all"?" @ "+prevPlant:"");
   let frame;
   if(!tabs.length){
-    frame=`<div class="frame"><div class="appbar"><span class="brand">DigitalPaani</span><span class="who">${roleN}</span></div><div class="body">${mut("This user can log in but has no permissions \u2014 no screens to show")}</div></div>`;
+    frame=`<div class="frame"><div class="appbar"><span class="brand">DigitalPaani</span><span class="who">${roleN}</span></div><div class="body">${mut("This user can log in but has no permissions — no screens to show")}</div></div>`;
     why.push("No permission sets are on, so the app renders nothing after login");
   }else{
-    why.push(`Landing screen is \u201c${tabs.find(t=>t.id===land).n}\u201d \u2014 highest-priority active set (approvals \u2192 issues \u2192 portfolio \u2192 dashboard \u2192 admin)`);
-    tabs.forEach(t=>why.push(`\u201c${t.n}\u201d tab exists because ${t.why}`));
+    why.push(`Landing screen is “${tabs.find(t=>t.id===land).n}” — highest-priority active set (approvals → issues → portfolio → dashboard → admin)`);
+    tabs.forEach(t=>why.push(`“${t.n}” tab exists because ${t.why}`));
     const nav=tabs.map(t=>`<span class="${t.id===prevTab?"on":""}" style="cursor:pointer" onclick="setPrevTab('${t.id}')">${t.n}</span>`).join("");
     const isPhone=tabs.length<=3&&(c.P["work.sessions"]||false)&&!c.grantId;
-    frame=`<div class="frame ${isPhone?"phone":""}"><div class="appbar"><span class="brand">DigitalPaani</span><span class="who">${roleN} \u00b7 ${prevMode==="live"?"as configured":"standard"}</span></div>
+    frame=`<div class="frame ${isPhone?"phone":""}"><div class="appbar"><span class="brand">DigitalPaani</span><span class="who">${roleN} · ${prevMode==="live"?"as configured":"standard"}</span></div>
       <div class="subnav">${nav}</div><div class="body">${bodyFor(prevTab,c,why)}</div></div>`;
   }
-  const dev=prevMode==="live"?deviations().length:0;
-  if(dev) why.push(`${dev} deviation${dev>1?"s":""} from standard are reflected above \u2014 this preview is per-permission, not per-role`);
   document.getElementById("smartframe").innerHTML=frame;
   document.getElementById("whylist").innerHTML=why.map(w=>`<li>${w}</li>`).join("");
 }
@@ -812,23 +978,24 @@ function setPreset(id){ prevMode=id; prevTab=null; renderPreview(); }
 function setPrevTab(id){ prevTab=id; renderPreview(); }
 function setPrevPlant(p){ prevPlant=p; prevTab=null; renderPreview(); }
 
-/* ================= PRODUCT MODULES TAB ================= */
+/* ================= PLANTS & MODULES TAB ================= */
 function renderModules(){
   document.getElementById("modcatalog").innerHTML=MODULES.map(m=>{
     const bySet={}; SETS.forEach(s=>s.perms.forEach(p=>{ if((p.mod||"core")===m.id) bySet[s.n]=(bySet[s.n]||0)+1; }));
     const total=Object.values(bySet).reduce((a,b)=>a+b,0);
-    const tag=m.always?` <span class="inc" style="font-size:10px;letter-spacing:.05em"> INCLUDED</span>`:m.noperm?` <span class="chip c-flag" style="padding:1px 8px;font-size:10px;margin:0;letter-spacing:.05em">HARDWARE ADD-ON</span>`:"";
+    const tag=m.always?` <span class="inc" style="font-size:10px;letter-spacing:.05em;color:var(--ops);font-weight:600"> INCLUDED</span>`:m.noperm?` <span class="chip c-flag" style="padding:1px 8px;font-size:10px;margin:0;letter-spacing:.05em">HARDWARE ADD-ON</span>`:"";
     const mline=m.noperm?`Plant-level entitlement only — tracks what's sold; grants no user permissions, so it never appears in a role or override.`
       :`Unlocks ${total} abilities across role types: ${Object.entries(bySet).map(([n,c])=>`${n} (${c})`).join(" · ")}`;
     return `<div class="modcard"><div class="t">${m.icon} ${m.n}${tag}</div>
       <div class="d">${m.d}</div>
       <div class="m">${mline}</div></div>`;
   }).join("");
-  let h=`<tr><th>Plant</th>`+MODULES.map(m=>`<th>${m.icon} ${m.n}</th>`).join("")+`</tr>`;
-  Object.keys(WORKSPACES).forEach(w=>{
-    h+=`<tr class="wsrow"><td colspan="${MODULES.length+1}">${WORKSPACES[w].n}</td></tr>`;
-    WORKSPACES[w].plants.forEach(p=>{
-      h+=`<tr><td class="pn">${p}</td>`+MODULES.map(m=>{
+  let h=`<tr><th>Plant</th><th>Company</th>`+MODULES.map(m=>`<th>${m.icon} ${m.n}</th>`).join("")+`</tr>`;
+  const groups=plantsByCompany();
+  Object.keys(groups).forEach(co=>{
+    h+=`<tr class="wsrow"><td colspan="${MODULES.length+2}">${COMPANIES[co]}</td></tr>`;
+    groups[co].forEach(p=>{
+      h+=`<tr><td class="pn">${p}</td><td class="co">${COMPANIES[co]}</td>`+MODULES.map(m=>{
         if(m.always) return `<td><span class="inc">✓ included</span></td>`;
         const on=(PLANTMODS[p]||[]).includes(m.id);
         return `<td><button class="sw sm ${on?"on":""}" title="${m.n} at ${p}" onclick="toggleMod('${p}','${m.id}')"></button></td>`;
@@ -846,9 +1013,11 @@ function tab(i){
   document.querySelectorAll(".tab").forEach((t,j)=>t.classList.toggle("on",i===j));
   document.querySelectorAll(".pane").forEach((p,j)=>p.classList.toggle("on",i===j));
   if(i===0) renderModules();
-  if(i===2) renderPreview();
+  if(i===1) render();
+  if(i===2) renderReview();
+  if(i===3) renderPreview();
 }
-initState(); render(); renderModules();
+render(); renderModules();
 </script>
 </body>
 </html>
