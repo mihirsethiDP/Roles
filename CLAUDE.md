@@ -119,6 +119,12 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
 6. **Migration**: default down, promote up. 490 users migrate by script, 236 get
    safe defaults + one promotion question, 27 on HOLD (orphaned roleId
    67000a18659b9e13b8f9afbc — deleted role, identify from backup first).
+   **Numbers pinned 2026-07-14 against fresh production exports** (data/,
+   local-only; full record in internal/NUMBER-PINS.md): users = 753 final,
+   1:1 with the worksheet; roles = 56 docs / 46 live / 44 live-and-assigned
+   names; orphan confirmed exactly (160 rows, 27 users); 1,494 (user, plant)
+   pairs matching the worksheet with zero mismatches; TRUE mixed-capacity
+   multi-plant users = 11 (per-plant resolution: internal/split-resolution.csv).
    Known traps: Operator Administrative Role's name lies (it's dashboard-only);
    Client Role carries manual-ticket write perms despite mapping to read-only.
 
@@ -128,7 +134,10 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
   directory → per-plant assignment editor with progressive disclosure) ·
   Access Review · smart UI preview engine. Single self-contained file,
   vanilla JS, no build step.
-  DigitalPaani navy #193458, ops teal #0E7C66, admin purple #5548C8.
+  Brand Book v7 tokens (owner ruling 2026-07-14): navy #002454, teal
+  #95CFD3/#5AABB0 (dark-teal #1F6B71 for AA text), warn/err from the
+  severity ladder (#FFF8E1/#B45309, #B80000), Figtree + IBM Plex Mono.
+  No purple, no sage, no rust in product surfaces.
 - `coverage-map.csv` — all 121 legacy permission tags → v2 home + status.
 - `README.md` — GitHub Pages deploy steps (repo: github.com/mihirsethiDP/Roles;
   Pages had a transient deploy failure; Netlify Drop is the fallback).
