@@ -25,6 +25,23 @@ body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 'Figtree',syst
 h1,h2,h3,h4{font-family:'Figtree',sans-serif;font-weight:600;line-height:1.25;margin:0}
 .wrap{max-width:1160px;margin:0 auto;padding:0 22px}
 
+/* ---------- brand-book shell: navy sidenav + content (one nav, one purpose per screen) ---------- */
+.layout{display:flex;min-height:100vh}
+.sidenav{width:236px;background:var(--navy);position:fixed;top:0;left:0;bottom:0;overflow-y:auto;display:flex;flex-direction:column;z-index:50}
+.nav-brand{padding:22px 20px 16px;border-bottom:.5px solid rgba(255,255,255,.08)}
+.nav-brand .eb{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--teal-d)}
+.nav-brand .nm{font-family:'Figtree';font-weight:800;font-size:16px;color:#fff;letter-spacing:-.2px;margin-top:4px;line-height:1.15}
+.nav-brand .sub{font-family:var(--mono);font-size:9px;color:rgba(149,207,211,.6);letter-spacing:.08em;text-transform:uppercase;margin-top:3px}
+.nav-items{padding:10px 0;flex:1}
+.nav-label{font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.28);padding:14px 20px 4px}
+.sidenav .tab{display:block;width:100%;text-align:left;background:transparent;border:none;border-left:2px solid transparent;border-radius:0;color:rgba(255,255,255,.55);font:500 13px 'Figtree';padding:9px 20px;cursor:pointer}
+.sidenav .tab:hover{color:rgba(255,255,255,.9);background:rgba(255,255,255,.04)}
+.sidenav .tab.on{color:#fff;border-left-color:var(--teal);background:rgba(149,207,211,.08);font-weight:600}
+.nav-personas{padding:12px 14px 6px;border-top:.5px solid rgba(255,255,255,.08)}
+.nav-personas .pchip{display:block;width:100%;text-align:left;margin:0 0 6px;border-radius:8px;font-size:11.5px;padding:7px 10px}
+.nav-foot{font-family:var(--mono);font-size:8.5px;color:rgba(255,255,255,.25);padding:10px 20px 16px;letter-spacing:.05em;line-height:1.7}
+.appmain{margin-left:236px;flex:1;min-width:0}
+@media(max-width:900px){.sidenav{position:static;width:auto}.layout{flex-direction:column}.appmain{margin-left:0}}
 header.hero{background:var(--navy);color:#fff;padding:30px 0 0;border-bottom:4px solid var(--ops)}
 .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--teal-d);margin:0 0 8px}
 .hero h1{font-size:26px;color:#fff}
@@ -36,7 +53,13 @@ header.hero{background:var(--navy);color:#fff;padding:30px 0 0;border-bottom:4px
 .plabel{font-size:12px;color:#95CFD3;letter-spacing:.05em;text-transform:uppercase;font-weight:600}
 .pchip{border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.08);color:rgba(255,255,255,.68);border-radius:18px;padding:7px 15px;font:500 13px 'Figtree';cursor:pointer}
 .pchip.on{background:#fff;border-color:#fff;color:var(--navy);font-weight:600}
-.personanote{font-size:12px;color:#95CFD3;margin:0 0 18px;max-width:760px}
+.personanote{font-size:10.5px;color:rgba(149,207,211,.8);line-height:1.55;padding:2px 8px 10px;margin:0}
+.attnrow{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
+.attn{border:1px solid var(--flag-bg);background:var(--flag-bg);color:var(--flag);border-radius:14px;padding:5px 13px;font:600 12.5px 'Figtree';cursor:pointer}
+.attn:hover{border-color:var(--flag)}
+.attn.ok{background:var(--ops-bg);color:var(--ops);border-color:var(--ops-bg);cursor:default}
+.meter{font-size:12px;color:var(--ink-2);margin-left:14px;white-space:nowrap}
+.meter b{color:var(--navy)}
 .clchip{border:1px dashed var(--ops);background:var(--ops-bg);color:var(--ops);border-radius:14px;padding:4px 11px;font:600 11.5px 'Figtree';cursor:pointer;margin-left:8px}
 .clchip:hover{background:var(--ops);color:#fff}
 
@@ -242,27 +265,32 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
 </head>
 <body>
 
-<header class="hero">
-  <div class="wrap">
-    <p class="eyebrow">DigitalPaani</p>
-    <h1>User Center — Roles & Permissions</h1>
-    <p>Three ideas, one order: <b>plants</b> carry what the company bought · <b>people</b> get a role per plant · <b>review</b> shows everything at a glance. Amber always means a deviation. Grey always means "not in this plant's plan".</p>
-    <div class="personabar">
-      <span class="plabel">You're working as:</span>
-      <button class="pchip on" id="pers-global" onclick="setPersona('global')">🌐 Company admin · DigitalPaani (Global)</button>
-      <button class="pchip" id="pers-cluster" onclick="setPersona('cluster')">🏢 Cluster admin · GreenGrid Utilities (4 plants)</button>
-      <button class="pchip" id="pers-site" onclick="setPersona('site')">🏭 Plant admin · People Admin @ STP — Sector 62</button>
-    </div>
-    <p class="personanote" id="personanote"></p>
-    <div class="tabs">
-      <button class="tab on" onclick="tab(0)">1 · Plants & modules</button>
-      <button class="tab" onclick="tab(1)">2 · User Center</button>
-      <button class="tab" onclick="tab(2)">3 · Access review</button>
-      <button class="tab" onclick="tab(3)">4 · UI previews</button>
-    </div>
+<div class="layout">
+<nav class="sidenav">
+  <div class="nav-brand">
+    <div class="eb">DigitalPaani</div>
+    <div class="nm">User Center</div>
+    <div class="sub">Roles &amp; Permissions</div>
   </div>
-</header>
+  <div class="nav-items">
+    <div class="nav-label">Manage</div>
+    <button class="tab" data-pane="1" onclick="tab(1)">People</button>
+    <button class="tab on" data-pane="0" onclick="tab(0)">Plants &amp; modules</button>
+    <div class="nav-label">Verify</div>
+    <button class="tab" data-pane="2" onclick="tab(2)">Access review</button>
+    <button class="tab" data-pane="3" onclick="tab(3)">UI previews</button>
+  </div>
+  <div class="nav-personas">
+    <div class="nav-label" style="padding:0 6px 6px">You're working as</div>
+    <button class="pchip on" id="pers-global" onclick="setPersona('global')">🌐 Company admin · DigitalPaani (Global)</button>
+    <button class="pchip" id="pers-cluster" onclick="setPersona('cluster')">🏢 Cluster admin · GreenGrid Utilities</button>
+    <button class="pchip" id="pers-site" onclick="setPersona('site')">🏭 Plant admin · STP — Sector 62</button>
+    <p class="personanote" id="personanote"></p>
+  </div>
+  <div class="nav-foot">amber = deviation<br>grey = not in this plant's plan</div>
+</nav>
 
+<div class="appmain">
 <main>
 <div class="wrap">
 
@@ -290,6 +318,7 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
       <div class="gh">User Center — everyone lives here, everything drives from here</div>
       <div class="help"><span class="i">💡</span><span>Every screen starts from a <b>person</b>. Open someone to edit their per-plant roles; the Access review and UI previews follow whoever you pick. Adding, changing and saving all land in the change log.</span></div>
       <div class="kpis" id="uckpis"></div>
+      <div class="attnrow" id="ucattn"></div>
       <div class="ucbar">
         <input type="text" id="ucsearch" placeholder="Search name or title…" oninput="render()">
         <select id="ucfplant" onchange="render()"></select>
@@ -298,6 +327,7 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
           <option value="dev">With deviations</option>
           <option value="grant">With admin grants</option>
           <option value="capped">With capped abilities</option>
+          <option value="zero">No access yet</option>
         </select>
         <button class="btn primary" onclick="startAddPerson()">＋ Add person</button>
       </div>
@@ -315,6 +345,7 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
         <button class="btn ghost" onclick="backToDirectory()">← All people</button>
         <span class="av" id="ucav"></span>
         <span><span class="nm" id="ucnm"></span><br><span class="tt" id="uctt"></span></span>
+        <span class="meter" id="ucmeter"></span>
         <span style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap">
           <button class="btn ghost" onclick="jumpReview()">🔍 See in Access review</button>
           <button class="btn ghost" onclick="jumpPreview()">🖥 Preview as this person</button>
@@ -354,6 +385,7 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
           <button class="btn primary" id="savebtn" onclick="save()">Save assignments</button>
           <span style="font-size:12.5px;color:var(--ink-3)" id="savehint"></span>
         </div>
+        <div id="saveok"></div>
         <pre class="payload" id="payload" style="display:none"></pre>
       </div>
     </div>
@@ -406,6 +438,8 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
 </main>
 
 <footer><div class="wrap">User Center · Roles & Permissions · interactive prototype · DigitalPaani. Data model: plant = company label + licensed modules (ceiling) · person = per-plant assignments [{plant, tier, exceptions}] + one grant · custom roles = add-only live-linked bundles with provenance · effective access = user permission ∧ plant module.</div></footer>
+</div><!-- /appmain -->
+</div><!-- /layout -->
 
 <script>
 /* ================= DATA ================= */
@@ -734,7 +768,7 @@ function modAvail(mod){ /* across selected plants: all | some | none | na */
 }
 function stdSetsFor(tier){ const s=new Set(ROLES[tier].std); (GRANTS[grant]||[]).forEach(x=>s.add(x)); return s; }
 function isStdFor(tier,setId){ return setId!=="flags"&&stdSetsFor(tier).has(setId); }
-function initAsg(plant,tier){
+function initAsg(plant,tier){ const so=document.getElementById("saveok"); if(so) so.innerHTML="";
   const keep=ASG[plant]||{};
   ASG[plant]={tier:tier,P:{},reason:"",openSets:keep.openSets||{},open:keep.open||false};
   SETS.forEach(s=>s.perms.forEach(pr=>ASG[plant].P[s.id+"."+pr.id]=isStdFor(tier,s.id)));
@@ -776,13 +810,13 @@ function disableCascade(a,setId){
     if(setState(a,"templates")!=="off") disableCascade(a,"templates");
   }
 }
-function toggleSet(ev,plant,setId){
+function toggleSet(ev,plant,setId){ const so=document.getElementById("saveok"); if(so) so.innerHTML="";
   ev.stopPropagation();
   const a=ASG[plant], st=setState(a,setId);
   if(st==="on") disableCascade(a,setId); else enableWithDeps(a,setId);
   render();
 }
-function togglePerm(plant,setId,permId){
+function togglePerm(plant,setId,permId){ const so=document.getElementById("saveok"); if(so) so.innerHTML="";
   const a=ASG[plant], key=setId+"."+permId, turningOn=!a.P[key];
   if(turningOn){
     if(!avail(key,plant)) return; // can't switch ON something the plant isn't licensed for
@@ -814,6 +848,13 @@ function render(){
   document.getElementById("ucav").textContent=cur.av;
   document.getElementById("ucnm").textContent=cur.n;
   document.getElementById("uctt").textContent=`${cur.t} · ${COMPANIES[cur.co]||cur.co}${cur.grant?" · "+GRANTNAMES[cur.grant]:""}`;
+  { // profile progress meter (goal gradient): plants -> standard -> reasons outstanding
+    const pls=[...selPlants];
+    const std=pls.filter(p=>!deviations(ASG[p]).length).length;
+    const owed=pls.filter(p=>deviations(ASG[p]).length&&!ASG[p].reason.trim()).length;
+    document.getElementById("ucmeter").innerHTML=!pls.length?"no plants yet"
+      :`<b>${pls.length}</b> plant${pls.length>1?"s":""} · <b>${std}</b> standard${pls.length-std?` · <b>${pls.length-std}</b> customized`:""}${owed?` · <b style="color:var(--err)">${owed} reason${owed>1?"s":""} to go</b>`:" · ✓ ready to save"}`;
+  }
   // plant picker grouped by company — scoped to the persona; Global gets whole-cluster grabs
   const groups=plantsByCompany();
   document.getElementById("plantbox").innerHTML=Object.keys(groups).filter(co=>groups[co].some(inScope)).map(co=>{
@@ -894,6 +935,13 @@ function renderDirectory(){
      <div class="kpi"><div class="n">${withGrant}</div><div class="l">admin grants</div></div>
      <div class="kpi"><div class="n" style="color:${withDev?"var(--flag)":"var(--ops)"}">${withDev}</div><div class="l">with deviations</div></div>
      <div class="kpi"><div class="n">${withCap}</div><div class="l">with capped abilities</div></div>`;
+  // needs-attention queue: a finish line, not a dashboard (goal gradient — watch it count down to ✓)
+  const needReason=POP.filter(p=>Object.entries(p.asg).some(([pl,a])=>inScope(pl)&&devCount(p,pl)>0&&!a.reason.trim())).length;
+  const zeroAccess=POP.filter(p=>!Object.keys(p.asg).length&&!p.grant).length;
+  const attn=[];
+  if(needReason) attn.push(`<button class="attn" onclick="document.getElementById('ucfstate').value='dev';render()">⚠ ${needReason} deviation${needReason>1?"s":""} missing a reason — finish these first</button>`);
+  if(zeroAccess) attn.push(`<button class="attn" onclick="document.getElementById('ucfstate').value='zero';render()">🕒 ${zeroAccess} ${zeroAccess>1?"people have":"person has"} no access yet</button>`);
+  document.getElementById("ucattn").innerHTML=attn.length?attn.join(""):`<span class="attn ok">✓ Nothing needs attention — everyone is standard or reasoned</span>`;
   const fp=document.getElementById("ucfplant");
   const wanted=scopedPlants();
   if(fp.dataset&&fp.dataset.scope!==wanted.join("|")){ fp.innerHTML=`<option value="">All plants</option>`+wanted.map(p=>`<option value="${p}">${p}</option>`).join(""); if(fp.dataset) fp.dataset.scope=wanted.join("|"); }
@@ -912,6 +960,7 @@ function renderDirectory(){
     if(fstate==="dev"&&!personDrift(p)) return false;
     if(fstate==="grant"&&!p.grant) return false;
     if(fstate==="capped"&&!personCapped(p)) return false;
+    if(fstate==="zero"&&(Object.keys(p.asg).length||p.grant)) return false;
     return true;
   });
   document.getElementById("uclist").innerHTML=rows.length?rows.map(p=>{
@@ -1084,6 +1133,7 @@ function renderSaveState(){
   document.getElementById("capmsg").innerHTML=capNotes.length?`<div class="msg warn">📦 Capped by plant modules — ${capNotes.join(" · ")}. Capped abilities stay on the profile and activate if the plant's plan is upgraded.</div>`:"";
   const canSave=selPlants.size>0&&!blocked.length;
   document.getElementById("savebtn").disabled=!canSave;
+  document.getElementById("savebtn").textContent=blocked.length?`Save — ${blocked.length} reason${blocked.length>1?"s":""} to go`:"Save assignments";
   document.getElementById("savehint").textContent=!selPlants.size?"Pick at least one plant.":blocked.length?`Write a reason for: ${blocked.join(", ")}.`:totalDev?"Deviations will be stored with their reasons and audited.":"All standard — saves without a reason.";
 }
 let AUDIT=[
@@ -1107,9 +1157,13 @@ function save(){
     requestedBy:"people-admin@digitalpaani.com",
     entitlementContext:{modulesByPlant:modulesByPlant,cappedByPlant:cappedByPlant}};
   const el=document.getElementById("payload");
-  el.style.display="block";
+  el.style.display="none"; // peak-end: the human confirmation is the moment; the record is one click away
   el.textContent="// Stored on the user record — one row per (person, plant): different tiers\n// at different plants are first-class. entitlementContext is informational;\n// the runtime check at a plant is always: user permission AND plant module.\n"+JSON.stringify(payload,null,2);
   if(cur) cur.lastSaved="this session";
+  const totalDev=assignments.reduce((n,x)=>n+x.drift,0);
+  document.getElementById("saveok").innerHTML=
+    `<div class="msg ok">✓ <b>${cur?cur.n:"User"} saved.</b> ${assignments.map(x=>`${ROLES[x.tier].n} at ${x.plant}`).join(" · ")||"No plant assignments"}${grant?` · ${GRANTNAMES[grant]} grant`:""}${totalDev?` · ${totalDev} reasoned exception${totalDev>1?"s":""}`:" · fully standard"} — change log updated.</div>
+     <button class="disclose" onclick="const p=document.getElementById('payload');p.style.display=p.style.display==='none'?'block':'none';this.classList.toggle('open')"><span class="chev">▶</span> For engineers — the exact stored record</button>`;
   AUDIT.unshift({w:"now",t:`${cur?cur.n:"demo-user-001"} saved: ${assignments.map(x=>`${ROLES[x.tier].n} @ ${x.plant}${x.drift?` (+${x.drift} dev)`:""}`).join(" · ")||"no plant assignments"}${grant?` · grant: ${GRANTNAMES[grant]}`:""}`});
 }
 
@@ -1460,7 +1514,7 @@ function toggleMod(p,mod){
   renderModules(); render();
 }
 function tab(i){
-  document.querySelectorAll(".tab").forEach((t,j)=>t.classList.toggle("on",i===j));
+  document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("on",+(t.dataset&&t.dataset.pane!==undefined?t.dataset.pane:-1)===i));
   document.querySelectorAll(".pane").forEach((p,j)=>p.classList.toggle("on",i===j));
   if(i===0) renderModules();
   if(i===1) render();
@@ -1468,6 +1522,7 @@ function tab(i){
   if(i===3) renderPreview();
 }
 setPersona("global");
+tab(1); // People is home — the User Center is where every task starts
 </script>
 </body>
 </html>

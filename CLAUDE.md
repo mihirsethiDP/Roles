@@ -141,9 +141,14 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
 
 ## Files
 
-- `index.html` — Role Studio: plants & modules record · User Center (people
-  directory → per-plant assignment editor with progressive disclosure) ·
-  Access Review · smart UI preview engine. Single self-contained file,
+- `index.html` — Role Studio: brand-book navy sidenav shell (Manage: People,
+  Plants & modules · Verify: Access review, UI previews · personas at the
+  bottom of the rail; People is the landing screen) · plants & modules
+  record · User Center (people directory with a needs-attention queue that
+  counts down to ✓ → per-plant assignment editor with progressive
+  disclosure, a profile progress meter and a save button that counts
+  remaining reasons → peak-end save confirmation with the payload behind a
+  "For engineers" disclosure) · Access Review · smart UI preview engine. Single self-contained file,
   vanilla JS, no build step.
   Brand Book v7 tokens (owner ruling 2026-07-14): navy #002454, teal
   #95CFD3/#5AABB0 (dark-teal #1F6B71 for AA text), warn/err from the
