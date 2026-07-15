@@ -54,6 +54,8 @@ header.hero{background:var(--navy);color:#fff;padding:30px 0 0;border-bottom:4px
 .pchip{border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.08);color:rgba(255,255,255,.68);border-radius:18px;padding:7px 15px;font:500 13px 'Figtree';cursor:pointer}
 .pchip.on{background:#fff;border-color:#fff;color:var(--navy);font-weight:600}
 .personanote{font-size:10.5px;color:rgba(149,207,211,.8);line-height:1.55;padding:2px 8px 10px;margin:0}
+.pkstd{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;margin:0 14px 6px 0;background:var(--ops-bg);border-radius:8px;padding:2px 8px 2px 4px;color:var(--ops);cursor:default}
+.pkstd .inc{font-family:var(--mono);font-size:9px;letter-spacing:.05em;text-transform:uppercase;opacity:.75}
 .attnrow{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
 .attn{border:1px solid var(--flag-bg);background:var(--flag-bg);color:var(--flag);border-radius:14px;padding:5px 13px;font:600 12.5px 'Figtree';cursor:pointer}
 .attn:hover{border-color:var(--flag)}
@@ -644,7 +646,7 @@ function createCustomRole(opts){ /* {name, base, adds[], reason, peopleIds[], pl
   if(!name||!reason||!adds.length||!plants.length||!people.length) return null;
   packSeq++;
   const pack={id:"pack"+packSeq,name:name,base:opts.base||"l1",adds:adds,reason:reason,
-    people:people.map(p=>p.id),plants:plants,retired:false};
+    people:people.map(p=>p.id),plants:plants,retired:false,by:personaName()};
   people.forEach(p=>{
     plants.forEach(pl=>{
       if(!p.asg[pl]){
@@ -712,7 +714,7 @@ function bulkEditPerm(plant,userIds,keys,mode,reason){
 }
 function retirePack(id){
   const pack=PACKS.find(x=>x.id===id); if(!pack||pack.retired) return;
-  pack.retired=true;
+  pack.retired={by:personaName()};
   pack.people.forEach(pid=>{
     const p=PEOPLE.find(x=>x.id===pid); if(!p) return;
     pack.plants.forEach(pl=>{
@@ -1029,17 +1031,25 @@ function bulkPermSubmit(){
   if(bulkEditPerm(bulkPlant,ids,keys,mode,reason)) { bulkOpen=false; render(); }
 }
 /* ---- custom roles panel: list + builder ---- */
+const PERMNAME={}; SETS.forEach(s=>s.perms.forEach(p=>PERMNAME[s.id+"."+p.id]=p.n));
 function renderPacks(){
-  const live=PACKS.filter(x=>!x.retired);
-  let h=`<div class="panel" style="margin-top:18px"><div class="gh">Custom roles — one bundle, many people at once</div>
-    <div class="help"><span class="i">💡</span><span>A custom role here is a <b>base role + named extra abilities + one recorded reason</b> — applied to many people in one audited action. It is <b>add-only</b> (it can never take abilities away — that was the legacy bug) and <b>live-linked</b>: retire it and it's revoked everywhere at once. Every granted cell in the Access review names the bundle it came from.</span></div>`;
-  h+=live.length?live.map(pk=>`<div class="rowitem"><span><span class="t">🎛 ${pk.name}</span><br>
-      <span class="s">base ${ROLES[pk.base].n} · +${pk.adds.length} abilities · ${pk.people.length} people · ${pk.plants.length} plant${pk.plants.length>1?"s":""} · reason: ${pk.reason}</span></span>
-      <button class="btn ghost" style="padding:7px 14px;font-size:12px" onclick="retirePack('${pk.id}')">Retire everywhere</button></div>`).join("")
-    :`<p style="font-size:13px;color:var(--ink-3);margin:4px 0">None yet.</p>`;
+  let h=`<div class="panel" style="margin-top:18px"><div class="gh">Custom role library — every bundle, live or retired, and who holds it</div>
+    <div class="help"><span class="i">💡</span><span>A custom role is a <b>base role + named extra abilities + one recorded reason</b> — applied to many people in one audited action. It is <b>add-only</b> (it can never take abilities away — that was the legacy bug) and <b>live-linked</b>: retire it and it's revoked everywhere at once. This library is the register: internal teams look here to know <b>what custom roles exist, why, and exactly who holds them where</b>. Retired bundles stay listed — the history is part of the record.</span></div>`;
+  h+=PACKS.length?PACKS.map(pk=>{
+    const ppl=pk.people.map(id=>PEOPLE.find(x=>x.id===id)).filter(Boolean);
+    const dead=!!pk.retired;
+    return `<div class="rowitem" style="${dead?"opacity:.55":""};align-items:flex-start">
+      <span style="min-width:0"><span class="t">🎛 ${pk.name}</span> ${dead?`<span class="badge b-cap">retired${pk.retired.by?" by "+pk.retired.by:""}</span>`:`<span class="badge b-ok">live</span>`}<br>
+      <span class="s"><b>${ROLES[pk.base].n}</b> + ${pk.adds.map(k=>PERMNAME[k]||k).join(" · ")}</span><br>
+      <span class="s">reason: “${pk.reason}” · created by ${pk.by||"—"}</span><br>
+      <span class="s"><b>Held by:</b> ${ppl.length?ppl.map(p=>`${p.av} ${p.n}`).join(", "):"—"} · <b>at:</b> ${pk.plants.join(", ")}</span></span>
+      ${dead?"":`<button class="btn ghost" style="padding:7px 14px;font-size:12px;flex:none" onclick="retirePack('${pk.id}')">Retire everywhere</button>`}</div>`;
+  }).join("")
+    :`<p style="font-size:13px;color:var(--ink-3);margin:4px 0">The library is empty — no custom roles exist yet.</p>`;
   h+=`<button class="disclose ${packOpen?"open":""}" onclick="packOpen=!packOpen;render()"><span class="chev">▶</span> Create a custom role</button>
     <div class="hiddenblock ${packOpen?"open":""}" id="packform">${packOpen?packFormHtml():""}</div></div>`;
   document.getElementById("packbox").innerHTML=h;
+  if(packOpen) updatePkCount();
 }
 function packFormHtml(){
   const groups=plantsByCompany();
@@ -1047,12 +1057,10 @@ function packFormHtml(){
   return `<div style="padding-top:10px">
     <div class="gh2" style="margin-top:6px">Name & base role</div>
     <input id="pk_name" placeholder="e.g. Contract-X Inventory Auditor" style="border:1px solid var(--line-strong);border-radius:9px;padding:10px 13px;font:13.5px 'Figtree';min-width:260px;margin-right:8px">
-    <select id="pk_base">${Object.keys(ROLES).map(r=>`<option value="${r}">${ROLES[r].n}</option>`).join("")}</select>
-    <div class="gh2">Extra abilities on top (add-only · exception flags excluded by design)</div>
-    <div style="max-height:220px;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:8px 12px">`+
-    SETS.filter(s=>s.id!=="flags").map(s=>`<div style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin:8px 0 4px">${s.n}</div>`+
-      s.perms.map(p=>`<label style="display:inline-flex;align-items:center;gap:6px;font-size:12.5px;margin:0 14px 6px 0;cursor:pointer"><input type="checkbox" class="pk_add" value="${s.id}.${p.id}">${p.n}</label>`).join("")).join("")+
-    `</div>
+    <select id="pk_base" onchange="renderPackAbilities(this.value)">${Object.keys(ROLES).map(r=>`<option value="${r}">${ROLES[r].n}</option>`).join("")}</select>
+    <div class="gh2">What this role can do <span id="pk_count" style="font-weight:400;text-transform:none;letter-spacing:0"></span></div>
+    <div class="help" style="margin-top:0"><span class="i">💡</span><span>The <b style="color:var(--ops)">teal, pre-ticked</b> abilities come with the base role — they're the standard and can't be removed here (custom roles are <b>add-only</b>; taking abilities away is a per-person exception, with its own reason). Tick the white boxes to add extras on top — the extras are what make this a custom role.</span></div>
+    <div id="pk_abilities" style="max-height:220px;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:8px 12px">${packAbilitiesHtml("l1")}</div>
     <div class="gh2">Reason (recorded on every application)</div>
     <textarea id="pk_reason" placeholder="e.g. 'Contract X requires inventory costing sign-off at all its plants, agreed with A. Loijos'"></textarea>
     <div class="gh2">Apply to people${persona.kind==="site"?" (your site's roster)":""}</div>
@@ -1068,6 +1076,30 @@ function packFormHtml(){
       <button class="btn primary" onclick="packSubmit()">Create & apply</button>
       <span class="hint">Needs a name, a reason, ≥1 ability, ≥1 person, ≥1 plant.</span>
     </div></div>`;
+}
+function packAbilitiesHtml(base){
+  return SETS.filter(s=>s.id!=="flags").map(s=>{
+    const std=isStdG(base,"",s.id);
+    return `<div style="font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin:8px 0 4px">${s.n}${std?` <span style="color:var(--ops)">— included with ${ROLES[base].n}</span>`:""}</div>`+
+      s.perms.map(p=>std
+        ?`<span class="pkstd" title="Included with ${ROLES[base].n} — can't be removed in a custom role"><input type="checkbox" checked disabled>✓ ${p.n} <span class="inc">included</span></span>`
+        :`<label style="display:inline-flex;align-items:center;gap:6px;font-size:12.5px;margin:0 14px 6px 0;cursor:pointer"><input type="checkbox" class="pk_add" value="${s.id}.${p.id}" onchange="updatePkCount()">${p.n}</label>`
+      ).join("");
+  }).join("");
+}
+function renderPackAbilities(base){
+  const keep=[...document.querySelectorAll(".pk_add:checked")].map(c=>c.value);
+  document.getElementById("pk_abilities").innerHTML=packAbilitiesHtml(base);
+  keep.forEach(v=>{ const c=[...document.querySelectorAll(".pk_add")].find(x=>x.value===v); if(c) c.checked=true; });
+  updatePkCount();
+}
+function updatePkCount(){
+  const base=(document.getElementById("pk_base")||{}).value||"l1";
+  if(!ROLES[base]) return;
+  const std=SETS.filter(s=>s.id!=="flags"&&isStdG(base,"",s.id)).reduce((n,s)=>n+s.perms.length,0);
+  const extra=document.querySelectorAll(".pk_add:checked").length;
+  const el=document.getElementById("pk_count");
+  if(el) el.textContent=`· ${std} from ${ROLES[base].n} + ${extra} extra${extra===1?"":"s"}`;
 }
 function packSubmit(){
   const pack=createCustomRole({
