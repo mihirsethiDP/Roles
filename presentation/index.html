@@ -5,29 +5,29 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Plant Onboarding · DigitalPaani</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --navy:#193458; --navy-deep:#0F2340; --navy-tint:#E8EDF5;
-  --bg:#F6F8FB; --card:#FFFFFF; --line:#E3E8F0; --line-strong:#C9D2DF;
-  --ink:#1C2733; --ink-2:#4A5768; --ink-3:#7B8794;
-  --ops:#0E7C66; --ops-bg:#E6F5F0; --ops-line:#9AD4C5;
-  --adm:#5548C8; --adm-bg:#EEECFB; --adm-line:#C3BDF0;
-  --amber:#C98A00; --amber-ink:#8A5A00; --amber-bg:#FBF1DC; --amber-line:#E8C98A;
-  --err:#A93226; --err-bg:#FCE8E6;
-  --shadow:0 1px 3px rgba(25,52,88,.07),0 8px 24px rgba(25,52,88,.06);
+  --navy:#002454; --navy-deep:#001B3F; --navy-tint:#E9F0F7;
+  --bg:#F7F8F9; --card:#FFFFFF; --line:#E2E6EA; --line-strong:#C7CFD8;
+  --ink:#1A2533; --ink-2:#4A5568; --ink-3:#8A95A3;
+  --ops:#1F6B71; --ops-bg:#E8F5F6; --ops-line:#95CFD3;
+  --adm:#193650; --adm-bg:#E9EEF4; --adm-line:#B9C6D6;
+  --amber:#F99A20; --amber-ink:#B45309; --amber-bg:#FFF8E1; --amber-line:#F2C94C;
+  --err:#B80000; --err-bg:#FDECEA;
+  --shadow:0 1px 3px rgba(0,36,84,.07),0 8px 24px rgba(0,36,84,.06);
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:15.5px/1.6 "Inter",system-ui,sans-serif}
-h1,h2,h3{font-family:"Sora",sans-serif;font-weight:600;line-height:1.25;margin:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:15.5px/1.6 'Figtree',system-ui,sans-serif}
+h1,h2,h3{font-family:'Figtree',sans-serif;font-weight:600;line-height:1.25;margin:0}
 button{font:inherit}
 
 /* ---------- top bar: brand + goal-gradient progress ---------- */
 .topbar{position:sticky;top:0;background:var(--card);border-bottom:1px solid var(--line);z-index:20}
 .topbar .in{max-width:960px;margin:0 auto;padding:13px 22px;display:flex;align-items:center;gap:18px}
-.brand{font-family:"Sora";font-weight:600;font-size:15px;color:var(--navy);white-space:nowrap}
+.brand{font-family:'Figtree';font-weight:600;font-size:15px;color:var(--navy);white-space:nowrap}
 .progress{flex:1;height:8px;background:var(--line);border-radius:4px;overflow:hidden}
-.progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--ops),#16A085);border-radius:4px;transition:width .6s cubic-bezier(.22,1,.36,1)}
+.progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--ops),#2E8A91);border-radius:4px;transition:width .6s cubic-bezier(.22,1,.36,1)}
 .steplabel{font-size:12.5px;color:var(--ink-2);white-space:nowrap;min-width:150px;text-align:right}
 .steplabel b{color:var(--ops)}
 
@@ -73,10 +73,10 @@ h2.q{font-size:25px;color:var(--navy)}
 .c-amber{background:var(--amber-bg);color:var(--amber-ink);border-color:var(--amber-line)}
 .c-nav{background:var(--navy-tint);color:var(--navy);border-color:#CBD8EA}
 
-.cta{display:inline-flex;align-items:center;gap:8px;border:none;border-radius:12px;padding:14px 28px;font:600 15px "Inter";cursor:pointer;background:var(--navy);color:#fff;box-shadow:var(--shadow)}
+.cta{display:inline-flex;align-items:center;gap:8px;border:none;border-radius:12px;padding:14px 28px;font:600 15px 'Figtree';cursor:pointer;background:var(--navy);color:#fff;box-shadow:var(--shadow)}
 .cta:disabled{background:var(--line-strong);cursor:not-allowed;box-shadow:none}
 .cta.go{background:var(--ops)}
-.ghost{border:1px solid var(--line-strong);background:transparent;color:var(--navy);border-radius:12px;padding:13px 22px;font:600 14px "Inter";cursor:pointer}
+.ghost{border:1px solid var(--line-strong);background:transparent;color:var(--navy);border-radius:12px;padding:13px 22px;font:600 14px 'Figtree';cursor:pointer}
 .navrow{display:flex;gap:12px;align-items:center;margin-top:28px}
 .hint{font-size:12.5px;color:var(--ink-3)}
 
@@ -100,21 +100,21 @@ h2.q{font-size:25px;color:var(--navy)}
 .rperson.on{background:var(--navy-tint)}
 .rperson .nm{font-weight:600}
 .rperson .st{margin-left:auto;font-size:15px}
-.railcta{width:100%;margin-top:12px;border:1px solid var(--ops-line);background:var(--ops-bg);color:var(--ops);border-radius:10px;padding:10px;font:600 12.5px "Inter";cursor:pointer}
-.railadd{width:100%;margin-top:8px;border:1px dashed var(--line-strong);background:transparent;color:var(--navy);border-radius:10px;padding:10px;font:600 12.5px "Inter";cursor:pointer}
+.railcta{width:100%;margin-top:12px;border:1px solid var(--ops-line);background:var(--ops-bg);color:var(--ops);border-radius:10px;padding:10px;font:600 12.5px 'Figtree';cursor:pointer}
+.railadd{width:100%;margin-top:8px;border:1px dashed var(--line-strong);background:transparent;color:var(--navy);border-radius:10px;padding:10px;font:600 12.5px 'Figtree';cursor:pointer}
 .railadd:hover{border-color:var(--navy)}
 .addform label{display:block;font-size:12.5px;font-weight:600;margin:14px 0 5px}
-.addform input{width:100%;border:1px solid var(--line-strong);border-radius:10px;padding:11px 13px;font:14px "Inter";color:var(--ink)}
+.addform input{width:100%;border:1px solid var(--line-strong);border-radius:10px;padding:11px 13px;font:14px 'Figtree';color:var(--ink)}
 .focus{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px;box-shadow:var(--shadow)}
 .fhead{display:flex;align-items:center;gap:14px;margin-bottom:18px}
 .fhead .av{font-size:34px}
-.fhead .t{font-family:"Sora";font-size:18px;font-weight:600}
+.fhead .t{font-family:'Figtree';font-size:18px;font-weight:600}
 .fhead .s{font-size:13px;color:var(--ink-2)}
 .suggest{position:relative;border:2px solid var(--ops);background:var(--ops-bg);border-radius:14px;padding:18px;margin:0 0 16px}
 .suggest .tag{position:absolute;top:-11px;left:16px;background:var(--amber);color:#fff;font-size:10.5px;font-weight:600;letter-spacing:.08em;border-radius:9px;padding:2px 10px}
-.suggest .t{font-family:"Sora";font-weight:600;font-size:16px;color:var(--navy)}
+.suggest .t{font-family:'Figtree';font-weight:600;font-size:16px;color:var(--navy)}
 .suggest .s{font-size:13px;color:var(--ink-2);margin:3px 0 14px}
-.disclose{display:flex;align-items:center;gap:8px;border:none;background:transparent;color:var(--navy);font:600 13.5px "Inter";cursor:pointer;padding:12px 0 0}
+.disclose{display:flex;align-items:center;gap:8px;border:none;background:transparent;color:var(--navy);font:600 13.5px 'Figtree';cursor:pointer;padding:12px 0 0}
 .disclose .chev{display:inline-block;transition:transform .15s;font-size:11px}
 .disclose.open .chev{transform:rotate(90deg)}
 .block{display:none}
@@ -123,7 +123,7 @@ h2.q{font-size:25px;color:var(--navy)}
 .seesrow{margin-top:16px}
 .seechip{display:inline-block;font-size:12.5px;font-weight:600;background:var(--navy);color:#fff;border-radius:9px;padding:5px 13px;margin:0 6px 6px 0}
 .seechip.land{background:var(--ops)}
-.gchip{border:1px solid var(--line-strong);background:var(--card);color:var(--ink-2);border-radius:18px;padding:7px 14px;font:500 13px "Inter";cursor:pointer;margin:0 7px 7px 0}
+.gchip{border:1px solid var(--line-strong);background:var(--card);color:var(--ink-2);border-radius:18px;padding:7px 14px;font:500 13px 'Figtree';cursor:pointer;margin:0 7px 7px 0}
 .gchip:hover{border-color:var(--adm)}
 .gchip.on{background:var(--adm);border-color:var(--adm);color:#fff;font-weight:600}
 .gchip.none.on{background:var(--ink-2);border-color:var(--ink-2)}
@@ -149,11 +149,11 @@ h2.q{font-size:25px;color:var(--navy)}
 .msg{border-radius:10px;padding:10px 14px;font-size:13px;margin:12px 0 0}
 .msg.warn{background:var(--amber-bg);color:var(--amber-ink)}
 .msg.ok{background:var(--ops-bg);color:var(--ops)}
-textarea{width:100%;min-height:56px;border:1px solid var(--line-strong);border-radius:10px;padding:10px 12px;font:13px "Inter";color:var(--ink);resize:vertical;margin-top:6px}
+textarea{width:100%;min-height:56px;border:1px solid var(--line-strong);border-radius:10px;padding:10px 12px;font:13px 'Figtree';color:var(--ink);resize:vertical;margin-top:6px}
 
 /* ---------- step 4: the peak ---------- */
 .finale{text-align:center;position:relative}
-.bigcheck{width:86px;height:86px;border-radius:50%;background:var(--ops);color:#fff;font-size:44px;display:inline-flex;align-items:center;justify-content:center;animation:pop .5s cubic-bezier(.34,1.56,.64,1);box-shadow:0 10px 30px rgba(14,124,102,.35)}
+.bigcheck{width:86px;height:86px;border-radius:50%;background:var(--ops);color:#fff;font-size:44px;display:inline-flex;align-items:center;justify-content:center;animation:pop .5s cubic-bezier(.34,1.56,.64,1);box-shadow:0 10px 30px rgba(31,107,113,.35)}
 @keyframes pop{0%{transform:scale(0)}70%{transform:scale(1.15)}100%{transform:scale(1)}}
 .finale h2{font-size:27px;color:var(--navy);margin:18px 0 6px}
 .finale .lede{color:var(--ink-2);font-size:15px;max-width:520px;margin:0 auto 28px}
@@ -166,8 +166,8 @@ textarea{width:100%;min-height:56px;border:1px solid var(--line-strong);border-r
 .lcard .exc{font-size:11.5px;color:var(--amber-ink);background:var(--amber-bg);border-radius:8px;padding:5px 9px;margin-top:8px}
 .takeaway{background:var(--navy);color:#fff;border-radius:16px;padding:24px 28px;text-align:center;box-shadow:var(--shadow)}
 .takeaway .h{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#9DB4D6;margin-bottom:8px}
-.takeaway .r{font-family:"Sora";font-size:17px;line-height:1.5}
-.takeaway b{color:#7FD6C2}
+.takeaway .r{font-family:'Figtree';font-size:17px;line-height:1.5}
+.takeaway b{color:#95CFD3}
 .confetti{position:fixed;top:-12px;width:9px;height:15px;z-index:50;animation:fall linear forwards;pointer-events:none}
 @keyframes fall{to{transform:translateY(105vh) rotate(660deg);opacity:.15}}
 footer{border-top:1px solid var(--line);padding:18px 0 40px;color:var(--ink-3);font-size:12.5px;text-align:center}
@@ -714,7 +714,7 @@ function renderS4(){
   document.getElementById("finale").innerHTML=h;
 }
 function confetti(){
-  const colors=["#0E7C66","#193458","#5548C8","#C98A00","#16A085"];
+  const colors=["#5AABB0","#002454","#95CFD3","#F2C94C","#1F6B71"];
   for(let i=0;i<44;i++){
     const c=document.createElement("span");
     c.className="confetti";
