@@ -67,11 +67,22 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
 - **Product name (owner ruling 2026-07-13): "User Center — Roles &
   Permissions".** "CloseTheLoop" stays only as the internal project codename
   in docs — it must not appear in any UI string of either prototype.
-- **Personas** (index.html hero toggle): 🌐 DigitalPaani Admin (Global) sees
-  everything; 🏭 Site supervisor (People Admin @ STP — Sector 62, `SITE_SCOPE`)
-  sees only their site — scoped directory/review/preview, read-only module
-  matrix (ADR-003 gating), Global grant chip locked. All scoping flows through
-  `inScope`/`scopedPlants`/`scopedPeople`.
+- **Personas** (index.html hero toggle, three admin altitudes): 🌐 Company
+  admin (Global) sees everything and edits module flags; 🏢 Cluster admin
+  (GreenGrid, `CLUSTER_CO`) manages the 4 GreenGrid plants; 🏭 Plant admin
+  (People Admin @ STP — Sector 62, `SITE_SCOPE`) manages one plant. Cluster
+  and plant admins: read-only module matrix (ADR-003 gating), Global grant
+  chip locked, whole-cluster chips only at cluster level and above. All
+  scoping flows through `inScope`/`scopedPlants`/`scopedPeople`; every
+  bulk action is scope-checked in the function, not just hidden in UI.
+- **Plant-wide bulk actions** (`bulkSetTier`/`bulkEditPerm`, panel in the
+  User Center): assign a tier to a plant's whole roster in one audited
+  action (custom-role bundles re-apply via live link; hand-made exceptions
+  reset with the tier), or add/remove specific permissions for a selected
+  set of users — written as per-person per-plant reasoned exceptions
+  (stamped, NOT live-linked; the named live-linked variant is a custom
+  role). Module ceiling and flag prerequisites enforced per person;
+  reason mandatory; skips are counted in the audit line.
 - **Custom roles = add-only live-linked bundles** (`PACKS`,
   `createCustomRole`) — NOT catalog forks: base role + named extra abilities +
   one recorded reason, bulk-applied to many people/plants in one audited

@@ -249,8 +249,9 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
     <p>Three ideas, one order: <b>plants</b> carry what the company bought · <b>people</b> get a role per plant · <b>review</b> shows everything at a glance. Amber always means a deviation. Grey always means "not in this plant's plan".</p>
     <div class="personabar">
       <span class="plabel">You're working as:</span>
-      <button class="pchip on" id="pers-global" onclick="setPersona('global')">🌐 DigitalPaani Admin · Global</button>
-      <button class="pchip" id="pers-site" onclick="setPersona('site')">🏭 Site supervisor · People Admin @ STP — Sector 62</button>
+      <button class="pchip on" id="pers-global" onclick="setPersona('global')">🌐 Company admin · DigitalPaani (Global)</button>
+      <button class="pchip" id="pers-cluster" onclick="setPersona('cluster')">🏢 Cluster admin · GreenGrid Utilities (4 plants)</button>
+      <button class="pchip" id="pers-site" onclick="setPersona('site')">🏭 Plant admin · People Admin @ STP — Sector 62</button>
     </div>
     <p class="personanote" id="personanote"></p>
     <div class="tabs">
@@ -303,6 +304,7 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
       <div id="ucaddform"></div>
     </div>
     <div id="uclist"></div>
+    <div id="bulkbox"></div>
     <div id="packbox"></div>
   </div>
 
@@ -559,17 +561,26 @@ const AVPOOL=["🧑‍🔧","👩‍💻","🧑‍💼","👨‍🏭","🧑‍�
 
 /* ================= PERSONA — who is using this console ================= */
 const SITE_SCOPE=["STP — Sector 62"];
+const CLUSTER_CO="greengrid";
 let persona={kind:"global"};
+function personaName(){
+  return persona.kind==="global"?"Company admin (DigitalPaani)"
+       :persona.kind==="cluster"?`Cluster admin (${COMPANIES[CLUSTER_CO]})`
+       :"Plant admin (STP — Sector 62)";
+}
 function setPersona(k){
-  persona=k==="global"?{kind:"global"}:{kind:"site",plants:SITE_SCOPE};
-  cur=null; addingP=false; packOpen=false;
+  persona=k==="global"?{kind:"global"}
+    :k==="cluster"?{kind:"cluster",plants:ALLPLANTS.filter(p=>PLANTCO[p]===CLUSTER_CO)}
+    :{kind:"site",plants:SITE_SCOPE};
+  cur=null; addingP=false; packOpen=false; bulkOpen=false;
   if(!scopedPeople().find(x=>x.id===reviewPerson)) reviewPerson=(scopedPeople()[0]||{}).id;
   if(!inScope(reviewPlant)) reviewPlant=scopedPlants()[0];
-  document.getElementById("pers-global").classList.toggle("on",persona.kind==="global");
-  document.getElementById("pers-site").classList.toggle("on",persona.kind==="site");
+  ["global","cluster","site"].forEach(x=>document.getElementById("pers-"+x).classList.toggle("on",persona.kind===x));
   document.getElementById("personanote").textContent=persona.kind==="global"
-    ?"Global Admin (DigitalPaani staff): every company, every plant, every person. You onboard plants, flip module flags, create custom roles across clusters, and audit anything."
-    :"People Admin at STP — Sector 62: you see and manage only your site's roster. Plant module flags are read-only for you (Technical/Global Admin territory), the Global grant isn't yours to give, and custom roles you create can only touch your own people.";
+    ?"Company admin: every company, plant and person. Assign at plant level, act on a whole plant's roster at once, edit single permissions for one person or a set of them, flip module flags, create custom roles anywhere."
+    :persona.kind==="cluster"
+    ?"Cluster admin for GreenGrid Utilities: the four GreenGrid plants and everyone working at them. Assign tiers and run plant-wide or cluster-wide permission edits inside your cluster — module flags are read-only, and the Global grant isn't yours to give."
+    :"Plant admin at STP — Sector 62: your plant's roster only. Assign tiers, run plant-wide edits and grant reasoned exceptions here — module flags are read-only, the Global grant isn't yours to give, and nothing you do can reach another plant.";
   render(); renderModules(); renderReview(); renderPreview();
 }
 function inScope(plant){ return persona.kind==="global"||persona.plants.includes(plant); }
@@ -616,6 +627,54 @@ function createCustomRole(opts){ /* {name, base, adds[], reason, peopleIds[], pl
   PACKS.push(pack);
   AUDIT.unshift({w:"now",t:`Custom role '${name}' (base ${ROLES[pack.base].n}, +${adds.length} abilities) applied to ${people.length} ${people.length>1?"people":"person"} at ${plants.length} plant${plants.length>1?"s":""} — reason: ${reason}`});
   return pack;
+}
+/* ================= PLANT-WIDE BULK ACTIONS =================
+   Company admin: any plant · Cluster admin: their cluster · Plant admin: their plant.
+   Bulk tier = re-assign the roster in one action. Bulk permission edit = the same
+   reasoned, per-plant exception written to many people at once (stamped, not
+   live-linked — the named live-linked variant is a Custom role). */
+let bulkOpen=false, bulkPlant=null;
+function bulkSetTier(plant,userIds,tier){
+  if(!inScope(plant)||!ROLES[tier]) return 0;
+  let n=0;
+  userIds.forEach(id=>{
+    const p=PEOPLE.find(x=>x.id===id);
+    if(!p||!scopedPeople().includes(p)||!p.asg[plant]) return;
+    const keepPacks=p.asg[plant].packKeys||{};
+    const a={tier:tier,P:{},reason:"",openSets:{},open:false,packKeys:{}};
+    SETS.forEach(s=>s.perms.forEach(pr=>a.P[s.id+"."+pr.id]=isStdG(tier,p.grant,s.id)));
+    Object.entries(keepPacks).forEach(([k,pid])=>{ // custom-role adds survive a tier change (live link)
+      const pk=PACKS.find(x=>x.id===pid&&!x.retired);
+      if(pk){ packApplyKey(a,k); a.packKeys[k]=pid; }
+    });
+    p.asg[plant]=a; n++;
+  });
+  if(n) AUDIT.unshift({w:"now",t:`Bulk tier: ${ROLES[tier].n} assigned to ${n} ${n>1?"people":"person"} at ${plant} · by ${personaName()}`});
+  return n;
+}
+function bulkEditPerm(plant,userIds,keys,mode,reason){
+  if(!inScope(plant)||!(reason||"").trim()||!keys.length) return 0;
+  let n=0, skipped=0;
+  userIds.forEach(id=>{
+    const p=PEOPLE.find(x=>x.id===id);
+    if(!p||!scopedPeople().includes(p)||!p.asg[plant]) return;
+    const a=p.asg[plant]; let touched=false;
+    keys.forEach(k=>{
+      const setId=k.split(".")[0];
+      if(mode==="add"){
+        if(!avail(k,plant)){ skipped++; return; } // the module ceiling can't be bulk-bypassed
+        if(setId==="flags"){ const pr=setById.flags.perms.find(x=>"flags."+x.id===k); if(pr.preq&&setState(a,pr.preq)!=="on"){ skipped++; return; } }
+        (setById[setId].req||[]).forEach(r=>{ if(setState(a,r)!=="on") enableWithDeps(a,r); });
+        a.P[k]=true; touched=true;
+      }else{
+        a.P[k]=false; touched=true;
+        if(setState(a,setId)==="off") dependents(setId).forEach(d=>{ if(setState(a,d)!=="off") disableCascade(a,d); });
+      }
+    });
+    if(touched){ if(deviations(a).length&&!a.reason.trim()) a.reason=reason.trim(); n++; }
+  });
+  if(n) AUDIT.unshift({w:"now",t:`Bulk permission edit at ${plant}: ${mode==="add"?"＋":"−"} ${keys.length} permission${keys.length>1?"s":""} for ${n} ${n>1?"people":"person"}${skipped?` (${skipped} skipped by module ceiling / prerequisites)`:""} · reason: ${reason.trim()} · by ${personaName()}`});
+  return n;
 }
 function retirePack(id){
   const pack=PACKS.find(x=>x.id===id); if(!pack||pack.retired) return;
@@ -759,7 +818,7 @@ function render(){
   const groups=plantsByCompany();
   document.getElementById("plantbox").innerHTML=Object.keys(groups).filter(co=>groups[co].some(inScope)).map(co=>{
     const pls=groups[co].filter(inScope);
-    return `<div class="cohead">${COMPANIES[co]}${persona.kind==="global"&&pls.length>1?`<button class="clchip" onclick="selectCluster('${co}')" title="Add every plant in this cluster as an assignment row">⚡ whole cluster · ${pls.length}</button>`:""}</div>`+
+    return `<div class="cohead">${COMPANIES[co]}${persona.kind!=="site"&&pls.length>1?`<button class="clchip" onclick="selectCluster('${co}')" title="Add every plant in this cluster as an assignment row">⚡ whole cluster · ${pls.length}</button>`:""}</div>`+
       pls.map(p=>
       `<button class="plantchip ${selPlants.has(p)?"on":""}" onclick="togglePlantSel('${p}')" title="Modules: ${[...plantMods(p)].map(m=>modById[m].n).join(", ")}">
         <span class="tick">${selPlants.has(p)?"✓":""}</span>${p} <span style="font-weight:400;opacity:.7">· ${plantMods(p).size} mods</span></button>`).join("");
@@ -771,7 +830,7 @@ function render(){
   document.getElementById("grantlbl").innerHTML=grant?`Admin duties — <b style="color:var(--adm)">${GRANTNAMES[grant]} ✓</b>`:"Admin duties? — open only if this person administers";
   const GLIST=[["","No grant"],["people","People Admin"],["tech","Technical Admin"],["fullsite","Full Site Admin"],["global","Global Admin"]];
   document.getElementById("grantchips").innerHTML=GLIST.map(g=>{
-    const locked=persona.kind==="site"&&g[0]==="global";
+    const locked=persona.kind!=="global"&&g[0]==="global";
     return `<button class="gchip ${g[0]===""?"none":""} ${grant===g[0]?"on":""}" ${locked?'disabled style="opacity:.45;cursor:not-allowed"':""} title="${locked?"DigitalPaani staff only — a Global grant can't be handed out by a site admin":GRANTHELP[g[0]].t}" onclick="setGrant('${g[0]}')">${g[1]}${locked?" 🔒":""}</button>`;
   }).join("");
   const gh=GRANTHELP[grant];
@@ -867,7 +926,58 @@ function renderDirectory(){
         ${cap?`<span class="badge b-cap">📦 ${cap}</span>`:""}
       </span></button>`;
   }).join(""):`<div class="emptystate">Nobody matches — clear the search or filters.</div>`;
+  renderBulk();
   renderPacks();
+}
+/* ---- plant-wide actions panel ---- */
+function renderBulk(){
+  if(!bulkPlant||!inScope(bulkPlant)) bulkPlant=scopedPlants()[0];
+  let h=`<div class="panel" style="margin-top:18px"><div class="gh">Plant-wide actions — one plant, many people, one audited action</div>
+    <div class="help"><span class="i">💡</span><span><b>${personaName()}:</b> pick a plant, tick who it applies to, act once. Bulk tier re-assigns the roster; bulk permission edit writes the <b>same reasoned exception</b> onto each selected person at this plant — visible per person in the Access review, never a hidden group rule. The module ceiling and prerequisites still apply per person.</span></div>
+    <button class="disclose ${bulkOpen?"open":""}" onclick="bulkOpen=!bulkOpen;render()"><span class="chev">▶</span> Open plant-wide actions</button>
+    <div class="hiddenblock ${bulkOpen?"open":""}">${bulkOpen?bulkFormHtml():""}</div></div>`;
+  document.getElementById("bulkbox").innerHTML=h;
+}
+function bulkFormHtml(){
+  const roster=scopedPeople().filter(p=>p.asg[bulkPlant]);
+  return `<div style="padding-top:10px">
+    <div class="gh2" style="margin-top:6px">Plant</div>
+    <select onchange="bulkPlant=this.value;render()">${scopedPlants().map(p=>`<option value="${p}" ${p===bulkPlant?"selected":""}>${p} — ${coName(p)} · ${scopedPeople().filter(x=>x.asg[p]).length} people</option>`).join("")}</select>
+    <div class="gh2">Who — the roster at ${bulkPlant} (untick to exclude)</div>
+    <div>${roster.length?roster.map(p=>`<label style="display:inline-flex;align-items:center;gap:6px;font-size:12.5px;margin:0 14px 6px 0;cursor:pointer"><input type="checkbox" class="bk_p" value="${p.id}" checked>${p.av} ${p.n} <span style="color:var(--ink-3)">· ${ROLES[p.asg[bulkPlant].tier].n}</span></label>`).join(""):`<span class="hint">Nobody is assigned here yet.</span>`}</div>
+    <div class="gh2">Action A — set a tier for everyone selected</div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <select id="bk_tier">${Object.keys(ROLES).map(r=>`<option value="${r}">${ROLES[r].n}</option>`).join("")}</select>
+      <button class="btn primary" style="padding:9px 18px" onclick="bulkTierSubmit()">Assign tier to selected</button>
+      <span class="hint">Resets each person to that tier's standard at this plant — custom-role bundles re-apply automatically; hand-made exceptions are cleared (they belonged to the old tier).</span>
+    </div>
+    <div class="gh2">Action B — edit specific permissions for everyone selected</div>
+    <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:8px">
+      <label style="font-size:13px"><input type="radio" name="bk_mode" value="add" checked> ＋ Add</label>
+      <label style="font-size:13px"><input type="radio" name="bk_mode" value="remove"> − Remove</label>
+    </div>
+    <div style="max-height:180px;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:8px 12px">`+
+    SETS.map(s=>`<div style="font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin:8px 0 4px">${s.n}${s.cat==="flag"?" · sensitive, prerequisite still enforced":""}</div>`+
+      s.perms.map(p=>`<label style="display:inline-flex;align-items:center;gap:6px;font-size:12.5px;margin:0 14px 6px 0;cursor:pointer"><input type="checkbox" class="bk_k" value="${s.id}.${p.id}">${p.n}</label>`).join("")).join("")+
+    `</div>
+    <div class="gh2">Reason (recorded on every affected person)</div>
+    <textarea id="bk_reason" placeholder="e.g. 'Client audit at this plant: photo capture mandatory for all operators, DP-1410'"></textarea>
+    <div class="navrow" style="margin-top:8px">
+      <button class="btn primary" onclick="bulkPermSubmit()">Apply permission edit</button>
+      <span class="hint">Needs ≥1 person, ≥1 permission, and a reason. Every change lands as a per-person exception — amber in the review, counted as drift.</span>
+    </div></div>`;
+}
+function bulkTierSubmit(){
+  const ids=[...document.querySelectorAll(".bk_p:checked")].map(c=>c.value);
+  const t=document.getElementById("bk_tier").value;
+  if(bulkSetTier(bulkPlant,ids,t)) { bulkOpen=false; render(); }
+}
+function bulkPermSubmit(){
+  const ids=[...document.querySelectorAll(".bk_p:checked")].map(c=>c.value);
+  const keys=[...document.querySelectorAll(".bk_k:checked")].map(c=>c.value);
+  const mode=[...document.querySelectorAll("input[name=bk_mode]")].find(r=>r.checked)?.value||"add";
+  const reason=document.getElementById("bk_reason").value;
+  if(bulkEditPerm(bulkPlant,ids,keys,mode,reason)) { bulkOpen=false; render(); }
 }
 /* ---- custom roles panel: list + builder ---- */
 function renderPacks(){
@@ -902,7 +1012,7 @@ function packFormHtml(){
     <div>`+scopedGroups.map(co=>{
       const pls=groups[co].filter(inScope);
       return `<div style="margin:2px 0 8px"><span style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)">${COMPANIES[co]}</span>
-        ${persona.kind==="global"&&pls.length>1?`<button class="clchip" onclick="document.querySelectorAll('.pkpl-${co}').forEach(c=>c.checked=true)">⚡ whole cluster · ${pls.length}</button>`:""}<br>`+
+        ${persona.kind!=="site"&&pls.length>1?`<button class="clchip" onclick="document.querySelectorAll('.pkpl-${co}').forEach(c=>c.checked=true)">⚡ whole cluster · ${pls.length}</button>`:""}<br>`+
         pls.map(p=>`<label style="display:inline-flex;align-items:center;gap:6px;font-size:12.5px;margin:0 14px 6px 0;cursor:pointer"><input type="checkbox" class="pk_pl pkpl-${co}" value="${p}">${p}</label>`).join("")+`</div>`;
     }).join("")+`
     <div class="navrow" style="margin-top:6px">
@@ -1328,8 +1438,8 @@ function renderModules(){
       <div class="d">${m.d}</div>
       <div class="m">${mline}</div></div>`;
   }).join("");
-  const ro=persona.kind==="site"; // ADR-003: module flags are Global/Technical Admin territory
-  let h=ro?`<tr><td colspan="${MODULES.length+2}" style="text-align:left;padding:10px"><div class="msg warn" style="margin:0">🔒 Read-only for you — module flags are written by DigitalPaani (Global Admin) at onboarding, or a Technical Admin afterward. Showing your site only.</div></td></tr>`:"";
+  const ro=persona.kind!=="global"; // ADR-003: module flags are Global/Technical Admin territory
+  let h=ro?`<tr><td colspan="${MODULES.length+2}" style="text-align:left;padding:10px"><div class="msg warn" style="margin:0">🔒 Read-only for you — module flags are written by DigitalPaani (Global Admin) at onboarding, or a Technical Admin afterward. Showing ${persona.kind==="cluster"?"your cluster's plants":"your plant"} only.</div></td></tr>`:"";
   h+=`<tr><th>Plant</th><th>Company</th>`+MODULES.map(m=>`<th>${m.icon} ${m.n}</th>`).join("")+`</tr>`;
   const groups=plantsByCompany();
   Object.keys(groups).filter(co=>groups[co].some(inScope)).forEach(co=>{
