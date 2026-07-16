@@ -32,8 +32,17 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
   ∧ plant module.** The ceiling caps but never edits the user profile: capped
   permissions stay saved and activate if the plant's plan is upgraded — so
   per-user flexibility survives module changes.
-- **9 permission sets, 43 individual permissions** — see `SETS` in index.html.
+- **9 permission sets** — see `SETS` in index.html.
   Sets: work, approve, oversight, readplant, portfolio, people, tech, templates, flags.
+  **Exception flags reduced to one (owner ruling 2026-07-15): only `impersonate`
+  (view-as).** Back-dated entry/data-correction retired from flags entirely
+  (normal data work covers it, per canonical §6 — L1+ with co-sign, not a
+  sensitive flag). IoT remote control is now a first-class permission
+  `approve.remote` (`mod:iot`) — so L3+ get it by default wherever the IoT
+  module is licensed, matching canonical `(tier ≥ L3, plant, iot on)`; the
+  per-person exception is now the *narrowing* case (deny a specific L3), e.g.
+  seed Asha −approve.remote "pending IoT safety sign-off". This lands the
+  CANONICAL-RECONCILIATION §B1/B2 corrections in the prototype.
 - **5 base roles** = default set compositions (see `ROLES`):
   L1 = work + readplant · L3 = L1 + approve · L4 = L3 + oversight + portfolio ·
   Regular Non-op = readplant · Senior Non-op = readplant + portfolio.
@@ -42,7 +51,7 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
 - **Flexibility = per-user overrides** at set or individual-permission level.
   Guardrails (all implemented in index.html, keep them): dependency cascades
   (approve→work, oversight→approve, portfolio→readplant, templates→people+tech,
-  flags→parent grant fully on), mandatory reason for any deviation, visible
+  flags→prerequisite set on: impersonate needs people), mandatory reason for any deviation, visible
   drift count. Overrides are exceptions with a shelf life — flags expire on
   role change; recurring identical overrides signal the role standard should change.
 - **Assignment scope (owner ruling 2026-07-13, per ADR-002): no containers.**

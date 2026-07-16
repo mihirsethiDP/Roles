@@ -482,7 +482,8 @@ const SETS=[
  {id:"override",n:"Photo override",mod:"ops"},
  {id:"assign",n:"Create & assign one-off tasks and insights",mod:"tasks"},
  {id:"shiftview",n:"View all tasks & entries at the plant",mod:"tasks"},
- {id:"invlogs",n:"Inventory item logs — every movement at the plant",mod:"inv"}]},
+ {id:"invlogs",n:"Inventory item logs — every movement at the plant",mod:"inv"},
+ {id:"remote",n:"IoT remote control / bi-direction (actuate equipment)",mod:"iot"}]},
 {id:"oversight",req:["approve"],n:"Multi-plant oversight",cat:"ops",d:"Portfolio-level operations",old:"was: senior CSM profiles",perms:[
  {id:"multiws",n:"Multi-plant view",mod:"ops"},
  {id:"cosign",n:"Eligible co-signer for force-close",mod:"ops"},
@@ -519,9 +520,7 @@ const SETS=[
  {id:"library",n:"Global template & role governance (system task/trigger/workflow)",mod:"core"},
  {id:"publish",n:"Publish versions to all sites",mod:"core"},
  {id:"onboard",n:"Onboard sites, plants & company list",mod:"core"}]},
-{id:"flags",n:"Exception flags",cat:"flag",alwaysDev:true,d:"Extra-sensitive — always a deviation, audited individually",old:"was: Back Dated Data Entry, Data Correction, Remote Control, Bi-Direction, View as Different User",perms:[
- {id:"backdate",n:"Back-dated entry & data correction",preq:"tech",mod:"data"},
- {id:"remote",n:"IoT remote control / bi-direction",preq:"tech",mod:"iot"},
+{id:"flags",n:"Exception flags",cat:"flag",alwaysDev:true,d:"Extra-sensitive — always a deviation, audited individually",old:"was: View as Different User",perms:[
  {id:"impersonate",n:"View-as / impersonation",preq:"people",mod:"core"}]},
 ];
 /* ---- Product modules: sellable slices, licensed per plant (ADR-003: flags live on the Plant record). ---- */
@@ -595,7 +594,7 @@ function mkPerson(id,av,n,t,co,grantId,rows){
 }
 let PEOPLE=[
  mkPerson("asha","🧰","Asha Verma","Shift supervisor","greengrid","",[
-   {plant:"STP — Sector 62",tier:"l3",add:["flags.backdate"],reason:"Lab migration backfill, approved A. Loijos, DP-1188"},
+   {plant:"STP — Sector 62",tier:"l3",remove:["approve.remote"],reason:"Remote actuation withheld pending IoT safety sign-off, approved A. Loijos, DP-1188"},
    {plant:"WTP — Mansarovar",tier:"regular"}]),
  mkPerson("vikram","🔌","Vikram Desai","Automation engineer","aquacore","tech",[
    {plant:"STP — Cyber Park",tier:"l3"},
@@ -1207,7 +1206,7 @@ function renderSaveState(){
   document.getElementById("savehint").textContent=!selPlants.size?"Pick at least one plant.":blocked.length?`Write a reason for: ${blocked.join(", ")}.`:totalDev?"Deviations will be stored with their reasons and audited.":"All standard — saves without a reason.";
 }
 let AUDIT=[
- {w:"seed",t:"Asha Verma: exception (+ back-dated entry) at STP — Sector 62 · reason 'Lab migration backfill, DP-1188' · by A. Sharma"},
+ {w:"seed",t:"Asha Verma: exception (− IoT remote control) at STP — Sector 62 · reason 'Remote actuation withheld pending IoT safety sign-off, DP-1188' · by A. Sharma"},
  {w:"seed",t:"Vikram Desai: exception (− self-approve) at STP — Udyog Vihar · reason 'Four-eyes rule at client site, DP-1201' · by S. Singh"},
  {w:"seed",t:"Plant record edited: WTP — Mansarovar → Analytics only (contract renewal) · by Global Admin"},
 ];
@@ -1440,8 +1439,7 @@ function bodyFor(tabId,c,why){
   if(tabId==="issues"){
     b+=row("MBBR blower trip","Auto · raised 06:20 · step 2 of 5",`<span class="pill p-red">2h overdue</span>`);
     b+=row("Inlet pH high","Auto · raised 08:05 · awaiting RC",`<span class="pill p-amb">45m left</span>`);
-    if(has("work.data")) b+=row("Lab results — inlet BOD","Enter today's reading"+(has("flags.backdate")?" · back-dated entry enabled":""),`<span class="pill p-nav">Enter data</span>`);
-    if(has("flags.backdate")) why.push("Back-dated entry appears in data entry — exception flag is on");
+    if(has("work.data")) b+=row("Lab results — inlet BOD","Enter today's reading",`<span class="pill p-nav">Enter data</span>`);
     if(has("work.maintenance")) b+=row("Maintenance: grease blower bearings","Monthly · record after completion",`<span class="pill p-grn">Record</span>`);
     if(has("work.handoff")) b+=row("Active session","You own ‘MBBR blower trip’",`<span class="pill p-nav">Hand off</span>`);
     if(has("work.checkin")) b+=row("Shift","Checked in 06:02 · ends 14:00",`<span class="pill p-nav">Check out</span>`);
@@ -1469,7 +1467,7 @@ function bodyFor(tabId,c,why){
   }
   if(tabId==="dashboard"){
     if(has("readplant.dash")) b+=`<div class="kpis"><div class="kpi"><div class="n">1.2 MLD</div><div class="l">treated today</div></div><div class="kpi"><div class="n">7.1</div><div class="l">outlet pH</div></div><div class="kpi"><div class="n">4</div><div class="l">issues this week</div></div><div class="kpi"><div class="n">↓ 9%</div><div class="l">power vs last wk</div></div></div>`;
-    if(has("flags.remote")){ b+=row("Blower B2","Running · remote control enabled",`<span class="pill p-red">Stop</span><span class="pill p-grn" style="margin-left:6px">Start</span>`); why.push("Remote start/stop controls visible — IoT flag is on"); }
+    if(has("approve.remote")){ b+=row("Blower B2","Running · remote control enabled",`<span class="pill p-red">Stop</span><span class="pill p-grn" style="margin-left:6px">Start</span>`); why.push("Remote start/stop controls visible — IoT remote control is on (L3+ where the IoT module is licensed)"); }
     if(has("readplant.layout")) b+=row("Plant layout / digital twin","Tap any tank for live readings",`<span class="pill p-nav">Open</span>`);
     if(has("readplant.insights")) b+=row("Insights & events","3 active insights · 12 events today",`<span class="pill p-nav">View</span>`);
     if(has("readplant.reports")) b+=row("Weekly compliance report","Generated Mon 06:00 · batches included",`<span class="pill p-nav">Download</span>`);
