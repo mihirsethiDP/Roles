@@ -277,6 +277,7 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
   <div class="nav-items">
     <div class="nav-label">Manage</div>
     <button class="tab" data-pane="1" onclick="tab(1)">People</button>
+    <button class="tab" data-pane="4" onclick="tab(4)">Role library</button>
     <button class="tab on" data-pane="0" onclick="tab(0)">Plants &amp; modules</button>
     <div class="nav-label">Verify</div>
     <button class="tab" data-pane="2" onclick="tab(2)">Access review</button>
@@ -337,7 +338,7 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
     </div>
     <div id="uclist"></div>
     <div id="bulkbox"></div>
-    <div id="packbox"></div>
+    <div style="margin-top:14px"><button class="disclose" onclick="tab(4)"><span class="chev">▶</span> Custom roles have their own screen — open the Role library</button></div>
   </div>
 
   <!-- profile -->
@@ -434,6 +435,15 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
     <div class="gh">Why this UI looks the way it does</div>
     <ul class="pl" id="whylist"></ul>
   </div>
+</div>
+
+<!-- ============ PANE 4: ROLE LIBRARY ============ -->
+<div class="pane" id="pane4">
+  <div class="panel" style="margin-bottom:18px">
+    <div class="gh">Role library — the register of custom roles</div>
+    <p style="font-size:13.5px;color:var(--ink-2);margin:0">The five base roles and four grants are the fixed catalog. Everything beyond them is a <b>custom role</b> created here — and this screen is where internal teams track them: what exists, why it was created, exactly who holds it at which plants, and what's been retired. Nothing on a person's record can come from a bundle that isn't in this register.</p>
+  </div>
+  <div id="packbox"></div>
 </div>
 
 </div>
@@ -1552,6 +1562,7 @@ function tab(i){
   if(i===1) render();
   if(i===2) renderReview();
   if(i===3) renderPreview();
+  if(i===4) renderPacks();
 }
 setPersona("global");
 tab(1); // People is home — the User Center is where every task starts
