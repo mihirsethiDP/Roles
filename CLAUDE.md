@@ -99,13 +99,36 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
   (stamped, NOT live-linked; the named live-linked variant is a custom
   role). Module ceiling and flag prerequisites enforced per person;
   reason mandatory; skips are counted in the audit line.
-- **Custom roles = add-only live-linked bundles** (`PACKS`,
-  `createCustomRole`) — NOT catalog forks: base role + named extra abilities +
-  one recorded reason, bulk-applied to many people/plants in one audited
-  action; exception flags are refused by design; retiring revokes everywhere
-  at once; the review why-chain names the bundle (provenance via
-  `asg[plant].packKeys`). Global persona gets ⚡ whole-cluster select chips
-  (per company) in the plant picker and the pack builder.
+- **Custom roles = named grant/revoke templates, applied per person (owner
+  ruling 2026-07-16)** (`PACKS`, `createCustomRole`/`applyCustomRole`) — NOT
+  catalog forks. A custom role is `{grant[], revoke[], reason, scope}` — it may
+  ADD permissions and/or REMOVE them. Built from a permission palette
+  (`customPalette`): a Company/Global admin builds **from scratch across the
+  full catalog**; a cluster/plant admin's palette is **limited to permissions
+  their licensed product modules unlock** (modules = source of truth). Defined
+  once (does not apply on creation), then **applied** to chosen people via
+  `applyCustomRole(id,users,plants,mode,reason)` in **add** (layer on current)
+  or **overwrite** (reset to tier standard first) mode, with a per-user
+  **effect preview** (`applyPreview` → willAdd/willRemove/capped/cleared)
+  showing what each person already has and what changes. Applications are
+  STAMPED (reasoned per-person exceptions, audited), not live-linked; `retire`
+  archives the template (keeps stamped perms). Flags + sensitive `remote` never
+  bundleable; module ceiling always enforced at apply. Role library (tab 4)
+  lists the fixed 9 + every custom role (highlighted) with grant/revoke, reason,
+  creator, and where applied. Global persona gets ⚡ whole-cluster chips in the
+  plant picker.
+- **Detail modals** (`roleModal`/`grantModal`/`moduleModal`) — clicking any
+  base-role, grant, or module card opens a modal with the full brief (every
+  permission it grants, holder counts, per-plant licensing, notes).
+- **Control panel** (index.html tab 5, `renderControlPanel`) — the scoped home
+  for cluster/plant admins only (hidden + explained for Global; a Global admin
+  landing on it is bounced to People): scope KPIs, quick actions (plant-wide
+  action, apply custom role), a "who can do X here?" capability lookup, and the
+  scoped roster with jump-to-manage. Everything scoped via `inScope`.
+- **People directory is a table** (no user avatars — icons removed per owner
+  ruling): name/title/company, per-plant tier chips, grant, status; row-click
+  opens the profile.
+- **User Center** (index.html tab 1) — the person registry everything drives
 - **User Center** (index.html tab 1) — the person registry everything drives
   from: `PEOPLE` (5 seeds + add-person), directory with KPIs/search/filters,
   person profile = the per-plant assignment editor bound to that record
