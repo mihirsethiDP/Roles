@@ -32,17 +32,24 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
   ∧ plant module.** The ceiling caps but never edits the user profile: capped
   permissions stay saved and activate if the plant's plan is upgraded — so
   per-user flexibility survives module changes.
-- **9 permission sets** — see `SETS` in index.html.
-  Sets: work, approve, oversight, readplant, portfolio, people, tech, templates, flags.
+- **10 permission sets** — see `SETS` in index.html.
+  Sets: work, approve, oversight, remote, readplant, portfolio, people, tech, templates, flags.
   **Exception flags reduced to one (owner ruling 2026-07-15): only `impersonate`
   (view-as).** Back-dated entry/data-correction retired from flags entirely
   (normal data work covers it, per canonical §6 — L1+ with co-sign, not a
-  sensitive flag). IoT remote control is now a first-class permission
-  `approve.remote` (`mod:iot`) — so L3+ get it by default wherever the IoT
-  module is licensed, matching canonical `(tier ≥ L3, plant, iot on)`; the
-  per-person exception is now the *narrowing* case (deny a specific L3), e.g.
-  seed Asha −approve.remote "pending IoT safety sign-off". This lands the
-  CANONICAL-RECONCILIATION §B1/B2 corrections in the prototype.
+  sensitive flag).
+  **IoT remote control is its own dedicated sensitive set (owner ruling
+  2026-07-15): `remote` set, one perm `remote.actuate` (`mod:iot`),
+  `sensitive:true`.** It is in NO base role's std composition, so it is never
+  granted by default; it can only be added deliberately per person (with a
+  reason, capped by the IoT module). Because it's sensitive it is
+  **excluded from every bulk path** — not bundlable into a custom role and
+  skipped by plant-wide bulk-add (`createCustomRole`/`bulkEditPerm` both filter
+  `setById[k].sensitive`), so it can never be handed to a plant/cluster roster
+  at once. Seed Asha shows the intended path: +remote.actuate at STP — Sector 62
+  with a certification reason. (Supersedes the brief `approve.remote` placement;
+  still consistent with canonical L3-actuation since remote requires acting
+  authority in practice, but the grant is now always explicit, never a tier default.)
 - **5 base roles** = default set compositions (see `ROLES`):
   L1 = work + readplant · L3 = L1 + approve · L4 = L3 + oversight + portfolio ·
   Regular Non-op = readplant · Senior Non-op = readplant + portfolio.

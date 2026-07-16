@@ -482,12 +482,13 @@ const SETS=[
  {id:"override",n:"Photo override",mod:"ops"},
  {id:"assign",n:"Create & assign one-off tasks and insights",mod:"tasks"},
  {id:"shiftview",n:"View all tasks & entries at the plant",mod:"tasks"},
- {id:"invlogs",n:"Inventory item logs — every movement at the plant",mod:"inv"},
- {id:"remote",n:"IoT remote control / bi-direction (actuate equipment)",mod:"iot"}]},
+ {id:"invlogs",n:"Inventory item logs — every movement at the plant",mod:"inv"}]},
 {id:"oversight",req:["approve"],n:"Multi-plant oversight",cat:"ops",d:"Portfolio-level operations",old:"was: senior CSM profiles",perms:[
  {id:"multiws",n:"Multi-plant view",mod:"ops"},
  {id:"cosign",n:"Eligible co-signer for force-close",mod:"ops"},
  {id:"deadline",n:"Deadline-only escalation alerts",mod:"ops"}]},
+{id:"remote",n:"IoT remote control",cat:"ops",sensitive:true,d:"Actuate plant equipment remotely — start, stop, adjust. Sensitive: never part of any role by default, granted only deliberately (per-person, or a named custom role), and always capped by the IoT module.",old:"was: Remote Control, Bi-Direction",perms:[
+ {id:"actuate",n:"Remote control / bi-direction — actuate equipment",mod:"iot"}]},
 {id:"readplant",n:"Plant visibility (read-only)",cat:"read",d:"Seeing one plant without acting · standard for every plant-touching role",old:"was: Client Role, Client Asset, Visualization, Insights Only, Sensor Health Dashboard",perms:[
  {id:"dash",n:"Plant dashboard, issue log & sensor health",mod:"core"},
  {id:"layout",n:"Plant layout / digital twin",mod:"analytics"},
@@ -594,7 +595,7 @@ function mkPerson(id,av,n,t,co,grantId,rows){
 }
 let PEOPLE=[
  mkPerson("asha","🧰","Asha Verma","Shift supervisor","greengrid","",[
-   {plant:"STP — Sector 62",tier:"l3",remove:["approve.remote"],reason:"Remote actuation withheld pending IoT safety sign-off, approved A. Loijos, DP-1188"},
+   {plant:"STP — Sector 62",tier:"l3",add:["remote.actuate"],reason:"Trained & certified for remote blower control at this plant, approved A. Loijos, DP-1188"},
    {plant:"WTP — Mansarovar",tier:"regular"}]),
  mkPerson("vikram","🔌","Vikram Desai","Automation engineer","aquacore","tech",[
    {plant:"STP — Cyber Park",tier:"l3"},
@@ -654,7 +655,7 @@ function packApplyKey(a,key){
 }
 function createCustomRole(opts){ /* {name, base, adds[], reason, peopleIds[], plants[]} — the core the form wraps */
   const name=(opts.name||"").trim(), reason=(opts.reason||"").trim();
-  const adds=(opts.adds||[]).filter(k=>!k.startsWith("flags.")); // exception flags stay strictly individual
+  const adds=(opts.adds||[]).filter(k=>!k.startsWith("flags.")&&!setById[k.split(".")[0]].sensitive); // flags AND sensitive sets (IoT remote) stay strictly per-person, never bundled
   const plants=(opts.plants||[]).filter(inScope);
   const people=(opts.peopleIds||[]).map(id=>PEOPLE.find(x=>x.id===id)).filter(Boolean)
     .filter(p=>scopedPeople().includes(p));
@@ -714,6 +715,7 @@ function bulkEditPerm(plant,userIds,keys,mode,reason){
       const setId=k.split(".")[0];
       if(mode==="add"){
         if(!avail(k,plant)){ skipped++; return; } // the module ceiling can't be bulk-bypassed
+        if(setById[setId].sensitive){ skipped++; return; } // sensitive sets (IoT remote) are per-person only, never granted in bulk
         if(setId==="flags"){ const pr=setById.flags.perms.find(x=>"flags."+x.id===k); if(pr.preq&&setState(a,pr.preq)!=="on"){ skipped++; return; } }
         (setById[setId].req||[]).forEach(r=>{ if(setState(a,r)!=="on") enableWithDeps(a,r); });
         a.P[k]=true; touched=true;
@@ -1023,7 +1025,7 @@ function bulkFormHtml(){
       <label style="font-size:13px"><input type="radio" name="bk_mode" value="remove"> − Remove</label>
     </div>
     <div style="max-height:180px;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:8px 12px">`+
-    SETS.map(s=>`<div style="font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin:8px 0 4px">${s.n}${s.cat==="flag"?" · sensitive, prerequisite still enforced":""}</div>`+
+    SETS.map(s=>`<div style="font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin:8px 0 4px">${s.n}${s.cat==="flag"?" · sensitive, prerequisite still enforced":s.sensitive?" · sensitive — grant deliberately":""}</div>`+
       s.perms.map(p=>`<label style="display:inline-flex;align-items:center;gap:6px;font-size:12.5px;margin:0 14px 6px 0;cursor:pointer"><input type="checkbox" class="bk_k" value="${s.id}.${p.id}">${p.n}</label>`).join("")).join("")+
     `</div>
     <div class="gh2">Reason (recorded on every affected person)</div>
@@ -1115,7 +1117,7 @@ function packFormHtml(){
     </div></div>`;
 }
 function packAbilitiesHtml(base){
-  return SETS.filter(s=>s.id!=="flags").map(s=>{
+  return SETS.filter(s=>s.id!=="flags"&&!s.sensitive).map(s=>{
     const std=isStdG(base,"",s.id);
     return `<div style="font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin:8px 0 4px">${s.n}${std?` <span style="color:var(--ops)">— included with ${ROLES[base].n}</span>`:""}</div>`+
       s.perms.map(p=>std
@@ -1133,7 +1135,7 @@ function renderPackAbilities(base){
 function updatePkCount(){
   const base=(document.getElementById("pk_base")||{}).value||"l1";
   if(!ROLES[base]) return;
-  const std=SETS.filter(s=>s.id!=="flags"&&isStdG(base,"",s.id)).reduce((n,s)=>n+s.perms.length,0);
+  const std=SETS.filter(s=>s.id!=="flags"&&!s.sensitive&&isStdG(base,"",s.id)).reduce((n,s)=>n+s.perms.length,0);
   const extra=document.querySelectorAll(".pk_add:checked").length;
   const el=document.getElementById("pk_count");
   if(el) el.textContent=`· ${std} from ${ROLES[base].n} + ${extra} extra${extra===1?"":"s"}`;
@@ -1156,7 +1158,7 @@ function renderCustomize(plant,a){
     const on=s.perms.filter(p=>a.P[s.id+"."+p.id]).length;
     const stdOn=isStdFor(a.tier,s.id)?s.perms.length:0;
     const devSet=s.perms.some(p=>a.P[s.id+"."+p.id]!==isStdFor(a.tier,s.id));
-    const catChip=s.cat==="flag"?`<span class="chip c-flag" style="padding:1px 8px;font-size:10.5px;margin:0">sensitive</span>`:`<span class="chip c-${s.cat==="ops"?"ops":s.cat==="adm"?"adm":"read"}" style="padding:1px 8px;font-size:10.5px;margin:0">${s.cat==="ops"?"operational":s.cat==="adm"?"admin":"read"}</span>`;
+    const catChip=(s.cat==="flag"||s.sensitive)?`<span class="chip c-flag" style="padding:1px 8px;font-size:10.5px;margin:0">sensitive</span>`:`<span class="chip c-${s.cat==="ops"?"ops":s.cat==="adm"?"adm":"read"}" style="padding:1px 8px;font-size:10.5px;margin:0">${s.cat==="ops"?"operational":s.cat==="adm"?"admin":"read"}</span>`;
     const body=`<div class="desc">${s.d} · ${s.old}${(s.req||[]).length?` · needs: ${s.req.map(r=>setById[r].n).join(" + ")}`:""}</div>`+
       s.perms.map(p=>{
         const key=s.id+"."+p.id, cur=a.P[key], dv=cur!==isStdFor(a.tier,s.id);
@@ -1180,6 +1182,7 @@ function renderCustomize(plant,a){
   if(setState(a,"work")==="off"&&ROLES[a.tier].cat==="ops") g+=`<div class="msg warn">Work execution is fully off for an operational tier — consider a read-only tier at this plant instead.</div>`;
   if(setState(a,"templates")!=="off") g+=`<div class="msg warn">Global templates affect every site. Restricted to DP / Wapp staff.</div>`;
   if(setById.flags.perms.some(p=>a.P["flags."+p.id])) g+=`<div class="msg warn">Exception flags are audited individually and expire on role change.</div>`;
+  if(a.P["remote.actuate"]) g+=`<div class="msg warn">📡 IoT remote control lets this person actuate equipment remotely — sensitive, never a role default. Grant deliberately, per person.</div>`;
   h+=g;
   if(dev.length){
     h+=`<div class="gh2">Reason for deviation at ${plant} <span style="color:var(--err)">${a.reason.trim()?"":"— required"}</span></div>
@@ -1206,7 +1209,7 @@ function renderSaveState(){
   document.getElementById("savehint").textContent=!selPlants.size?"Pick at least one plant.":blocked.length?`Write a reason for: ${blocked.join(", ")}.`:totalDev?"Deviations will be stored with their reasons and audited.":"All standard — saves without a reason.";
 }
 let AUDIT=[
- {w:"seed",t:"Asha Verma: exception (− IoT remote control) at STP — Sector 62 · reason 'Remote actuation withheld pending IoT safety sign-off, DP-1188' · by A. Sharma"},
+ {w:"seed",t:"Asha Verma: exception (+ IoT remote control) at STP — Sector 62 · reason 'Trained & certified for remote blower control, DP-1188' · by A. Sharma"},
  {w:"seed",t:"Vikram Desai: exception (− self-approve) at STP — Udyog Vihar · reason 'Four-eyes rule at client site, DP-1201' · by S. Singh"},
  {w:"seed",t:"Plant record edited: WTP — Mansarovar → Analytics only (contract renewal) · by Global Admin"},
 ];
@@ -1467,7 +1470,7 @@ function bodyFor(tabId,c,why){
   }
   if(tabId==="dashboard"){
     if(has("readplant.dash")) b+=`<div class="kpis"><div class="kpi"><div class="n">1.2 MLD</div><div class="l">treated today</div></div><div class="kpi"><div class="n">7.1</div><div class="l">outlet pH</div></div><div class="kpi"><div class="n">4</div><div class="l">issues this week</div></div><div class="kpi"><div class="n">↓ 9%</div><div class="l">power vs last wk</div></div></div>`;
-    if(has("approve.remote")){ b+=row("Blower B2","Running · remote control enabled",`<span class="pill p-red">Stop</span><span class="pill p-grn" style="margin-left:6px">Start</span>`); why.push("Remote start/stop controls visible — IoT remote control is on (L3+ where the IoT module is licensed)"); }
+    if(has("remote.actuate")){ b+=row("Blower B2","Running · remote control enabled",`<span class="pill p-red">Stop</span><span class="pill p-grn" style="margin-left:6px">Start</span>`); why.push("Remote start/stop controls visible — the sensitive IoT remote control set is granted (deliberate, never a role default)"); }
     if(has("readplant.layout")) b+=row("Plant layout / digital twin","Tap any tank for live readings",`<span class="pill p-nav">Open</span>`);
     if(has("readplant.insights")) b+=row("Insights & events","3 active insights · 12 events today",`<span class="pill p-nav">View</span>`);
     if(has("readplant.reports")) b+=row("Weekly compliance report","Generated Mon 06:00 · batches included",`<span class="pill p-nav">Download</span>`);
