@@ -54,6 +54,12 @@ header.hero{background:var(--navy);color:#fff;padding:30px 0 0;border-bottom:4px
 .pchip{border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.08);color:rgba(255,255,255,.68);border-radius:18px;padding:7px 15px;font:500 13px 'Figtree';cursor:pointer}
 .pchip.on{background:#fff;border-color:#fff;color:var(--navy);font-weight:600}
 .personanote{font-size:10.5px;color:rgba(149,207,211,.8);line-height:1.55;padding:2px 8px 10px;margin:0}
+.catcard{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--card)}
+.catcard .t{font-family:'Figtree';font-weight:700;font-size:14px;color:var(--navy)}
+.catcard .s{font-size:12px;color:var(--ink-2);margin:3px 0 6px}
+.catcard .m{font-family:var(--mono);font-size:10px;color:var(--ink-3);letter-spacing:.03em}
+.customcard{border-left:4px solid var(--teal-d)!important;background:linear-gradient(90deg,var(--teal-tint),var(--card) 220px)}
+.custombadge{font-family:var(--mono);font-size:9px;letter-spacing:.08em;background:var(--ops);color:#fff;border-radius:9px;padding:2px 8px;vertical-align:middle}
 .pkstd{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;margin:0 14px 6px 0;background:var(--ops-bg);border-radius:8px;padding:2px 8px 2px 4px;color:var(--ops);cursor:default}
 .pkstd .inc{font-family:var(--mono);font-size:9px;letter-spacing:.05em;text-transform:uppercase;opacity:.75}
 .attnrow{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
@@ -440,8 +446,8 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
 <!-- ============ PANE 4: ROLE LIBRARY ============ -->
 <div class="pane" id="pane4">
   <div class="panel" style="margin-bottom:18px">
-    <div class="gh">Role library — the register of custom roles</div>
-    <p style="font-size:13.5px;color:var(--ink-2);margin:0">The five base roles and four grants are the fixed catalog. Everything beyond them is a <b>custom role</b> created here — and this screen is where internal teams track them: what exists, why it was created, exactly who holds it at which plants, and what's been retired. Nothing on a person's record can come from a bundle that isn't in this register.</p>
+    <div class="gh">Role library — every role that exists, in one register</div>
+    <p style="font-size:13.5px;color:var(--ink-2);margin:0">The complete vocabulary: the <b>nine pre-defined roles</b> (five base roles + four admin grants — fixed, with live holder counts) and every <b>custom role</b> built on top of them, highlighted in teal. Internal teams track it all here: what exists, why it was created, exactly who holds it at which plants, and what's been retired. Nothing on a person's record can come from a role that isn't in this register.</p>
   </div>
   <div id="packbox"></div>
 </div>
@@ -1043,13 +1049,35 @@ function bulkPermSubmit(){
 /* ---- custom roles panel: list + builder ---- */
 const PERMNAME={}; SETS.forEach(s=>s.perms.forEach(p=>PERMNAME[s.id+"."+p.id]=p.n));
 function renderPacks(){
-  let h=`<div class="panel" style="margin-top:18px"><div class="gh">Custom role library — every bundle, live or retired, and who holds it</div>
+  // holders computed live from the registry
+  const tierHolders={}; Object.keys(ROLES).forEach(r=>tierHolders[r]=new Set());
+  const grantHolders={}; Object.keys(GRANTS).forEach(g=>grantHolders[g]=new Set());
+  PEOPLE.forEach(p=>{
+    Object.values(p.asg).forEach(a=>{ if(tierHolders[a.tier]) tierHolders[a.tier].add(p.id); });
+    if(p.grant&&grantHolders[p.grant]) grantHolders[p.grant].add(p.id);
+  });
+  const abilityCount=std=>SETS.filter(s=>std.includes(s.id)).reduce((n,s)=>n+s.perms.length,0);
+  let h=`<div class="panel" style="margin-bottom:18px"><div class="gh">The fixed catalog — five base roles, four admin grants</div>
+    <div class="help"><span class="i">💡</span><span>These nine are <b>pre-defined and uneditable</b> — nobody can create, rename or delete them (role sprawl was the legacy disease). When a role isn't quite enough, the answer is a <b>highlighted custom role</b> below or a per-person exception — never a fork of this catalog.</span></div>
+    <div class="gh2" style="margin-top:14px">Base roles — one per plant, per person</div>
+    <div class="gridcards" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">`+
+    Object.keys(ROLES).map(r=>`<div class="catcard"><div class="t">${ROLES[r].n}</div><div class="s">${ROLES[r].s}</div>
+      <div class="m">${ROLES[r].std.map(sid=>setById[sid].n).join(" · ")}</div>
+      <div class="m" style="margin-top:4px">${abilityCount(ROLES[r].std)} abilities · <b>${tierHolders[r].size}</b> ${tierHolders[r].size===1?"person holds":"people hold"} it</div></div>`).join("")+
+    `</div>
+    <div class="gh2">Admin grants — at most one per person, on top of the role</div>
+    <div class="gridcards" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">`+
+    Object.keys(GRANTS).map(g=>`<div class="catcard"><div class="t">${GRANTNAMES[g]}</div><div class="s">${GRANTHELP[g].t.split("—")[1]||GRANTHELP[g].t}</div>
+      <div class="m">${GRANTS[g].map(sid=>setById[sid].n).join(" · ")}</div>
+      <div class="m" style="margin-top:4px">${abilityCount(GRANTS[g])} abilities · <b>${grantHolders[g].size}</b> ${grantHolders[g].size===1?"person holds":"people hold"} it</div></div>`).join("")+
+    `</div></div>`;
+  h+=`<div class="panel" style="border-left:4px solid var(--teal-d)"><div class="gh">Custom role library — every bundle, live or retired, and who holds it <span class="custombadge">CUSTOM</span></div>
     <div class="help"><span class="i">💡</span><span>A custom role is a <b>base role + named extra abilities + one recorded reason</b> — applied to many people in one audited action. It is <b>add-only</b> (it can never take abilities away — that was the legacy bug) and <b>live-linked</b>: retire it and it's revoked everywhere at once. This library is the register: internal teams look here to know <b>what custom roles exist, why, and exactly who holds them where</b>. Retired bundles stay listed — the history is part of the record.</span></div>`;
   h+=PACKS.length?PACKS.map(pk=>{
     const ppl=pk.people.map(id=>PEOPLE.find(x=>x.id===id)).filter(Boolean);
     const dead=!!pk.retired;
-    return `<div class="rowitem" style="${dead?"opacity:.55":""};align-items:flex-start">
-      <span style="min-width:0"><span class="t">🎛 ${pk.name}</span> ${dead?`<span class="badge b-cap">retired${pk.retired.by?" by "+pk.retired.by:""}</span>`:`<span class="badge b-ok">live</span>`}<br>
+    return `<div class="rowitem customcard" style="${dead?"opacity:.55":""};align-items:flex-start">
+      <span style="min-width:0"><span class="t">🎛 ${pk.name}</span> <span class="custombadge">CUSTOM</span> ${dead?`<span class="badge b-cap">retired${pk.retired.by?" by "+pk.retired.by:""}</span>`:`<span class="badge b-ok">live</span>`}<br>
       <span class="s"><b>${ROLES[pk.base].n}</b> + ${pk.adds.map(k=>PERMNAME[k]||k).join(" · ")}</span><br>
       <span class="s">reason: “${pk.reason}” · created by ${pk.by||"—"}</span><br>
       <span class="s"><b>Held by:</b> ${ppl.length?ppl.map(p=>`${p.av} ${p.n}`).join(", "):"—"} · <b>at:</b> ${pk.plants.join(", ")}</span></span>
