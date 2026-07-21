@@ -505,17 +505,13 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
 <script>
 /* ================= DATA ================= */
 const SETS=[
-{id:"work",n:"Work execution",cat:"ops",d:"Day-to-day operating of issues, tasks and maintenance",old:"was: Operator Asset (workers), Tasks Only, Data Input, Tickets, Logbook Data Input",perms:[
+{id:"work",n:"Work execution",cat:"ops",d:"Operating work — own the issue lifecycle, enter data, record stock. The issue lines are the Issue Resolution feature (ops module); data & stock run on their own modules.",old:"was: Operator Asset (workers), Data Input, Tickets, Stores",perms:[
  {id:"sessions",n:"Own issue sessions & run diagnostic steps",mod:"ops"},
  {id:"rc",n:"Submit root cause & remediation",mod:"ops"},
  {id:"media",n:"Photo / video capture during steps",mod:"ops"},
  {id:"data",n:"Data, lab, water-quality & logbook entry",mod:"data"},
- {id:"tasks",n:"Execute fixed, alert & one-time tasks",mod:"tasks"},
- {id:"maintenance",n:"Perform & record maintenance",mod:"tasks"},
  {id:"raise",n:"Raise manual issues",mod:"ops"},
  {id:"handoff",n:"Hand off / take over sessions",mod:"ops"},
- {id:"checkin",n:"Check in / out of shift",mod:"tasks"},
- {id:"myshift",n:"See my shifts & roster",mod:"tasks"},
  {id:"inventory",n:"Add / remove inventory items (usage, expiry, purchase)",mod:"inv"}]},
 {id:"approve",req:["work"],n:"Approvals & closure",cat:"ops",d:"Unblocking and supervising others",old:"was: CSM Asset, Operator Asset (supervisors)",perms:[
  {id:"gates",n:"Approve / reject gates (RC, remediation, close)",mod:"ops"},
@@ -532,12 +528,16 @@ const SETS=[
  {id:"deadline",n:"Deadline-only escalation alerts",mod:"ops"}]},
 {id:"remote",n:"IoT remote control",cat:"ops",sensitive:true,d:"Actuate plant equipment remotely — start, stop, adjust. Sensitive: never part of any role by default, granted only deliberately (per-person, or a named custom role), and always capped by the IoT module.",old:"was: Remote Control, Bi-Direction",perms:[
  {id:"actuate",n:"Remote control / bi-direction — actuate equipment",mod:"iot"}]},
-{id:"readplant",n:"Plant visibility (read-only)",cat:"read",d:"Seeing one plant without acting · standard for every plant-touching role",old:"was: Client Role, Client Asset, Visualization, Insights Only, Sensor Health Dashboard",perms:[
+{id:"readplant",n:"Plant view & everyday work",cat:"read",d:"The existing product a plant already uses — dashboards, insights, and routine tasks/shifts. Standard for every plant-touching role; each line is gated by its own module.",old:"was: Client Role, Client Asset, Visualization, Insights Only, Sensor Health Dashboard, Tasks Only, Data Input",perms:[
  {id:"dash",n:"Plant dashboard, issue log & sensor health",mod:"core"},
  {id:"layout",n:"Plant layout / digital twin",mod:"analytics"},
  {id:"insights",n:"Insights & events lists",mod:"analytics"},
  {id:"reports",n:"Reports, downloads & dashboard batches",mod:"analytics"},
- {id:"history",n:"Equipment & maintenance history",mod:"tasks"}]},
+ {id:"history",n:"Equipment & maintenance history",mod:"tasks"},
+ {id:"tasks",n:"Execute fixed, alert & one-time tasks",mod:"tasks"},
+ {id:"maintenance",n:"Perform & record maintenance",mod:"tasks"},
+ {id:"checkin",n:"Check in / out of shift",mod:"tasks"},
+ {id:"myshift",n:"See my shifts & roster",mod:"tasks"}]},
 {id:"portfolio",req:["readplant"],n:"Portfolio visibility",cat:"read",d:"Seeing all plants at once",old:"was: Client Administrative, Unified Dashboard",perms:[
  {id:"overview",n:"Portfolio overview & plants list",mod:"analytics"},
  {id:"compare",n:"Compare plants & companies",mod:"analytics"}]},
@@ -1632,7 +1632,7 @@ function computeTabs(c){
   const tabs=[];
   if(has("approve.gates")||has("approve.forceclose")||has("approve.override")) tabs.push({id:"approvals",n:"Approvals",why:"Approvals & closure is on"});
   if(has("work.sessions")||has("work.rc")) tabs.push({id:"issues",n:"Issues",why:"Work execution is on"});
-  if(has("work.tasks")) tabs.push({id:"tasks",n:"My tasks",why:"Task execution is on"});
+  if(has("readplant.tasks")) tabs.push({id:"tasks",n:"My tasks",why:"Tasks are on (everyday work — available to viewers too)"});
   if(has("work.inventory")||has("approve.invlogs")) tabs.push({id:"inventory",n:"Inventory",why:"Inventory management is on"});
   if(has("readplant.dash")||has("readplant.reports")||has("readplant.history")) tabs.push({id:"dashboard",n:"Dashboard",why:"Plant visibility is on"});
   if(has("portfolio.overview")||has("portfolio.compare")) tabs.push({id:"portfolio",n:"Portfolio",why:"Portfolio visibility is on"});
@@ -1665,9 +1665,7 @@ function bodyFor(tabId,c,why){
     b+=row("MBBR blower trip","Auto · raised 06:20 · step 2 of 5",`<span class="pill p-red">2h overdue</span>`);
     b+=row("Inlet pH high","Auto · raised 08:05 · awaiting RC",`<span class="pill p-amb">45m left</span>`);
     if(has("work.data")) b+=row("Lab results — inlet BOD","Enter today's reading",`<span class="pill p-nav">Enter data</span>`);
-    if(has("work.maintenance")) b+=row("Maintenance: grease blower bearings","Monthly · record after completion",`<span class="pill p-grn">Record</span>`);
     if(has("work.handoff")) b+=row("Active session","You own ‘MBBR blower trip’",`<span class="pill p-nav">Hand off</span>`);
-    if(has("work.checkin")) b+=row("Shift","Checked in 06:02 · ends 14:00",`<span class="pill p-nav">Check out</span>`);
     if(has("work.sessions")) b+=`<button class="bigbtn">▶ Resume: MBBR blower trip</button>`;
     if(has("work.raise")) b+=`<button class="bigbtn" style="background:var(--navy);margin-top:8px">+ Raise a manual issue</button>`;
     else why.push("‘Raise manual issue’ button hidden — work.raise is off");
@@ -1675,7 +1673,9 @@ function bodyFor(tabId,c,why){
   if(tabId==="tasks"){
     b+=row("Chlorine dosing check","Fixed task · daily 10:00",`<span class="pill p-grn">Start</span>`);
     b+=row("Backwash filter","Every 8h · due 14:00",`<span class="pill p-grn">Start</span>`);
-    if(has("work.myshift")) b+=row("My shifts","This week: Mon–Fri, 06:00–14:00",`<span class="pill p-nav">Roster</span>`);
+    if(has("readplant.maintenance")) b+=row("Maintenance: grease blower bearings","Monthly · record after completion",`<span class="pill p-grn">Record</span>`);
+    if(has("readplant.checkin")) b+=row("Shift","Checked in 06:02 · ends 14:00",`<span class="pill p-nav">Check out</span>`);
+    if(has("readplant.myshift")) b+=row("My shifts","This week: Mon–Fri, 06:00–14:00",`<span class="pill p-nav">Roster</span>`);
   }
   if(tabId==="inventory"){
     if(has("work.inventory")){
