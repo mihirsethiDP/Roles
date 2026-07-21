@@ -237,17 +237,12 @@ footer a{color:var(--navy)}
 <script>
 /* ================= DATA (same model as the User Center) ================= */
 const SETS=[
-{id:"work",n:"Work execution",cat:"ops",d:"Day-to-day operating of issues, tasks and maintenance",perms:[
+{id:"work",n:"Work execution",cat:"ops",d:"Operating work — the issue lifecycle (Issue Resolution) and stock",perms:[
  {id:"sessions",n:"Own issue sessions & run diagnostic steps",mod:"ops"},
  {id:"rc",n:"Submit root cause & remediation",mod:"ops"},
  {id:"media",n:"Photo / video capture during steps",mod:"ops"},
- {id:"data",n:"Data, lab, water-quality & logbook entry",mod:"data"},
- {id:"tasks",n:"Execute fixed, alert & one-time tasks",mod:"tasks"},
- {id:"maintenance",n:"Perform & record maintenance",mod:"tasks"},
  {id:"raise",n:"Raise manual issues",mod:"ops"},
  {id:"handoff",n:"Hand off / take over sessions",mod:"ops"},
- {id:"checkin",n:"Check in / out of shift",mod:"tasks"},
- {id:"myshift",n:"See my shifts & roster",mod:"tasks"},
  {id:"inventory",n:"Add / remove inventory items (usage, expiry, purchase)",mod:"inv"}]},
 {id:"approve",req:["work"],n:"Approvals & closure",cat:"ops",d:"Unblocking and supervising others",perms:[
  {id:"gates",n:"Approve / reject gates (RC, remediation, close)",mod:"ops"},
@@ -262,12 +257,19 @@ const SETS=[
  {id:"multiws",n:"Multi-plant view",mod:"ops"},
  {id:"cosign",n:"Eligible co-signer for force-close",mod:"ops"},
  {id:"deadline",n:"Deadline-only escalation alerts",mod:"ops"}]},
-{id:"readplant",n:"Plant visibility (read-only)",cat:"read",d:"Seeing one plant without acting",perms:[
+{id:"remote",n:"IoT remote control",cat:"ops",sensitive:true,d:"Actuate plant equipment remotely — sensitive; never a role default, granted deliberately, capped by the IoT module",perms:[
+ {id:"actuate",n:"Remote control / bi-direction — actuate equipment",mod:"iot"}]},
+{id:"readplant",n:"Plant view & everyday work",cat:"read",d:"The existing product a plant already uses — dashboards, insights, data entry and routine tasks/shifts. Standard for every plant-touching role; each line gated by its module.",perms:[
  {id:"dash",n:"Plant dashboard, issue log & sensor health",mod:"core"},
  {id:"layout",n:"Plant layout / digital twin",mod:"analytics"},
  {id:"insights",n:"Insights & events lists",mod:"analytics"},
  {id:"reports",n:"Reports, downloads & dashboard batches",mod:"analytics"},
- {id:"history",n:"Equipment & maintenance history",mod:"tasks"}]},
+ {id:"data",n:"Data, lab, water-quality & logbook entry",mod:"data"},
+ {id:"history",n:"Equipment & maintenance history",mod:"tasks"},
+ {id:"tasks",n:"Execute fixed, alert & one-time tasks",mod:"tasks"},
+ {id:"maintenance",n:"Perform & record maintenance",mod:"tasks"},
+ {id:"checkin",n:"Check in / out of shift",mod:"tasks"},
+ {id:"myshift",n:"See my shifts & roster",mod:"tasks"}]},
 {id:"portfolio",req:["readplant"],n:"Portfolio visibility",cat:"read",d:"Seeing all plants at once",perms:[
  {id:"overview",n:"Portfolio overview & plants list",mod:"analytics"},
  {id:"compare",n:"Compare plants & companies",mod:"analytics"}]},
@@ -295,8 +297,6 @@ const SETS=[
  {id:"publish",n:"Publish versions to all sites",mod:"core"},
  {id:"onboard",n:"Onboard sites, plants & company list",mod:"core"}]},
 {id:"flags",n:"Exception flags",cat:"flag",alwaysDev:true,d:"Extra-sensitive — always a deviation, audited individually",perms:[
- {id:"backdate",n:"Back-dated entry & data correction",preq:"tech",mod:"data"},
- {id:"remote",n:"IoT remote control / bi-direction",preq:"tech",mod:"iot"},
  {id:"impersonate",n:"View-as / impersonation",preq:"people",mod:"core"}]},
 ];
 const MODULES=[
@@ -422,7 +422,7 @@ function computeTabs(P){
   const has=k=>!!P[k]; const tabs=[];
   if(has("approve.gates")||has("approve.forceclose")||has("approve.override")) tabs.push("Approvals");
   if(has("work.sessions")||has("work.rc")) tabs.push("Issues");
-  if(has("work.tasks")) tabs.push("My tasks");
+  if(has("readplant.tasks")||has("readplant.data")) tabs.push("My tasks");
   if(has("work.inventory")||has("approve.invlogs")) tabs.push("Inventory");
   if(has("readplant.dash")||has("readplant.reports")||has("readplant.history")) tabs.push("Dashboard");
   if(has("portfolio.overview")||has("portfolio.compare")) tabs.push("Portfolio");

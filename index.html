@@ -505,11 +505,10 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
 <script>
 /* ================= DATA ================= */
 const SETS=[
-{id:"work",n:"Work execution",cat:"ops",d:"Operating work — own the issue lifecycle, enter data, record stock. The issue lines are the Issue Resolution feature (ops module); data & stock run on their own modules.",old:"was: Operator Asset (workers), Data Input, Tickets, Stores",perms:[
+{id:"work",n:"Work execution",cat:"ops",d:"Operating work — own the issue lifecycle (the Issue Resolution feature, ops module) and record stock (inventory module).",old:"was: Operator Asset (workers), Tickets, Stores",perms:[
  {id:"sessions",n:"Own issue sessions & run diagnostic steps",mod:"ops"},
  {id:"rc",n:"Submit root cause & remediation",mod:"ops"},
  {id:"media",n:"Photo / video capture during steps",mod:"ops"},
- {id:"data",n:"Data, lab, water-quality & logbook entry",mod:"data"},
  {id:"raise",n:"Raise manual issues",mod:"ops"},
  {id:"handoff",n:"Hand off / take over sessions",mod:"ops"},
  {id:"inventory",n:"Add / remove inventory items (usage, expiry, purchase)",mod:"inv"}]},
@@ -533,6 +532,7 @@ const SETS=[
  {id:"layout",n:"Plant layout / digital twin",mod:"analytics"},
  {id:"insights",n:"Insights & events lists",mod:"analytics"},
  {id:"reports",n:"Reports, downloads & dashboard batches",mod:"analytics"},
+ {id:"data",n:"Data, lab, water-quality & logbook entry",mod:"data"},
  {id:"history",n:"Equipment & maintenance history",mod:"tasks"},
  {id:"tasks",n:"Execute fixed, alert & one-time tasks",mod:"tasks"},
  {id:"maintenance",n:"Perform & record maintenance",mod:"tasks"},
@@ -1632,7 +1632,7 @@ function computeTabs(c){
   const tabs=[];
   if(has("approve.gates")||has("approve.forceclose")||has("approve.override")) tabs.push({id:"approvals",n:"Approvals",why:"Approvals & closure is on"});
   if(has("work.sessions")||has("work.rc")) tabs.push({id:"issues",n:"Issues",why:"Work execution is on"});
-  if(has("readplant.tasks")) tabs.push({id:"tasks",n:"My tasks",why:"Tasks are on (everyday work — available to viewers too)"});
+  if(has("readplant.tasks")||has("readplant.data")||has("readplant.maintenance")) tabs.push({id:"tasks",n:"My work",why:"Everyday work (tasks / data) is on — baseline, available to viewers too"});
   if(has("work.inventory")||has("approve.invlogs")) tabs.push({id:"inventory",n:"Inventory",why:"Inventory management is on"});
   if(has("readplant.dash")||has("readplant.reports")||has("readplant.history")) tabs.push({id:"dashboard",n:"Dashboard",why:"Plant visibility is on"});
   if(has("portfolio.overview")||has("portfolio.compare")) tabs.push({id:"portfolio",n:"Portfolio",why:"Portfolio visibility is on"});
@@ -1664,15 +1664,15 @@ function bodyFor(tabId,c,why){
   if(tabId==="issues"){
     b+=row("MBBR blower trip","Auto · raised 06:20 · step 2 of 5",`<span class="pill p-red">2h overdue</span>`);
     b+=row("Inlet pH high","Auto · raised 08:05 · awaiting RC",`<span class="pill p-amb">45m left</span>`);
-    if(has("work.data")) b+=row("Lab results — inlet BOD","Enter today's reading",`<span class="pill p-nav">Enter data</span>`);
     if(has("work.handoff")) b+=row("Active session","You own ‘MBBR blower trip’",`<span class="pill p-nav">Hand off</span>`);
     if(has("work.sessions")) b+=`<button class="bigbtn">▶ Resume: MBBR blower trip</button>`;
     if(has("work.raise")) b+=`<button class="bigbtn" style="background:var(--navy);margin-top:8px">+ Raise a manual issue</button>`;
     else why.push("‘Raise manual issue’ button hidden — work.raise is off");
   }
   if(tabId==="tasks"){
-    b+=row("Chlorine dosing check","Fixed task · daily 10:00",`<span class="pill p-grn">Start</span>`);
-    b+=row("Backwash filter","Every 8h · due 14:00",`<span class="pill p-grn">Start</span>`);
+    if(has("readplant.tasks")){ b+=row("Chlorine dosing check","Fixed task · daily 10:00",`<span class="pill p-grn">Start</span>`);
+      b+=row("Backwash filter","Every 8h · due 14:00",`<span class="pill p-grn">Start</span>`); }
+    if(has("readplant.data")) b+=row("Lab results — inlet BOD","Enter today's reading · logbook & water quality",`<span class="pill p-nav">Enter data</span>`);
     if(has("readplant.maintenance")) b+=row("Maintenance: grease blower bearings","Monthly · record after completion",`<span class="pill p-grn">Record</span>`);
     if(has("readplant.checkin")) b+=row("Shift","Checked in 06:02 · ends 14:00",`<span class="pill p-nav">Check out</span>`);
     if(has("readplant.myshift")) b+=row("My shifts","This week: Mon–Fri, 06:00–14:00",`<span class="pill p-nav">Roster</span>`);

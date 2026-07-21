@@ -36,14 +36,16 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
   Sets: work, approve, oversight, remote, readplant, portfolio, people, tech, templates, flags.
   **Everyday work lives in the baseline kitty (owner ruling 2026-07-21):**
   routine tasks/shifts (`readplant.tasks`/`maintenance`/`checkin`/`myshift`,
-  `mod:tasks`) sit in `readplant` alongside dashboards & insights — so EVERY
-  plant-touching role incl. Non-op viewers keeps them (module-gated), matching
-  the current product. `work` is now the issue-resolution lifecycle (sessions,
-  rc, media, raise, handoff = `mod:ops`) plus data entry (`mod:data`) and stock
-  (`mod:inv`). Net effect: deferring the CloseTheLoop/Issue-Resolution feature =
-  the `ops` module stays unlicensed → the issue lines go dark for everyone,
-  while dashboards/insights/tasks keep working. (Data entry & inventory stay
-  operator-level for now — open question whether to make them baseline too.)
+  `mod:tasks`) AND data entry (`readplant.data`, `mod:data`) sit in `readplant`
+  alongside dashboards & insights — so EVERY plant-touching role incl. Non-op
+  viewers keeps them (module-gated), matching the current product. `work` is now
+  the issue-resolution lifecycle (sessions, rc, media, raise, handoff =
+  `mod:ops`) plus stock (`work.inventory`, `mod:inv`). Net effect: deferring the
+  CloseTheLoop/Issue-Resolution feature = the `ops` module stays unlicensed →
+  the issue lines go dark for everyone, while dashboards/insights/tasks/data keep
+  working. (Data was promoted to baseline 2026-07-21; inventory stays
+  operator-level because it isn't relevant to every plant/user in the current
+  system — owner ruling.)
   **Exception flags reduced to one (owner ruling 2026-07-15): only `impersonate`
   (view-as).** Back-dated entry/data-correction retired from flags entirely
   (normal data work covers it, per canonical §6 — L1+ with co-sign, not a
