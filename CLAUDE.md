@@ -213,9 +213,15 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
    derives from permission state (see `computeTabs`, `landingTab`, `bodyFor`).
    Landing priority: approvals → issues → portfolio → dashboard → admin.
    These rules ARE the frontend visibility spec.
-6. **Migration**: default down, promote up. 490 users migrate by script, 236 get
-   safe defaults + one promotion question, 27 on HOLD (orphaned roleId
-   67000a18659b9e13b8f9afbc — deleted role, identify from backup first).
+6. **Migration**: default down, promote up. 490 users migrate by script, 263 get
+   safe defaults + one follow-up question (236 original + 27 ex-HOLD), **zero
+   holds** (owner ruling 2026-07-22: the orphaned roleId
+   67000a18659b9e13b8f9afbc is treated as never granted — all 27 former HOLD
+   users share the remaining profile Operator Administrative + Unified
+   Dashboard Controls, i.e. dashboard-only, and migrate as Regular Non-op with
+   the same viewer-vs-site-admin question as their 7 profile twins; no backup
+   recovery needed). Archived roles (`isArchived:true`, 10 of 56 — all
+   test/demo, zero holders) are excluded from migration by rule.
    **Numbers pinned 2026-07-14 against fresh production exports** (data/,
    local-only; full record in internal/NUMBER-PINS.md): users = 753 final,
    1:1 with the worksheet; roles = 56 docs / 46 live / 44 live-and-assigned
