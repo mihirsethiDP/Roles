@@ -1,24 +1,24 @@
 Production permission,Module,Type,V2 home,Status/Note
-AIWidgetGenerator_Manage_A,GAI,administrative,tech.ai,GAP-FIXED: AI widget generator was missing
+AIWidgetGenerator_Manage_A,GAI,administrative,DELETED,owner ruling 2026-07-22: AI widget generator feature deleted — tech.ai retired
 Add-EditUser_Configuration_AE,UM,administrative,people.invite,covered
 AlertTask_Configuration_W,PC,assets,tech.rules,covered
 AlertTask_Templating_WE,PC,administrative,tech.sitetpl,GAP-FIXED
 AutoGenerateTickets_View_R,TK,assets,work.sessions,covered
-Bi-Direction_Usage_W,VBD,assets,flags.remote,covered (bi-direction = remote actuation)
-Check-in_Usage_WE,AT,administrative,work.checkin,GAP-FIXED: shift check-in was missing
+Bi-Direction_Usage_W,VBD,assets,readplant.layout,RE-MAPPED 2026-07-22: tag gates viewing the NEW visualization — not actuation; real bi-directional control must ship as a new remote.actuate permission
+Check-in_Usage_WE,AT,administrative,DELETED,owner ruling 2026-07-22: check-in feature deleted — no v2 home
 Company_Configuration_WE,CC,administrative,templates.onboard,covered
 DashboardList_Manage_AE,ANC,assets,tech.dashcfg,covered
 DashboardPage_Configuration_WE,ANC,assets,tech.dashcfg,covered
 DashboardPage_View_R,ANC,assets,readplant.dash,covered
-DataBreakList_View_R,DBA,administrative,tech.sensors,covered (folded: data breaks)
-DataCorrection_Manage_WE,DM,administrative,flags.backdate,GAP-FIXED: data correction merged into back-date flag
-DataInputBackdate_Usage_AE,PI,administrative,flags.backdate,covered
-DataInputDetails_View_R,PC,assets,work.data,covered
+DataBreakList_View_R,DBA,administrative,DELETED,owner ruling 2026-07-22: data breaks view deleted
+DataCorrection_Manage_WE,DM,administrative,approve.datacorrect,RE-HOMED 2026-07-22: net-new approve-set line (L3+ · Technical Admin+) — supersedes the retired back-date flag and canonical §6 L1+-with-co-sign
+DataInputBackdate_Usage_AE,PI,administrative,readplant.data,MERGED 2026-07-22: standalone back-date grant folds into normal data entry with an L3 co-sign — no flag
+DataInputDetails_View_R,PC,assets,readplant.data,covered
 DataInputTemplate_Manage_A,PI,administrative,tech.sitetpl,GAP-FIXED
 DataInputTemplate_Manage_D,PI,administrative,tech.sitetpl,GAP-FIXED
 DataInputTemplate_View_R,PI,administrative,tech.sitetpl,GAP-FIXED
-DataInputUse_Manage_A,PC,assets,work.data,covered
-DataInputUse_View_R,PC,assets,work.data,covered
+DataInputUse_Manage_A,PC,assets,readplant.data,covered
+DataInputUse_View_R,PC,assets,readplant.data,covered
 DataLogger_Configuration,IHR,administrative,tech.iot,GAP-FIXED
 DeleteUser_Manage_D,UM,administrative,people.invite,covered
 EventTemplate_Manage_A,TATM,administrative,tech.sitetpl,GAP-FIXED
@@ -33,9 +33,9 @@ Group_Configuration_WE,GM,administrative,people.groups,GAP-FIXED
 Group_Manage_A,GM,administrative,people.groups,GAP-FIXED
 Group_Manage_D,GM,administrative,people.groups,GAP-FIXED
 Group_View_R,GM,administrative,people.groups,GAP-FIXED: user groups & workspaces were missing
-HMI_Manage_A,PM,administrative,tech.iot,GAP-FIXED
-HMI_Manage_D,PM,administrative,tech.iot,GAP-FIXED
-HMI_Manage_R,PM,administrative,tech.iot,GAP-FIXED
+HMI_Manage_A,PM,administrative,DELETED,owner ruling 2026-07-22: HMI deleted (PLC stays)
+HMI_Manage_D,PM,administrative,DELETED,owner ruling 2026-07-22: HMI deleted
+HMI_Manage_R,PM,administrative,DELETED,owner ruling 2026-07-22: HMI deleted
 InsightTemplate_Manage_A,TATM,administrative,tech.sitetpl,GAP-FIXED
 InsightTemplate_Manage_D,TATM,administrative,tech.sitetpl,GAP-FIXED
 InsightTemplate_View_R,TATM,administrative,tech.sitetpl,GAP-FIXED
@@ -44,7 +44,7 @@ Insights_View_R,TATM,administrative,readplant.insights,GAP-FIXED: insights list 
 LogbookConfiguration_Manage_A,LBMT,administrative,tech.sitetpl,GAP-FIXED
 LogbookConfiguration_Manage_D,LBMT,administrative,tech.sitetpl,GAP-FIXED
 LogbookConfiguration_View_R,LBMT,administrative,tech.sitetpl,GAP-FIXED
-LogbookDataInput_Usage_WE,LBMT,administrative,work.data,covered
+LogbookDataInput_Usage_WE,LBMT,administrative,readplant.data,covered
 LogbookTemplate_Manage_A,LBMT,administrative,tech.sitetpl,GAP-FIXED
 LogbookTemplate_Manage_D,LBMT,administrative,tech.sitetpl,GAP-FIXED
 LogbookTemplate_View_R,LBMT,administrative,tech.sitetpl,GAP-FIXED
@@ -59,32 +59,32 @@ PermissionsList_View_R,UM,administrative,people.grants,covered
 PlantDetails_Configuration_WE,PC,assets,tech.plant,GAP-FIXED: plant details/lab/WQ/escalation setup was missing
 PlantEscalation_Configuration_WE,PC,assets,tech.routing,covered
 PlantLabTestResults_Configuration_WE,PC,assets,tech.plant,GAP-FIXED
-PlantLabTestResults_Usage_W,PC,assets,work.data,covered
+PlantLabTestResults_Usage_W,PC,assets,readplant.data,covered
 PlantLayout_Configuration_WE,PC,assets,tech.plant,GAP-FIXED
 PlantLayout_View_R,PC,assets,readplant.layout,GAP-FIXED: plant layout / digital twin view was missing
-PlantMaintaince_Configuration_WE,PC,assets,tech.plant,GAP-FIXED
-PlantMaintaince_Monitor_R,PC,assets,readplant.history,covered
-PlantMaintaince_Usage_W,PC,assets,work.maintenance,GAP-FIXED: maintenance execution was missing
+PlantMaintaince_Configuration_WE,PC,assets,DELETED,owner ruling 2026-07-22: plant maintenance feature deleted completely
+PlantMaintaince_Monitor_R,PC,assets,DELETED,owner ruling 2026-07-22: deleted — equipment history narrows to task/data history
+PlantMaintaince_Usage_W,PC,assets,DELETED,owner ruling 2026-07-22: deleted — readplant.maintenance removed from the baseline kitty
 PlantsList_Manage_A,PM,administrative,templates.onboard,covered
 PlantsList_Manage_D,PM,administrative,templates.onboard,covered
 PlantsList_Manage_E,PM,administrative,templates.onboard,covered
 PlantsList_View_R,PM,administrative,portfolio.overview,covered (plant list view)
-RemoteControl_Usage,IHR,assets,flags.remote,covered
+RemoteControl_Usage,IHR,assets,remote.actuate,covered — the ONLY actuation grant (sensitive set; ruling 2026-07-15)
 RoleList_View_R,RM,administrative,people.grants,covered
 RosterManagement_Manage_A,TATM,assets,people.rosters,covered
 RosterManagement_Manage_D,TATM,assets,people.rosters,covered
-RosterManagement_View_R,TATM,assets,work.myshift,GAP-FIXED: operators viewing own shifts was missing
+RosterManagement_View_R,TATM,assets,people.rosters,SPLIT 2026-07-22: admin roster list = people.rosters; own shifts live in readplant.myshift (baseline)
 SensorDetails_Configuration_WE,PC,assets,tech.sensors,covered
-SensorHealth_View_R,SHD,administrative,readplant.dash,covered (folded: sensor health view)
+SensorHealth_View_R,SHD,administrative,flags.sensorhealth,RE-HOMED 2026-07-22: per-person exception flag (view-as pattern) — never a role default; removed from readplant.dash
 Sensor_Configuration_WE,SC,administrative,tech.sensors,covered
 SkillManagement_Manage_A,TATM,administrative,people.skills,GAP-FIXED: skill management was missing
 SkillManagement_Manage_D,TATM,administrative,people.skills,GAP-FIXED
 SkillManagement_View_R,TATM,administrative,people.skills,GAP-FIXED
-StoreConfiguration_Configuration_WE,ST,administrative,PHASE2,Stores / inventory
-StoreManagement_Manage_WE,ST,administrative,PHASE2,Stores / inventory
-StoreManagement_Usage_WE,ST,administrative,PHASE2,Stores / inventory
+StoreConfiguration_Configuration_WE,ST,administrative,tech.stores,shipped 2026-07 as the inv module; net-new tech line tagged mod:inv so the inventory ceiling caps it (ruling 2026-07-22)
+StoreManagement_Manage_WE,ST,administrative,approve.invlogs,shipped 2026-07 as the inv module (movement log — supervisor)
+StoreManagement_Usage_WE,ST,administrative,work.inventory,shipped 2026-07 as the inv module (usage/expiry/purchase — operator)
 SystemRole_Manage_WE,RM,administrative,templates.library,covered (role governance goes global)
-TaskPage_Usage_W,TSK,assets,work.tasks,covered
+TaskPage_Usage_W,TSK,assets,readplant.tasks,covered
 TaskTemplateSystem_Manage_A,TATM,administrative,templates.library,covered
 TaskTemplateSystem_Manage_D,TATM,administrative,templates.library,covered
 TaskTemplate_Manage_A,TATM,administrative,tech.sitetpl,GAP-FIXED: site-level templates were missing
@@ -92,7 +92,7 @@ TaskTemplate_Manage_D,TATM,administrative,tech.sitetpl,GAP-FIXED
 TaskTemplate_View_R,TATM,administrative,tech.sitetpl,GAP-FIXED
 Tasks_Manage_A,TATM,assets,approve.assign,GAP-FIXED: creating/assigning one-off tasks was missing
 Tasks_Manage_D,TATM,assets,approve.assign,GAP-FIXED
-Tasks_View_R,TATM,assets,work.tasks,covered
+Tasks_View_R,TATM,assets,readplant.tasks,covered
 TriggerSystem_Manage_A,TATM,administrative,templates.library,covered
 TriggerSystem_Manage_D,TATM,administrative,templates.library,covered
 Trigger_Manage_A,TATM,administrative,tech.rules,covered
@@ -106,12 +106,12 @@ UnifiedDashboardPage_Configuration_WE,UDB,administrative,tech.dashcfg,covered
 UnifiedDashboardPage_View_R,UDB,administrative,portfolio.overview,covered
 UnifiedDashboardReport_Usage_R,UDBC,administrative,readplant.reports,covered
 UserList_View_R,UM,administrative,people.audit,covered
-VideoTutorials_View_R,TU,administrative,BASELINE,training content for all users
+VideoTutorials_View_R,TU,administrative,DELETED,owner ruling 2026-07-22: video tutorials feature deleted
 ViewAsUser_View_R,UM,administrative,flags.impersonate,covered
 Visualisation_Configuration_WE,VW,administrative,RETIRED,legacy
 Visualisation_View_R,VW,administrative,RETIRED,legacy visualisation workspace superseded by plant dashboard
 WaterQualityTestResults_Configuration_WE,PC,assets,tech.plant,GAP-FIXED
-WaterQualityTestResults_Usage_W,PC,assets,work.data,covered
+WaterQualityTestResults_Usage_W,PC,assets,readplant.data,covered
 WorkflowSystem_Manage_A,TATM,administrative,templates.library,covered
 WorkflowSystem_Manage_D,TATM,administrative,templates.library,covered
 Workflow_Manage_A,TATM,administrative,tech.flows,GAP-FIXED: diagnostic flows/workflows were missing

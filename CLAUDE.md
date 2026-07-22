@@ -16,8 +16,8 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
 - **Product modules cap everything (top of the hierarchy).** DigitalPaani sells
   product modules to companies; modules are licensed **per plant** (`PLANTMODS`
   in index.html, editable in the "Product modules" tab). 8 modules — see
-  `MODULES`: core (always included), ops (Issue Resolution), tasks (Tasks/Shifts/
-  Maintenance), data (Data/Lab/Logbook), analytics (Dashboards & Analytics),
+  `MODULES`: core (always included), ops (Issue Resolution), tasks (Tasks &
+  Shifts — maintenance deleted 2026-07-22), data (Data/Lab/Logbook), analytics (Dashboards & Analytics),
   iot (IoT & Remote Control), floc (Floc Detector — **permissionless hardware
   add-on**: `noperm:true`, no `mod:` tag points to it; exists purely as a plant
   entitlement so contracts track what's sold; never caps or grants anything
@@ -35,10 +35,15 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
 - **10 permission sets** — see `SETS` in index.html.
   Sets: work, approve, oversight, remote, readplant, portfolio, people, tech, templates, flags.
   **Everyday work lives in the baseline kitty (owner ruling 2026-07-21):**
-  routine tasks/shifts (`readplant.tasks`/`maintenance`/`checkin`/`myshift`,
-  `mod:tasks`) AND data entry (`readplant.data`, `mod:data`) sit in `readplant`
-  alongside dashboards & insights — so EVERY plant-touching role incl. Non-op
-  viewers keeps them (module-gated), matching the current product. `work` is now
+  routine tasks/shifts (`readplant.tasks`/`myshift`, `mod:tasks`) AND data
+  entry (`readplant.data`, `mod:data`) sit in `readplant` alongside dashboards
+  & insights — so EVERY plant-touching role incl. Non-op viewers keeps them
+  (module-gated), matching the current product: there is NO view/execute split
+  (owner ruling 2026-07-22 — whoever can view the task/data pages can act).
+  (`readplant.maintenance` and `readplant.checkin` were REMOVED 2026-07-22:
+  the owner deleted the Plant Maintenance and Check-in features outright;
+  equipment history narrows to task/data history. The `tasks` module is now
+  named "Tasks & Shifts".) `work` is now
   the issue-resolution lifecycle (sessions, rc, media, raise, handoff =
   `mod:ops`) plus stock (`work.inventory`, `mod:inv`). Net effect: deferring the
   CloseTheLoop/Issue-Resolution feature = the `ops` module stays unlicensed →
@@ -46,10 +51,13 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
   working. (Data was promoted to baseline 2026-07-21; inventory stays
   operator-level because it isn't relevant to every plant/user in the current
   system — owner ruling.)
-  **Exception flags reduced to one (owner ruling 2026-07-15): only `impersonate`
-  (view-as).** Back-dated entry/data-correction retired from flags entirely
-  (normal data work covers it, per canonical §6 — L1+ with co-sign, not a
-  sensitive flag).
+  **Exception flags (owner rulings 2026-07-15 + 2026-07-22): `impersonate`
+  (view-as, preq people) and `sensorhealth` (sensor health dashboard,
+  `mod:iot`) — both per-person exception grants, never a role default.**
+  Back-dated entry retired from flags entirely (one-time MERGE into normal
+  data work). Data correction is `approve.datacorrect` (net-new like APPR,
+  `mod:data`, L3+ · Technical Admin+ — owner ruling 2026-07-22 supersedes
+  canonical §6's L1+-with-co-sign).
   **IoT remote control is its own dedicated sensitive set (owner ruling
   2026-07-15): `remote` set, one perm `remote.actuate` (`mod:iot`),
   `sensitive:true`.** It is in NO base role's std composition, so it is never
@@ -169,9 +177,36 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
    merge). Never invent permissions; extend from the CSV.
 3. **Deliberate retirements** (document, don't "fix"): free-form role creation
    (GroupRole_Manage) replaced by fixed roles + overrides; legacy Visualisation
-   Workspace superseded; forget-password and video tutorials are platform
-   baseline, not permissions. (Stores/Inventory was deferred here until
-   2026-07 — now shipped as the `inv` product module, see above.)
+   Workspace superseded (incl. its Configuration perm — deleted 2026-07-22);
+   forget-password is platform baseline, not a permission (video tutorials were
+   also baseline until the 2026-07-22 ruling deleted the feature outright).
+   (Stores/Inventory was deferred here until 2026-07 — now shipped as the
+   `inv` product module, see above.) **Owner deletions 2026-07-22** (from the
+   permission-catalog review, recorded in
+   internal/EcoInnovision-permissions-decisions-reviewed.xlsx): Plant
+   Maintenance (all 3 perms), Check-in, Data Breaks view, AI widget generator,
+   HMI (PLC stays), Video Tutorials, both legacy visualisation views. The two
+   gap-fix perms these had seeded (readplant.maintenance, readplant.checkin)
+   are removed from the model; tech.ai is retired with its feature.
+3b. **Permission-catalog rulings 2026-07-22** (all 121 rows decided — see the
+   reviewed workbook): Bi-Direction_Usage_W RE-MAPPED to readplant.layout (it
+   gates viewing the NEW visualization, not actuation — real bi-directional
+   control must ship as a new remote.actuate perm; RemoteControl_Usage stays
+   the only actuation grant). Net-new lines: `approve.datacorrect` (mod:data),
+   `tech.stores` (mod:inv), `flags.sensorhealth` (mod:iot, exception flag).
+   Recorded audience deviations: sensor LIST config = Global-only safety
+   exception (sensor DETAILS config stays Technical); System-scope
+   templates/triggers/workflows = Technical Admin+ (deviation from
+   templates=Global); task/insight create-assign = L3+ plus Full Site/Global
+   only; Skills & Permissions-list = People AND Technical families;
+   manual-ticket creation = L3+ (tickets are assigned). **Deprecation
+   mechanism: platform-level legacy flags** — one global boolean per sunset
+   group (L-DASH, L-GROUPS, L-WS, L-ROLES, L-TICKETS, L-TASKCFG, L-OLDDATA,
+   L-OLDCFG, L-OLDLAYOUT), Global-Admin-only, one audited flip, default-ON
+   wherever the feature is used today; NOT the per-plant module ceiling
+   (deprecated perms share live homes/modules with kept ones). PlantLayout
+   old view = Keep+Deprecate under L-OLDLAYOUT (dies when the new
+   visualization covers it); back-dated entry = one-time MERGE, not a flag.
 4. **Approval permissions are net-new to the backend** — nothing in the legacy
    121 expresses approve/force-close/reopen. New sub-feature needed (e.g. APPR).
 5. **Smart preview is rule-driven, not per-role mockups** — every tab/button/banner

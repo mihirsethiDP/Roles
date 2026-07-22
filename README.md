@@ -43,11 +43,12 @@ The site goes live in ~1 minute at:
 plant     = licensed product modules       (the ceiling — what exists at this plant)
 role      = default bundle set             (L3 = exec + approve)
 user      = role + grant + overrides       (add/remove bundles, each with a reason)
-flags     = per-user exceptions            (back-dated entry, remote control, view-as)
+flags     = per-user exceptions            (view-as, sensor health dashboard)
 drift     = |overrides| + |flags|          (visible to People Admins)
 effective = user permission ∧ plant module (checked per plant at runtime)
 ```
 
-Modules: Platform Core (always included) · Issue Resolution · Tasks, Shifts & Maintenance ·
-Data, Lab & Logbook · Dashboards & Analytics · IoT & Remote Control. A capped permission stays
+Modules: Platform Core (always included) · Issue Resolution · Tasks & Shifts ·
+Data, Lab & Logbook · Dashboards & Analytics · IoT & Remote Control · Inventory Management ·
+Floc Detector (permissionless hardware add-on). A capped permission stays
 on the user's profile and activates automatically if the plant's plan is upgraded.

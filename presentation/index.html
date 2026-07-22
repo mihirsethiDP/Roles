@@ -252,7 +252,8 @@ const SETS=[
  {id:"override",n:"Photo override",mod:"ops"},
  {id:"assign",n:"Create & assign one-off tasks and insights",mod:"tasks"},
  {id:"shiftview",n:"View all tasks & entries at the plant",mod:"tasks"},
- {id:"invlogs",n:"Inventory item logs — every movement at the plant",mod:"inv"}]},
+ {id:"invlogs",n:"Inventory item logs — every movement at the plant",mod:"inv"},
+ {id:"datacorrect",n:"Data correction — edit recorded entries (supersedes back-date)",mod:"data"}]},
 {id:"oversight",req:["approve"],n:"Multi-plant oversight",cat:"ops",d:"Portfolio-level operations",perms:[
  {id:"multiws",n:"Multi-plant view",mod:"ops"},
  {id:"cosign",n:"Eligible co-signer for force-close",mod:"ops"},
@@ -260,15 +261,13 @@ const SETS=[
 {id:"remote",n:"IoT remote control",cat:"ops",sensitive:true,d:"Actuate plant equipment remotely — sensitive; never a role default, granted deliberately, capped by the IoT module",perms:[
  {id:"actuate",n:"Remote control / bi-direction — actuate equipment",mod:"iot"}]},
 {id:"readplant",n:"Plant view & everyday work",cat:"read",d:"The existing product a plant already uses — dashboards, insights, data entry and routine tasks/shifts. Standard for every plant-touching role; each line gated by its module.",perms:[
- {id:"dash",n:"Plant dashboard, issue log & sensor health",mod:"core"},
+ {id:"dash",n:"Plant dashboard & issue log",mod:"core"},
  {id:"layout",n:"Plant layout / digital twin",mod:"analytics"},
  {id:"insights",n:"Insights & events lists",mod:"analytics"},
  {id:"reports",n:"Reports, downloads & dashboard batches",mod:"analytics"},
  {id:"data",n:"Data, lab, water-quality & logbook entry",mod:"data"},
- {id:"history",n:"Equipment & maintenance history",mod:"tasks"},
+ {id:"history",n:"Equipment & task history",mod:"tasks"},
  {id:"tasks",n:"Execute fixed, alert & one-time tasks",mod:"tasks"},
- {id:"maintenance",n:"Perform & record maintenance",mod:"tasks"},
- {id:"checkin",n:"Check in / out of shift",mod:"tasks"},
  {id:"myshift",n:"See my shifts & roster",mod:"tasks"}]},
 {id:"portfolio",req:["readplant"],n:"Portfolio visibility",cat:"read",d:"Seeing all plants at once",perms:[
  {id:"overview",n:"Portfolio overview & plants list",mod:"analytics"},
@@ -283,26 +282,27 @@ const SETS=[
  {id:"audit",n:"Directory & audit-log export",mod:"core"}]},
 {id:"tech",n:"Plant configuration",cat:"adm",d:"The plant's logic, hardware and screens",perms:[
  {id:"dashcfg",n:"Dashboards & widgets (plant + unified)",mod:"analytics"},
- {id:"ai",n:"AI widget generator",mod:"analytics"},
  {id:"rules",n:"Issue / task / trigger rules & schedules",mod:"ops"},
  {id:"flows",n:"Diagnostic flows & workflows",mod:"ops"},
  {id:"plant",n:"Plant details, layout, lab & test setup",mod:"core"},
- {id:"sensors",n:"Sensors, thresholds, data breaks & health",mod:"iot"},
- {id:"iot",n:"PLC / HMI / data logger",mod:"iot"},
+ {id:"sensors",n:"Sensors & thresholds",mod:"iot"},
+ {id:"iot",n:"PLC / data logger",mod:"iot"},
  {id:"routing",n:"Notification routing, SLAs, escalation & auto email",mod:"ops"},
  {id:"sitetpl",n:"Site templates (task, event, insight, logbook, data-input)",mod:"core"},
- {id:"formulas",n:"Site analytics formulas",mod:"data"}]},
+ {id:"formulas",n:"Site analytics formulas",mod:"data"},
+ {id:"stores",n:"Store & item catalog setup",mod:"inv"}]},
 {id:"templates",req:["people","tech"],n:"Global templates",cat:"adm",d:"Affects every site — DP / Wapp staff only",perms:[
  {id:"library",n:"Global template & role governance",mod:"core"},
  {id:"publish",n:"Publish versions to all sites",mod:"core"},
  {id:"onboard",n:"Onboard sites, plants & company list",mod:"core"}]},
 {id:"flags",n:"Exception flags",cat:"flag",alwaysDev:true,d:"Extra-sensitive — always a deviation, audited individually",perms:[
- {id:"impersonate",n:"View-as / impersonation",preq:"people",mod:"core"}]},
+ {id:"impersonate",n:"View-as / impersonation",preq:"people",mod:"core"},
+ {id:"sensorhealth",n:"Sensor health dashboard",mod:"iot"}]},
 ];
 const MODULES=[
  {id:"core",n:"Platform Core",icon:"🧩",always:true,can:"Manage the team & see the plant basics"},
  {id:"ops",n:"Issue Resolution",icon:"🔧",d:"Guided diagnostics, approvals & escalations",can:"Resolve issues with guided diagnostics"},
- {id:"tasks",n:"Tasks, Shifts & Maintenance",icon:"📋",d:"Routine work, rosters & maintenance records",can:"Run tasks, shifts & maintenance"},
+ {id:"tasks",n:"Tasks & Shifts",icon:"📋",d:"Routine work, rosters & task history",can:"Run tasks & shifts"},
  {id:"data",n:"Data, Lab & Logbook",icon:"🧪",d:"Lab results, water quality & logbooks",can:"Record lab & logbook data"},
  {id:"analytics",n:"Dashboards & Analytics",icon:"📊",d:"Reports, insights & portfolio views",can:"See dashboards, reports & insights"},
  {id:"iot",n:"IoT & Remote Control",icon:"📡",d:"Sensors, PLC/HMI & remote operation",can:"Monitor & control equipment remotely"},
@@ -321,7 +321,7 @@ const GRANTNAMES={people:"People Admin",tech:"Technical Admin",fullsite:"Full Si
 const GRANTHELP={
  "":{t:"No admin grant",d:"Right for most users. Grants add administration on top of the base role — they never change day-to-day operating permissions. Max one grant per user per site."},
  people:{t:"People Admin — manages the humans",d:"Invite, edit & offboard users · rosters & shift schedules · skills · groups & workspaces · assign roles and grants · notification overrides · audit export. No access to plant logic or hardware."},
- tech:{t:"Technical Admin — configures the plant",d:"Dashboards & widgets · issue / task / trigger rules · diagnostic flows · plant, lab & sensor setup · PLC / HMI / IoT · escalation routing · site templates & formulas. No user management."},
+ tech:{t:"Technical Admin — configures the plant",d:"Dashboards & widgets · issue / task / trigger rules · diagnostic flows · plant, lab & sensor setup · PLC / IoT · escalation routing · site templates & formulas. No user management."},
  fullsite:{t:"Full Site Admin — People + Technical combined",d:"Everything both admins can do, for this site: the users and the plant configuration. Use when one person genuinely runs the whole site."},
  global:{t:"Global Admin — DigitalPaani / Wapp staff only",d:"Full Site everywhere, plus global template governance, publishing versions to all sites, and onboarding new sites & companies. Affects every site — audited accordingly."},
 };

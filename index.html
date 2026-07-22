@@ -520,23 +520,22 @@ const SETS=[
  {id:"override",n:"Photo override",mod:"ops"},
  {id:"assign",n:"Create & assign one-off tasks and insights",mod:"tasks"},
  {id:"shiftview",n:"View all tasks & entries at the plant",mod:"tasks"},
- {id:"invlogs",n:"Inventory item logs — every movement at the plant",mod:"inv"}]},
+ {id:"invlogs",n:"Inventory item logs — every movement at the plant",mod:"inv"},
+ {id:"datacorrect",n:"Data correction — edit recorded entries (supersedes back-date)",mod:"data"}]},
 {id:"oversight",req:["approve"],n:"Multi-plant oversight",cat:"ops",d:"Portfolio-level operations",old:"was: senior CSM profiles",perms:[
  {id:"multiws",n:"Multi-plant view",mod:"ops"},
  {id:"cosign",n:"Eligible co-signer for force-close",mod:"ops"},
  {id:"deadline",n:"Deadline-only escalation alerts",mod:"ops"}]},
 {id:"remote",n:"IoT remote control",cat:"ops",sensitive:true,d:"Actuate plant equipment remotely — start, stop, adjust. Sensitive: never part of any role by default, granted only deliberately (per-person, or a named custom role), and always capped by the IoT module.",old:"was: Remote Control, Bi-Direction",perms:[
  {id:"actuate",n:"Remote control / bi-direction — actuate equipment",mod:"iot"}]},
-{id:"readplant",n:"Plant view & everyday work",cat:"read",d:"The existing product a plant already uses — dashboards, insights, and routine tasks/shifts. Standard for every plant-touching role; each line is gated by its own module.",old:"was: Client Role, Client Asset, Visualization, Insights Only, Sensor Health Dashboard, Tasks Only, Data Input",perms:[
- {id:"dash",n:"Plant dashboard, issue log & sensor health",mod:"core"},
+{id:"readplant",n:"Plant view & everyday work",cat:"read",d:"The existing product a plant already uses — dashboards, insights, and routine tasks/shifts. Standard for every plant-touching role; each line is gated by its own module.",old:"was: Client Role, Client Asset, Visualization, Insights Only, Tasks Only, Data Input",perms:[
+ {id:"dash",n:"Plant dashboard & issue log",mod:"core"},
  {id:"layout",n:"Plant layout / digital twin",mod:"analytics"},
  {id:"insights",n:"Insights & events lists",mod:"analytics"},
  {id:"reports",n:"Reports, downloads & dashboard batches",mod:"analytics"},
  {id:"data",n:"Data, lab, water-quality & logbook entry",mod:"data"},
- {id:"history",n:"Equipment & maintenance history",mod:"tasks"},
+ {id:"history",n:"Equipment & task history",mod:"tasks"},
  {id:"tasks",n:"Execute fixed, alert & one-time tasks",mod:"tasks"},
- {id:"maintenance",n:"Perform & record maintenance",mod:"tasks"},
- {id:"checkin",n:"Check in / out of shift",mod:"tasks"},
  {id:"myshift",n:"See my shifts & roster",mod:"tasks"}]},
 {id:"portfolio",req:["readplant"],n:"Portfolio visibility",cat:"read",d:"Seeing all plants at once",old:"was: Client Administrative, Unified Dashboard",perms:[
  {id:"overview",n:"Portfolio overview & plants list",mod:"analytics"},
@@ -551,30 +550,31 @@ const SETS=[
  {id:"audit",n:"Directory & audit-log export",mod:"core"}]},
 {id:"tech",n:"Plant configuration",cat:"adm",d:"The plant's logic, hardware and screens",old:"was: E-mail, Sensor list, Events, Logbook Config, Analytical Engine, Triggers, T&T Config, PLC/HMI",perms:[
  {id:"dashcfg",n:"Dashboards & widgets (plant + unified)",mod:"analytics"},
- {id:"ai",n:"AI widget generator",mod:"analytics"},
  {id:"rules",n:"Issue / task / trigger rules & schedules",mod:"ops"},
  {id:"flows",n:"Diagnostic flows & workflows",mod:"ops"},
  {id:"plant",n:"Plant details, layout, lab & test setup",mod:"core"},
- {id:"sensors",n:"Sensors, thresholds, data breaks & health",mod:"iot"},
- {id:"iot",n:"PLC / HMI / data logger",mod:"iot"},
+ {id:"sensors",n:"Sensors & thresholds",mod:"iot"},
+ {id:"iot",n:"PLC / data logger",mod:"iot"},
  {id:"routing",n:"Notification routing, SLAs, escalation & auto email",mod:"ops"},
  {id:"sitetpl",n:"Site templates (task, event, insight, logbook, data-input)",mod:"core"},
- {id:"formulas",n:"Site analytics formulas",mod:"data"}]},
+ {id:"formulas",n:"Site analytics formulas",mod:"data"},
+ {id:"stores",n:"Store & item catalog setup",mod:"inv"}]},
 {id:"templates",req:["people","tech"],n:"Global templates",cat:"adm",d:"Affects every site — DP / Wapp staff only",old:"was: Super Admin, Company List, System templates/triggers/workflows",perms:[
  {id:"library",n:"Global template & role governance (system task/trigger/workflow)",mod:"core"},
  {id:"publish",n:"Publish versions to all sites",mod:"core"},
  {id:"onboard",n:"Onboard sites, plants & company list",mod:"core"}]},
-{id:"flags",n:"Exception flags",cat:"flag",alwaysDev:true,d:"Extra-sensitive — always a deviation, audited individually",old:"was: View as Different User",perms:[
- {id:"impersonate",n:"View-as / impersonation",preq:"people",mod:"core"}]},
+{id:"flags",n:"Exception flags",cat:"flag",alwaysDev:true,d:"Extra-sensitive — always a deviation, audited individually",old:"was: View as Different User, Sensor Health Dashboard",perms:[
+ {id:"impersonate",n:"View-as / impersonation",preq:"people",mod:"core"},
+ {id:"sensorhealth",n:"Sensor health dashboard",mod:"iot"}]},
 ];
 /* ---- Product modules: sellable slices, licensed per plant (ADR-003: flags live on the Plant record). ---- */
 const MODULES=[
  {id:"core",n:"Platform Core",icon:"🧩",always:true,d:"Ships with every contract — users, grants, plant setup, basic plant dashboard, global governance."},
  {id:"ops",n:"Issue Resolution",icon:"🔧",d:"The close-the-loop workflow — issue sessions, diagnostics, root cause, approvals, force-close, escalation rules."},
- {id:"tasks",n:"Tasks, Shifts & Maintenance",icon:"📋",d:"Fixed & one-off tasks, maintenance records & history, rosters, shifts and check-in."},
+ {id:"tasks",n:"Tasks & Shifts",icon:"📋",d:"Fixed & one-off tasks, task history, rosters and shifts."},
  {id:"data",n:"Data, Lab & Logbook",icon:"🧪",d:"Lab, water-quality & logbook entry, back-dated corrections, site analytics formulas."},
- {id:"analytics",n:"Dashboards & Analytics",icon:"📊",d:"Custom dashboards, insights, reports, digital twin, portfolio comparison, AI widgets."},
- {id:"iot",n:"IoT & Remote Control",icon:"📡",d:"Sensors & thresholds, PLC / HMI / data loggers, remote operation."},
+ {id:"analytics",n:"Dashboards & Analytics",icon:"📊",d:"Custom dashboards, insights, reports, digital twin, portfolio comparison."},
+ {id:"iot",n:"IoT & Remote Control",icon:"📡",d:"Sensors & thresholds, PLC / data loggers, remote operation."},
  {id:"inv",n:"Inventory Management",icon:"🧯",d:"Stock of consumables & spares — usage, expiry, purchases, and a movement log for supervisors."},
  {id:"floc",n:"Floc Detector",icon:"🔬",noperm:true,d:"Hardware add-on — floc detection at the plant. Carries no user permissions; lives on the contract so sales & support know what's installed where."},
 ];
@@ -643,7 +643,7 @@ const GRANTNAMES={people:"People Admin",tech:"Technical Admin",fullsite:"Full Si
 const GRANTHELP={
  "":{t:"No admin grant",d:"Right for most users. Grants add administration on top of the base role — they never change day-to-day operating permissions. Max one grant per user per site."},
  people:{t:"People Admin — manages the humans",d:"Invite, edit & offboard users · rosters & shift schedules · skills · assign roles and grants · notification overrides · audit export. No access to plant logic or hardware."},
- tech:{t:"Technical Admin — configures the plant",d:"Dashboards & widgets · issue / task / trigger rules · diagnostic flows · plant, lab & sensor setup · PLC / HMI / IoT · escalation routing · site templates & formulas. No user management. Also the grant that may edit a plant's module flags after onboarding."},
+ tech:{t:"Technical Admin — configures the plant",d:"Dashboards & widgets · issue / task / trigger rules · diagnostic flows · plant, lab & sensor setup · PLC / IoT · escalation routing · site templates & formulas. No user management. Also the grant that may edit a plant's module flags after onboarding."},
  fullsite:{t:"Full Site Admin — People + Technical combined",d:"Everything both admins can do, for this site: the users and the plant configuration. Use when one person genuinely runs the whole site."},
  global:{t:"Global Admin — DigitalPaani / Wapp staff only",d:"Full Site everywhere, plus global template governance, publishing versions to all sites, and onboarding new sites & companies. Affects every site — audited accordingly."},
 };
@@ -1632,7 +1632,7 @@ function computeTabs(c){
   const tabs=[];
   if(has("approve.gates")||has("approve.forceclose")||has("approve.override")) tabs.push({id:"approvals",n:"Approvals",why:"Approvals & closure is on"});
   if(has("work.sessions")||has("work.rc")) tabs.push({id:"issues",n:"Issues",why:"Work execution is on"});
-  if(has("readplant.tasks")||has("readplant.data")||has("readplant.maintenance")) tabs.push({id:"tasks",n:"My work",why:"Everyday work (tasks / data) is on — baseline, available to viewers too"});
+  if(has("readplant.tasks")||has("readplant.data")) tabs.push({id:"tasks",n:"My work",why:"Everyday work (tasks / data) is on — baseline, available to viewers too"});
   if(has("work.inventory")||has("approve.invlogs")) tabs.push({id:"inventory",n:"Inventory",why:"Inventory management is on"});
   if(has("readplant.dash")||has("readplant.reports")||has("readplant.history")) tabs.push({id:"dashboard",n:"Dashboard",why:"Plant visibility is on"});
   if(has("portfolio.overview")||has("portfolio.compare")) tabs.push({id:"portfolio",n:"Portfolio",why:"Portfolio visibility is on"});
@@ -1673,8 +1673,6 @@ function bodyFor(tabId,c,why){
     if(has("readplant.tasks")){ b+=row("Chlorine dosing check","Fixed task · daily 10:00",`<span class="pill p-grn">Start</span>`);
       b+=row("Backwash filter","Every 8h · due 14:00",`<span class="pill p-grn">Start</span>`); }
     if(has("readplant.data")) b+=row("Lab results — inlet BOD","Enter today's reading · logbook & water quality",`<span class="pill p-nav">Enter data</span>`);
-    if(has("readplant.maintenance")) b+=row("Maintenance: grease blower bearings","Monthly · record after completion",`<span class="pill p-grn">Record</span>`);
-    if(has("readplant.checkin")) b+=row("Shift","Checked in 06:02 · ends 14:00",`<span class="pill p-nav">Check out</span>`);
     if(has("readplant.myshift")) b+=row("My shifts","This week: Mon–Fri, 06:00–14:00",`<span class="pill p-nav">Roster</span>`);
   }
   if(tabId==="inventory"){
@@ -1696,7 +1694,8 @@ function bodyFor(tabId,c,why){
     if(has("readplant.layout")) b+=row("Plant layout / digital twin","Tap any tank for live readings",`<span class="pill p-nav">Open</span>`);
     if(has("readplant.insights")) b+=row("Insights & events","3 active insights · 12 events today",`<span class="pill p-nav">View</span>`);
     if(has("readplant.reports")) b+=row("Weekly compliance report","Generated Mon 06:00 · batches included",`<span class="pill p-nav">Download</span>`);
-    if(has("readplant.history")) b+=row("Equipment history","Pump 3 · last maintenance 12 Jun",`<span class="pill p-nav">View</span>`);
+    if(has("readplant.history")) b+=row("Equipment history","Pump 3 · last task completed 12 Jun",`<span class="pill p-nav">View</span>`);
+    if(has("flags.sensorhealth")){ b+=row("Sensor health","2 sensors drifting · 1 offline at inlet",`<span class="pill p-amb">Review</span>`); why.push("Sensor health dashboard visible — per-person exception flag, never a role default"); }
     const canAct=has("work.sessions")||has("approve.gates");
     if(!canAct){ b+=mut("View-only — acting on issues is not part of this user's permissions"); why.push("Read-only banner shown — no operational permissions"); }
   }
@@ -1718,7 +1717,6 @@ function bodyFor(tabId,c,why){
     if(has("tech.plant")) b+=row("Plant setup","Details · layout · lab & WQ parameters",`<span class="pill p-nav">Configure</span>`);
     if(has("tech.iot")) b+=row("IoT hardware","PLC · HMI · data logger",`<span class="pill p-nav">Configure</span>`);
     if(has("tech.sitetpl")) b+=row("Site templates","Task · event · insight · logbook · data-input",`<span class="pill p-nav">Manage</span>`);
-    if(has("tech.ai")) b+=row("AI widget generator","Describe a widget, get a dashboard block",`<span class="pill p-grn">Generate</span>`);
     if(has("tech.sensors")) b+=row("Sensor fault: outlet turbidity","Flatline 6h — check calibration",`<span class="pill p-red">fault</span>`);
     if(has("tech.routing")) b+=row("Escalation chain: Major issues","Operator → L3 (15m) → L4 (60m)",`<span class="pill p-nav">Edit</span>`);
     if(has("tech.dashcfg")) b+=row("Dashboard: Plant overview","12 widgets",`<span class="pill p-nav">Configure</span>`);
