@@ -213,15 +213,19 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
    derives from permission state (see `computeTabs`, `landingTab`, `bodyFor`).
    Landing priority: approvals → issues → portfolio → dashboard → admin.
    These rules ARE the frontend visibility spec.
-6. **Migration**: default down, promote up. 490 users migrate by script, 263 get
-   safe defaults + one follow-up question (236 original + 27 ex-HOLD), **zero
-   holds** (owner ruling 2026-07-22: the orphaned roleId
-   67000a18659b9e13b8f9afbc is treated as never granted — all 27 former HOLD
-   users share the remaining profile Operator Administrative + Unified
-   Dashboard Controls, i.e. dashboard-only, and migrate as Regular Non-op with
-   the same viewer-vs-site-admin question as their 7 profile twins; no backup
+6. **Migration**: default down, promote up. 517 users migrate fully
+   automatically, 236 get safe defaults + one follow-up question, **zero
+   holds** (owner rulings 2026-07-22: the orphaned roleId
+   67000a18659b9e13b8f9afbc is treated as never granted, and the 27 ex-HOLD
+   users — profile ORPHAN + Operator Administrative + Unified Dashboard
+   Controls — migrate as **L1 Operator with no admin grants**; no backup
    recovery needed). Archived roles (`isArchived:true`, 10 of 56 — all
-   test/demo, zero holders) are excluded from migration by rule.
+   test/demo, zero holders) are excluded from migration by rule. **7 Full Site
+   Admin grants applied 2026-07-22** (owner instruction, from the
+   permission-parity analysis): 3 roster managers held Technical (+People
+   composes to Full Site), 4 unified-dashboard owners held People
+   (+Technical composes) — list in internal/admin-grants-applied.xlsx; full
+   per-user old→new mapping in internal/migration-final-mapping.xlsx.
    **Numbers pinned 2026-07-14 against fresh production exports** (data/,
    local-only; full record in internal/NUMBER-PINS.md): users = 753 final,
    1:1 with the worksheet; roles = 56 docs / 46 live / 44 live-and-assigned
