@@ -314,8 +314,9 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
     <button class="tab" data-pane="5" id="nav-ctrl" onclick="tab(5)" style="display:none;color:var(--teal);border-left-color:transparent">🎚 Control panel</button>
     <div class="nav-label">Manage</div>
     <button class="tab" data-pane="1" onclick="tab(1)">People</button>
+    <button class="tab" data-pane="6" onclick="tab(6)">Plants</button>
     <button class="tab" data-pane="4" onclick="tab(4)">Role library</button>
-    <button class="tab on" data-pane="0" onclick="tab(0)">Plants &amp; modules</button>
+    <button class="tab on" data-pane="0" onclick="tab(0)">Product modules</button>
     <div class="nav-label">Verify</div>
     <button class="tab" data-pane="2" onclick="tab(2)">Access review</button>
     <button class="tab" data-pane="3" onclick="tab(3)">UI previews</button>
@@ -485,6 +486,20 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
 <!-- ============ PANE 5: CONTROL PANEL (cluster/plant admins) ============ -->
 <div class="pane" id="pane5">
   <div id="ctrlpanel"></div>
+</div>
+
+<!-- ============ PANE 6: PLANTS ============ -->
+<div class="pane" id="pane6">
+  <div class="panel" style="margin-bottom:18px">
+    <div class="gh">Plants — the record everything hangs off</div>
+    <div class="help"><span class="i">💡</span><span>The plant is the ONLY container in the model (ADR-002): <b>company is a label on the plant</b>, people are assigned per plant, and product modules are licensed per plant. This screen is the registry — licensing lives on <b>Product modules</b>, people on the <b>User Center</b>.</span></div>
+    <div class="kpis" id="plantkpis"></div>
+  </div>
+  <div class="panel">
+    <div class="gh">Plant registry</div>
+    <div id="plantadd"></div>
+    <div style="overflow-x:auto" id="plantstable"></div>
+  </div>
 </div>
 
 </div>
@@ -730,7 +745,7 @@ function setPersona(k){
     :persona.kind==="cluster"
     ?"Cluster admin for GreenGrid Utilities: the four GreenGrid plants and everyone working at them. Assign tiers and run plant-wide or cluster-wide permission edits inside your cluster — module flags are read-only, and the Global grant isn't yours to give."
     :"Plant admin at STP — Sector 62: your plant's roster only. Assign tiers, run plant-wide edits and grant reasoned exceptions here — module flags are read-only, the Global grant isn't yours to give, and nothing you do can reach another plant.";
-  render(); renderModules(); renderReview(); renderPreview(); renderControlPanel();
+  render(); renderModules(); renderPlants(); renderReview(); renderPreview(); renderControlPanel();
 }
 function inScope(plant){ return persona.kind==="global"||persona.plants.includes(plant); }
 function scopedPlants(){ return ALLPLANTS.filter(inScope); }
@@ -1803,7 +1818,88 @@ function renderModules(){
 function toggleMod(p,mod){
   const arr=PLANTMODS[p]||[];
   PLANTMODS[p]=arr.includes(mod)?arr.filter(x=>x!==mod):[...arr,mod];
-  renderModules(); render();
+  renderModules(); renderPlants(); render();
+}
+
+/* ---- Plants tab: the plant registry (licensing lives on Product modules; people in the User Center) ---- */
+let addingPlant=false;
+function plantRoster(pl){ return PEOPLE.filter(p=>p.asg[pl]); }
+function renderPlants(){
+  const kEl=document.getElementById("plantkpis"), tEl=document.getElementById("plantstable"), aEl=document.getElementById("plantadd");
+  if(!kEl||!tEl) return;
+  const plants=ALLPLANTS.filter(inScope);
+  const cos=new Set(plants.map(p=>PLANTCO[p]));
+  const lic=plants.reduce((a,p)=>a+(PLANTMODS[p]||[]).length,0);
+  const staffed=new Set(); plants.forEach(pl=>plantRoster(pl).forEach(p=>staffed.add(p.id)));
+  kEl.innerHTML=
+    `<div class="kpi"><div class="n">${plants.length}</div><div class="l">plants${persona.kind==="site"?" (your site)":persona.kind==="cluster"?" in your cluster":""}</div></div>
+     <div class="kpi"><div class="n">${cos.size}</div><div class="l">compan${cos.size===1?"y":"ies"} (labels)</div></div>
+     <div class="kpi"><div class="n">${lic}</div><div class="l">module licenses (beyond core)</div></div>
+     <div class="kpi"><div class="n">${staffed.size}</div><div class="l">people with access</div></div>`;
+  if(aEl) aEl.innerHTML=persona.kind!=="global"?"":
+    (addingPlant?
+      `<div class="addform2"><b style="font-size:13px">New plant</b> <span style="font-size:12px;color:var(--ink-3)">— starts with Platform Core only; license modules on the Product modules screen (onboarding = Global Admin).</span><br>
+       <input id="npName" placeholder="Plant name — e.g. STP — Sector 90" style="min-width:260px">
+       <select id="npCo">${Object.entries(COMPANIES).map(([id,n])=>`<option value="${id}">${n}</option>`).join("")}</select>
+       <button class="btn primary" onclick="addPlantSubmit()">Add plant</button>
+       <button class="btn ghost" onclick="startAddPlant()">Cancel</button></div>`
+      :`<div style="margin-bottom:10px"><button class="btn primary" onclick="startAddPlant()">＋ Add plant</button></div>`);
+  const groups=plantsByCompany();
+  let h=`<table class="utable"><thead><tr><th>Plant</th><th>Licensed modules</th><th>People</th><th>Roster mix</th><th></th></tr></thead><tbody>`;
+  Object.keys(groups).filter(co=>groups[co].some(inScope)).forEach(co=>{
+    h+=`<tr class="wsrow"><td colspan="5">${COMPANIES[co]||co}</td></tr>`;
+    groups[co].filter(inScope).forEach(pl=>{
+      const mods=MODULES.filter(m=>!m.always&&(PLANTMODS[pl]||[]).includes(m.id));
+      const roster=plantRoster(pl);
+      const mix={}; roster.forEach(p=>{ const t=p.asg[pl].tier; mix[t]=(mix[t]||0)+1; });
+      const mixChips=Object.entries(mix).map(([t,c])=>`<span class="tierchip" title="${ROLES[t].n}">${c} × ${ROLES[t].n.replace(" Operator","").replace(" Senior Lead","").replace(" Lead","")}</span>`).join("")||`<span class="tt">— unstaffed</span>`;
+      h+=`<tr onclick="plantModal('${pl}')">
+        <td><span class="nm">${pl}</span><br><span class="tt">${COMPANIES[co]||co}</span></td>
+        <td><span class="chips">${mods.map(m=>`<span class="tierchip" title="${m.n}">${m.icon} ${m.n.split(" ")[0].replace(",","")}</span>`).join("")||`<span class="tt">core only</span>`}</span></td>
+        <td>${roster.length||"—"}</td>
+        <td><span class="chips">${mixChips}</span></td>
+        <td class="rowchev">›</td></tr>`;
+    });
+  });
+  tEl.innerHTML=h+`</tbody></table>`;
+}
+function startAddPlant(){ addingPlant=!addingPlant; renderPlants(); }
+function addPlantSubmit(){
+  const name=(document.getElementById("npName").value||"").trim();
+  const co=document.getElementById("npCo").value;
+  if(!name) return;
+  if(PLANTCO[name]){ AUDIT.unshift({w:"now",t:`Add plant blocked — "${name}" already exists`}); renderPlants(); return; }
+  PLANTCO[name]=co; PLANTMODS[name]=[]; ALLPLANTS.push(name);
+  AUDIT.unshift({w:"now",t:`Plant added: ${name} (${COMPANIES[co]}) — Platform Core only; modules to be licensed at onboarding · by ${personaName()}`});
+  addingPlant=false;
+  renderPlants(); renderModules(); render();
+}
+function plantModal(pl){
+  const co=coName(pl);
+  const mods=plantMods(pl);
+  const roster=plantRoster(pl);
+  let body=`<div class="mgrid"><div class="mstat"><div class="n">${mods.size}</div><div class="l">modules licensed (incl. core)</div></div>
+    <div class="mstat"><div class="n">${roster.length}</div><div class="l">people with access here</div></div></div>`;
+  body+=`<div class="gh" style="margin-top:14px">Licensed modules <span style="font-weight:400;font-size:11.5px;color:var(--ink-3)">· toggled on the Product modules screen only</span></div>
+    <div class="chips" style="display:flex;flex-wrap:wrap;gap:6px">`+
+    MODULES.map(m=>{
+      const on=m.always||mods.has(m.id);
+      return `<span class="tierchip" style="${on?"":"opacity:.38"}" title="${m.d||m.n}">${m.icon} ${m.n}${m.always?" · included":on?"":" · not licensed"}</span>`;
+    }).join("")+`</div>`;
+  body+=`<div class="gh" style="margin-top:16px">Roster — who holds what here</div>`;
+  body+=roster.length?`<table class="utable"><tbody>`+roster.map(p=>{
+      const a=p.asg[pl];
+      const dev=(a.add||[]).length+(a.remove||[]).length;
+      return `<tr onclick="closeModal();tab(1);selectPerson('${p.id}')">
+        <td><span class="nm">${p.n}</span><br><span class="tt">${p.t}</span></td>
+        <td><span class="tierchip">${ROLES[a.tier].n}</span></td>
+        <td>${p.grant?`<span class="chip c-adm" style="margin:0">${GRANTNAMES[p.grant]}</span>`:`<span class="tt">—</span>`}</td>
+        <td>${dev?`<span class="badge b-drift">${dev} exception${dev>1?"s":""}</span>`:`<span class="badge b-ok">standard</span>`}</td>
+        <td class="rowchev">›</td></tr>`;
+    }).join("")+`</tbody></table>`
+    :`<div class="emptystate">Nobody is assigned here yet — assign people from the User Center.</div>`;
+  body+=`<div class="help" style="margin-top:14px"><span class="i">💡</span><span>Effective access here = each person's permission ∧ this plant's modules. Grey lines in the Access review mean a module above is not licensed at ${pl}.</span></div>`;
+  openModal(pl,`${co} · plant record`,body);
 }
 function tab(i){
   document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("on",+(t.dataset&&t.dataset.pane!==undefined?t.dataset.pane:-1)===i));
@@ -1814,6 +1910,7 @@ function tab(i){
   if(i===3) renderPreview();
   if(i===4) renderPacks();
   if(i===5) renderControlPanel();
+  if(i===6) renderPlants();
 }
 setPersona("global");
 tab(1); // People is home — the User Center is where every task starts
