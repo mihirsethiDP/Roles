@@ -237,6 +237,7 @@ pre.payload{background:var(--navy-deep);color:#95CFD3;border-radius:10px;padding
 .mtable td.co{text-align:left;font-size:12px;color:var(--ink-2);white-space:nowrap}
 .mtable tr.wsrow td{background:var(--bg);font-weight:600;text-align:left;color:var(--ink-2);font-size:11px;text-transform:uppercase;letter-spacing:.07em;padding:6px 10px}
 .mtable .inc{font-size:11px;font-weight:600;color:var(--ops)}
+.mtable tr.jumped td{background:var(--teal-tint);transition:background 1.6s ease}
 .modcard{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--card)}
 .modcard .t{font-family:'Figtree';font-size:14px;font-weight:600}
 .modcard .d{font-size:12.5px;color:var(--ink-2);margin:4px 0 8px}
@@ -1806,7 +1807,7 @@ function renderModules(){
   Object.keys(groups).filter(co=>groups[co].some(inScope)).forEach(co=>{
     h+=`<tr class="wsrow"><td colspan="${MODULES.length+2}">${COMPANIES[co]}</td></tr>`;
     groups[co].filter(inScope).forEach(p=>{
-      h+=`<tr><td class="pn">${p}</td><td class="co">${COMPANIES[co]}</td>`+MODULES.map(m=>{
+      h+=`<tr data-plant="${p}"><td class="pn">${p}</td><td class="co">${COMPANIES[co]}</td>`+MODULES.map(m=>{
         if(m.always) return `<td><span class="inc">✓ included</span></td>`;
         const on=(PLANTMODS[p]||[]).includes(m.id);
         return `<td><button class="sw sm ${on?"on":""}" ${ro?"disabled":""} title="${m.n} at ${p}" onclick="toggleMod('${p}','${m.id}')"></button></td>`;
@@ -1814,6 +1815,17 @@ function renderModules(){
     });
   });
   document.getElementById("modmatrix").innerHTML=h;
+}
+/* jump here from the Plants tab's "Edit modules" link — single write surface stays Product modules (ADR-003) */
+function jumpToModuleRow(pl){
+  tab(0);
+  requestAnimationFrame(()=>{
+    const row=document.querySelector(`#modmatrix tr[data-plant="${CSS.escape(pl)}"]`);
+    if(!row) return;
+    row.scrollIntoView({block:"center",behavior:"smooth"});
+    row.classList.add("jumped");
+    setTimeout(()=>row.classList.remove("jumped"),1800);
+  });
 }
 function toggleMod(p,mod){
   const arr=PLANTMODS[p]||[];
@@ -1874,30 +1886,68 @@ function addPlantSubmit(){
   addingPlant=false;
   renderPlants(); renderModules(); render();
 }
+let plantAddOpen=false, lastPlantModalPl=null;
+function toggleAddToPlant(pl){ plantAddOpen=!plantAddOpen; plantModal(pl); }
+function addToPlant(pl){
+  const psel=document.getElementById("apPerson"), tsel=document.getElementById("apTier");
+  if(!psel||!tsel||!psel.value) return;
+  const uid=psel.value, tier=tsel.value;
+  const p=PEOPLE.find(x=>x.id===uid); if(!p||p.asg[pl]) return;
+  const a={tier:tier,P:{},reason:"",openSets:{},open:false};
+  SETS.forEach(s=>s.perms.forEach(pr=>a.P[s.id+"."+pr.id]=isStdG(tier,p.grant,s.id)));
+  p.asg[pl]=a;
+  AUDIT.unshift({w:"now",t:`${p.n} added to ${pl} as ${ROLES[tier].n} · by ${personaName()}`});
+  plantAddOpen=false;
+  renderPlants(); render();
+  plantModal(pl);
+}
+function removeFromPlant(uid,pl){
+  const p=PEOPLE.find(x=>x.id===uid); if(!p||!p.asg[pl]) return;
+  const wasTier=ROLES[p.asg[pl].tier].n;
+  delete p.asg[pl];
+  AUDIT.unshift({w:"now",t:`${p.n} removed from ${pl} (was ${wasTier}) · by ${personaName()}`});
+  renderPlants(); render();
+  plantModal(pl);
+}
 function plantModal(pl){
+  if(lastPlantModalPl!==pl){ plantAddOpen=false; lastPlantModalPl=pl; }
   const co=coName(pl);
   const mods=plantMods(pl);
   const roster=plantRoster(pl);
+  const canEdit=inScope(pl);
   let body=`<div class="mgrid"><div class="mstat"><div class="n">${mods.size}</div><div class="l">modules licensed (incl. core)</div></div>
     <div class="mstat"><div class="n">${roster.length}</div><div class="l">people with access here</div></div></div>`;
-  body+=`<div class="gh" style="margin-top:14px">Licensed modules <span style="font-weight:400;font-size:11.5px;color:var(--ink-3)">· toggled on the Product modules screen only</span></div>
+  body+=`<div class="gh" style="margin-top:14px;display:flex;align-items:center;gap:10px">Licensed modules <span style="font-weight:400;font-size:11.5px;color:var(--ink-3)">· toggled on the Product modules screen only</span>
+    <button class="btn ghost" style="margin-left:auto;padding:4px 11px;font-size:11.5px;white-space:nowrap" onclick="closeModal();jumpToModuleRow('${pl}')">✏️ Edit on Product modules →</button></div>
     <div class="chips" style="display:flex;flex-wrap:wrap;gap:6px">`+
     MODULES.map(m=>{
       const on=m.always||mods.has(m.id);
       return `<span class="tierchip" style="${on?"":"opacity:.38"}" title="${m.d||m.n}">${m.icon} ${m.n}${m.always?" · included":on?"":" · not licensed"}</span>`;
     }).join("")+`</div>`;
-  body+=`<div class="gh" style="margin-top:16px">Roster — who holds what here</div>`;
+  body+=`<div class="gh" style="margin-top:16px;display:flex;align-items:center;gap:10px">Roster — who holds what here
+    ${canEdit?`<button class="btn ghost" style="margin-left:auto;padding:4px 11px;font-size:11.5px" onclick="toggleAddToPlant('${pl}')">${plantAddOpen?"Cancel":"＋ Add person"}</button>`:""}</div>`;
+  if(canEdit&&plantAddOpen){
+    const eligible=PEOPLE.filter(p=>!p.asg[pl]).sort((a,b)=>a.n.localeCompare(b.n));
+    body+=eligible.length?
+      `<div class="addform2">
+        <select id="apPerson" style="min-width:240px">${eligible.map(p=>`<option value="${p.id}">${p.n} — ${p.t} (${COMPANIES[p.co]||p.co})</option>`).join("")}</select>
+        <select id="apTier">${Object.entries(ROLES).map(([id,r])=>`<option value="${id}">${r.n}</option>`).join("")}</select>
+        <button class="btn primary" onclick="addToPlant('${pl}')">Add to ${pl}</button>
+      </div>`
+      :`<div class="addform2">Everyone in the directory is already assigned here. <a href="#" onclick="event.preventDefault();closeModal();tab(1);startAddPerson()">Add a new person</a> from the User Center, then assign them to this plant.</div>`;
+  }
   body+=roster.length?`<table class="utable"><tbody>`+roster.map(p=>{
       const a=p.asg[pl];
-      const dev=(a.add||[]).length+(a.remove||[]).length;
+      const dev=devCount(p,pl);
       return `<tr onclick="closeModal();tab(1);selectPerson('${p.id}')">
         <td><span class="nm">${p.n}</span><br><span class="tt">${p.t}</span></td>
         <td><span class="tierchip">${ROLES[a.tier].n}</span></td>
         <td>${p.grant?`<span class="chip c-adm" style="margin:0">${GRANTNAMES[p.grant]}</span>`:`<span class="tt">—</span>`}</td>
-        <td>${dev?`<span class="badge b-drift">${dev} exception${dev>1?"s":""}</span>`:`<span class="badge b-ok">standard</span>`}</td>
+        <td>${dev?`<span class="badge b-drift">${dev} deviation${dev>1?"s":""}</span>`:`<span class="badge b-ok">standard</span>`}</td>
+        <td>${canEdit?`<button class="btn ghost" style="padding:3px 9px;font-size:11px" onclick="event.stopPropagation();removeFromPlant('${p.id}','${pl}')">Remove</button>`:""}</td>
         <td class="rowchev">›</td></tr>`;
     }).join("")+`</tbody></table>`
-    :`<div class="emptystate">Nobody is assigned here yet — assign people from the User Center.</div>`;
+    :`<div class="emptystate">Nobody is assigned here yet${canEdit?" — add someone above.":" — assign people from the User Center."}</div>`;
   body+=`<div class="help" style="margin-top:14px"><span class="i">💡</span><span>Effective access here = each person's permission ∧ this plant's modules. Grey lines in the Access review mean a module above is not licensed at ${pl}.</span></div>`;
   openModal(pl,`${co} · plant record`,body);
 }
