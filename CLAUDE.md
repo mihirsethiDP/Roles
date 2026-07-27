@@ -75,6 +75,11 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
   Regular Non-op = readplant · Senior Non-op = readplant + portfolio.
 - **4 admin grants** (orthogonal, max one per user per site): People, Technical,
   Full Site (= People + Technical), Global (= Full Site anywhere + templates).
+  **Global Admin = SUPERUSER (owner ruling 2026-07-22): implicit holder of
+  anything and everything — all 10 sets at every plant INCLUDING the exception
+  flags (remote.actuate, impersonate, sensorhealth).** Docs and migration
+  outputs must never show a permission as out of Global reach; the per-person
+  exception process applies to everyone else.
 - **Flexibility = per-user overrides** at set or individual-permission level.
   Guardrails (all implemented in index.html, keep them): dependency cascades
   (approve→work, oversight→approve, portfolio→readplant, templates→people+tech,
