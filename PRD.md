@@ -3,7 +3,6 @@
 **Status:** Ready to build
 **Date:** 2026-07-27
 **Owner:** Mihir Sethi (Associate Product Manager, DigitalPaani)
-**Who this is for:** the dev team building the real backend and admin console (Shivam + team)
 **Live reference:** [`index.html`](index.html) is a full working click-through prototype of everything in this document. It's one HTML file — no build step, no server, no install. Open it in any browser. **Whenever you're not sure how something should look or behave, open the prototype and try it.** The code is plain JavaScript, so you can also just read the function that does the thing you're building.
 
 ---
