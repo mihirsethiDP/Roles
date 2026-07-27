@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PRD — User Center: Roles &amp; Permissions (v2)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#002454; --navy-deep:#001B3F; --navy-tint:#E9F0F7;
+  --teal:#95CFD3; --teal-d:#5AABB0; --teal-tint:#E8F5F6;
+  --bg:#F7F8F9; --card:#FFFFFF; --line:#E2E6EA; --line-strong:#C7CFD8;
+  --ink:#1A2533; --ink-2:#4A5568; --ink-3:#8A95A3;
+  --ops:#1F6B71; --ops-bg:#E8F5F6; --ops-line:#95CFD3;
+  --adm:#193650; --adm-bg:#E9EEF4; --adm-line:#B9C6D6;
+  --flag:#B45309; --flag-bg:#FFF8E1; --err:#B80000; --err-bg:#FDECEA;
+  --mono:'IBM Plex Mono',monospace;
+  --sidew:270px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 'Figtree',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Figtree',sans-serif;font-weight:600;line-height:1.25;margin:0}
+a{color:var(--ops)}
+code{font-family:var(--mono);font-size:.88em;background:var(--navy-tint);color:var(--navy);padding:1px 6px;border-radius:5px}
+pre{font-family:var(--mono);font-size:13px;background:var(--navy-deep);color:#DCEFF1;padding:16px 18px;border-radius:10px;overflow-x:auto;line-height:1.55}
+pre code{background:none;color:inherit;padding:0}
+
+/* ---------- layout: fixed navy sidenav + scrolling content ---------- */
+.rail{position:fixed;top:0;left:0;bottom:0;width:var(--sidew);background:var(--navy);color:#fff;overflow-y:auto;padding:22px 0 30px;z-index:10}
+.rail::-webkit-scrollbar{width:7px}
+.rail::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-radius:4px}
+.rail .brand{padding:0 22px 18px;border-bottom:1px solid rgba(255,255,255,.12);margin-bottom:14px}
+.rail .brand .eyebrow{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);font-weight:600}
+.rail .brand h1{font-size:16px;color:#fff;margin-top:6px}
+.rail .brand .sub{font-size:11.5px;color:rgba(255,255,255,.55);margin-top:6px;line-height:1.5}
+.rail nav{padding:6px 10px}
+.rail .grp{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);padding:14px 12px 5px}
+.rail a{display:block;padding:6px 12px;border-radius:8px;color:rgba(255,255,255,.82);text-decoration:none;font-size:13px}
+.rail a:hover{background:rgba(255,255,255,.08);color:#fff}
+.rail a.step{font-family:var(--mono);font-size:12px;color:rgba(255,255,255,.62);padding:4px 12px 4px 20px}
+.rail a.step:hover{color:#fff}
+.rail .backlink{display:block;margin:16px 12px 0;padding:9px 12px;border:1px solid rgba(255,255,255,.18);border-radius:9px;font-size:12px;color:rgba(255,255,255,.85);text-align:center}
+.rail .backlink:hover{border-color:var(--teal);color:#fff}
+
+main{margin-left:var(--sidew);max-width:900px;padding:44px 48px 100px}
+.topmeta{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 22px;margin-bottom:34px;box-shadow:0 1px 3px rgba(0,36,84,.05)}
+.topmeta .row{display:flex;gap:8px;font-size:13.5px;margin-bottom:5px}
+.topmeta .row:last-child{margin-bottom:0}
+.topmeta b{color:var(--navy);min-width:110px;flex:none}
+.topmeta .live{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line-strong);font-size:13.5px;color:var(--ink-2)}
+
+section{margin-bottom:46px;scroll-margin-top:20px}
+h2{font-size:23px;color:var(--navy);letter-spacing:-.01em;margin-bottom:6px}
+h2 .num{color:var(--teal-d);font-family:var(--mono);margin-right:4px}
+.lede{font-size:14.5px;color:var(--ink-2);margin:10px 0 22px;max-width:66ch}
+.callout{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--ops-line);border-radius:0 12px 12px 0;padding:14px 18px;margin:16px 0;font-size:14px}
+.callout.warn{border-left-color:var(--flag);background:var(--flag-bg)}
+
+/* ---------- five ideas ---------- */
+.idea{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 20px;margin-bottom:12px;box-shadow:0 1px 2px rgba(0,36,84,.04)}
+.idea .t{font-weight:700;color:var(--navy);font-size:15px;margin-bottom:5px}
+.idea .t .n{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--ops-bg);color:var(--ops);font-family:var(--mono);font-size:12px;font-weight:700;margin-right:9px}
+.idea p{margin:0;font-size:14px;color:var(--ink-2)}
+.idea blockquote{margin:12px 0 0;padding:11px 16px;background:var(--navy-tint);border-left:3px solid var(--navy);border-radius:0 8px 8px 0;font-size:14.5px;color:var(--navy);font-weight:600}
+
+/* ---------- module table ---------- */
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13.5px;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+th{background:var(--navy);color:#fff;text-align:left;padding:9px 14px;font-size:12px;letter-spacing:.03em;font-weight:600}
+td{padding:9px 14px;border-top:1px solid var(--line);vertical-align:top}
+tr:nth-child(even) td{background:var(--bg)}
+
+/* ---------- building blocks ---------- */
+.blocks{display:grid;gap:10px}
+.block{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:13px 16px;font-size:14px;display:flex;gap:10px}
+.block b{color:var(--navy);flex:none;min-width:120px}
+.block .vars{margin-top:4px}
+
+/* ---------- steps ---------- */
+.step{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 24px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,36,84,.05)}
+.step.addendum{border-style:dashed;border-color:var(--line-strong)}
+.step h3{font-size:17px;color:var(--navy);margin-bottom:12px;display:flex;align-items:baseline;gap:9px}
+.step h3 .badge{font-family:var(--mono);font-size:11px;font-weight:700;background:var(--ops);color:#fff;padding:3px 9px;border-radius:7px;flex:none}
+.chk{display:flex;gap:10px;align-items:flex-start;margin-bottom:9px;font-size:14px;line-height:1.55}
+.chk .box{flex:none;width:16px;height:16px;margin-top:3px;border:2px solid var(--line-strong);border-radius:4px;background:var(--card)}
+.chk b{color:var(--navy)}
+.reminder{font-size:13.5px;color:var(--ink-2);background:var(--teal-tint);border-radius:9px;padding:10px 14px;margin-bottom:14px}
+.protorow{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line-strong);font-size:13px;color:var(--ink-2)}
+.protorow .lbl{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--teal-d);font-weight:700;display:block;margin-bottom:3px}
+.saveshape{margin:14px 0}
+.savenote{font-size:13.5px;color:var(--ink-2);margin-top:8px}
+
+/* ---------- rules list ---------- */
+.rules{counter-reset:rule}
+.rule{counter-increment:rule;display:flex;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin-bottom:8px;font-size:14px}
+.rule::before{content:counter(rule);font-family:var(--mono);font-weight:700;color:#fff;background:var(--navy);width:24px;height:24px;flex:none;border-radius:7px;display:inline-flex;align-items:center;justify-content:center;font-size:12.5px}
+.rule b{color:var(--navy)}
+
+/* ---------- reference index ---------- */
+.reftitle{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--teal-d);font-weight:700;margin:24px 0 8px}
+.reftitle:first-child{margin-top:0}
+.privlinks{list-style:none;margin:10px 0;padding:0}
+.privlinks li{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:10px 14px;margin-bottom:7px;font-size:13.5px;word-break:break-all}
+
+footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:var(--ink-3);font-family:var(--mono)}
+
+@media (max-width:880px){
+  .rail{position:static;width:auto;bottom:auto}
+  main,footer{margin-left:0;padding:28px 20px 70px}
+}
+</style>
+</head>
+<body>
+
+<div class="rail">
+  <div class="brand">
+    <div class="eyebrow">DigitalPaani</div>
+    <h1>PRD — User Center<br>Roles &amp; Permissions</h1>
+    <div class="sub">v2 · ready to build</div>
+  </div>
+  <nav>
+    <a href="#read-first">Read this first</a>
+    <div class="grp">Sections</div>
+    <a href="#sec1">1 · The five ideas</a>
+    <a href="#sec2">2 · Building blocks</a>
+    <a href="#sec3">3 · Build order</a>
+    <a class="step" href="#step1">Step 1 · Plants</a>
+    <a class="step" href="#step2">Step 2 · Product modules</a>
+    <a class="step" href="#step3">Step 3 · People &amp; grants</a>
+    <a class="step" href="#step4">Step 4 · Permission engine</a>
+    <a class="step" href="#step5">Step 5 · Assignments</a>
+    <a class="step" href="#step6">Step 6 · Overrides</a>
+    <a class="step" href="#step7">Step 7 · Exception grants</a>
+    <a class="step" href="#step8">Step 8 · Custom roles</a>
+    <a class="step" href="#step9">Step 9 · Bulk actions</a>
+    <a class="step" href="#step10">Step 10 · Access review</a>
+    <a class="step" href="#step11">Step 11 · Control panel</a>
+    <a class="step" href="#step11b">Step 11b · Visibility engine</a>
+    <a class="step" href="#step12">Step 12 · Deprecation flags</a>
+    <a class="step" href="#step13">Step 13 · Run migration</a>
+    <a class="step" href="#step14">Step 14 · Follow-up queue</a>
+    <a href="#sec4">4 · Legacy permission map</a>
+    <a href="#sec5">5 · Rules to never break</a>
+    <a href="#sec6">6 · Reference index</a>
+  </nav>
+  <a class="backlink" href="index.html">← Open the prototype</a>
+</div>
+
+<main>
+
+<div class="topmeta">
+  <div class="row"><b>Status</b> Ready to build</div>
+  <div class="row"><b>Date</b> 2026-07-27</div>
+  <div class="row"><b>Owner</b> Mihir Sethi (Associate Product Manager, DigitalPaani)</div>
+  <div class="row"><b>Audience</b> the dev team building the real backend and admin console (Shivam + team)</div>
+  <div class="live">
+    <b style="color:var(--navy)">Live reference:</b> <a href="index.html">index.html</a> is a full working click-through prototype of everything in this document. It's one HTML file — no build step, no server, no install. Open it in any browser. <b>Whenever you're not sure how something should look or behave, open the prototype and try it.</b> The code is plain JavaScript, so you can also just read the function that does the thing you're building.
+  </div>
+</div>
+
+<section id="read-first">
+<h2>Read this first</h2>
+<p class="lede">This document tells you <b>what to build, in what order, and where to find the exact rule</b> for each piece. It does not re-explain every decision inline — each section links to the one document that has the full "why."</p>
+<p class="lede">Skip to whatever step you're working on using the rail on the left. But read <b>Section 1</b> first — it's five ideas, and once you have them, the rest of this document (and the prototype) will make sense immediately.</p>
+<div class="callout">
+<b>A quick heads-up on files:</b> this repo has two kinds of documents.
+<ul style="margin:8px 0 0;padding-left:20px">
+<li>Files like <code>CLAUDE.md</code>, <code>coverage-map.csv</code>, and <code>index.html</code> are in the git repo. If you cloned the repo, you already have them.</li>
+<li>Files under <code>internal/</code> (Excel workbooks, migration lists) and <code>context-drop/</code> (background docs) are <b>not</b> in the git repo — they contain real user data or are working drafts, so they're kept off GitHub on purpose. If a step below needs one of these, it says so, and you should ask Mihir for it directly.</li>
+</ul>
+<p style="margin:10px 0 0">Every step in Sections 2–4 (the actual build) only needs files you already have from git. Step 13 (running the real migration) needs a few <code>internal/</code> files — that's flagged clearly when you get there.</p>
+</div>
+</section>
+
+<section id="sec1">
+<h2><span class="num">1.</span>The five ideas that explain everything</h2>
+
+<div class="idea">
+<div class="t"><span class="n">1</span>A "Plant" is the only container.</div>
+<p>There is no company folder, no workspace, no group sitting above a plant. Company is just a label written on the plant record. People connect straight to plants — nothing in between. (Full rule: <code>CLAUDE.md</code> → "Assignment scope.")</p>
+</div>
+
+<div class="idea">
+<div class="t"><span class="n">2</span>Product modules are a ceiling, not a grant.</div>
+<p>DigitalPaani sells 8 product modules to companies, and each plant is licensed for some subset of them:</p>
+<table>
+<tr><th>Code</th><th>What it is</th></tr>
+<tr><td><code>core</code></td><td>The baseline — always on, every plant, free.</td></tr>
+<tr><td><code>ops</code></td><td>Issue Resolution (the feature this whole redesign was originally for — not built yet, see Step 13).</td></tr>
+<tr><td><code>tasks</code></td><td>Tasks &amp; Shifts.</td></tr>
+<tr><td><code>data</code></td><td>Data, Lab &amp; Logbook entry.</td></tr>
+<tr><td><code>analytics</code></td><td>Dashboards &amp; Analytics.</td></tr>
+<tr><td><code>iot</code></td><td>IoT &amp; Remote Control.</td></tr>
+<tr><td><code>floc</code></td><td>Floc Detector — a hardware add-on with <b>no permissions of its own</b>, just a sold entitlement (see Step 2).</td></tr>
+<tr><td><code>inv</code></td><td>Inventory Management.</td></tr>
+</table>
+<p>A module being licensed doesn't GIVE anyone a permission — it just allows permissions that are already tagged to that module to actually work. The one rule that runs the whole system:</p>
+<blockquote>Effective access at a plant = the person's permission <code>AND</code> the plant's licensed module.</blockquote>
+<p style="margin-top:10px">If a plant isn't licensed for a module, every permission tagged to that module goes dark there — but it stays saved on the person's profile, and comes back automatically the moment the plant licenses that module. Nothing is ever silently deleted by a licensing change.</p>
+</div>
+
+<div class="idea">
+<div class="t"><span class="n">3</span>Every permission lives in one of 10 labeled boxes ("sets").</div>
+<p><code>work</code>, <code>approve</code>, <code>oversight</code>, <code>remote</code>, <code>readplant</code>, <code>portfolio</code>, <code>people</code>, <code>tech</code>, <code>templates</code>, <code>flags</code>. You never assign someone one permission at a time — you give them a role, and a role is just a fixed list of these boxes.</p>
+</div>
+
+<div class="idea">
+<div class="t"><span class="n">4</span>Roles and grants are fixed combinations of boxes — never invent a new one.</div>
+<p>There are exactly <b>5 roles</b> (L1 Operator, L3 Lead, L4 Senior Lead, Regular Non-op, Senior Non-op) and <b>4 admin grants</b> (People Admin, Technical Admin, Full Site Admin, Global Admin). Each is just a named list of which of the 10 boxes it includes. If a real person needs something slightly different, that's an <b>override</b> on their one assignment (see Step 6) — you never create a 6th role.</p>
+</div>
+
+<div class="idea">
+<div class="t"><span class="n">5</span>A few permissions are exceptions — never part of any role, ever.</div>
+<p>Three permissions (remote-control actuation, "view as another user," the sensor-health dashboard) are never included in any role by default. They're switched on for one named person at a time, with a written reason, and they're the one thing <b>Global Admin still gets automatically</b> — see Step 7.</p>
+</div>
+
+<p class="lede">That's it. Everything below is these five ideas turning into screens, tables, and buttons.</p>
+</section>
+
+<section id="sec2">
+<h2><span class="num">2.</span>The building blocks (what you need to store)</h2>
+<p class="lede">Plain field lists — this is not a schema, just what data needs to exist somewhere. The prototype's in-memory variable names are in brackets so you can find the matching logic in <code>index.html</code>.</p>
+<div class="blocks">
+<div class="block"><b>Plant</b><div>name, company label, which modules are licensed. <span class="vars"><code>PLANTCO</code> <code>PLANTMODS</code></span></div></div>
+<div class="block"><b>Person</b><div>name, title, one admin grant (or none), a list of per-plant assignments. <span class="vars"><code>PEOPLE</code></span></div></div>
+<div class="block"><b>Assignment</b><div>one row per (person, plant): which of the 5 roles, plus any overrides (permissions manually added or removed) each with a mandatory written reason. <span class="vars"><code>ASG</code> / <code>p.asg[plant]</code></span></div></div>
+<div class="block"><b>Custom role</b><div>a named "add these, remove these" template that an admin applies to chosen people later — not a 6th role, just a reusable exception template. <span class="vars"><code>PACKS</code></span></div></div>
+<div class="block"><b>Exception grant</b><div>a person + a plant + one of the 3 exception permissions + a reason. <span class="vars"><code>remote.actuate</code> <code>flags.impersonate</code> <code>flags.sensorhealth</code></span></div></div>
+<div class="block"><b>Audit log</b><div>one line per change: who did what, to whom, when, why. <span class="vars"><code>AUDIT</code></span></div></div>
+<div class="block"><b>Legacy flag</b><div>one on/off switch per retiring old feature (see Step 12).</div></div>
+</div>
+</section>
+
+<section id="sec3">
+<h2><span class="num">3.</span>Build it in this order</h2>
+<p class="lede">Each step names the prototype tab and the key functions to read in <code>index.html</code>. Build and test each step before moving to the next — later steps assume earlier ones work.</p>
+
+<div class="step" id="step1">
+<h3><span class="badge">1</span>Plants: the base registry</h3>
+<div class="chk"><span class="box"></span><span>Store plant name + company label. Company is just text on the plant, not its own table.</span></div>
+<div class="chk"><span class="box"></span><span>A screen listing all plants, grouped by company label, with an "add plant" action.</span></div>
+<div class="chk"><span class="box"></span><span>New plants start with <b>no modules licensed</b> (Platform Core is always on for everyone, everywhere, for free).</span></div>
+<div class="protorow"><span class="lbl">Prototype</span>the <b>Plants</b> tab. Read <code>renderPlants()</code>, <code>addPlantSubmit()</code>, <code>plantModal()</code>.</div>
+</div>
+
+<div class="step" id="step2">
+<h3><span class="badge">2</span>Product modules: the licensing ceiling</h3>
+<div class="chk"><span class="box"></span><span>A matrix: one row per plant, one column per module, one on/off switch per cell.</span></div>
+<div class="chk"><span class="box"></span><span>Writing to this matrix is <b>Global Admin only</b> — this is the single place module flags are ever changed. Don't let any other screen edit modules directly, even to be "helpful" — link to this screen instead.</span></div>
+<div class="chk"><span class="box"></span><span>Every permission in your system needs a <code>module</code> tag. A permission with no tag defaults to <code>core</code> (always on).</span></div>
+<div class="chk"><span class="box"></span><span><code>floc</code> is a special case: it's licensed and toggled exactly like the other 7 modules, but <b>no permission is ever tagged to it.</b> It exists purely so a contract can say what hardware was sold — it never turns anything on or off for a user. This is the pattern for any future hardware add-on module too.</span></div>
+<div class="chk"><span class="box"></span><span>Clicking a module (here or anywhere it's shown as a card) should open a detail view: what it unlocks, and how many plants are licensed for it.</span></div>
+<div class="protorow"><span class="lbl">Prototype</span>the <b>Product modules</b> tab. Read <code>renderModules()</code>, <code>toggleMod()</code>, <code>plantMods(plant)</code>, <code>PERMMOD</code>, and <code>moduleModal()</code> for the detail view.<br><span class="lbl" style="margin-top:8px">Full permission → module mapping</span><a href="coverage-map.csv">coverage-map.csv</a></div>
+</div>
+
+<div class="step" id="step3">
+<h3><span class="badge">3</span>People and admin grants</h3>
+<div class="chk"><span class="box"></span><span>A person record: name, title, at most <b>one</b> admin grant (People / Technical / Full Site / Global — or none).</span></div>
+<div class="chk"><span class="box"></span><span>A directory table (no avatars — just name, title, company, per-plant role chips, grant, status).</span></div>
+<div class="chk"><span class="box"></span><span>New people start with <b>zero access.</b> Nothing is granted until someone explicitly assigns them to a plant.</span></div>
+<div class="chk"><span class="box"></span><span>At this point the grant field is just a label — don't hardcode what each grant <i>does</i> yet. That's Step 4, next.</span></div>
+<div class="protorow"><span class="lbl">Prototype</span>the <b>People</b> tab (this is the landing screen). Read <code>renderDirectory()</code>, <code>startAddPerson()</code>.</div>
+</div>
+
+<div class="step" id="step4">
+<h3><span class="badge">4</span>The permission engine: sets, roles, grants</h3>
+<div class="chk"><span class="box"></span><span>Define the 10 sets and exactly which permissions live in each — copy this straight from <code>index.html</code>'s <code>SETS</code> constant, don't re-derive it.</span></div>
+<div class="chk"><span class="box"></span><span>Define the 5 roles as fixed set-lists, and the 4 grants the same way (see the table below). (The numbering skips L2 on purpose — that's carried over from the legacy system's naming, not a gap in this list.)</span></div>
+<div class="chk"><span class="box"></span><span><b>Global Admin is a superuser: it implicitly includes every set, including the 3 exception permissions.</b> Never let a permission check say "no" to a Global Admin.</span></div>
+<div class="chk"><span class="box"></span><span>Clicking a role or grant card should open a detail view: every permission it grants, how many people currently hold it, and (for a role) notes on what it replaced from the old system.</span></div>
+<table>
+<tr><th>Name</th><th>Type</th><th>Includes</th></tr>
+<tr><td>L1 Operator</td><td>Role</td><td>work + readplant</td></tr>
+<tr><td>L3 Lead</td><td>Role</td><td>work + approve + readplant</td></tr>
+<tr><td>L4 Senior Lead</td><td>Role</td><td>work + approve + oversight + readplant + portfolio</td></tr>
+<tr><td>Regular Non-op</td><td>Role</td><td>readplant</td></tr>
+<tr><td>Senior Non-op</td><td>Role</td><td>readplant + portfolio</td></tr>
+<tr><td>People Admin</td><td>Grant</td><td>people</td></tr>
+<tr><td>Technical Admin</td><td>Grant</td><td>tech</td></tr>
+<tr><td>Full Site Admin</td><td>Grant</td><td>people + tech</td></tr>
+<tr><td>Global Admin</td><td>Grant</td><td><b>everything</b> — all 10 sets, every plant, no exceptions</td></tr>
+</table>
+<div class="protorow"><span class="lbl">Prototype</span>read <code>SETS</code>, <code>ROLES</code>, <code>GRANTS</code>, <code>isStdG()</code>, and <code>roleModal()</code>/<code>grantModal()</code> for the detail views.<br><span class="lbl" style="margin-top:8px">Full rule text</span><code>CLAUDE.md</code> → "The v2 model."</div>
+</div>
+
+<div class="step" id="step5">
+<h3><span class="badge">5</span>Per-plant assignments</h3>
+<div class="chk"><span class="box"></span><span>Give a person a role <b>at a specific plant.</b> The same person can be an L1 Operator at one plant and a Regular Non-op (just a viewer) at another — this is normal, not an edge case. (74 real people in the migration data need exactly this.)</span></div>
+<div class="chk"><span class="box"></span><span>The admin grant is account-wide (one grant, works everywhere the person has any plant), but the role is per-plant.</span></div>
+<div class="protorow"><span class="lbl">Prototype</span>the person profile editor inside the People tab. Read <code>togglePlantSel()</code>, <code>initAsg()</code>.</div>
+<p style="font-weight:600;color:var(--navy);margin:16px 0 4px;font-size:14px">The exact shape to save, per person:</p>
+<pre class="saveshape">{
+  userId,
+  assignments: [
+    { plant, company, tier, overrides: { add: [...], remove: [...] }, reason, drift }
+  ],
+  grant,
+  entitlementContext: { modulesByPlant, cappedByPlant }
+}</pre>
+<p class="savenote">One <code>assignments</code> row per plant the person touches. <code>overrides.add</code>/<code>overrides.remove</code> are permission keys like <code>approve.forceclose</code>. <code>entitlementContext</code> is <b>informational only</b> — a snapshot for display and debugging. <b>Never use it to decide access.</b> The real check, every time, at runtime, is always Step 2's rule: <code>user permission AND plant module</code>, computed fresh — never read from what was saved at assignment time.</p>
+<div class="protorow" style="border-top:none;margin-top:0;padding-top:0"><span class="lbl">Prototype</span>the <code>save()</code> function.</div>
+</div>
+
+<div class="step" id="step6">
+<h3><span class="badge">6</span>Overrides (deviations from the standard)</h3>
+<div class="chk"><span class="box"></span><span>Let one assignment add or remove individual permissions beyond what the role standard gives.</span></div>
+<div class="chk"><span class="box"></span><span><b>Every override needs a written reason</b>, stored and shown in the audit trail.</span></div>
+<div class="chk"><span class="box"></span><span>Show a running "drift count" — how many people currently deviate from their role's standard. A high or growing number is a signal the role itself should change, not that overrides are working as intended.</span></div>
+<div class="chk"><span class="box"></span><span>Dependency rules: <code>approve</code> needs <code>work</code> first, <code>oversight</code> needs <code>approve</code> first, <code>portfolio</code> needs <code>readplant</code> first, <code>templates</code> needs both <code>people</code> and <code>tech</code> first, and <code>flags.impersonate</code> needs the <code>people</code> set first (see Step 7). Enforce these — don't let someone get <code>approve</code> without <code>work</code>.</span></div>
+<div class="protorow"><span class="lbl">Prototype</span>read <code>deviations()</code>, <code>personDrift()</code>, <code>resetStd()</code>.</div>
+</div>
+
+<div class="step" id="step7">
+<h3><span class="badge">7</span>The 3 exception grants</h3>
+<div class="chk"><span class="box"></span><span><code>remote.actuate</code> (remote-control actuation), <code>flags.impersonate</code> (view-as, requires the person also hold People Admin/Full Site/Global), <code>flags.sensorhealth</code> (sensor-health dashboard).</span></div>
+<div class="chk"><span class="box"></span><span>None of these are ever in a role by default. Each is switched on for <b>one person, one plant, one reason</b> at a time.</span></div>
+<div class="chk"><span class="box"></span><span><b>Exclude these from every bulk action and every custom role.</b> A plant-wide "give everyone X" action must silently skip these — never let one action hand out a sensitive exception to a whole roster.</span></div>
+<div class="chk"><span class="box"></span><span>Global Admin gets all three automatically (see Step 4) — that's the one exception to "always requires an explicit grant."</span></div>
+<div class="protorow"><span class="lbl">Prototype</span>read the <code>sensitive:true</code> flag on the <code>remote</code> set, the <code>preq</code> field on <code>flags.impersonate</code>, and the exclusion filters inside <code>createCustomRole()</code> / <code>bulkEditPerm()</code> — those two functions aren't built until Steps 8 and 9; come back and re-check this bullet once they exist.</div>
+</div>
+
+<div class="step" id="step8">
+<h3><span class="badge">8</span>Custom roles (reusable exception templates)</h3>
+<div class="chk"><span class="box"></span><span>A custom role is just <code>{name, permissions to add, permissions to remove, reason}</code> — not a new type of role, just a reusable add/remove template.</span></div>
+<div class="chk"><span class="box"></span><span>Defining one does nothing by itself. It's <b>applied</b> to chosen people later, in either <b>add</b> mode (layer the template on top of whatever they already have), or <b>overwrite</b> mode (reset them to their role standard first, then apply the template).</span></div>
+<div class="chk"><span class="box"></span><span>Before applying, show each affected person a preview: what will actually change for them (some may already have some of it).</span></div>
+<div class="chk"><span class="box"></span><span>Applying a custom role writes a <b>stamped, per-person exception</b> — it is not a live link. If you edit the custom role later, people who already received it do NOT change retroactively.</span></div>
+<div class="chk"><span class="box"></span><span>The 3 exception permissions can never be bundled into a custom role.</span></div>
+<div class="chk"><span class="box"></span><span>The list of permissions someone can even pick from when building a template depends on who's building it: Global/Company admins pick from the full catalog; a cluster or single-plant admin only sees permissions their own licensed modules unlock.</span></div>
+<div class="protorow"><span class="lbl">Prototype</span>the <b>Role library</b> tab. Read <code>createCustomRole()</code>, <code>applyCustomRole()</code>, <code>applyPreview()</code>, <code>customPalette()</code> for the scope-dependent picker.</div>
+</div>
+
+<div class="step" id="step9">
+<h3><span class="badge">9</span>Plant-wide bulk actions</h3>
+<div class="chk"><span class="box"></span><span><b>Bulk set tier</b> ("tier" is just this field's name in the data model — it means role): assign one role to an entire plant's roster in a single audited action.</span></div>
+<div class="chk"><span class="box"></span><span><b>Bulk edit permission:</b> add or remove one specific permission for a chosen set of people at a plant — this writes a separate reasoned exception per person (not a live-linked template — that's what Step 8 is for).</span></div>
+<div class="chk"><span class="box"></span><span>Every bulk action still checks the module ceiling and the exception-permission exclusion, person by person. Anyone skipped for either reason shows up in the action's summary line — never fail silently.</span></div>
+<div class="protorow"><span class="lbl">Prototype</span>read <code>bulkSetTier()</code>, <code>bulkEditPerm()</code>, <code>renderBulk()</code>.</div>
+</div>
+
+<div class="step" id="step10">
+<h3><span class="badge">10</span>Access Review (the audit surface)</h3>
+<div class="chk"><span class="box"></span><span><b>Person lens:</b> a grid of every permission × every plant for one person, with 5 possible states per cell: standard / added / removed (someone explicitly took it away) / capped-by-module / not-applicable (never part of this role to begin with — different from "removed"). Clicking a cell shows a one-sentence "why" (e.g. "capped — the <code>iot</code> module isn't licensed at this plant").</span></div>
+<div class="chk"><span class="box"></span><span><b>Plant lens:</b> the roster at one plant, plus a "who can do X here?" search that respects the module ceiling.</span></div>
+<div class="chk"><span class="box"></span><span>Color convention: amber always means "this person deviates from standard here." Grey always means "the module isn't licensed here." Never reuse these colors for anything else.</span></div>
+<div class="protorow"><span class="lbl">Prototype</span>the <b>Access review</b> tab. Read <code>renderReview()</code>, <code>setWhy()</code>.</div>
+</div>
+
+<div class="step" id="step11">
+<h3><span class="badge">11</span>Control panel (for scoped admins, not Global)</h3>
+<div class="reminder">Reminder: admins work at one of three altitudes — <b>Global</b> (every plant), <b>Cluster</b> (every plant sharing one company label), or a single <b>Plant</b>. This step is the home screen for the last two.</div>
+<div class="chk"><span class="box"></span><span>A separate home screen for cluster-level and single-plant admins: their scope's key numbers (plant count, roster size, how many people currently deviate from standard), quick actions, and a "who can do X here?" lookup, all pre-filtered to their scope.</span></div>
+<div class="chk"><span class="box"></span><span>Global Admin never lands here — bounce them to the People tab if they somehow do.</span></div>
+<div class="chk"><span class="box"></span><span>Every action on this screen must re-check scope inside the function itself, not just hide the button in the UI. (A cluster admin calling the bulk-action function directly with a plant outside their cluster must still be refused.)</span></div>
+<div class="protorow"><span class="lbl">Prototype</span>the <b>Control panel</b>. Read <code>renderControlPanel()</code>, <code>inScope()</code>, <code>scopedPlants()</code>, <code>scopedPeople()</code>.</div>
+</div>
+
+<div class="step addendum" id="step11b">
+<h3><span class="badge" style="background:var(--adm)">11b</span>The screen-visibility engine</h3>
+<p style="font-size:14px;color:var(--ink-2);margin:0 0 12px">This is the rule for <b>which tabs, buttons, and banners a person sees</b>, anywhere in the product — and it's not a design choice you make screen by screen. It's computed the same way everywhere, from the person's permissions:</p>
+<div class="chk"><span class="box"></span><span>Which tabs a person sees is derived entirely from what permissions they hold — never hardcoded per role.</span></div>
+<div class="chk"><span class="box"></span><span>Where they land when they open the app follows one fixed priority order: <b>approvals → issues → portfolio → dashboard → admin.</b> Whichever of those the person has access to, highest in that list, is their landing screen.</span></div>
+<div class="chk"><span class="box"></span><span>Treat this as the actual frontend specification — if the real product's navigation ever seems to disagree with what someone's permissions say they should see, the navigation is wrong, not the permissions.</span></div>
+<div class="protorow"><span class="lbl">Prototype</span>read <code>computeTabs()</code>, <code>landingTab()</code>, <code>bodyFor()</code> — these three functions ARE the spec.</div>
+</div>
+
+<div class="step" id="step12">
+<h3><span class="badge">12</span>One-click deprecation flags</h3>
+<p style="font-size:14px;color:var(--ink-2);margin:0 0 12px">Some old features are staying alive for now but are marked to die later, all at once, with one click. This is <b>not</b> the module ceiling from Step 2 — it's a separate, smaller mechanism, because several of these old permissions currently share a live "home" with permissions that must keep working (see the mapping doc in Section 4).</p>
+<div class="chk"><span class="box"></span><span>Build a small platform-level settings table: one true/false flag per legacy feature group. <b>Global Admin only</b> can flip these — put them in a "Sunsetting" section, separate from the Step 2 module matrix.</span></div>
+<div class="chk"><span class="box"></span><span>Each old screen/route checks its own flag. Flipping a flag off hides that old feature for <b>every user, every plant, in one action</b> — and touches zero user records, so flipping it back on instantly restores everything.</span></div>
+<div class="chk"><span class="box"></span><span>The 9 flags today: <code>L-DASH</code> (old per-plant dashboards), <code>L-GROUPS</code> (user groups), <code>L-WS</code> (workspaces), <code>L-ROLES</code> (free-form role creation), <code>L-TICKETS</code> (the old ticket system), <code>L-TASKCFG</code> (old task config screens), <code>L-OLDDATA</code> (old lab/water-quality entry + old data-input templates), <code>L-OLDCFG</code> (old plant-config screens), <code>L-OLDLAYOUT</code> (old plant-layout view).</span></div>
+<div class="chk"><span class="box"></span><span>One related but different thing: back-dated data entry isn't a flag at all — it's a one-time change, already decided. It simply becomes ordinary data entry (no extra gate), and the old separate permission retires. Nothing to toggle later.</span></div>
+<div class="chk"><span class="box"></span><span>Don't confuse that with <b>Data correction</b> — a different feature (editing an entry that's already recorded). It's a real, separate permission (<code>approve.datacorrect</code>), and only L3 Leads and up, or Technical Admin and up, hold it. This is a permission check, not an approval workflow.</span></div>
+<p class="savenote">Full detail — which legacy permission is behind which flag, and what it becomes after the flag flips: <code>internal/role-permission-migration-map-rev3.xlsx</code> (ask Mihir — not in git; see Section 6. It's called <code>-rev3</code> because of an Excel file-lock quirk while it was being written; it's the latest and correct version).</p>
+</div>
+
+<div class="step" id="step13">
+<h3><span class="badge">13</span>Run the migration (the 753 real users)</h3>
+<div class="callout warn" style="margin-bottom:16px">This step needs files that are <b>not in the git repo.</b> Ask Mihir for them before you start — see Section 6 for the full list.</div>
+<div class="chk"><span class="box"></span><span><b>517 people</b> get their new role + grant fully automatically — no question for a human.</span></div>
+<div class="chk"><span class="box"></span><span><b>236 people</b> also migrate automatically, but each one carries exactly one follow-up question for a plant manager to answer later (mostly: "does this L1 Operator actually approve/close issues? If yes, promote to L3 Lead" — that's 219 of the 236; the rest are a handful of "does this viewer actually run the site?" and "does this lead need a bigger admin grant?" checks).</span></div>
+<div class="chk"><span class="box"></span><span><b>Zero people are blocked.</b> There is no "figure this out later" bucket. Every one of the 753 gets a real answer on day one.</span></div>
+<div class="chk"><span class="box"></span><span><b>7 people</b> get their admin grant manually upgraded to Full Site Admin as part of this migration (they already held the other half of it under the old system).</span></div>
+<div class="chk"><span class="box"></span><span><b>49 people</b> currently have zero plants. 5 of those are pure admin-grant holders (handled automatically); the other 44 go into a short manual queue — assign them a real plant, or offboard them. Don't invent a plant for someone just to close the queue.</span></div>
+<div class="chk"><span class="box"></span><span>The <b>Issue Resolution</b> feature (the whole <code>ops</code> module) stays unlicensed everywhere on day one, on purpose — it isn't built yet. This is why the "is this person a lead?" question above doesn't block anything: approval authority simply has no effect until the feature ships.</span></div>
+<div class="chk"><span class="box"></span><span>Skip all 10 legacy roles marked <code>isArchived:true</code> — they're test/demo roles, nobody real holds any of them, so there's nothing to map.</span></div>
+<p class="savenote">Per-user exact answers (all 753, old role + old permissions → new role + new permissions): <code>internal/migration-final-mapping.xlsx</code>.<br>
+Per-user action list (what to do, what to ask): <code>internal/migration-worksheet-final-rev2.xlsx</code>.<br>
+The 7 admin-grant upgrades, with evidence: <code>internal/admin-grants-applied.xlsx</code>.</p>
+<div class="callout warn">⚠ <b>Important:</b> <code>internal/migrate.js</code> and <code>internal/MIGRATION-RUNBOOK.md</code> were written earlier in the project and predate several rulings above (they still say some users go on hold, and don't know about the deleted/deprecated permissions or the 7 grant upgrades). Treat the two files above as correct today; update <code>migrate.js</code> to match them before running it for real.</div>
+</div>
+
+<div class="step" id="step14">
+<h3><span class="badge">14</span>After migration: the follow-up queue</h3>
+<div class="chk"><span class="box"></span><span>The 219 "operator or lead?" questions and the 9 "viewer or site-admin?" questions from Step 13 don't need answers immediately — track them as a simple list plant managers clear over time.</span></div>
+<div class="chk"><span class="box"></span><span>When the Issue Resolution feature actually ships: license the <code>ops</code> module per plant as each one is ready, and start asking the 219 promotion questions for real.</span></div>
+<div class="chk"><span class="box"></span><span>Flip the Step 12 deprecation flags one at a time, only after each old feature's replacement is confirmed working — never flip more than one at once, and watch for a day before moving to the next.</span></div>
+</div>
+</section>
+
+<section id="sec4">
+<h2><span class="num">4.</span>Where every legacy permission goes</h2>
+<p class="lede">The old system had <b>121 permissions</b> spread across 56 overlapping roles. Every one of them has a decided new home. Don't invent a mapping — look it up:</p>
+<ul style="font-size:14px;line-height:1.7;padding-left:20px">
+<li><a href="coverage-map.csv">coverage-map.csv</a> — the simple version: old permission tag → new permission (or "deleted," "retired," etc.), one row each. <b>This one is in the git repo.</b></li>
+<li><code>internal/role-permission-migration-map-rev3.xlsx</code> — the developer-friendly version of the same thing, organized by destination: which permissions live under which of the 5 roles / 4 grants, which 3 are exceptions (Step 7), which are behind a deprecation flag (Step 12) and what they'll become, and which are simply deleted. <b>Start here if you're writing the actual mapping code</b> — ask Mihir, not in git.</li>
+<li><code>internal/EcoInnovision-permissions-decisions-reviewed.xlsx</code> — the full decision record: every one of the 121, with the reasoning for each call. Read this only if you need the "why" behind a specific one. Ask Mihir.</li>
+</ul>
+<p style="font-size:14px;color:var(--ink-2)">A few permissions in the new system have <b>no old equivalent at all</b> — they're genuinely new capabilities the redesign adds: the core of the <code>approve</code> set (approving/rejecting gates, self-approve, force-close, reopen, photo override) and the co-sign permission in <code>oversight</code>, plus <code>remote.actuate</code>, <code>approve.datacorrect</code>, <code>tech.stores</code>, and <code>flags.sensorhealth</code>. Don't go looking for a legacy source for these — there isn't one.</p>
+<p style="font-size:14px;color:var(--ink-2)">Two permissions that <i>sit inside</i> the <code>approve</code> set are different — they DO have a legacy source, so don't skip them when reading <code>coverage-map.csv</code>: <code>approve.assign</code> (creating/assigning tasks) and <code>approve.invlogs</code> (the inventory movement log) both map back to old permissions.</p>
+</section>
+
+<section id="sec5">
+<h2><span class="num">5.</span>Rules that must never be broken</h2>
+<p class="lede">Short list. If new code violates one of these, it's a bug, not a design choice.</p>
+<div class="rules">
+<div class="rule"><span><b>Effective access is always <code>permission AND plant module</code>.</b> Never grant something that skips the module check.</span></div>
+<div class="rule"><span><b>Global Admin's own access check never says "no."</b> This is about what a Global Admin holds, not about handing things out — see the next rule.</span></div>
+<div class="rule"><span><b>The 3 exception permissions can never be bundled into a role, a custom role, or a bulk action — for anyone else.</b> They only ever reach someone else one person, one plant, one reason at a time. (Global Admin is the one person who already has them — that's not the same as a bulk grant.)</span></div>
+<div class="rule"><span><b>Every override needs a written reason.</b> No silent deviations from a role standard.</span></div>
+<div class="rule"><span><b>Company is a label, not a container.</b> Never build a screen that treats "company" as something people or plants belong <i>inside</i>.</span></div>
+<div class="rule"><span><b>A custom role application is stamped, not live-linked.</b> Editing the template later must never retroactively change someone who already received it.</span></div>
+<div class="rule"><span><b>Module writes happen in exactly one place</b> (Step 2). Every other screen that shows modules is read-only, with a link back to Step 2.</span></div>
+<div class="rule"><span><b>The word "workspace" and the phrase "CloseTheLoop" never appear in any user-facing text.</b> "Workspace" is retired; "CloseTheLoop" is an internal codename only — the product name is "User Center — Roles &amp; Permissions."</span></div>
+<div class="rule"><span><b>Deprecation flags gate old screens, not the module ceiling.</b> Don't reuse Step 2's mechanism for Step 12 — they solve different problems (see Step 12 for why).</span></div>
+</div>
+</section>
+
+<section id="sec6">
+<h2><span class="num">6.</span>Full reference index</h2>
+
+<div class="reftitle">In the git repo — everyone building from this document already has these</div>
+<table>
+<tr><th>Doc</th><th>What it's for</th></tr>
+<tr><td><a href="CLAUDE.md">CLAUDE.md</a></td><td>The full model spec — every ruling, in detail, with dates. The source of truth this PRD is built from.</td></tr>
+<tr><td><a href="README.md">README.md</a></td><td>How the prototype is deployed (GitHub Pages) and how to run it locally.</td></tr>
+<tr><td><a href="coverage-map.csv">coverage-map.csv</a></td><td>All 121 old permissions → their new home, one row each.</td></tr>
+<tr><td><a href="index.html">index.html</a></td><td>The working prototype — the reference implementation for every step above.</td></tr>
+<tr><td><a href="presentation/index.html">presentation/index.html</a></td><td>A guided onboarding walkthrough version of the same model — useful for demos, not a build target.</td></tr>
+</table>
+
+<div class="reftitle">Ask Mihir for these — not in the git repo (real data or working drafts)</div>
+<table>
+<tr><th>Doc</th><th>What it's for</th></tr>
+<tr><td><code>internal/role-permission-migration-map-rev3.xlsx</code></td><td>The developer-facing permission map (Section 4) — start here for mapping code.</td></tr>
+<tr><td><code>internal/EcoInnovision-permissions-decisions-reviewed.xlsx</code></td><td>Every one of the 121 permissions, decided, with reasoning.</td></tr>
+<tr><td><code>internal/EcoInnovision-permissions-catalog.xlsx</code></td><td>The raw legacy permission catalog, exported as-is from the old database.</td></tr>
+<tr><td><code>internal/migration-final-mapping.xlsx</code></td><td>All 753 users: old role + permissions → new role + permissions.</td></tr>
+<tr><td><code>internal/migration-worksheet-final-rev2.xlsx</code></td><td>All 753 users: the exact migration action + any follow-up question.</td></tr>
+<tr><td><code>internal/admin-grants-applied.xlsx</code></td><td>The 7 users manually upgraded to Full Site Admin, with evidence.</td></tr>
+<tr><td><code>internal/NUMBER-PINS.md</code></td><td>The exact user/role/assignment counts, pinned against the real production export.</td></tr>
+<tr><td><code>internal/split-resolution.csv</code></td><td>The 11 users who genuinely need a different role at different plants.</td></tr>
+<tr><td><code>internal/MIGRATION-SPEC.md</code>, <code>internal/MIGRATION-RUNBOOK.md</code>, <code>internal/migrate.js</code></td><td>The original migration engineering plan and script — <b>predates several rulings above; update before running (see Step 13).</b></td></tr>
+<tr><td><code>context-drop/.../LegacyRBAC/LegacyRBAC.md</code></td><td>How the OLD three-tree admin console actually behaves today — useful background on what's being replaced.</td></tr>
+<tr><td><code>context-drop/.../ADR/ADR-001/002/003</code></td><td>The background reasoning behind "no groups," "no workspaces," and "modules are licensed per plant." <code>CLAUDE.md</code> already states the rulings — read these only for the deeper "why."</td></tr>
+<tr><td><code>context-drop/.../PRD.md</code></td><td>An early draft PRD from 2026-07-08. <b>Superseded by this document</b> — do not build from it.</td></tr>
+</table>
+
+<div class="reftitle">Private links (Mihir's — ask him to share if useful for the team)</div>
+<p style="font-size:13.5px;color:var(--ink-2);margin:6px 0 10px">These are read-only pages showing supporting analysis, not build instructions:</p>
+<ul class="privlinks">
+<li>Before/after comparison of the model changes — <code>https://claude.ai/code/artifact/19429e37-64f4-4efe-ac8b-4cd366baeed9</code></li>
+<li>All 56 legacy roles broken into layers — <code>https://claude.ai/code/artifact/5c6e5f43-f6d2-4b52-8f95-29d962951f47</code></li>
+<li>The 121-permission catalog broken into layers — <code>https://claude.ai/code/artifact/78098591-1665-4ad1-ab1a-a41be6aac329</code></li>
+<li>The full migration plan, with cohort counts — <code>https://claude.ai/code/artifact/393a3b1f-2df6-499e-8bae-91d92298330e</code></li>
+</ul>
+</section>
+
+</main>
+<footer>User Center — Roles &amp; Permissions · PRD v2 · 2026-07-27 · source: PRD.md in this repo</footer>
+
+</body>
+</html>
