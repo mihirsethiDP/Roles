@@ -18,7 +18,7 @@ Skip to whatever step you're working on. But read **Section 1** first — it's f
 - Files like `CLAUDE.md`, `coverage-map.csv`, and `index.html` are in the git repo. If you cloned the repo, you already have them.
 - Files under `internal/` (Excel workbooks, migration lists) and `context-drop/` (background docs) are **not** in the git repo — they contain real user data or are working drafts, so they're kept off GitHub on purpose. If a step below needs one of these, it says so, and you should ask Mihir for it directly.
 
-Every step in Sections 2–4 (the actual build) only needs files you already have from git. Section 5 (running the real migration) needs a few `internal/` files — that's flagged clearly when you get there.
+Every step in Sections 2–4 (the actual build) only needs files you already have from git. Step 13 (running the real migration) needs a few `internal/` files — that's flagged clearly when you get there.
 
 ---
 
@@ -213,7 +213,7 @@ Some old features are staying alive for now but are marked to die later, all at 
 - [ ] One related but different thing: back-dated data entry isn't a flag at all — it's a one-time change, already decided. It simply becomes ordinary data entry (no extra gate), and the old separate permission retires. Nothing to toggle later.
 - [ ] Don't confuse that with **Data correction** — a different feature (editing an entry that's already recorded). It's a real, separate permission (`approve.datacorrect`), and only L3 Leads and up, or Technical Admin and up, hold it. This is a permission check, not an approval workflow.
 
-*Full detail — which legacy permission is behind which flag, and what it becomes after the flag flips:* `internal/role-permission-migration-map-rev3.xlsx` (ask Mihir — not in git; see Section 6. It's called `-rev3` because of an Excel file-lock quirk while it was being written; it's the latest and correct version).
+*Full detail — which legacy permission is behind which flag, and what it becomes after the flag flips:* [`reference/role-permission-migration-map.xlsx`](reference/role-permission-migration-map.xlsx).
 
 ### Step 13 — Run the migration (the 753 real users)
 This step needs files that are **not in the git repo.** Ask Mihir for them before you start — see Section 6 for the full list. Short version of what needs to happen:
@@ -229,7 +229,7 @@ This step needs files that are **not in the git repo.** Ask Mihir for them befor
 *Per-user exact answers (all 753, old role + old permissions → new role + new permissions):* `internal/migration-final-mapping.xlsx`.
 *Per-user action list (what to do, what to ask):* `internal/migration-worksheet-final-rev2.xlsx`.
 *The 7 admin-grant upgrades, with evidence:* `internal/admin-grants-applied.xlsx`.
-*⚠ Important:* `internal/migrate.js` and `internal/MIGRATION-RUNBOOK.md` were written earlier in the project and predate several rulings above (they still say some users go on hold, and don't know about the deleted/deprecated permissions or the 7 grant upgrades). Treat the two files linked directly above as correct today; update `migrate.js` to match them before running it for real.
+*⚠ Important:* `internal/migrate.js` and `internal/MIGRATION-RUNBOOK.md` were written earlier in the project and predate several rulings above (they still say some users go on hold, and don't know about the deleted/deprecated permissions or the 7 grant upgrades). Treat the three files named above as correct today; update `migrate.js` to match them before running it for real.
 
 ### Step 14 — After migration: the follow-up queue
 - [ ] The 219 "operator or lead?" questions and the 9 "viewer or site-admin?" questions from Step 13 don't need answers immediately — track them as a simple list plant managers clear over time.
@@ -242,9 +242,10 @@ This step needs files that are **not in the git repo.** Ask Mihir for them befor
 
 The old system had **121 permissions** spread across 56 overlapping roles. Every one of them has a decided new home. Don't invent a mapping — look it up:
 
-- [`coverage-map.csv`](coverage-map.csv) — the simple version: old permission tag → new permission (or "deleted," "retired," etc.), one row each. **This one is in the git repo.**
-- `internal/role-permission-migration-map-rev3.xlsx` — the developer-friendly version of the same thing, organized by destination: which permissions live under which of the 5 roles / 4 grants, which 3 are exceptions (Step 7), which are behind a deprecation flag (Step 12) and what they'll become, and which are simply deleted. **Start here if you're writing the actual mapping code** — ask Mihir, not in git.
-- `internal/EcoInnovision-permissions-decisions-reviewed.xlsx` — the full decision record: every one of the 121, with the reasoning for each call. Read this only if you need the "why" behind a specific one. Ask Mihir.
+- [`coverage-map.csv`](coverage-map.csv) — the simple version: old permission tag → new permission (or "deleted," "retired," etc.), one row each.
+- [`reference/role-permission-migration-map.xlsx`](reference/role-permission-migration-map.xlsx) — the developer-friendly version of the same thing, organized by destination: which permissions live under which of the 5 roles / 4 grants, which 3 are exceptions (Step 7), which are behind a deprecation flag (Step 12) and what they'll become, and which are simply deleted. **Start here if you're writing the actual mapping code.**
+
+Optional deeper reading, if you need the reasoning behind a specific call: [`reference/permissions-decisions-reviewed.xlsx`](reference/permissions-decisions-reviewed.xlsx) (the full decision record for all 121) and [`reference/permissions-catalog.xlsx`](reference/permissions-catalog.xlsx) (the raw legacy catalog, exported as-is from the old database). Neither is required to build.
 
 A few permissions in the new system have **no old equivalent at all** — they're genuinely new capabilities the redesign adds: the core of the `approve` set (approving/rejecting gates, self-approve, force-close, reopen, photo override) and the co-sign permission in `oversight`, plus `remote.actuate`, `approve.datacorrect`, `tech.stores`, and `flags.sensorhealth`. Don't go looking for a legacy source for these — there isn't one.
 
@@ -268,9 +269,10 @@ Short list. If new code violates one of these, it's a bug, not a design choice.
 
 ---
 
-## 6. Full reference index
+## 6. Reference index
 
-### In the git repo — everyone building from this document already has these
+Only the documents this PRD actually points you to — every one of them either in this repo already, or linked directly.
+
 | Doc | What it's for |
 |---|---|
 | [`CLAUDE.md`](CLAUDE.md) | The full model spec — every ruling, in detail, with dates. The source of truth this PRD is built from. |
@@ -278,26 +280,8 @@ Short list. If new code violates one of these, it's a bug, not a design choice.
 | [`coverage-map.csv`](coverage-map.csv) | All 121 old permissions → their new home, one row each. |
 | [`index.html`](index.html) | The working prototype — the reference implementation for every step above. |
 | [`presentation/index.html`](presentation/index.html) | A guided onboarding walkthrough version of the same model — useful for demos, not a build target. |
+| [`reference/role-permission-migration-map.xlsx`](reference/role-permission-migration-map.xlsx) | The developer-facing permission map (Section 4) — start here for mapping code. |
+| [`reference/permissions-decisions-reviewed.xlsx`](reference/permissions-decisions-reviewed.xlsx) | Optional — every one of the 121 permissions, decided, with reasoning. |
+| [`reference/permissions-catalog.xlsx`](reference/permissions-catalog.xlsx) | Optional — the raw legacy permission catalog, exported as-is from the old database. |
 
-### Ask Mihir for these — not in the git repo (real data or working drafts)
-| Doc | What it's for |
-|---|---|
-| `internal/role-permission-migration-map-rev3.xlsx` | The developer-facing permission map (Section 4) — start here for mapping code. |
-| `internal/EcoInnovision-permissions-decisions-reviewed.xlsx` | Every one of the 121 permissions, decided, with reasoning. |
-| `internal/EcoInnovision-permissions-catalog.xlsx` | The raw legacy permission catalog, exported as-is from the old database. |
-| `internal/migration-final-mapping.xlsx` | All 753 users: old role + permissions → new role + permissions. |
-| `internal/migration-worksheet-final-rev2.xlsx` | All 753 users: the exact migration action + any follow-up question. |
-| `internal/admin-grants-applied.xlsx` | The 7 users manually upgraded to Full Site Admin, with evidence. |
-| `internal/NUMBER-PINS.md` | The exact user/role/assignment counts, pinned against the real production export. |
-| `internal/split-resolution.csv` | The 11 users who genuinely need a different role at different plants. |
-| `internal/MIGRATION-SPEC.md`, `internal/MIGRATION-RUNBOOK.md`, `internal/migrate.js` | The original migration engineering plan and script — **predates several rulings above; update before running (see Step 13).** |
-| `context-drop/.../LegacyRBAC/LegacyRBAC.md` | How the OLD three-tree admin console actually behaves today — useful background on what's being replaced. |
-| `context-drop/.../ADR/ADR-001/002/003` | The background reasoning behind "no groups," "no workspaces," and "modules are licensed per plant." `CLAUDE.md` already states the rulings — read these only for the deeper "why." |
-| `context-drop/.../PRD.md` | An early draft PRD from 2026-07-08. **Superseded by this document** — do not build from it. |
-
-### Private links (Mihir's — ask him to share if useful for the team)
-These are read-only pages showing supporting analysis, not build instructions:
-- Before/after comparison of the model changes: `https://claude.ai/code/artifact/19429e37-64f4-4efe-ac8b-4cd366baeed9`
-- All 56 legacy roles broken into layers: `https://claude.ai/code/artifact/5c6e5f43-f6d2-4b52-8f95-29d962951f47`
-- The 121-permission catalog broken into layers: `https://claude.ai/code/artifact/78098591-1665-4ad1-ab1a-a41be6aac329`
-- The full migration plan, with cohort counts: `https://claude.ai/code/artifact/393a3b1f-2df6-499e-8bae-91d92298330e`
+**Step 13's migration files are the one exception** — `migration-final-mapping.xlsx`, `migration-worksheet-final-rev2.xlsx`, and `admin-grants-applied.xlsx` each contain real user records (753, 753, and 7 respectively), so they're **not linked here** and stay off the public site. Ask Mihir for these directly when you're ready to run the migration.

@@ -38,8 +38,8 @@ pre code{background:none;color:inherit;padding:0}
 .rail .grp{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);padding:14px 12px 5px}
 .rail a{display:block;padding:6px 12px;border-radius:8px;color:rgba(255,255,255,.82);text-decoration:none;font-size:13px}
 .rail a:hover{background:rgba(255,255,255,.08);color:#fff}
-.rail a.step{font-family:var(--mono);font-size:12px;color:rgba(255,255,255,.62);padding:4px 12px 4px 20px}
-.rail a.step:hover{color:#fff}
+.rail a.navstep{font-family:var(--mono);font-size:12px;color:rgba(255,255,255,.62);padding:4px 12px 4px 20px}
+.rail a.navstep:hover{color:#fff}
 .rail .backlink{display:block;margin:16px 12px 0;padding:9px 12px;border:1px solid rgba(255,255,255,.18);border-radius:9px;font-size:12px;color:rgba(255,255,255,.85);text-align:center}
 .rail .backlink:hover{border-color:var(--teal);color:#fff}
 
@@ -124,21 +124,21 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
     <a href="#sec1">1 · The five ideas</a>
     <a href="#sec2">2 · Building blocks</a>
     <a href="#sec3">3 · Build order</a>
-    <a class="step" href="#step1">Step 1 · Plants</a>
-    <a class="step" href="#step2">Step 2 · Product modules</a>
-    <a class="step" href="#step3">Step 3 · People &amp; grants</a>
-    <a class="step" href="#step4">Step 4 · Permission engine</a>
-    <a class="step" href="#step5">Step 5 · Assignments</a>
-    <a class="step" href="#step6">Step 6 · Overrides</a>
-    <a class="step" href="#step7">Step 7 · Exception grants</a>
-    <a class="step" href="#step8">Step 8 · Custom roles</a>
-    <a class="step" href="#step9">Step 9 · Bulk actions</a>
-    <a class="step" href="#step10">Step 10 · Access review</a>
-    <a class="step" href="#step11">Step 11 · Control panel</a>
-    <a class="step" href="#step11b">Step 11b · Visibility engine</a>
-    <a class="step" href="#step12">Step 12 · Deprecation flags</a>
-    <a class="step" href="#step13">Step 13 · Run migration</a>
-    <a class="step" href="#step14">Step 14 · Follow-up queue</a>
+    <a class="navstep" href="#step1">Step 1 · Plants</a>
+    <a class="navstep" href="#step2">Step 2 · Product modules</a>
+    <a class="navstep" href="#step3">Step 3 · People &amp; grants</a>
+    <a class="navstep" href="#step4">Step 4 · Permission engine</a>
+    <a class="navstep" href="#step5">Step 5 · Assignments</a>
+    <a class="navstep" href="#step6">Step 6 · Overrides</a>
+    <a class="navstep" href="#step7">Step 7 · Exception grants</a>
+    <a class="navstep" href="#step8">Step 8 · Custom roles</a>
+    <a class="navstep" href="#step9">Step 9 · Bulk actions</a>
+    <a class="navstep" href="#step10">Step 10 · Access review</a>
+    <a class="navstep" href="#step11">Step 11 · Control panel</a>
+    <a class="navstep" href="#step11b">Step 11b · Visibility engine</a>
+    <a class="navstep" href="#step12">Step 12 · Deprecation flags</a>
+    <a class="navstep" href="#step13">Step 13 · Run migration</a>
+    <a class="navstep" href="#step14">Step 14 · Follow-up queue</a>
     <a href="#sec4">4 · Legacy permission map</a>
     <a href="#sec5">5 · Rules to never break</a>
     <a href="#sec6">6 · Reference index</a>
@@ -372,7 +372,7 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 <div class="chk"><span class="box"></span><span>The 9 flags today: <code>L-DASH</code> (old per-plant dashboards), <code>L-GROUPS</code> (user groups), <code>L-WS</code> (workspaces), <code>L-ROLES</code> (free-form role creation), <code>L-TICKETS</code> (the old ticket system), <code>L-TASKCFG</code> (old task config screens), <code>L-OLDDATA</code> (old lab/water-quality entry + old data-input templates), <code>L-OLDCFG</code> (old plant-config screens), <code>L-OLDLAYOUT</code> (old plant-layout view).</span></div>
 <div class="chk"><span class="box"></span><span>One related but different thing: back-dated data entry isn't a flag at all — it's a one-time change, already decided. It simply becomes ordinary data entry (no extra gate), and the old separate permission retires. Nothing to toggle later.</span></div>
 <div class="chk"><span class="box"></span><span>Don't confuse that with <b>Data correction</b> — a different feature (editing an entry that's already recorded). It's a real, separate permission (<code>approve.datacorrect</code>), and only L3 Leads and up, or Technical Admin and up, hold it. This is a permission check, not an approval workflow.</span></div>
-<p class="savenote">Full detail — which legacy permission is behind which flag, and what it becomes after the flag flips: <code>internal/role-permission-migration-map-rev3.xlsx</code> (ask Mihir — not in git; see Section 6. It's called <code>-rev3</code> because of an Excel file-lock quirk while it was being written; it's the latest and correct version).</p>
+<p class="savenote">Full detail — which legacy permission is behind which flag, and what it becomes after the flag flips: <a href="reference/role-permission-migration-map.xlsx">reference/role-permission-migration-map.xlsx</a>.</p>
 </div>
 
 <div class="step" id="step13">
@@ -388,7 +388,7 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 <p class="savenote">Per-user exact answers (all 753, old role + old permissions → new role + new permissions): <code>internal/migration-final-mapping.xlsx</code>.<br>
 Per-user action list (what to do, what to ask): <code>internal/migration-worksheet-final-rev2.xlsx</code>.<br>
 The 7 admin-grant upgrades, with evidence: <code>internal/admin-grants-applied.xlsx</code>.</p>
-<div class="callout warn">⚠ <b>Important:</b> <code>internal/migrate.js</code> and <code>internal/MIGRATION-RUNBOOK.md</code> were written earlier in the project and predate several rulings above (they still say some users go on hold, and don't know about the deleted/deprecated permissions or the 7 grant upgrades). Treat the two files above as correct today; update <code>migrate.js</code> to match them before running it for real.</div>
+<div class="callout warn">⚠ <b>Important:</b> <code>internal/migrate.js</code> and <code>internal/MIGRATION-RUNBOOK.md</code> were written earlier in the project and predate several rulings above (they still say some users go on hold, and don't know about the deleted/deprecated permissions or the 7 grant upgrades). Treat the three files above as correct today; update <code>migrate.js</code> to match them before running it for real.</div>
 </div>
 
 <div class="step" id="step14">
@@ -403,10 +403,10 @@ The 7 admin-grant upgrades, with evidence: <code>internal/admin-grants-applied.x
 <h2><span class="num">4.</span>Where every legacy permission goes</h2>
 <p class="lede">The old system had <b>121 permissions</b> spread across 56 overlapping roles. Every one of them has a decided new home. Don't invent a mapping — look it up:</p>
 <ul style="font-size:14px;line-height:1.7;padding-left:20px">
-<li><a href="coverage-map.csv">coverage-map.csv</a> — the simple version: old permission tag → new permission (or "deleted," "retired," etc.), one row each. <b>This one is in the git repo.</b></li>
-<li><code>internal/role-permission-migration-map-rev3.xlsx</code> — the developer-friendly version of the same thing, organized by destination: which permissions live under which of the 5 roles / 4 grants, which 3 are exceptions (Step 7), which are behind a deprecation flag (Step 12) and what they'll become, and which are simply deleted. <b>Start here if you're writing the actual mapping code</b> — ask Mihir, not in git.</li>
-<li><code>internal/EcoInnovision-permissions-decisions-reviewed.xlsx</code> — the full decision record: every one of the 121, with the reasoning for each call. Read this only if you need the "why" behind a specific one. Ask Mihir.</li>
+<li><a href="coverage-map.csv">coverage-map.csv</a> — the simple version: old permission tag → new permission (or "deleted," "retired," etc.), one row each.</li>
+<li><a href="reference/role-permission-migration-map.xlsx">reference/role-permission-migration-map.xlsx</a> — the developer-friendly version of the same thing, organized by destination: which permissions live under which of the 5 roles / 4 grants, which 3 are exceptions (Step 7), which are behind a deprecation flag (Step 12) and what they'll become, and which are simply deleted. <b>Start here if you're writing the actual mapping code.</b></li>
 </ul>
+<p style="font-size:14px;color:var(--ink-2)">Optional deeper reading, if you need the reasoning behind a specific call: <a href="reference/permissions-decisions-reviewed.xlsx">reference/permissions-decisions-reviewed.xlsx</a> (the full decision record for all 121) and <a href="reference/permissions-catalog.xlsx">reference/permissions-catalog.xlsx</a> (the raw legacy catalog, exported as-is from the old database). Neither is required to build.</p>
 <p style="font-size:14px;color:var(--ink-2)">A few permissions in the new system have <b>no old equivalent at all</b> — they're genuinely new capabilities the redesign adds: the core of the <code>approve</code> set (approving/rejecting gates, self-approve, force-close, reopen, photo override) and the co-sign permission in <code>oversight</code>, plus <code>remote.actuate</code>, <code>approve.datacorrect</code>, <code>tech.stores</code>, and <code>flags.sensorhealth</code>. Don't go looking for a legacy source for these — there isn't one.</p>
 <p style="font-size:14px;color:var(--ink-2)">Two permissions that <i>sit inside</i> the <code>approve</code> set are different — they DO have a legacy source, so don't skip them when reading <code>coverage-map.csv</code>: <code>approve.assign</code> (creating/assigning tasks) and <code>approve.invlogs</code> (the inventory movement log) both map back to old permissions.</p>
 </section>
@@ -428,9 +428,8 @@ The 7 admin-grant upgrades, with evidence: <code>internal/admin-grants-applied.x
 </section>
 
 <section id="sec6">
-<h2><span class="num">6.</span>Full reference index</h2>
-
-<div class="reftitle">In the git repo — everyone building from this document already has these</div>
+<h2><span class="num">6.</span>Reference index</h2>
+<p class="lede">Only the documents this PRD actually points you to — every one of them either in this repo already, or linked directly.</p>
 <table>
 <tr><th>Doc</th><th>What it's for</th></tr>
 <tr><td><a href="CLAUDE.md">CLAUDE.md</a></td><td>The full model spec — every ruling, in detail, with dates. The source of truth this PRD is built from.</td></tr>
@@ -438,33 +437,11 @@ The 7 admin-grant upgrades, with evidence: <code>internal/admin-grants-applied.x
 <tr><td><a href="coverage-map.csv">coverage-map.csv</a></td><td>All 121 old permissions → their new home, one row each.</td></tr>
 <tr><td><a href="index.html">index.html</a></td><td>The working prototype — the reference implementation for every step above.</td></tr>
 <tr><td><a href="presentation/index.html">presentation/index.html</a></td><td>A guided onboarding walkthrough version of the same model — useful for demos, not a build target.</td></tr>
+<tr><td><a href="reference/role-permission-migration-map.xlsx">reference/role-permission-migration-map.xlsx</a></td><td>The developer-facing permission map (Section 4) — start here for mapping code.</td></tr>
+<tr><td><a href="reference/permissions-decisions-reviewed.xlsx">reference/permissions-decisions-reviewed.xlsx</a></td><td>Optional — every one of the 121 permissions, decided, with reasoning.</td></tr>
+<tr><td><a href="reference/permissions-catalog.xlsx">reference/permissions-catalog.xlsx</a></td><td>Optional — the raw legacy permission catalog, exported as-is from the old database.</td></tr>
 </table>
-
-<div class="reftitle">Ask Mihir for these — not in the git repo (real data or working drafts)</div>
-<table>
-<tr><th>Doc</th><th>What it's for</th></tr>
-<tr><td><code>internal/role-permission-migration-map-rev3.xlsx</code></td><td>The developer-facing permission map (Section 4) — start here for mapping code.</td></tr>
-<tr><td><code>internal/EcoInnovision-permissions-decisions-reviewed.xlsx</code></td><td>Every one of the 121 permissions, decided, with reasoning.</td></tr>
-<tr><td><code>internal/EcoInnovision-permissions-catalog.xlsx</code></td><td>The raw legacy permission catalog, exported as-is from the old database.</td></tr>
-<tr><td><code>internal/migration-final-mapping.xlsx</code></td><td>All 753 users: old role + permissions → new role + permissions.</td></tr>
-<tr><td><code>internal/migration-worksheet-final-rev2.xlsx</code></td><td>All 753 users: the exact migration action + any follow-up question.</td></tr>
-<tr><td><code>internal/admin-grants-applied.xlsx</code></td><td>The 7 users manually upgraded to Full Site Admin, with evidence.</td></tr>
-<tr><td><code>internal/NUMBER-PINS.md</code></td><td>The exact user/role/assignment counts, pinned against the real production export.</td></tr>
-<tr><td><code>internal/split-resolution.csv</code></td><td>The 11 users who genuinely need a different role at different plants.</td></tr>
-<tr><td><code>internal/MIGRATION-SPEC.md</code>, <code>internal/MIGRATION-RUNBOOK.md</code>, <code>internal/migrate.js</code></td><td>The original migration engineering plan and script — <b>predates several rulings above; update before running (see Step 13).</b></td></tr>
-<tr><td><code>context-drop/.../LegacyRBAC/LegacyRBAC.md</code></td><td>How the OLD three-tree admin console actually behaves today — useful background on what's being replaced.</td></tr>
-<tr><td><code>context-drop/.../ADR/ADR-001/002/003</code></td><td>The background reasoning behind "no groups," "no workspaces," and "modules are licensed per plant." <code>CLAUDE.md</code> already states the rulings — read these only for the deeper "why."</td></tr>
-<tr><td><code>context-drop/.../PRD.md</code></td><td>An early draft PRD from 2026-07-08. <b>Superseded by this document</b> — do not build from it.</td></tr>
-</table>
-
-<div class="reftitle">Private links (Mihir's — ask him to share if useful for the team)</div>
-<p style="font-size:13.5px;color:var(--ink-2);margin:6px 0 10px">These are read-only pages showing supporting analysis, not build instructions:</p>
-<ul class="privlinks">
-<li>Before/after comparison of the model changes — <code>https://claude.ai/code/artifact/19429e37-64f4-4efe-ac8b-4cd366baeed9</code></li>
-<li>All 56 legacy roles broken into layers — <code>https://claude.ai/code/artifact/5c6e5f43-f6d2-4b52-8f95-29d962951f47</code></li>
-<li>The 121-permission catalog broken into layers — <code>https://claude.ai/code/artifact/78098591-1665-4ad1-ab1a-a41be6aac329</code></li>
-<li>The full migration plan, with cohort counts — <code>https://claude.ai/code/artifact/393a3b1f-2df6-499e-8bae-91d92298330e</code></li>
-</ul>
+<div class="callout warn" style="margin-top:14px"><b>Step 13's migration files are the one exception</b> — <code>migration-final-mapping.xlsx</code>, <code>migration-worksheet-final-rev2.xlsx</code>, and <code>admin-grants-applied.xlsx</code> each contain real user records (753, 753, and 7 respectively), so they're <b>not linked here</b> and stay off the public site. Ask Mihir for these directly when you're ready to run the migration.</div>
 </section>
 
 </main>
