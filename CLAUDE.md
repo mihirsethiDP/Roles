@@ -243,9 +243,12 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
 ## Files
 
 - `index.html` — Role Studio: brand-book navy sidenav shell (Manage: People,
-  Plants & modules · Verify: Access review, UI previews · personas at the
-  bottom of the rail; People is the landing screen) · plants & modules
-  record · User Center (people directory with a needs-attention queue that
+  Plants, Role library, Product modules · Verify: Access review, UI previews ·
+  personas at the bottom of the rail; People is the landing screen) · Plants
+  tab (registry grouped by company, KPIs, plant-record modal with an
+  "Edit on Product modules" jump-link and an inline add/remove-roster editor,
+  add-plant for Global) · Product modules (the one write surface for module
+  licensing, per ADR-003) · User Center (people directory with a needs-attention queue that
   counts down to ✓ → per-plant assignment editor with progressive
   disclosure, a profile progress meter and a save button that counts
   remaining reasons → peak-end save confirmation with the payload behind a

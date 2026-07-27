@@ -316,14 +316,15 @@ const ROLES={
  regular:{n:"Regular Non-op",grp:"read",s:"reads one plant",std:["readplant"]},
  senior:{n:"Senior Non-op",grp:"read",s:"reads the whole portfolio",std:["readplant","portfolio"]},
 };
-const GRANTS={people:["people"],tech:["tech"],fullsite:["people","tech"],global:["people","tech","templates"]};
+const GRANTS={people:["people"],tech:["tech"],fullsite:["people","tech"],
+ global:["work","approve","oversight","remote","readplant","portfolio","people","tech","templates","flags"]}; // owner ruling 2026-07-22: Global Admin is the superuser — every set, including the exception sets
 const GRANTNAMES={people:"People Admin",tech:"Technical Admin",fullsite:"Full Site Admin",global:"Global Admin"};
 const GRANTHELP={
  "":{t:"No admin grant",d:"Right for most users. Grants add administration on top of the base role — they never change day-to-day operating permissions. Max one grant per user per site."},
  people:{t:"People Admin — manages the humans",d:"Invite, edit & offboard users · rosters & shift schedules · skills · groups & workspaces · assign roles and grants · notification overrides · audit export. No access to plant logic or hardware."},
  tech:{t:"Technical Admin — configures the plant",d:"Dashboards & widgets · issue / task / trigger rules · diagnostic flows · plant, lab & sensor setup · PLC / IoT · escalation routing · site templates & formulas. No user management."},
  fullsite:{t:"Full Site Admin — People + Technical combined",d:"Everything both admins can do, for this site: the users and the plant configuration. Use when one person genuinely runs the whole site."},
- global:{t:"Global Admin — DigitalPaani / Wapp staff only",d:"Full Site everywhere, plus global template governance, publishing versions to all sites, and onboarding new sites & companies. Affects every site — audited accordingly."},
+ global:{t:"Global Admin — DigitalPaani / Wapp staff only",d:"The superuser grant (owner ruling 2026-07-22): every one of the 10 sets, at every plant — including the 3 exception permissions (remote actuation, view-as, sensor health), which are never a default for anyone else. Nothing is ever denied to a Global Admin. Affects every site — audited accordingly."},
 };
 const setById=Object.fromEntries(SETS.map(s=>[s.id,s]));
 const modById=Object.fromEntries(MODULES.map(m=>[m.id,m]));
@@ -380,7 +381,7 @@ function addPerson(){
 /* ================= ENGINE (identical guardrails) ================= */
 function avail(key){ return mods.has(PERMMOD[key]); }
 function stdSetIds(a){ const s=new Set(ROLES[a.role].std); (GRANTS[a.grant]||[]).forEach(x=>s.add(x)); return s; }
-function isStd(a,setId,permId){ return setId!=="flags" && stdSetIds(a).has(setId) && avail(setId+"."+permId); }
+function isStd(a,setId,permId){ return (setId!=="flags"||a.grant==="global") && stdSetIds(a).has(setId) && avail(setId+"."+permId); }
 function initP(a){ a.P={}; SETS.forEach(s=>s.perms.forEach(p=>a.P[s.id+"."+p.id]=isStd(a,s.id,p.id))); a.reason=""; a.saved=false; }
 function availCount(setId){ return setById[setId].perms.filter(p=>avail(setId+"."+p.id)).length; }
 function setState(a,setId){
