@@ -93,8 +93,10 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
   retired from all UI (per-permission labels included).
 - **Per-plant assignments (owner ruling 2026-07-13): a person holds a tier
   PER PLANT** — `ASG` in index.html, one row per (person, plant), different
-  capacities at different plants are first-class (74 real users in the
-  migration data need this). Overrides and their mandatory reason are scoped
+  capacities at different plants are first-class (11 confirmed real users in
+  the migration data need this on day one, per NUMBER-PINS — the earlier 74
+  was the flattened-worksheet estimate; legacy V1 Asset Roles are per-asset
+  natively, so the pattern already exists in production). Overrides and their mandatory reason are scoped
   per plant; drift is counted per plant; guardrail cascades run per
   assignment. Grant stays account-level (max one per user per site). The old
   "split vs edit the group assignment" open question is dissolved — you edit

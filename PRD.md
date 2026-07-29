@@ -37,7 +37,7 @@ DigitalPaani sells 8 product modules to companies, and each plant is licensed fo
 | `data` | Data, Lab & Logbook entry. |
 | `analytics` | Dashboards & Analytics. |
 | `iot` | IoT & Remote Control. |
-| `floc` | Floc Detector — a hardware add-on with **no permissions of its own**, just a sold entitlement (see Step 2). |
+| `floc` | Floc Detector (BioHealthTrack) — a hardware add-on with **no permissions of its own yet**, just a sold entitlement; its permissions arrive when its widget ships (see Step 2). |
 | `inv` | Inventory Management. |
 
 A module being licensed doesn't GIVE anyone a permission — it just allows permissions that are already tagged to that module to actually work. The one rule that runs the whole system:
@@ -78,7 +78,7 @@ Plain field lists — this is not a schema, just what data needs to exist somewh
 Each step names the prototype tab and the key functions to read in `index.html`. Build and test each step before moving to the next — later steps assume earlier ones work.
 
 ### Step 1 — Plants: the base registry
-- [ ] Store plant name + company label. Company is just text on the plant, not its own table.
+- [ ] Store plant name + company label. The label is an explicit company **name picked from a small managed list** — not free text (free text would let "GreenGrid" and "Greengrid Utilities" silently split one cluster in two), and not a container with its own screens. New labels get added inline from the Add-plant form (Global Admin only); rename/merge tooling can come later.
 - [ ] A screen listing all plants, grouped by company label, with an "add plant" action.
 - [ ] New plants start with **no modules licensed** (Platform Core is always on for everyone, everywhere, for free).
 
@@ -88,7 +88,7 @@ Each step names the prototype tab and the key functions to read in `index.html`.
 - [ ] A matrix: one row per plant, one column per module, one on/off switch per cell.
 - [ ] Writing to this matrix is **Global Admin only** — this is the single place module flags are ever changed. Don't let any other screen edit modules directly, even to be "helpful" — link to this screen instead.
 - [ ] Every permission in your system needs a `module` tag. A permission with no tag defaults to `core` (always on).
-- [ ] `floc` is a special case: it's licensed and toggled exactly like the other 7 modules, but **no permission is ever tagged to it.** It exists purely so a contract can say what hardware was sold — it never turns anything on or off for a user. This is the pattern for any future hardware add-on module too.
+- [ ] `floc` (the BioHealthTrack hardware) is a special case: it's licensed and toggled exactly like the other 7 modules, but **no permission is tagged to it *yet*.** Today it exists so a contract can say what hardware was sold. The moment BioHealthTrack grows a user-facing widget or screen, add that permission with a `mod:floc` tag and the ceiling from this step handles the rest — the widget appears only at plants licensed for it, with no model changes. Same pattern for any future hardware add-on module.
 - [ ] Clicking a module (here or anywhere it's shown as a card) should open a detail view: what it unlocks, and how many plants are licensed for it.
 
 *Prototype:* the **Product modules** tab. Read `renderModules()`, `toggleMod()`, `plantMods(plant)`, `PERMMOD`, and `moduleModal()` for the detail view.
@@ -120,11 +120,15 @@ Each step names the prototype tab and the key functions to read in `index.html`.
 | Full Site Admin | Grant | people + tech |
 | Global Admin | Grant | **everything** — all 10 sets, every plant, no exceptions |
 
+Two similar-sounding words that are NOT the same thing: **portfolio** is a permission set inside a role (the multi-plant *view* — see all your assigned plants at once; L4 and Senior Non-op carry it; it grants no management power and no extra plants). **Cluster** is an admin *scope* (every plant sharing one company label — it defines which plants a cluster admin can act on, see Step 11). Portfolio = what you can see across your own plants; cluster = which plants an admin can manage.
+
 *Prototype:* read `SETS`, `ROLES`, `GRANTS`, `isStdG()`, and `roleModal()`/`grantModal()` for the detail views, in `index.html`. Full rule text: `CLAUDE.md` → "The v2 model."
 
 ### Step 5 — Per-plant assignments
-- [ ] Give a person a role **at a specific plant.** The same person can be an L1 Operator at one plant and a Regular Non-op (just a viewer) at another — this is normal, not an edge case. (74 real people in the migration data need exactly this.)
+- [ ] Give a person a role **at a specific plant.** The same person can be an L1 Operator at one plant and a Regular Non-op (just a viewer) at another — this is normal, not an edge case. (11 real people in the migration data need exactly this on day one, and the old system already supports it — its Asset Roles are per-plant too. Service companies that operate some plants while monitoring others multiply the pattern.)
 - [ ] The admin grant is account-wide (one grant, works everywhere the person has any plant), but the role is per-plant.
+- [ ] Multi-plant screens don't need role-specific variants: each row (an issue, a task) carries its plant, and the actions on that row come from the viewer's role **at that plant** — the same per-row mechanic as a module being off there (Step 2). Show a quiet "view-only here" marker on rows where the person can't act; don't hide the rows and don't build separate screens per role.
+- [ ] The assignment UI can keep the common case simple: ~740 of 753 people have one role everywhere, so default to "same role at all selected plants," with per-plant splitting behind an explicit control.
 
 *Prototype:* the person profile editor inside the People tab. Read `togglePlantSel()`, `initAsg()`.
 

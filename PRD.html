@@ -190,7 +190,7 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 <tr><td><code>data</code></td><td>Data, Lab &amp; Logbook entry.</td></tr>
 <tr><td><code>analytics</code></td><td>Dashboards &amp; Analytics.</td></tr>
 <tr><td><code>iot</code></td><td>IoT &amp; Remote Control.</td></tr>
-<tr><td><code>floc</code></td><td>Floc Detector — a hardware add-on with <b>no permissions of its own</b>, just a sold entitlement (see Step 2).</td></tr>
+<tr><td><code>floc</code></td><td>Floc Detector (BioHealthTrack) — a hardware add-on with <b>no permissions of its own yet</b>, just a sold entitlement; its permissions arrive when its widget ships (see Step 2).</td></tr>
 <tr><td><code>inv</code></td><td>Inventory Management.</td></tr>
 </table>
 <p>A module being licensed doesn't GIVE anyone a permission — it just allows permissions that are already tagged to that module to actually work. The one rule that runs the whole system:</p>
@@ -236,7 +236,7 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 
 <div class="step" id="step1">
 <h3><span class="badge">1</span>Plants: the base registry</h3>
-<div class="chk"><span class="box"></span><span>Store plant name + company label. Company is just text on the plant, not its own table.</span></div>
+<div class="chk"><span class="box"></span><span>Store plant name + company label. The label is an explicit company <b>name picked from a small managed list</b> — not free text (free text would let "GreenGrid" and "Greengrid Utilities" silently split one cluster in two), and not a container with its own screens. New labels get added inline from the Add-plant form (Global Admin only); rename/merge tooling can come later.</span></div>
 <div class="chk"><span class="box"></span><span>A screen listing all plants, grouped by company label, with an "add plant" action.</span></div>
 <div class="chk"><span class="box"></span><span>New plants start with <b>no modules licensed</b> (Platform Core is always on for everyone, everywhere, for free).</span></div>
 <div class="protorow"><span class="lbl">Prototype</span>the <b>Plants</b> tab. Read <code>renderPlants()</code>, <code>addPlantSubmit()</code>, <code>plantModal()</code>.</div>
@@ -247,7 +247,7 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 <div class="chk"><span class="box"></span><span>A matrix: one row per plant, one column per module, one on/off switch per cell.</span></div>
 <div class="chk"><span class="box"></span><span>Writing to this matrix is <b>Global Admin only</b> — this is the single place module flags are ever changed. Don't let any other screen edit modules directly, even to be "helpful" — link to this screen instead.</span></div>
 <div class="chk"><span class="box"></span><span>Every permission in your system needs a <code>module</code> tag. A permission with no tag defaults to <code>core</code> (always on).</span></div>
-<div class="chk"><span class="box"></span><span><code>floc</code> is a special case: it's licensed and toggled exactly like the other 7 modules, but <b>no permission is ever tagged to it.</b> It exists purely so a contract can say what hardware was sold — it never turns anything on or off for a user. This is the pattern for any future hardware add-on module too.</span></div>
+<div class="chk"><span class="box"></span><span><code>floc</code> (the BioHealthTrack hardware) is a special case: it's licensed and toggled exactly like the other 7 modules, but <b>no permission is tagged to it <i>yet</i>.</b> Today it exists so a contract can say what hardware was sold. The moment BioHealthTrack grows a user-facing widget or screen, add that permission with a <code>mod:floc</code> tag and the ceiling from this step handles the rest — the widget appears only at plants licensed for it, with no model changes. Same pattern for any future hardware add-on module.</span></div>
 <div class="chk"><span class="box"></span><span>Clicking a module (here or anywhere it's shown as a card) should open a detail view: what it unlocks, and how many plants are licensed for it.</span></div>
 <div class="protorow"><span class="lbl">Prototype</span>the <b>Product modules</b> tab. Read <code>renderModules()</code>, <code>toggleMod()</code>, <code>plantMods(plant)</code>, <code>PERMMOD</code>, and <code>moduleModal()</code> for the detail view.<br><span class="lbl" style="margin-top:8px">Full permission → module mapping</span><a href="coverage-map.csv">coverage-map.csv</a></div>
 </div>
@@ -279,13 +279,16 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 <tr><td>Full Site Admin</td><td>Grant</td><td>people + tech</td></tr>
 <tr><td>Global Admin</td><td>Grant</td><td><b>everything</b> — all 10 sets, every plant, no exceptions</td></tr>
 </table>
+<p style="font-size:14px;color:var(--ink-2)">Two similar-sounding words that are NOT the same thing: <b>portfolio</b> is a permission set inside a role (the multi-plant <i>view</i> — see all your assigned plants at once; L4 and Senior Non-op carry it; it grants no management power and no extra plants). <b>Cluster</b> is an admin <i>scope</i> (every plant sharing one company label — it defines which plants a cluster admin can act on, see Step 11). Portfolio = what you can see across your own plants; cluster = which plants an admin can manage.</p>
 <div class="protorow"><span class="lbl">Prototype</span>read <code>SETS</code>, <code>ROLES</code>, <code>GRANTS</code>, <code>isStdG()</code>, and <code>roleModal()</code>/<code>grantModal()</code> for the detail views.<br><span class="lbl" style="margin-top:8px">Full rule text</span><code>CLAUDE.md</code> → "The v2 model."</div>
 </div>
 
 <div class="step" id="step5">
 <h3><span class="badge">5</span>Per-plant assignments</h3>
-<div class="chk"><span class="box"></span><span>Give a person a role <b>at a specific plant.</b> The same person can be an L1 Operator at one plant and a Regular Non-op (just a viewer) at another — this is normal, not an edge case. (74 real people in the migration data need exactly this.)</span></div>
+<div class="chk"><span class="box"></span><span>Give a person a role <b>at a specific plant.</b> The same person can be an L1 Operator at one plant and a Regular Non-op (just a viewer) at another — this is normal, not an edge case. (11 real people in the migration data need exactly this on day one, and the old system already supports it — its Asset Roles are per-plant too. Service companies that operate some plants while monitoring others multiply the pattern.)</span></div>
 <div class="chk"><span class="box"></span><span>The admin grant is account-wide (one grant, works everywhere the person has any plant), but the role is per-plant.</span></div>
+<div class="chk"><span class="box"></span><span>Multi-plant screens don't need role-specific variants: each row (an issue, a task) carries its plant, and the actions on that row come from the viewer's role <b>at that plant</b> — the same per-row mechanic as a module being off there (Step 2). Show a quiet "view-only here" marker on rows where the person can't act; don't hide the rows and don't build separate screens per role.</span></div>
+<div class="chk"><span class="box"></span><span>The assignment UI can keep the common case simple: ~740 of 753 people have one role everywhere, so default to "same role at all selected plants," with per-plant splitting behind an explicit control.</span></div>
 <div class="protorow"><span class="lbl">Prototype</span>the person profile editor inside the People tab. Read <code>togglePlantSel()</code>, <code>initAsg()</code>.</div>
 <p style="font-weight:600;color:var(--navy);margin:16px 0 4px;font-size:14px">The exact shape to save, per person:</p>
 <pre class="saveshape">{
