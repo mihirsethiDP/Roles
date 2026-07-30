@@ -66,11 +66,6 @@ A contractor finishes work at plant A. The admin opens their record and removes 
 - The contractor **still sees plant A and its dashboards**, because visibility comes from the group's Workspace List, which nobody touched. No warning, no error — the admin genuinely believes access is revoked.
 - To actually cut access the admin must also edit the group's Workspace List — but that list is shared, so removing the plant there removes it for **every** user in the group. There is no way to revoke one person's visibility at one plant.
 
-**Example 3 — the audit question.**
-The customer asks: "Who can configure alert tasks at our plant?"
-- For each user: union their administrative roles' leaves, union their per-asset Asset Role leaves for that plant, then intersect with their group's Module List, then check the group's Workspace List even shows the plant. Repeat per user. No screen does any of this.
-- In practice nobody does it, so the honest answer is "we can't say with confidence." (This is also how 27 users ended up assigned to a deleted role without anyone noticing.)
-
 ## 1. The five ideas that explain everything
 
 **1. A "Plant" is the only container.**
