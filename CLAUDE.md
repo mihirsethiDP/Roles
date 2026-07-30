@@ -271,8 +271,11 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
   personas at the bottom of the rail; People is the landing screen) · Plants
   tab (registry grouped by company, KPIs, plant-record modal with an
   "Edit on Product modules" jump-link and an inline add/remove-roster editor,
-  add-plant for Global) · Product modules (the one write surface for module
-  licensing, per ADR-003) · User Center (people directory with a needs-attention queue that
+  add-plant for Global = 3-step onboarding wizard `startAddPlant`/`renderNP`/
+  `npFinish`: details → product modules → people, commit-on-finish only,
+  one audited action; onboarding is the one sanctioned licensing moment
+  outside the matrix) · Product modules (the one write surface for module
+  licensing after onboarding, per ADR-003) · User Center (people directory with a needs-attention queue that
   counts down to ✓ → role + plant-access editor (one account-wide role,
   per-plant customize rows) with progressive
   disclosure, a profile progress meter and a save button that counts

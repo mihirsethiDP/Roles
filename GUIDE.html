@@ -105,6 +105,7 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
     <a class="navstep" href="#r6">6 · Plant-wide bulk action</a>
     <a class="navstep" href="#r7">7 · Preview what someone sees</a>
     <a class="navstep" href="#r8">8 · Edit a plant's roster</a>
+    <a class="navstep" href="#r9">9 · Onboard a new plant</a>
     <div class="grp">Reference</div>
     <a href="#colors">Colours &amp; badges</a>
   </nav>
@@ -151,7 +152,7 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 <p>The plant registry, grouped by company label, with licensed-module chips, headcount, and the roster mix per plant.</p>
 <ul>
 <li><b>Click a plant row</b> to open its record: licensed modules, the full roster (click a person to jump to their profile), and roster editing (Recipe 8).</li>
-<li><span class="ui">＋ Add plant</span> (Company admin only): name + company label. New plants start with Platform Core only — licences are switched on in Product modules.</li>
+<li><span class="ui">＋ Add plant</span> (Company admin only) opens the <b>onboarding wizard</b>: plant details → product modules → people (Recipe 9). Licensing what was sold happens right there; from then on, licences change only in Product modules.</li>
 <li>The modal's <span class="ui">✏️ Edit on Product modules →</span> button jumps you to that plant's row in the module matrix and highlights it.</li>
 </ul>
 </div>
@@ -295,6 +296,17 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 <li><span class="ui">＋ Add person</span> in the roster section → pick any unassigned person → add. They join at their account-wide role; it's written immediately and audited.</li>
 <li><span class="ui">Remove</span> on a roster row takes them off <i>this plant only</i> — their other plants are untouched.</li>
 <li>Scoping applies here too: a plant admin can only do this at their own plant.</li>
+</ol>
+</div>
+
+<div class="card" id="r9">
+<h3><span class="badge">9</span>Onboard a new plant end to end</h3>
+<ol class="steps">
+<li>As <b>Company admin</b>, open <span class="ui">Plants</span> and press <span class="ui">＋ Add plant</span>. A three-step wizard opens — nothing is created until the last step, so cancel any time.</li>
+<li><b>Step 1 · Plant details:</b> name the plant and pick its company label (or add a new label right there — labels group plants in pickers; they're not containers).</li>
+<li><b>Step 2 · Product modules:</b> switch on what was sold. This is the onboarding licensing moment — after today, licences change only on <span class="ui">Product modules</span>. Whatever you leave off caps everyone at this plant until it's licensed.</li>
+<li><b>Step 3 · People:</b> tick existing people to put the plant on their access list — they join at their account-wide role, nothing to pick. Or create brand-new people with a name, title, and their one role.</li>
+<li>Press <span class="ui">Create</span>. The confirmation summarises company, licences, and people, and the whole onboarding lands in the audit trail as one action. <span class="ui">Open the plant record →</span> takes you straight to the result.</li>
 </ol>
 </div>
 </section>

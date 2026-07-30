@@ -4,6 +4,7 @@
 **Date:** 2026-07-30
 **Owner:** Mihir Sethi (Associate Product Manager, DigitalPaani)
 **Live reference:** [`index.html`](index.html) is a full working click-through prototype of everything in this document. It's one HTML file — no build step, no server, no install. Open it in any browser. **Whenever you're not sure how something should look or behave, open the prototype and try it.** The code is plain JavaScript, so you can also just read the function that does the thing you're building.
+**User guide:** [`GUIDE.html`](GUIDE.html) — a step-by-step walkthrough of the prototype: the three admin personas, every screen, and eight click-by-click recipes. Open it side by side with the prototype.
 
 ---
 
@@ -20,6 +21,56 @@ Skip to whatever step you're working on. But read **Section 1** first — it's f
 Every step in Sections 2–4 (the actual build) only needs files you already have from git. Step 13 (running the real migration) needs a few `internal/` files — that's flagged clearly when you get there.
 
 ---
+
+## 0. Today's system — the current flow, the problem, and worked examples
+
+You're replacing something. This section is what that something actually does today, so every design choice in Sections 1–5 has its "compared to what?" (Full factual record: `LegacyRBAC.md` — ask Mihir; the findings below are lifted from it.)
+
+### 0.1 The current flow
+
+Today, "what can this user do?" is decided in **three disconnected places**, edited on three different screens, with no reconciliation between them:
+
+1. **Roles** — 56 of them (46 still live). A role is a bag of checked permission leaves from the catalog (121 permissions in two trees: Asset and Administrative). A user can hold **several roles at once**; their grants are the union. Most roles aren't job functions — they're one-off feature switches ("E-mail", "Back Dated Data Entry" ×2, "View as Different User") or customer/demo specials ("DEMO CSM Role").
+2. **The User Group's Module List** — every user belongs to one group (one group per customer, in practice), and the group carries a **second, independent copy of the permission tree** with its own checkboxes. This is the master gate: **when a role and the group's Module List disagree, the Module List wins.** A role's permissions only work *inside* what the group has enabled.
+3. **The User Group's Workspace List** — a third list deciding which workspaces/plants the group can *see at all*. If the plant isn't here, nothing else matters.
+
+On top of these, users also hold **per-asset Asset Roles** (one or more per plant), drawn from the same permission tree again.
+
+So the effective access formula today is:
+
+> (Administrative Roles ∪ per-asset Asset Roles) → **filtered by** the group's Module List → **filtered by** the group's Workspace List
+
+Three objects, three owners, no screen that shows the combined result, and no warning when they disagree.
+
+### 0.2 The problem, in current time
+
+- **Assigning a role does not complete the loop.** A role grant only takes effect if the user's group *also* has the module enabled AND the plant is in the group's workspace list. Nothing in the UI says so — the role screen reports success, and the user reports "I still can't see it." (Worked example below.)
+- **Fixing one user over-grants the whole group.** The usual "fix" for the incomplete loop is to enable the module on the group's Module List — which switches it on for **every user in that group**, not just the one you meant.
+- **Revoking doesn't complete the loop either — a live security bug.** Removing a user's Asset Role from a plant looks like revoking their access, but plant *visibility* is gated by the group's Workspace List, which that action never touches. The user keeps seeing the plant and its dashboards; the admin believes access is cut; no warning appears anywhere. Dashboards have even been observed viewable by users with **no right at all** to the underlying plant.
+- **Audits are unanswerable.** "What can this person do at plant X?" requires mentally intersecting three trees under a precedence rule that isn't displayed anywhere. In the production data, **725 of 753 users hold multiple stacked roles**, and **27 users point at a role that was deleted from the database** — nobody noticed.
+- **Role names lie.** "Operator Administrative Role" grants only dashboard viewing — roughly 300 users would be wrongly promoted by any name-based reasoning. "Client Role" (read-only by intent) carries manual-ticket *write* permissions.
+- **Every new need mints a new role.** Because roles double as feature switches, a customer wanting one extra capability gets a new bespoke role instead of a new assignment — that's how 56 roles happened, and it doesn't stop on its own.
+- **No operational semantics.** Nothing in the legacy 121 expresses approve / force-close / co-sign — the concepts the Issue Resolution feature is built on. They can't be retrofitted onto the old model; they need the new one (Step 4's `approve` set).
+
+### 0.3 Worked examples of today's flow
+
+**Example 1 — onboarding an operator (the loop that doesn't close).**
+A new operator joins a plant. The admin assigns them "Operator Asset Role" on that plant and tells them they're set.
+- The operator logs in and **can't see the Tasks feature.** Why: their user group's Module List doesn't have the Tasks module checked — and the Module List wins over the role. The role screen showed no error.
+- The admin finds the group, checks the module. Now it works — **for the entire group**, including three client viewers who were never meant to run tasks.
+- If the plant also wasn't in the group's Workspace List, there's a third stop nobody told the admin about.
+- The "assign a role" action is therefore **not one action** — it's three edits on three screens, must be done in the right order, silently over-grants in the middle, and no screen confirms the loop is closed.
+- *In v2:* one screen. Person → role (account-wide) → plant on their access list. What that plant's modules license is visible **on the same screen** (capped lines show as 📦), and effective access is one computable rule: `permission AND plant module`. Saving either completes the whole loop or tells you exactly what's missing.
+
+**Example 2 — offboarding from one plant (the reverse loop, currently a security bug).**
+A contractor finishes work at plant A. The admin opens their record and removes their Asset Role on plant A — the action that looks like "revoke access."
+- The contractor **still sees plant A and its dashboards**, because visibility comes from the group's Workspace List, which nobody touched. No warning, no error — the admin genuinely believes access is revoked.
+- *In v2:* removing the plant row from the person's access list is the whole revocation — visibility, capability, everything derives from that one row. (This defect is why ADR-001/002 removed groups and workspaces as containers entirely.)
+
+**Example 3 — the audit question.**
+The customer asks: "Who can configure alert tasks at our plant?"
+- Today: for each user — union their administrative roles' leaves, union their per-asset Asset Role leaves for that plant, then intersect with their group's Module List, then check the group's Workspace List even shows the plant. Repeat per user. In practice nobody does this; the honest answer is "we can't say with confidence." (This is also how 27 users ended up assigned to a deleted role without anyone noticing.)
+- *In v2:* Access review → plant lens → capability query → the list, with how each person got it (role standard vs reasoned exception), respecting the module ceiling. One click. (Try it in the prototype — [`GUIDE.html`](GUIDE.html), Recipe 4.)
 
 ## 1. The five ideas that explain everything
 
@@ -78,15 +129,15 @@ Plain field lists — this is not a schema, just what data needs to exist somewh
 Each step names the prototype tab and the key functions to read in `index.html`. Build and test each step before moving to the next — later steps assume earlier ones work.
 
 ### Step 1 — Plants: the base registry
-- [ ] Store plant name + company label. The label is an explicit company **name picked from a small managed list** — not free text (free text would let "GreenGrid" and "Greengrid Utilities" silently split one cluster in two), and not a container with its own screens. New labels get added inline from the Add-plant form (Global Admin only); rename/merge tooling can come later.
+- [ ] Store plant name + company label. The label is an explicit company **name picked from a small managed list** — not free text (free text would let "GreenGrid" and "Greengrid Utilities" silently split one cluster in two), and not a container with its own screens. New labels get added inline from step 1 of the add-plant wizard (Global Admin only); rename/merge tooling can come later.
 - [ ] A screen listing all plants, grouped by company label, with an "add plant" action.
-- [ ] New plants start with **no modules licensed** (Platform Core is always on for everyone, everywhere, for free).
+- [ ] Adding a plant is a **guided onboarding wizard** (Global Admin only), not a bare name form: **1. plant details** (name + company label) → **2. product modules** (license what was sold — this is the one sanctioned moment licensing happens outside the Step-2 matrix) → **3. people** (put existing users on the access list at their account-wide role, and/or create new users with their role). Nothing is written until the final confirm — cancel leaves the registry untouched — and the whole onboarding lands as **one audited action**. A plant *can* still be created with no modules and no people (Platform Core is always on for everyone, everywhere, for free).
 
-*Prototype:* the **Plants** tab. Read `renderPlants()`, `addPlantSubmit()`, `plantModal()` in `index.html`.
+*Prototype:* the **Plants** tab. Read `renderPlants()`, `startAddPlant()` → `renderNP()`/`npFinish()` (the wizard), `plantModal()` in `index.html`.
 
 ### Step 2 — Product modules: the licensing ceiling
 - [ ] A matrix: one row per plant, one column per module, one on/off switch per cell.
-- [ ] Writing to this matrix is **Global Admin only** — this is the single place module flags are ever changed. Don't let any other screen edit modules directly, even to be "helpful" — link to this screen instead.
+- [ ] Writing to this matrix is **Global Admin only** — this is the single place module flags are changed after a plant exists. The one exception is initial licensing inside the add-plant onboarding wizard (Step 1), which is also Global-Admin-only. Don't let any other screen edit modules directly, even to be "helpful" — link to this screen instead.
 - [ ] Every permission in your system needs a `module` tag. A permission with no tag defaults to `core` (always on).
 - [ ] `floc` (the BioHealthTrack hardware) is a special case: it's licensed and toggled exactly like the other 7 modules, but **no permission is tagged to it *yet*.** Today it exists so a contract can say what hardware was sold. The moment BioHealthTrack grows a user-facing widget or screen, add that permission with a `mod:floc` tag and the ceiling from this step handles the rest — the widget appears only at plants licensed for it, with no model changes. Same pattern for any future hardware add-on module.
 - [ ] Clicking a module (here or anywhere it's shown as a card) should open a detail view: what it unlocks, and how many plants are licensed for it.
@@ -285,6 +336,7 @@ Only the documents this PRD actually points you to — every one of them either 
 | [`README.md`](README.md) | How the prototype is deployed (GitHub Pages) and how to run it locally. |
 | [`coverage-map.csv`](coverage-map.csv) | All 121 old permissions → their new home, one row each. |
 | [`index.html`](index.html) | The working prototype — the reference implementation for every step above. |
+| [`GUIDE.html`](GUIDE.html) | The prototype user guide — personas, every screen, eight click-by-click recipes. Read it alongside the prototype. |
 | [`presentation/index.html`](presentation/index.html) | A guided onboarding walkthrough version of the same model — useful for demos, not a build target. |
 | [`reference/role-permission-migration-map.xlsx`](reference/role-permission-migration-map.xlsx) | The developer-facing permission map (Section 4) — start here for mapping code. |
 | [`reference/permissions-decisions-reviewed.xlsx`](reference/permissions-decisions-reviewed.xlsx) | Optional — every one of the 121 permissions, decided, with reasoning. |

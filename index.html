@@ -85,6 +85,26 @@ header.hero{background:var(--navy);color:#fff;padding:30px 0 0;border-bottom:4px
 .modal .mstat .n{font-family:'Figtree';font-weight:800;font-size:20px;color:var(--navy)}
 .modal .mstat .l{font-size:11px;color:var(--ink-2)}
 .custombadge{font-family:var(--mono);font-size:9px;letter-spacing:.08em;background:var(--ops);color:#fff;border-radius:9px;padding:2px 8px;vertical-align:middle}
+/* Add-plant onboarding wizard */
+.npsteps{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.npsteps .s{font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;border:1px solid var(--line-strong);border-radius:999px;padding:4px 11px;color:var(--ink-3);background:var(--bg)}
+.npsteps .s.on{background:var(--navy);border-color:var(--navy);color:#fff;font-weight:600}
+.npsteps .s.done{background:var(--teal-tint);border-color:var(--teal-d);color:var(--ops)}
+.nperr{background:var(--err-bg);border:1px solid var(--err);color:var(--err);border-radius:10px;padding:9px 13px;font-size:12.5px;margin-bottom:12px}
+.npfield{margin-bottom:12px}
+.npfield label{display:block;font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:5px}
+.npfield input,.npfield select{width:100%}
+.npmods{display:flex;flex-direction:column;gap:7px}
+.npmod{display:flex;align-items:flex-start;gap:10px;border:1.5px solid var(--line-strong);border-radius:12px;padding:10px 13px;cursor:pointer;background:var(--card)}
+.npmod:hover{border-color:var(--teal-d)}
+.npmod.on{border-color:var(--teal-d);background:var(--teal-tint)}
+.npmod.lock{cursor:default;background:var(--bg);border-style:dashed}
+.npmod.lock:hover{border-color:var(--line-strong)}
+.npmod .nn{font-size:13px;font-weight:700;color:var(--navy)}
+.npmod .dd{font-size:11.5px;color:var(--ink-2);line-height:1.45;margin-top:1px}
+.npmod .tk{margin-left:auto;flex:none;font-size:14px;color:var(--ops);font-weight:700}
+.npfoot{display:flex;gap:8px;align-items:center;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+.npfoot .spacer{flex:1}
 .pkstd{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;margin:0 14px 6px 0;background:var(--ops-bg);border-radius:8px;padding:2px 8px 2px 4px;color:var(--ops);cursor:default}
 .pkstd .inc{font-family:var(--mono);font-size:9px;letter-spacing:.05em;text-transform:uppercase;opacity:.75}
 .attnrow{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
@@ -1857,7 +1877,6 @@ function toggleMod(p,mod){
 }
 
 /* ---- Plants tab: the plant registry (licensing lives on Product modules; people in the User Center) ---- */
-let addingPlant=false;
 function plantRoster(pl){ return PEOPLE.filter(p=>p.asg[pl]); }
 function renderPlants(){
   const kEl=document.getElementById("plantkpis"), tEl=document.getElementById("plantstable"), aEl=document.getElementById("plantadd");
@@ -1872,13 +1891,7 @@ function renderPlants(){
      <div class="kpi"><div class="n">${lic}</div><div class="l">module licenses (beyond core)</div></div>
      <div class="kpi"><div class="n">${staffed.size}</div><div class="l">people with access</div></div>`;
   if(aEl) aEl.innerHTML=persona.kind!=="global"?"":
-    (addingPlant?
-      `<div class="addform2"><b style="font-size:13px">New plant</b> <span style="font-size:12px;color:var(--ink-3)">— starts with Platform Core only; license modules on the Product modules screen (onboarding = Global Admin).</span><br>
-       <input id="npName" placeholder="Plant name — e.g. STP — Sector 90" style="min-width:260px">
-       <select id="npCo">${Object.entries(COMPANIES).map(([id,n])=>`<option value="${id}">${n}</option>`).join("")}</select>
-       <button class="btn primary" onclick="addPlantSubmit()">Add plant</button>
-       <button class="btn ghost" onclick="startAddPlant()">Cancel</button></div>`
-      :`<div style="margin-bottom:10px"><button class="btn primary" onclick="startAddPlant()">＋ Add plant</button></div>`);
+    `<div style="margin-bottom:10px"><button class="btn primary" onclick="startAddPlant()">＋ Add plant</button></div>`;
   const groups=plantsByCompany();
   let h=`<table class="utable"><thead><tr><th>Plant</th><th>Licensed modules</th><th>People</th><th>Roster mix</th><th></th></tr></thead><tbody>`;
   Object.keys(groups).filter(co=>groups[co].some(inScope)).forEach(co=>{
@@ -1898,16 +1911,136 @@ function renderPlants(){
   });
   tEl.innerHTML=h+`</tbody></table>`;
 }
-function startAddPlant(){ addingPlant=!addingPlant; renderPlants(); }
-function addPlantSubmit(){
-  const name=(document.getElementById("npName").value||"").trim();
-  const co=document.getElementById("npCo").value;
-  if(!name) return;
-  if(PLANTCO[name]){ AUDIT.unshift({w:"now",t:`Add plant blocked — "${name}" already exists`}); renderPlants(); return; }
-  PLANTCO[name]=co; PLANTMODS[name]=[]; ALLPLANTS.push(name);
-  AUDIT.unshift({w:"now",t:`Plant added: ${name} (${COMPANIES[co]}) — Platform Core only; modules to be licensed at onboarding · by ${personaName()}`});
-  addingPlant=false;
-  renderPlants(); renderModules(); render();
+/* ---- Add-plant onboarding wizard (Global Admin only): 1 details → 2 modules → 3 people.
+   Onboarding is the one sanctioned moment module licensing happens OUTSIDE the Product modules
+   screen (ADR-003 still holds: every change after today goes through that matrix). Nothing is
+   created until the final step commits — Cancel anywhere leaves the registry untouched. */
+let NP=null;
+function startAddPlant(){
+  if(persona.kind!=="global") return; // onboarding a plant (and its licences) is a Company-admin action
+  NP={step:1,name:"",co:Object.keys(COMPANIES)[0],newCo:"",mods:new Set(),users:new Set(),newPeople:[],err:"",done:false};
+  renderNP();
+}
+function npStash(){ // keep typed values across modal re-renders
+  if(!NP||NP.done) return;
+  const n=document.getElementById("npName"),c=document.getElementById("npCo"),x=document.getElementById("npNewCo");
+  if(n) NP.name=n.value; if(c) NP.co=c.value; if(x) NP.newCo=x.value;
+}
+function npCoChange(v){ NP.co=v; const x=document.getElementById("npNewCo"); if(x) x.style.display=v==="__new"?"":"none"; }
+function npGo(s){ if(NP.done) return; npStash(); if(s>1&&!npValid1()) return renderNP(); NP.err=""; NP.step=s; renderNP(); }
+function npValid1(){
+  const name=NP.name.trim();
+  if(!name){ NP.err="Give the plant a name."; NP.step=1; return false; }
+  if(PLANTCO[name]){ NP.err=`“${name}” already exists — plant names are unique.`; NP.step=1; return false; }
+  if(NP.co==="__new"&&!NP.newCo.trim()){ NP.err="Name the new company label, or pick an existing one."; NP.step=1; return false; }
+  return true;
+}
+function npToggleMod(id){ if(modById[id].always) return; if(NP.mods.has(id)) NP.mods.delete(id); else NP.mods.add(id); renderNP(); }
+function npToggleUser(id){ if(NP.users.has(id)) NP.users.delete(id); else NP.users.add(id); }
+function npAddPerson(){
+  const n=(document.getElementById("npPn").value||"").trim();
+  if(!n){ NP.err="The new person needs a name."; return renderNP(); }
+  NP.newPeople.push({n:n,t:(document.getElementById("npPt").value||"").trim()||"Team member",role:document.getElementById("npPr").value});
+  NP.err=""; renderNP();
+}
+function npDropPerson(i){ NP.newPeople.splice(i,1); renderNP(); }
+function npFinish(){
+  if(persona.kind!=="global"||!NP||NP.done) return;
+  npStash();
+  if(!npValid1()) return renderNP();
+  const name=NP.name.trim();
+  let coId=NP.co;
+  if(coId==="__new"){
+    coId="co-"+NP.newCo.trim().toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+    while(COMPANIES[coId]) coId+="x";
+    COMPANIES[coId]=NP.newCo.trim();
+  }
+  PLANTCO[name]=coId; PLANTMODS[name]=[...NP.mods]; ALLPLANTS.push(name);
+  let added=0;
+  NP.users.forEach(id=>{
+    const p=PEOPLE.find(x=>x.id===id);
+    if(!p||p.asg[name]) return;
+    const a={tier:p.role,P:{},reason:"",openSets:{},open:false};
+    SETS.forEach(s=>s.perms.forEach(pr=>a.P[s.id+"."+pr.id]=isStdG(p.role,p.grant,s.id)));
+    p.asg[name]=a; added++;
+  });
+  NP.newPeople.forEach(np=>{
+    addSeq++;
+    PEOPLE.push(mkPerson("new"+addSeq,AVPOOL[addSeq%AVPOOL.length],np.n,np.t,coId,"",np.role,[{plant:name}]));
+  });
+  const modNames=MODULES.filter(m=>!m.always&&NP.mods.has(m.id)).map(m=>m.n);
+  AUDIT.unshift({w:"now",t:`Plant onboarded: ${name} (${COMPANIES[coId]}) — licensed ${modNames.length?modNames.join(", "):"Platform Core only"} · ${added+NP.newPeople.length?`${added} existing + ${NP.newPeople.length} new ${added+NP.newPeople.length===1?"person":"people"} given access at their role`:"no people assigned yet"} · by ${personaName()}`});
+  NP.done=true; NP.added=added; NP.coId=coId; NP.finalName=name;
+  renderPlants(); renderModules(); render(); renderReview();
+  renderNP();
+}
+function npStepper(){
+  const lbl=["Plant details","Product modules","People"];
+  return `<div class="npsteps">`+lbl.map((l,i)=>{
+    const s=i+1, cls=NP.done?"done":s===NP.step?"on":s<NP.step?"done":"";
+    return `<span class="s ${cls}" ${!NP.done&&s<NP.step?`onclick="npGo(${s})" style="cursor:pointer"`:""}>${s<NP.step||NP.done?"✓ ":""}${s} · ${l}</span>`;
+  }).join("")+`</div>`;
+}
+function renderNP(){
+  if(!NP) return;
+  let body=npStepper()+(NP.err?`<div class="nperr">⚠ ${esc(NP.err)}</div>`:"");
+  if(NP.done){
+    const mods=MODULES.filter(m=>!m.always&&NP.mods.has(m.id));
+    body+=`<div class="mnote" style="margin-top:0"><b>✅ ${esc(NP.finalName)} is onboarded.</b><br>
+      Company: <b>${esc(COMPANIES[NP.coId])}</b> · Licensed: <b>${mods.length?mods.map(m=>m.icon+" "+m.n).join(", "):"Platform Core only"}</b> · People with access: <b>${NP.added+NP.newPeople.length}</b>.</div>
+      <div class="help" style="margin-top:12px"><span class="i">📒</span><span>Everything above is one audited action. From here, licences change on the <b>Product modules</b> screen only, and access is managed from the plant record or each person's profile.</span></div>
+      <div class="npfoot"><span class="spacer"></span>
+        <button class="btn ghost" onclick="plantModal('${NP.finalName.replace(/'/g,"\\'")}')">Open the plant record →</button>
+        <button class="btn primary" onclick="closeModal()">Done</button></div>`;
+    openModal("New plant — onboarded","Step 3 of 3 complete",body);
+    return;
+  }
+  if(NP.step===1){
+    body+=`<div class="npfield"><label>Plant name</label>
+      <input id="npName" value="${esc(NP.name)}" placeholder="e.g. STP — Sector 90"></div>
+      <div class="npfield"><label>Company — a label on the plant record that groups plants in pickers (not an entity)</label>
+      <select id="npCo" onchange="npCoChange(this.value)">
+        ${Object.entries(COMPANIES).map(([id,n])=>`<option value="${id}" ${NP.co===id?"selected":""}>${esc(n)}</option>`).join("")}
+        <option value="__new" ${NP.co==="__new"?"selected":""}>＋ New company label…</option>
+      </select></div>
+      <div class="npfield" id="npNewCoWrap"><input id="npNewCo" value="${esc(NP.newCo)}" placeholder="New company label — e.g. BlueRiver O&M" style="display:${NP.co==="__new"?"":"none"}"></div>
+      <div class="npfoot"><button class="btn ghost" onclick="closeModal()">Cancel</button><span class="spacer"></span>
+        <button class="btn primary" onclick="npGo(2)">Next: Product modules →</button></div>`;
+    openModal("New plant — onboarding","Step 1 of 3 · Plant details",body);
+  } else if(NP.step===2){
+    body+=`<div class="npmods">`+MODULES.map(m=>{
+      const on=m.always||NP.mods.has(m.id);
+      return `<div class="npmod ${m.always?"lock on":on?"on":""}" onclick="npToggleMod('${m.id}')">
+        <span style="font-size:17px;flex:none">${m.icon}</span>
+        <span><span class="nn">${m.n}</span>${m.always?` <span class="tt">· always included</span>`:""}<br><span class="dd">${m.d}</span></span>
+        <span class="tk">${on?"✓":""}</span></div>`;
+    }).join("")+`</div>
+      <div class="help" style="margin-top:12px"><span class="i">💡</span><span>Modules are the ceiling at this plant: <b>effective access = user permission ∧ plant module</b>. Onboarding is when the Company admin licenses what was sold — after today, licences change on the <b>Product modules</b> screen only.</span></div>
+      <div class="npfoot"><button class="btn ghost" onclick="npGo(1)">← Back</button><span class="spacer"></span>
+        <button class="btn primary" onclick="npGo(3)">Next: People →</button></div>`;
+    openModal("New plant — onboarding",`Step 2 of 3 · License product modules at ${NP.name.trim()||"the new plant"}`,body);
+  } else {
+    const nSel=NP.users.size+NP.newPeople.length;
+    body+=`<div class="gh" style="margin-top:0">Give existing people access</div>
+      <div class="hint" style="margin:2px 0 8px">They join at their <b>account-wide role</b> — a role is a property of the person, so there is nothing to pick here. Exceptions come later, on their profile.</div>`
+      +(PEOPLE.length?`<div style="overflow-x:auto"><table class="utable"><tbody>`+PEOPLE.slice().sort((a,b)=>a.n.localeCompare(b.n)).map(p=>
+        `<tr><td style="width:30px"><input type="checkbox" ${NP.users.has(p.id)?"checked":""} onchange="npToggleUser('${p.id}')"></td>
+         <td><span class="nm">${esc(p.n)}</span><br><span class="tt">${esc(p.t)} · ${esc(COMPANIES[p.co]||p.co)}</span></td>
+         <td><span class="tierchip">${ROLES[p.role].n}</span></td></tr>`).join("")+`</tbody></table></div>`:"")
+      +`<div class="gh" style="margin-top:16px">…or create new people, with their role</div>
+      <div class="hint" style="margin:2px 0 8px">A new person gets their one role now — their permissions here = the role's standard, capped by the modules you just licensed. Admin duties and exceptions are granted later on their profile.</div>`
+      +NP.newPeople.map((np,i)=>`<div class="prow2"><span class="tick">✚</span><span><b>${esc(np.n)}</b> — ${esc(np.t)} · ${ROLES[np.role].n}</span>
+        <button class="btn ghost" style="margin-left:auto;padding:2px 9px;font-size:11px" onclick="npDropPerson(${i})">✕</button></div>`).join("")
+      +`<div class="addform2" style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+        <input id="npPn" placeholder="Name" style="flex:1 1 150px;min-width:0">
+        <input id="npPt" placeholder="Title (optional)" style="flex:1 1 130px;min-width:0">
+        <select id="npPr" style="flex:1 1 100%;max-width:100%">${Object.entries(ROLES).map(([id,r])=>`<option value="${id}">${r.n} — ${r.s}</option>`).join("")}</select>
+        <button class="btn ghost" onclick="npAddPerson()">＋ Add to list</button></div>
+      <div class="hint" style="margin-top:10px">You can leave this step empty — people can be added any time from the plant record or the User Center.</div>
+      <div class="npfoot"><button class="btn ghost" onclick="npGo(2)">← Back</button><span class="spacer"></span>
+        <button class="btn primary" onclick="npFinish()">Create ${esc(NP.name.trim()||"plant")}${nSel?` · ${nSel} ${nSel===1?"person":"people"}`:""}</button></div>`;
+    openModal("New plant — onboarding",`Step 3 of 3 · Who works at ${NP.name.trim()||"the new plant"}?`,body);
+  }
 }
 let plantAddOpen=false, lastPlantModalPl=null;
 function toggleAddToPlant(pl){ plantAddOpen=!plantAddOpen; plantModal(pl); }
