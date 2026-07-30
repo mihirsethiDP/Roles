@@ -91,12 +91,23 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
   entity — "Company is actually the Plant." People are assigned directly to
   plants; pickers group plants by company label. The word "workspace" is
   retired from all UI (per-permission labels included).
-- **Per-plant assignments (owner ruling 2026-07-13): a person holds a tier
-  PER PLANT** — `ASG` in index.html, one row per (person, plant), different
-  capacities at different plants are first-class (11 confirmed real users in
-  the migration data need this on day one, per NUMBER-PINS — the earlier 74
-  was the flattened-worksheet estimate; legacy V1 Asset Roles are per-asset
-  natively, so the pattern already exists in production). Overrides and their mandatory reason are scoped
+- **ONE ROLE PER USER, account-wide (ruling 2026-07-30 — Mansi/CEO + Alex +
+  owner; SUPERSEDES the 2026-07-13 per-plant-tier ruling).** A role is a
+  capability level of the PERSON ("either the user has decision-making
+  ability or doesn't"), not a per-plant attribute. Plant assignments remain
+  per person as an ACCESS LIST (which plants they can see/act at), and the
+  module ceiling still applies per plant — but the tier is one field on the
+  user. Per-person-per-plant exception grants (remote.actuate etc.) survive
+  unchanged; whether general per-plant overrides survive is an open design
+  question (lean: keep, they are the flexibility valve). Empirical basis:
+  the 11 "true mixed-capacity" users all resolve as operators who held
+  legacy Client viewer roles at other plants for VISIBILITY — misconfigured
+  stacking, not mixed authority (internal/single-role-resolution.md). Day-one
+  risk of flattening ≈ nil (ops module unlicensed; L1-everywhere ≈ viewer +
+  stock at inv plants); the per-plant ops-enablement review catches the rest.
+  **Prototype (per-plant tier editor in index.html), PRD Step 5/9, and the
+  save payload (tier moves out of assignments[] to the user) are NOT yet
+  reworked to this ruling — pending.** Overrides and their mandatory reason are scoped
   per plant; drift is counted per plant; guardrail cascades run per
   assignment. Grant stays account-level (max one per user per site). The old
   "split vs edit the group assignment" open question is dissolved — you edit

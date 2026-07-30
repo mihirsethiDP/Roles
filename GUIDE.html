@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>User Guide — Role Studio prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#002454; --navy-deep:#001B3F; --navy-tint:#E9F0F7;
+  --teal:#95CFD3; --teal-d:#5AABB0; --teal-tint:#E8F5F6;
+  --bg:#F7F8F9; --card:#FFFFFF; --line:#E2E6EA; --line-strong:#C7CFD8;
+  --ink:#1A2533; --ink-2:#4A5568; --ink-3:#8A95A3;
+  --ops:#1F6B71; --ops-bg:#E8F5F6; --ops-line:#95CFD3;
+  --flag:#B45309; --flag-bg:#FFF8E1; --err:#B80000;
+  --mono:'IBM Plex Mono',monospace;
+  --sidew:270px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 'Figtree',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Figtree',sans-serif;font-weight:600;line-height:1.25;margin:0}
+a{color:var(--ops)}
+code{font-family:var(--mono);font-size:.88em;background:var(--navy-tint);color:var(--navy);padding:1px 6px;border-radius:5px}
+
+.rail{position:fixed;top:0;left:0;bottom:0;width:var(--sidew);background:var(--navy);color:#fff;overflow-y:auto;padding:22px 0 30px;z-index:10}
+.rail::-webkit-scrollbar{width:7px}
+.rail::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-radius:4px}
+.rail .brand{padding:0 22px 18px;border-bottom:1px solid rgba(255,255,255,.12);margin-bottom:14px}
+.rail .brand .eyebrow{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);font-weight:600}
+.rail .brand h1{font-size:16px;color:#fff;margin-top:6px}
+.rail .brand .sub{font-size:11.5px;color:rgba(255,255,255,.55);margin-top:6px;line-height:1.5}
+.rail nav{padding:6px 10px}
+.rail .grp{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);padding:14px 12px 5px}
+.rail a{display:block;padding:6px 12px;border-radius:8px;color:rgba(255,255,255,.82);text-decoration:none;font-size:13px}
+.rail a:hover{background:rgba(255,255,255,.08);color:#fff}
+.rail a.navstep{font-family:var(--mono);font-size:12px;color:rgba(255,255,255,.62);padding:4px 12px 4px 20px}
+.rail a.navstep:hover{color:#fff}
+.rail .backlink{display:block;margin:16px 12px 0;padding:9px 12px;border:1px solid rgba(255,255,255,.18);border-radius:9px;font-size:12px;color:rgba(255,255,255,.85);text-align:center;text-decoration:none}
+.rail .backlink:hover{border-color:var(--teal);color:#fff}
+
+main{margin-left:var(--sidew);max-width:900px;padding:44px 48px 100px}
+section{margin-bottom:46px;scroll-margin-top:20px}
+h2{font-size:23px;color:var(--navy);letter-spacing:-.01em;margin-bottom:6px}
+.lede{font-size:14.5px;color:var(--ink-2);margin:10px 0 22px;max-width:66ch}
+.callout{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--ops-line);border-radius:0 12px 12px 0;padding:14px 18px;margin:16px 0;font-size:14px}
+.callout.warn{border-left-color:var(--flag);background:var(--flag-bg)}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 24px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,36,84,.05)}
+.card h3{font-size:17px;color:var(--navy);margin-bottom:10px;display:flex;align-items:baseline;gap:9px}
+.card h3 .badge{font-family:var(--mono);font-size:11px;font-weight:700;background:var(--ops);color:#fff;padding:3px 9px;border-radius:7px;flex:none}
+.card h3 .tag{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.06em;color:var(--ink-3);text-transform:uppercase;margin-left:auto}
+.card p{font-size:14px;color:var(--ink-2);margin:0 0 10px}
+.card ul{margin:0 0 8px;padding-left:20px;font-size:14px}
+.card li{margin-bottom:7px}
+.card li::marker{color:var(--teal-d)}
+
+ol.steps{counter-reset:st;list-style:none;margin:8px 0 0;padding:0}
+ol.steps li{counter-increment:st;position:relative;padding:0 0 12px 40px;font-size:14px}
+ol.steps li::before{content:counter(st);position:absolute;left:0;top:-1px;width:26px;height:26px;border-radius:50%;background:var(--navy-tint);color:var(--navy);font-family:var(--mono);font-weight:700;font-size:12.5px;display:inline-flex;align-items:center;justify-content:center}
+ol.steps b{color:var(--navy)}
+.ui{display:inline-block;background:var(--card);border:1px solid var(--line-strong);border-bottom-width:2px;border-radius:7px;padding:1px 8px;font-size:12.5px;font-weight:600;color:var(--navy);white-space:nowrap}
+
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13.5px;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+th{background:var(--navy);color:#fff;text-align:left;padding:9px 14px;font-size:12px;letter-spacing:.03em;font-weight:600}
+td{padding:9px 14px;border-top:1px solid var(--line);vertical-align:top}
+tr:nth-child(even) td{background:var(--bg)}
+.sw{display:inline-block;padding:2px 9px;border-radius:9px;font-size:11.5px;font-weight:700}
+.sw.amber{background:var(--flag-bg);color:var(--flag)}
+.sw.grey{background:#EEF1F4;color:var(--ink-3)}
+.sw.grn{background:var(--ops-bg);color:var(--ops)}
+
+footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:var(--ink-3);font-family:var(--mono)}
+@media (max-width:880px){
+  .rail{position:static;width:auto;bottom:auto}
+  main,footer{margin-left:0;padding:28px 20px 70px}
+}
+</style>
+</head>
+<body>
+
+<div class="rail">
+  <div class="brand">
+    <div class="eyebrow">DigitalPaani</div>
+    <h1>User Guide<br>Role Studio prototype</h1>
+    <div class="sub">how to drive every screen, step by step</div>
+  </div>
+  <nav>
+    <a href="#start">Start here</a>
+    <a href="#personas">Choose who you are</a>
+    <div class="grp">The screens</div>
+    <a class="navstep" href="#people">People (User Center)</a>
+    <a class="navstep" href="#plants">Plants</a>
+    <a class="navstep" href="#modules">Product modules</a>
+    <a class="navstep" href="#library">Role library</a>
+    <a class="navstep" href="#review">Access review</a>
+    <a class="navstep" href="#previews">UI previews</a>
+    <a class="navstep" href="#control">Control panel</a>
+    <div class="grp">Recipes</div>
+    <a class="navstep" href="#r1">1 · Add a person, give access</a>
+    <a class="navstep" href="#r2">2 · Grant remote control</a>
+    <a class="navstep" href="#r3">3 · Simulate a plan change</a>
+    <a class="navstep" href="#r4">4 · Who can approve here?</a>
+    <a class="navstep" href="#r5">5 · Create &amp; apply a custom role</a>
+    <a class="navstep" href="#r6">6 · Plant-wide bulk action</a>
+    <a class="navstep" href="#r7">7 · Preview what someone sees</a>
+    <a class="navstep" href="#r8">8 · Edit a plant's roster</a>
+    <div class="grp">Reference</div>
+    <a href="#colors">Colours &amp; badges</a>
+    <a href="#ruling">Heads-up: July 30 ruling</a>
+  </nav>
+  <a class="backlink" href="index.html">→ Open the prototype</a>
+</div>
+
+<main>
+
+<section id="start">
+<h2>Start here</h2>
+<p class="lede">The prototype at <a href="index.html">mihirsethidp.github.io/Roles</a> is a full working model of the new roles &amp; permissions system — every screen, rule, and guardrail is real and clickable. Nothing you do is saved permanently: <b>refresh the page and everything resets</b> to the seed data, so click anything without fear.</p>
+<div class="callout">One rule runs the whole system, on every screen: <b>what a person can actually do at a plant = their permission <code>AND</code> that plant's licensed modules.</b> When something is greyed out or a save is blocked, it's this rule (or one of its guardrails) doing its job.</div>
+<p class="lede">It ships with seed data: 11 plants across 4 companies, 5 people (Asha, Vikram, Ramesh, Priya, Kavita), and a full set of modules, roles, and licences — enough to try every flow below.</p>
+</section>
+
+<section id="personas">
+<h2>Choose who you are</h2>
+<p class="lede">At the <b>bottom of the left rail</b> there are three persona buttons. Everything on every screen re-scopes instantly when you switch — this is how you experience the product as three different kinds of admin:</p>
+<table>
+<tr><th>Persona</th><th>Scope</th><th>What's different</th></tr>
+<tr><td><b>🌐 Company admin</b> (DigitalPaani, Global)</td><td>Everything</td><td>Sees all plants and people. The only one who can toggle module licences, add plants, and hand out the Global grant.</td></tr>
+<tr><td><b>🏢 Cluster admin</b> (GreenGrid)</td><td>The 4 GreenGrid plants</td><td>Manages only GreenGrid's people and plants. Module matrix is read-only. Gets the Control panel as a home screen.</td></tr>
+<tr><td><b>🏭 Plant admin</b> (STP — Sector 62)</td><td>One plant</td><td>Manages one roster. Everything else is filtered down to that plant. Also gets the Control panel.</td></tr>
+</table>
+<p class="lede">Tip: whenever a button seems missing, check which persona you're in — most "where did it go?" moments are scoping working correctly.</p>
+</section>
+
+<section id="people">
+<div class="card">
+<h3><span class="badge">Screen</span>People (User Center) <span class="tag">landing screen</span></h3>
+<p>The person registry everything drives from. Top: KPI counts and a <b>needs-attention queue</b> that counts down as you fix things (missing reasons, people with zero access). Below: the directory table — every person with their per-plant role chips, admin grant, and status badges.</p>
+<ul>
+<li><span class="ui">Search name or title…</span> and the filter dropdowns narrow the table.</li>
+<li><span class="ui">＋ Add person</span> creates someone new — they start with <b>zero access</b> until you assign plants.</li>
+<li><b>Click any row</b> to open the profile editor — that's where all assignment work happens (see Recipe 1).</li>
+<li>Below the directory: the <b>Plant-wide actions</b> panel (bulk changes, Recipe 6) and the custom-role apply flow (Recipe 5).</li>
+</ul>
+</div>
+</section>
+
+<section id="plants">
+<div class="card">
+<h3><span class="badge">Screen</span>Plants</h3>
+<p>The plant registry, grouped by company label, with licensed-module chips, headcount, and the roster mix per plant.</p>
+<ul>
+<li><b>Click a plant row</b> to open its record: licensed modules, the full roster (click a person to jump to their profile), and roster editing (Recipe 8).</li>
+<li><span class="ui">＋ Add plant</span> (Company admin only): name + company label. New plants start with Platform Core only — licences are switched on in Product modules.</li>
+<li>The modal's <span class="ui">✏️ Edit on Product modules →</span> button jumps you to that plant's row in the module matrix and highlights it.</li>
+</ul>
+</div>
+</section>
+
+<section id="modules">
+<div class="card">
+<h3><span class="badge">Screen</span>Product modules</h3>
+<p>The licensing ceiling — the one place module flags are written. Top: a card per module (click one for its detail: what it unlocks, how many plants have it). Bottom: the plant × module matrix with a switch per cell.</p>
+<ul>
+<li>Switches work only as the <b>Company admin</b> persona — cluster/plant admins see the matrix read-only with a 🔒 banner. That's the model, not a bug.</li>
+<li>Toggling a module is the best "what if" in the prototype: every other screen updates instantly (see Recipe 3).</li>
+<li>Floc Detector (BioHealthTrack) legitimately unlocks nothing — it's a hardware entitlement that tracks what was sold.</li>
+</ul>
+</div>
+</section>
+
+<section id="library">
+<div class="card">
+<h3><span class="badge">Screen</span>Role library</h3>
+<p>The full catalog: five base roles and four admin grants as cards (click any card for its complete brief — every permission it carries, who holds it), plus the <b>custom-role register</b> below.</p>
+<ul>
+<li><b>Custom role = a named add/remove template</b>, not a new kind of role. Creating one does nothing by itself — you <b>apply</b> it to chosen people later (Recipe 5).</li>
+<li>Each custom role in the register shows its grants/revokes, reason, creator, and where it's been applied. <span class="ui">Retire</span> archives the template without touching anyone who already received it.</li>
+<li>The permission palette when building one is scope-aware: Company admin picks from everything; a cluster/plant admin only sees permissions their licensed modules unlock.</li>
+</ul>
+</div>
+</section>
+
+<section id="review">
+<div class="card">
+<h3><span class="badge">Screen</span>Access review <span class="tag">verify</span></h3>
+<p>The auditor's screen. Two lenses, toggle at the top:</p>
+<ul>
+<li><span class="ui">👤 Person lens</span> — one person's capability × plant grid. Five cell states: ✓ default · ✚ added · ⊘ removed · ▢ capped by module · − off. <b>Click any cell</b> for the why-chain — a one-sentence explanation of exactly why that cell is what it is.</li>
+<li><span class="ui">Plant lens</span> — one plant's roster, the <b>capability query</b> ("who can do this here?" — it respects the module ceiling, so it never lists someone whose ability is capped), and <b>Changed recently</b>, the audit trail a reviewer checks first.</li>
+</ul>
+<p>Colour rule you can trust everywhere: <span class="sw amber">amber</span> always means a deviation from standard; <span class="sw grey">grey</span> always means the module isn't licensed at that plant.</p>
+</div>
+</section>
+
+<section id="previews">
+<div class="card">
+<h3><span class="badge">Screen</span>UI previews <span class="tag">verify</span></h3>
+<p>A live mock of what the actual product shows each kind of user — computed from permission state by the same rules the real frontend will use, not hand-drawn per role.</p>
+<ul>
+<li>Pick a preset (each role, each grant) or <span class="ui">◉ Selected person</span> — which renders whoever you currently have open in the People tab, including their exceptions.</li>
+<li>Change the <b>plant context</b> to apply that plant's module ceiling to the preview — the same person looks different at a plant with fewer modules.</li>
+<li>The <b>why-list</b> under the mock explains every tab, button, and banner: which permission put it there.</li>
+</ul>
+</div>
+</section>
+
+<section id="control">
+<div class="card">
+<h3><span class="badge">Screen</span>Control panel <span class="tag">cluster / plant personas only</span></h3>
+<p>The scoped home for the two smaller personas: their scope's key numbers, quick actions (plant-wide change, apply custom role), a "who can do X here?" lookup, and their roster with jump-to-manage. As Company admin you won't see it — Global lands on People instead.</p>
+</div>
+</section>
+
+<section id="r1">
+<h2>Recipes</h2>
+<p class="lede">Each recipe starts from the persona named in step 1 and assumes a fresh page (refresh first if unsure).</p>
+
+<div class="card">
+<h3><span class="badge">1</span>Add a new person and give them access</h3>
+<ol class="steps">
+<li>As <b>Company admin</b>, open <span class="ui">People</span> and press <span class="ui">＋ Add person</span>. Give a name and title, then <span class="ui">Add &amp; open</span>.</li>
+<li>Their profile opens with zero access. In the <b>plant picker</b>, click each plant they should reach — plants are grouped by company label.</li>
+<li>Pick their <b>role</b> (the tier buttons). The disclosure below shows exactly which permission sets that role carries, and 📦 markers show anything the selected plants' modules would cap.</li>
+<li>Administering people or plant config? Open the <b>Admin duties</b> disclosure and pick one grant. Otherwise skip it.</li>
+<li>Press <span class="ui">Save assignments</span>. If anything deviates from the role standard, the save button counts the missing reasons and stays blocked until each deviation has one.</li>
+<li>The save confirmation shows what was written; the exact JSON payload is behind the <b>For engineers</b> disclosure. The change also lands in the audit trail.</li>
+</ol>
+</div>
+
+<div class="card" id="r2">
+<h3><span class="badge">2</span>Grant remote control to one person at one plant</h3>
+<ol class="steps">
+<li>Open the person from <span class="ui">People</span> (try Asha — she already has this grant at STP — Sector 62, so you can see the end state).</li>
+<li>On the plant row where they need it, expand the permission sets and switch on <b>IoT remote control → actuate</b>.</li>
+<li>The row turns amber and the save blocks until you write a <b>reason</b> — certification reference, approver, ticket number.</li>
+<li><span class="ui">Save assignments</span>. Note what you <i>can't</i> do: remote control never appears in custom roles or bulk actions — one person, one plant, one reason is the only path. That's by design.</li>
+</ol>
+</div>
+
+<div class="card" id="r3">
+<h3><span class="badge">3</span>Simulate a contract change (module ceiling in action)</h3>
+<ol class="steps">
+<li>As <b>Company admin</b>, open <span class="ui">Access review</span>, person lens, and pick someone with several plants (Priya). Note which cells are live.</li>
+<li>Go to <span class="ui">Product modules</span> and switch <b>off</b> a module at one of her plants — say Dashboards &amp; Analytics at STP — Sitapura.</li>
+<li>Return to <span class="ui">Access review</span>: the analytics cells at that plant are now ▢ grey ("capped"). Click one — the why-chain names the missing module.</li>
+<li>Switch the module back on: the cells come back exactly as they were. <b>The ceiling caps but never edits</b> — nothing was deleted from her profile.</li>
+</ol>
+</div>
+
+<div class="card" id="r4">
+<h3><span class="badge">4</span>Answer "who can approve issues at this plant?"</h3>
+<ol class="steps">
+<li>Open <span class="ui">Access review</span> and switch to the <b>plant lens</b>.</li>
+<li>Pick the plant, then use the <b>capability query</b> and choose the approval permission.</li>
+<li>The list shows everyone who can actually do it <i>there</i> — and how they got it (role standard vs exception). If the ops module is off at that plant, the honest answer is "nobody", and that's what it shows.</li>
+<li>(As a cluster/plant admin, the same lookup lives on the <span class="ui">Control panel</span>.)</li>
+</ol>
+</div>
+
+<div class="card" id="r5">
+<h3><span class="badge">5</span>Create a custom role and apply it</h3>
+<ol class="steps">
+<li>Open <span class="ui">Role library</span> → create custom role. Name it for the situation (e.g. "Contract-X Inventory Auditor"), tick permissions to <b>add</b> and/or <b>remove</b>, write the reason. Creating it changes nobody.</li>
+<li>Go to <span class="ui">People</span> → the apply panel. Pick the custom role, the people, and the plants (Company admin gets ⚡ whole-cluster chips).</li>
+<li>Choose the mode: <b>add</b> layers it on top of what each person has; <b>overwrite</b> resets them to their role standard first.</li>
+<li>Read the <b>per-person preview</b> — it shows exactly what will change for each person, including things they already had and things the module ceiling will cap.</li>
+<li>Write the reason and apply. Applications are <b>stamped</b> — editing the template later never retroactively changes anyone.</li>
+</ol>
+</div>
+
+<div class="card" id="r6">
+<h3><span class="badge">6</span>Run a plant-wide bulk action</h3>
+<ol class="steps">
+<li>On <span class="ui">People</span>, scroll to <b>Plant-wide actions — one plant, many people, one audited action</b>. Pick the plant.</li>
+<li>Either <b>bulk-assign a role</b> to the roster, or <b>bulk add/remove one permission</b> for ticked people.</li>
+<li>Write the shared reason (mandatory). Sensitive exceptions are skipped automatically, and anyone blocked by the module ceiling is skipped too — the summary line counts every skip. Nothing fails silently.</li>
+</ol>
+</div>
+
+<div class="card" id="r7">
+<h3><span class="badge">7</span>Preview exactly what someone will see</h3>
+<ol class="steps">
+<li>Open the person in <span class="ui">People</span> (their live config, including unsaved edits, is what gets previewed).</li>
+<li>Go to <span class="ui">UI previews</span> and pick <span class="ui">◉ Selected person</span>.</li>
+<li>Switch the <b>plant context</b> between their plants — watch tabs and buttons appear/disappear as each plant's module ceiling applies.</li>
+<li>Read the <b>why-list</b>: every element of the mock is explained by the permission that produced it. This is the spec the real frontend follows.</li>
+</ol>
+</div>
+
+<div class="card" id="r8">
+<h3><span class="badge">8</span>Add or remove someone from a plant's roster</h3>
+<ol class="steps">
+<li>Open <span class="ui">Plants</span> and click the plant.</li>
+<li><span class="ui">＋ Add person</span> in the roster section → pick any unassigned person and a role → add. It's written immediately and audited.</li>
+<li><span class="ui">Remove</span> on a roster row takes them off <i>this plant only</i> — their other plants are untouched.</li>
+<li>Scoping applies here too: a plant admin can only do this at their own plant.</li>
+</ol>
+</div>
+</section>
+
+<section id="colors">
+<h2>Reading the colours &amp; badges</h2>
+<table>
+<tr><th>Signal</th><th>Meaning — always, everywhere</th></tr>
+<tr><td><span class="sw amber">amber</span></td><td>A deviation from the role standard. Every amber has (or demands) a written reason.</td></tr>
+<tr><td><span class="sw grey">grey / ▢ capped</span></td><td>The module isn't licensed at that plant. The permission is saved but inactive; it comes back if the plant's plan changes.</td></tr>
+<tr><td><span class="sw grn">standard</span></td><td>Exactly the role standard — nothing custom.</td></tr>
+<tr><td><code>n deviations</code></td><td>Drift badge — how far this person is from standard. Rising drift across many people means the role standard itself should change.</td></tr>
+<tr><td>📦</td><td>Capped count — abilities this person holds that a plant's modules currently switch off.</td></tr>
+<tr><td>🔒</td><td>Out of your persona's scope (e.g. module switches for non-Global admins, the Global grant chip).</td></tr>
+</table>
+</section>
+
+<section id="ruling">
+<h2>Heads-up: the July 30 ruling</h2>
+<div class="callout warn">
+<b>One person = one role, everywhere.</b> On July 30 we decided a user holds a single role account-wide — a role is the person's capability level, not a per-plant attribute. <b>The prototype hasn't been reworked yet</b>: its profile editor still offers a role picker per plant. Until the rework lands, use it with the same role at every plant to mirror the decided model. Plant assignments (which plants someone can access), the module ceiling, per-plant reasoned exceptions like remote control, and admin grants are all unaffected by this change.
+</div>
+</section>
+
+</main>
+<footer>User Center — Roles &amp; Permissions · prototype user guide · 2026-07-30 · the prototype resets on refresh; nothing is saved</footer>
+
+</body>
+</html>
