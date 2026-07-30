@@ -200,7 +200,7 @@ pre.payload{background:var(--navy-deep);color:#95CFD3;border-radius:10px;padding
 .arowh{display:flex;align-items:center;gap:12px;padding:12px 14px;flex-wrap:wrap}
 .arowh .pn{font-weight:600;font-size:14px}
 .arowh .co{font-size:11.5px;color:var(--ink-3)}
-.arowh select{margin-left:auto}
+.arowh .disclose{margin-left:auto}
 .badge{font-size:11px;font-weight:600;padding:2px 9px;border-radius:10px;white-space:nowrap}
 .b-drift{background:var(--flag-bg);color:var(--flag)}
 .b-cap{background:var(--read-bg);color:var(--ink-3)}
@@ -339,7 +339,7 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
 <!-- ============ PANE 0: PLANTS & MODULES ============ -->
 <div class="pane on" id="pane0">
   <div class="panel" style="margin-bottom:18px">
-    <div class="gh">The hierarchy — modules cap, tiers default, exceptions flex</div>
+    <div class="gh">The hierarchy — modules cap, roles default, exceptions flex</div>
     <p style="font-size:13.5px;color:var(--ink-2);margin:0 0 8px">We sell <b>product modules</b> to companies. A module is a sellable slice of the product that unlocks permissions — each permission still lives in its role type. Modules are switched on <b>per plant</b>, on the plant record itself: the plant carries its company label and its module flags. There is no container of any kind in between — people connect straight to plants.</p>
     <p style="font-size:13.5px;color:var(--ink-2);margin:0">Effective access at a plant = <b>user permission ∧ plant module</b>. Module flags are written only here, by Global Admin only — every other screen reads them.</p>
   </div>
@@ -358,7 +358,7 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
   <div id="ucdir">
     <div class="panel" style="margin-bottom:18px">
       <div class="gh">User Center — everyone lives here, everything drives from here</div>
-      <div class="help"><span class="i">💡</span><span>Every screen starts from a <b>person</b>. Open someone to edit their per-plant roles; the Access review and UI previews follow whoever you pick. Adding, changing and saving all land in the change log.</span></div>
+      <div class="help"><span class="i">💡</span><span>Every screen starts from a <b>person</b>. Open someone to set their one role and their plant access; the Access review and UI previews follow whoever you pick. Adding, changing and saving all land in the change log.</span></div>
       <div class="kpis" id="uckpis"></div>
       <div class="attnrow" id="ucattn"></div>
       <div class="ucbar">
@@ -396,8 +396,8 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
   <div class="grid">
     <div>
       <div class="panel">
-        <div class="gh">1 · Which plants does this person touch?</div>
-        <div class="help"><span class="i">💡</span><span>Pick <b>every</b> plant they work at or view — even in different capacities. You'll give each plant its own role in step 2. Plants are grouped by the company on their record.</span></div>
+        <div class="gh">1 · Which plants can this person access?</div>
+        <div class="help"><span class="i">💡</span><span>Pick <b>every</b> plant they should see or act at — this is their <b>access list</b>. Their one role (step 2) applies at each of these plants; each plant's licensed modules then cap what actually works there. Plants are grouped by the company on their record.</span></div>
         <div id="plantbox"></div>
         <button class="disclose" id="grantbtn" onclick="toggleGrantOpen()" style="padding-top:16px"><span class="chev">▶</span> <span id="grantlbl">Admin duties? — open only if this person administers</span></button>
         <div class="hiddenblock" id="grantblock" style="padding-top:8px">
@@ -410,9 +410,9 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
 
     <div>
       <div class="panel">
-        <div class="gh">2 · Give each plant its role</div>
-        <div class="help" id="step2help"><span class="i">💡</span><span>One row per plant. Same person, different plant, different role — <b>that's normal here</b>. Most rows should stay <b>standard</b>: pick the role, done. Open “Customize” only when this person needs more or less than the standard at that one plant.</span></div>
-        <div id="setallbox"></div>
+        <div class="gh">2 · What's their role? — one role, applied at every plant</div>
+        <div class="help" id="step2help"><span class="i">💡</span><span>A role describes the <b>person</b>, not the plant — either they have decision-making ability or they don't, so everyone holds <b>one role account-wide</b>. Pick it once; it applies at every plant on the access list. The rows below differ only by what each plant's <b>modules</b> license and by reasoned per-plant exceptions — never by role. Open “Customize” only when this person needs more or less than the standard at that one plant.</span></div>
+        <div id="rolebox"></div>
         <div id="arows"></div>
       </div>
 
@@ -506,7 +506,7 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
 </div>
 </main>
 
-<footer><div class="wrap">User Center · Roles & Permissions · interactive prototype · DigitalPaani. Data model: plant = company label + licensed modules (ceiling) · person = per-plant assignments [{plant, tier, exceptions}] + one grant · custom roles = grant/revoke templates applied per person (add or overwrite), audited · effective access = user permission ∧ plant module.</div></footer>
+<footer><div class="wrap">User Center · Roles & Permissions · interactive prototype · DigitalPaani. Data model: plant = company label + licensed modules (ceiling) · person = one role (account-wide) + one grant + plant access list [{plant, exceptions}] · custom roles = grant/revoke templates applied per person (add or overwrite), audited · effective access = user permission ∧ plant module.</div></footer>
 </div><!-- /appmain -->
 </div><!-- /layout -->
 
@@ -616,13 +616,13 @@ function describeSets(setIds){
 }
 function roleModal(r){
   const R=ROLES[r], n=R.std.reduce((a,sid)=>a+setById[sid].perms.length,0);
-  const holders=PEOPLE.filter(p=>Object.values(p.asg).some(a=>a.tier===r)).length;
+  const holders=PEOPLE.filter(p=>p.role===r).length;
   openModal(R.n,`Base role · ${R.s}`,
     `<div class="mgrid"><div class="mstat"><div class="n">${n}</div><div class="l">abilities granted</div></div>
       <div class="mstat"><div class="n">${R.std.length}</div><div class="l">permission sets</div></div>
       <div class="mstat"><div class="n">${holders}</div><div class="l">people hold it now</div></div></div>`+
     describeSets(R.std)+
-    `<div class="mnote">This is a <b>pre-defined role</b> — fixed and uneditable. Everything a holder can actually do at a plant is this set <b>capped by that plant's licensed modules</b>. Deviations happen per person (with a reason) or via a custom role, never by changing this role.</div>`);
+    `<div class="mnote">This is a <b>pre-defined role</b> — fixed and uneditable, held <b>once per person, account-wide</b>. Everything a holder can actually do at a plant is this set <b>capped by that plant's licensed modules</b>. Deviations happen per person per plant (with a reason) or via a custom role, never by changing this role.</div>`);
 }
 function grantModal(g){
   const n=GRANTS[g].reduce((a,sid)=>a+setById[sid].perms.length,0);
@@ -693,11 +693,14 @@ function plantsByCompany(){ const g={}; ALLPLANTS.forEach(p=>{ (g[PLANTCO[p]]=g[
 
 /* ================= USER CENTER — the people registry everything drives from ================= */
 function isStdG(tier,g,setId){ if(setId==="flags"&&g!=="global") return false; const s=new Set(ROLES[tier].std); (GRANTS[g]||[]).forEach(x=>s.add(x)); return s.has(setId); }
-function mkPerson(id,av,n,t,co,grantId,rows){
-  const p={id:id,av:av,n:n,t:t,co:co,grant:grantId,asg:{},lastSaved:null};
+/* ONE ROLE PER PERSON, account-wide (ruling 2026-07-30): the role lives on the person;
+   every assignment row mirrors it (a.tier stays as storage but always equals p.role).
+   Rows carry only the plant, per-plant overrides and their reason. */
+function mkPerson(id,av,n,t,co,grantId,roleId,rows){
+  const p={id:id,av:av,n:n,t:t,co:co,grant:grantId,role:roleId||"l1",asg:{},lastSaved:null};
   rows.forEach(r=>{
-    const a={tier:r.tier,P:{},reason:r.reason||"",openSets:{},open:false};
-    SETS.forEach(s=>s.perms.forEach(pr=>a.P[s.id+"."+pr.id]=isStdG(r.tier,grantId,s.id)));
+    const a={tier:p.role,P:{},reason:r.reason||"",openSets:{},open:false};
+    SETS.forEach(s=>s.perms.forEach(pr=>a.P[s.id+"."+pr.id]=isStdG(p.role,grantId,s.id)));
     (r.add||[]).forEach(k=>a.P[k]=true);
     (r.remove||[]).forEach(k=>a.P[k]=false);
     p.asg[r.plant]=a;
@@ -705,19 +708,21 @@ function mkPerson(id,av,n,t,co,grantId,rows){
   return p;
 }
 let PEOPLE=[
- mkPerson("asha","🧰","Asha Verma","Shift supervisor","greengrid","",[
-   {plant:"STP — Sector 62",tier:"l3",add:["remote.actuate"],reason:"Trained & certified for remote blower control at this plant, approved A. Loijos, DP-1188"},
-   {plant:"WTP — Mansarovar",tier:"regular"}]),
- mkPerson("vikram","🔌","Vikram Desai","Automation engineer","aquacore","tech",[
-   {plant:"STP — Cyber Park",tier:"l3"},
-   {plant:"STP — Udyog Vihar",tier:"l3",remove:["approve.selfapprove"],reason:"Four-eyes rule at client site, DP-1201"}]),
- mkPerson("ramesh","👷","Ramesh Kumar","Plant operator","greengrid","",[
-   {plant:"STP — Alpha 2",tier:"l1"}]),
- mkPerson("priya","📈","Priya Sharma","Sustainability head","jmc","",[
-   {plant:"STP — Sitapura",tier:"senior"},
-   {plant:"WTP — Mansarovar",tier:"senior"}]),
- mkPerson("kavita","👩‍🔬","Kavita Rao","Lab technician","demo","",[
-   {plant:"Demo STP — Training",tier:"l1"}]),
+ // Asha flattened to L3 everywhere per the 2026-07-30 ruling (was L3 + Regular Non-op at Mansarovar —
+ // legacy viewer-role stacking for visibility, not mixed authority; Mansarovar's modules cap her there anyway)
+ mkPerson("asha","🧰","Asha Verma","Shift supervisor","greengrid","","l3",[
+   {plant:"STP — Sector 62",add:["remote.actuate"],reason:"Trained & certified for remote blower control at this plant, approved A. Loijos, DP-1188"},
+   {plant:"WTP — Mansarovar"}]),
+ mkPerson("vikram","🔌","Vikram Desai","Automation engineer","aquacore","tech","l3",[
+   {plant:"STP — Cyber Park"},
+   {plant:"STP — Udyog Vihar",remove:["approve.selfapprove"],reason:"Four-eyes rule at client site, DP-1201"}]),
+ mkPerson("ramesh","👷","Ramesh Kumar","Plant operator","greengrid","","l1",[
+   {plant:"STP — Alpha 2"}]),
+ mkPerson("priya","📈","Priya Sharma","Sustainability head","jmc","","senior",[
+   {plant:"STP — Sitapura"},
+   {plant:"WTP — Mansarovar"}]),
+ mkPerson("kavita","👩‍🔬","Kavita Rao","Lab technician","demo","","l1",[
+   {plant:"Demo STP — Training"}]),
 ];
 let cur=null, addingP=false, addSeq=0;
 const AVPOOL=["🧑‍🔧","👩‍💻","🧑‍💼","👨‍🏭","🧑‍🔬"];
@@ -743,10 +748,10 @@ function setPersona(k){
   // control panel is for cluster/plant admins; a global admin sitting on it gets bounced to People
   if(persona.kind==="global"&&document.getElementById("pane5")&&document.getElementById("pane5").classList.contains("on")) tab(1);
   document.getElementById("personanote").textContent=persona.kind==="global"
-    ?"Company admin: every company, plant and person. Assign at plant level, act on a whole plant's roster at once, edit single permissions for one person or a set of them, flip module flags, create custom roles anywhere."
+    ?"Company admin: every company, plant and person. Set each person's one role, manage plant access lists, act on a whole plant's roster at once, edit single permissions for one person or a set of them, flip module flags, create custom roles anywhere."
     :persona.kind==="cluster"
-    ?"Cluster admin for GreenGrid Utilities: the four GreenGrid plants and everyone working at them. Assign tiers and run plant-wide or cluster-wide permission edits inside your cluster — module flags are read-only, and the Global grant isn't yours to give."
-    :"Plant admin at STP — Sector 62: your plant's roster only. Assign tiers, run plant-wide edits and grant reasoned exceptions here — module flags are read-only, the Global grant isn't yours to give, and nothing you do can reach another plant.";
+    ?"Cluster admin for GreenGrid Utilities: the four GreenGrid plants and everyone working at them. Manage plant access and run plant-wide or cluster-wide permission edits inside your cluster — module flags are read-only, and the Global grant isn't yours to give."
+    :"Plant admin at STP — Sector 62: your plant's roster only. Manage plant access, run plant-wide edits and grant reasoned exceptions here — module flags are read-only, the Global grant isn't yours to give, and nothing you do can reach another plant.";
   render(); renderModules(); renderPlants(); renderReview(); renderPreview(); renderControlPanel();
 }
 function inScope(plant){ return persona.kind==="global"||persona.plants.includes(plant); }
@@ -783,7 +788,7 @@ function renderControlPanel(){
       const who=ppl.filter(p=>p.asg[ctrlPlant]&&!!p.asg[ctrlPlant].P[ctrlCap]);
       lookup=who.length?`<div style="margin-top:10px">`+who.map(p=>{
         const st=cellState(p,ctrlPlant,ctrlCap);
-        return `<div class="rowitem" style="cursor:pointer" onclick="goManage('${p.id}')"><span><span class="nm" style="font-weight:600">${p.n}</span> <span class="tt" style="font-size:12px;color:var(--ink-2)">· ${ROLES[p.asg[ctrlPlant].tier].n}</span></span><span class="pill ${st==="added"?"p-amb":"p-grn"}">${st==="added"?"via exception":"via role"}</span></div>`;
+        return `<div class="rowitem" style="cursor:pointer" onclick="goManage('${p.id}')"><span><span class="nm" style="font-weight:600">${p.n}</span> <span class="tt" style="font-size:12px;color:var(--ink-2)">· ${ROLES[p.role].n}</span></span><span class="pill ${st==="added"?"p-amb":"p-grn"}">${st==="added"?"via exception":"via role"}</span></div>`;
       }).join("")+`</div>`
       :`<div class="msg ok" style="margin-top:10px">The module is licensed here, but nobody's role or exceptions include it yet.</div>`;
     }
@@ -816,19 +821,20 @@ function renderControlPanel(){
     </div>
     <div class="panel">
       <div class="gh">Your people</div>
-      <table class="utable"><thead><tr><th>Person</th><th>Plants &amp; roles (in scope)</th><th>Status</th><th></th></tr></thead><tbody>`+
+      <table class="utable"><thead><tr><th>Person</th><th>Role</th><th>Plants (in scope)</th><th>Status</th><th></th></tr></thead><tbody>`+
       ppl.map(p=>{
         const drift=personDrift(p);
-        const tiers=Object.keys(p.asg).filter(inScope).map(pl=>`<span class="tierchip" title="${pl}">${ROLES[p.asg[pl].tier].n.replace(" Operator","").replace(" Lead","")} @ ${pl.replace("STP — ","").replace("WTP — ","").replace("Demo ","")}</span>`).join("");
+        const plch=Object.keys(p.asg).filter(inScope).map(pl=>`<span class="tierchip" title="${pl}">${pl.replace("STP — ","").replace("WTP — ","").replace("Demo ","")}</span>`).join("");
         return `<tr onclick="goManage('${p.id}')"><td><span class="nm">${p.n}</span><br><span class="tt">${p.t}</span></td>
-          <td><span class="chips">${tiers||`<span class="tierchip" style="background:var(--bg);color:var(--ink-3)">—</span>`}</span></td>
+          <td><span class="tierchip">${ROLES[p.role].n}</span></td>
+          <td><span class="chips">${plch||`<span class="tierchip" style="background:var(--bg);color:var(--ink-3)">—</span>`}</span></td>
           <td>${drift?`<span class="badge b-drift">${drift} deviation${drift>1?"s":""}</span>`:`<span class="badge b-ok">standard</span>`}</td>
           <td class="rowchev">Manage ›</td></tr>`;
       }).join("")+`</tbody></table>
     </div>`;
 }
-function selectCluster(co){ /* Global Admin: one click = every plant of the cluster becomes an assignment row */
-  plantsByCompany()[co].forEach(p=>{ if(!selPlants.has(p)){ selPlants.add(p); initAsg(p,lastTier); } });
+function selectCluster(co){ /* Global Admin: one click = every plant of the cluster becomes an access row */
+  plantsByCompany()[co].forEach(p=>{ if(!selPlants.has(p)){ selPlants.add(p); initAsg(p); } });
   render();
 }
 
@@ -898,21 +904,24 @@ function applyCustomRole(packId,userIds,plants,mode,reason){
 }
 /* ================= PLANT-WIDE BULK ACTIONS =================
    Company admin: any plant · Cluster admin: their cluster · Plant admin: their plant.
-   Bulk tier = re-assign the roster in one action. Bulk permission edit = the same
-   reasoned, per-plant exception written to many people at once (stamped, not
-   live-linked — the named live-linked variant is a Custom role). */
+   Bulk roster add = put people on this plant's access list in one action — they join
+   at their ACCOUNT-WIDE role (ruling 2026-07-30). There is deliberately no bulk role
+   change: a role change is account-wide, so from a plant-scoped surface it would reach
+   plants outside the acting admin's scope — roles change on the person record only.
+   Bulk permission edit = the same reasoned, per-plant exception written to many people
+   at once (stamped, not live-linked — the named live-linked variant is a Custom role). */
 let bulkOpen=false, bulkPlant=null;
-function bulkSetTier(plant,userIds,tier){
-  if(!inScope(plant)||!ROLES[tier]) return 0;
+function bulkAddToPlant(plant,userIds){
+  if(!inScope(plant)) return 0;
   let n=0;
   userIds.forEach(id=>{
     const p=PEOPLE.find(x=>x.id===id);
-    if(!p||!scopedPeople().includes(p)||!p.asg[plant]) return;
-    const a={tier:tier,P:{},reason:"",openSets:{},open:false};
-    SETS.forEach(s=>s.perms.forEach(pr=>a.P[s.id+"."+pr.id]=isStdG(tier,p.grant,s.id)));
+    if(!p||!scopedPeople().includes(p)||p.asg[plant]) return; // already on the roster → skip
+    const a={tier:p.role,P:{},reason:"",openSets:{},open:false};
+    SETS.forEach(s=>s.perms.forEach(pr=>a.P[s.id+"."+pr.id]=isStdG(p.role,p.grant,s.id)));
     p.asg[plant]=a; n++;
   });
-  if(n) AUDIT.unshift({w:"now",t:`Bulk tier: ${ROLES[tier].n} assigned to ${n} ${n>1?"people":"person"} at ${plant} · by ${personaName()}`});
+  if(n) AUDIT.unshift({w:"now",t:`Bulk roster add: ${n} ${n>1?"people":"person"} added to ${plant} at their account role · by ${personaName()}`});
   return n;
 }
 function bulkEditPerm(plant,userIds,keys,mode,reason){
@@ -957,7 +966,7 @@ function personCapped(person){
 }
 function selectPerson(id){
   cur=PEOPLE.find(x=>x.id===id);
-  grant=cur.grant; ASG=cur.asg; selPlants=new Set(Object.keys(cur.asg));
+  grant=cur.grant; role=cur.role||"l1"; ASG=cur.asg; selPlants=new Set(Object.keys(cur.asg));
   addingP=false; render();
 }
 function backToDirectory(){ cur=null; render(); }
@@ -968,7 +977,7 @@ function addPersonSubmit(){
   const t=document.getElementById("np_title").value.trim()||"Team member";
   addSeq++;
   const co=persona.kind==="site"?PLANTCO[persona.plants[0]]:"greengrid";
-  const p=mkPerson("new"+addSeq,AVPOOL[addSeq%AVPOOL.length],n,t,co,"",[]);
+  const p=mkPerson("new"+addSeq,AVPOOL[addSeq%AVPOOL.length],n,t,co,"","l1",[]);
   if(persona.kind==="site") p.home=persona.plants[0];
   PEOPLE.push(p);
   AUDIT.unshift({w:"now",t:`${n} added to the directory — no access yet (nothing granted until plants are assigned and saved)`});
@@ -978,7 +987,7 @@ function jumpReview(){ if(cur){ reviewPerson=cur.id; lens="person"; whySel=null;
 function jumpPreview(){ prevMode="live"; prevTab=null; tab(3); }
 
 /* ================= ASSIGNMENT EDITOR STATE (bound to the selected person) ================= */
-let grant="", selPlants=new Set(), ASG={}, lastTier="l1", grantOpen=false;
+let grant="", role="l1", selPlants=new Set(), ASG={}, grantOpen=false;
 function toggleGrantOpen(){ grantOpen=!grantOpen; render(); }
 function avail(key,plant){ return plantMods(plant).has(PERMMOD[key]); }
 function modAvail(mod){ /* across selected plants: all | some | none | na */
@@ -989,20 +998,21 @@ function modAvail(mod){ /* across selected plants: all | some | none | na */
 }
 function stdSetsFor(tier){ const s=new Set(ROLES[tier].std); (GRANTS[grant]||[]).forEach(x=>s.add(x)); return s; }
 function isStdFor(tier,setId){ return (setId!=="flags"||grant==="global")&&stdSetsFor(tier).has(setId); }
-function initAsg(plant,tier){ const so=document.getElementById("saveok"); if(so) so.innerHTML="";
+function initAsg(plant){ const so=document.getElementById("saveok"); if(so) so.innerHTML="";
   const keep=ASG[plant]||{};
-  ASG[plant]={tier:tier,P:{},reason:"",openSets:keep.openSets||{},open:keep.open||false};
-  SETS.forEach(s=>s.perms.forEach(pr=>ASG[plant].P[s.id+"."+pr.id]=isStdFor(tier,s.id)));
+  ASG[plant]={tier:role,P:{},reason:"",openSets:keep.openSets||{},open:keep.open||false};
+  SETS.forEach(s=>s.perms.forEach(pr=>ASG[plant].P[s.id+"."+pr.id]=isStdFor(role,s.id)));
 }
 function togglePlantSel(plant){
   if(selPlants.has(plant)){ selPlants.delete(plant); delete ASG[plant]; }
-  else { selPlants.add(plant); initAsg(plant,lastTier); }
+  else { selPlants.add(plant); initAsg(plant); }
   render();
 }
-function setTier(plant,t){ lastTier=t; initAsg(plant,t); render(); }
-function setAllTiers(t){ if(!t) return; lastTier=t; selPlants.forEach(p=>initAsg(p,t)); render(); }
-function setGrant(g){ grant=g; if(cur) cur.grant=g; selPlants.forEach(p=>initAsg(p,ASG[p].tier)); render(); }
-function resetStd(){ selPlants.forEach(p=>initAsg(p,ASG[p].tier)); document.getElementById("payload").style.display="none"; render(); }
+/* one role per person (ruling 2026-07-30): changing it applies at EVERY plant and resets
+   each row to the new standard — exceptions belonged to the old role and are cleared */
+function setRole(t){ if(!ROLES[t]) return; role=t; if(cur) cur.role=t; selPlants.forEach(p=>initAsg(p)); render(); }
+function setGrant(g){ grant=g; if(cur) cur.grant=g; selPlants.forEach(p=>initAsg(p)); render(); }
+function resetStd(){ selPlants.forEach(p=>initAsg(p)); document.getElementById("payload").style.display="none"; render(); }
 function toggleOpen(plant){ ASG[plant].open=!ASG[plant].open; render(); }
 function toggleAcc(plant,setId){ ASG[plant].openSets[setId]=!ASG[plant].openSets[setId]; render(); }
 
@@ -1105,19 +1115,21 @@ function render(){
   ghEl.className="granthelp"+(grant?"":" none");
   ghEl.innerHTML=`<b>${gh.t}.</b> ${gh.d}${gcap}`;
 
-  // set-all quick action
-  document.getElementById("setallbox").innerHTML=selPlants.size>1?
-    `<div class="setall">Quick set — every plant to
-      <select onchange="setAllTiers(this.value);this.value=''"><option value="">choose a tier…</option>${Object.keys(ROLES).map(r=>`<option value="${r}">${ROLES[r].n}</option>`).join("")}</select>
-      <span class="hint" style="font-size:12px;color:var(--ink-3)">then adjust any plant that differs — that's the point.</span></div>`:"";
+  // the one role picker — account-wide (ruling 2026-07-30)
+  const outScope=persona.kind!=="global"&&Object.keys(cur.asg).some(pl=>!inScope(pl));
+  document.getElementById("rolebox").innerHTML=
+    `<div class="setall" style="margin-bottom:${outScope?"4px":"12px"}">Role
+      <select onchange="setRole(this.value)" title="One role per person — it applies at every plant on the access list">${Object.keys(ROLES).map(r=>`<option value="${r}" title="${ROLES[r].s}" ${role===r?"selected":""}>${ROLES[r].n} — ${ROLES[r].s}</option>`).join("")}</select>
+      <span class="hint" style="font-size:12px;color:var(--ink-3)">changing it resets every plant to the new standard — exceptions belonged to the old role and are cleared.</span></div>`+
+    (outScope?`<div class="msg warn" style="margin:0 0 12px">This person also works at plants outside your scope — the role is account-wide, so changing it applies there too.</div>`:"");
 
-  // assignment rows — summary first, detail on demand (progressive disclosure)
+  // access rows — one per plant; summary first, detail on demand (progressive disclosure)
   const rowsEl=document.getElementById("arows");
   if(!selPlants.size){
-    rowsEl.innerHTML=`<div class="emptystate">Nothing here yet — this screen builds one <b>assignment row per plant</b>.
+    rowsEl.innerHTML=`<div class="emptystate">Nothing here yet — this screen builds one <b>access row per plant</b>.
       <div class="steps">
         <div class="st"><b>1</b>Pick plants on the left</div>
-        <div class="st"><b>2</b>Choose a role for each</div>
+        <div class="st"><b>2</b>Their one role applies at each</div>
         <div class="st"><b>3</b>Save — reasons required only for deviations</div>
       </div></div>`;
   }
@@ -1133,7 +1145,6 @@ function render(){
         <span><span class="pn">${plant}</span><br><span class="co">${coName(plant)} · ${plantMods(plant).size} modules</span></span>
         ${dev.length?`<span class="badge b-drift">${dev.length} deviation${dev.length>1?"s":""}</span>`:`<span class="badge b-ok">standard</span>`}
         ${capped?`<span class="badge b-cap" title="In the profile but not licensed at this plant — activates if the plan is upgraded">📦 ${capped} capped</span>`:""}
-        <select onchange="setTier('${plant}',this.value)" title="The role at THIS plant only">${Object.keys(ROLES).map(r=>`<option value="${r}" title="${ROLES[r].s}" ${a.tier===r?"selected":""}>${ROLES[r].n}</option>`).join("")}</select>
         <button class="disclose ${a.open?"open":""}" onclick="toggleOpen('${plant}')"><span class="chev">▶</span> Customize</button>
       </div>
       <div class="arowsum">${sum}</div>
@@ -1185,13 +1196,14 @@ function renderDirectory(){
   });
   document.getElementById("uclist").innerHTML=rows.length?
     `<table class="utable"><thead><tr>
-       <th>Person</th><th>Plants &amp; roles</th><th>Admin grant</th><th>Status</th><th></th>
+       <th>Person</th><th>Role</th><th>Plants</th><th>Admin grant</th><th>Status</th><th></th>
      </tr></thead><tbody>`+rows.map(p=>{
       const drift=personDrift(p), cap=personCapped(p);
-      const tiers=Object.keys(p.asg).map(pl=>`<span class="tierchip" title="${pl} · ${coName(pl)}">${ROLES[p.asg[pl].tier].n.replace(" Operator","").replace(" Lead","")} @ ${pl.replace("STP — ","").replace("WTP — ","").replace("Demo ","")}</span>`).join("");
+      const plants=Object.keys(p.asg).map(pl=>`<span class="tierchip" title="${pl} · ${coName(pl)}">${pl.replace("STP — ","").replace("WTP — ","").replace("Demo ","")}</span>`).join("");
       return `<tr onclick="selectPerson('${p.id}')">
         <td><span class="nm">${p.n}</span><br><span class="tt">${p.t}</span> <span class="co">· ${COMPANIES[p.co]||p.co}</span></td>
-        <td><span class="chips">${tiers||`<span class="tierchip" style="background:var(--bg);color:var(--ink-3)">no plants yet</span>`}</span></td>
+        <td><span class="tierchip" title="One role per person — applies at every plant on the access list">${ROLES[p.role].n}</span></td>
+        <td><span class="chips">${plants||`<span class="tierchip" style="background:var(--bg);color:var(--ink-3)">no plants yet</span>`}</span></td>
         <td>${p.grant?`<span class="chip c-adm" style="margin:0">${GRANTNAMES[p.grant]}</span>`:`<span class="tt">—</span>`}</td>
         <td>${drift?`<span class="badge b-drift">${drift} deviation${drift>1?"s":""}</span>`:`<span class="badge b-ok">standard</span>`}${cap?` <span class="badge b-cap">📦 ${cap}</span>`:""}</td>
         <td class="rowchev">›</td></tr>`;
@@ -1204,24 +1216,25 @@ function renderDirectory(){
 function renderBulk(){
   if(!bulkPlant||!inScope(bulkPlant)) bulkPlant=scopedPlants()[0];
   let h=`<div class="panel" style="margin-top:18px"><div class="gh">Plant-wide actions — one plant, many people, one audited action</div>
-    <div class="help"><span class="i">💡</span><span><b>${personaName()}:</b> pick a plant, tick who it applies to, act once. Bulk tier re-assigns the roster; bulk permission edit writes the <b>same reasoned exception</b> onto each selected person at this plant — visible per person in the Access review, never a hidden group rule. The module ceiling and prerequisites still apply per person.</span></div>
+    <div class="help"><span class="i">💡</span><span><b>${personaName()}:</b> pick a plant, tick who it applies to, act once. Roster add puts people on this plant's access list at their <b>account-wide role</b>; bulk permission edit writes the <b>same reasoned exception</b> onto each selected person at this plant — visible per person in the Access review, never a hidden group rule. The module ceiling and prerequisites still apply per person. Roles themselves are never changed in bulk — a role change is account-wide, so it happens on the person's record.</span></div>
     <button class="disclose ${bulkOpen?"open":""}" onclick="bulkOpen=!bulkOpen;render()"><span class="chev">▶</span> Open plant-wide actions</button>
     <div class="hiddenblock ${bulkOpen?"open":""}">${bulkOpen?bulkFormHtml():""}</div></div>`;
   document.getElementById("bulkbox").innerHTML=h;
 }
 function bulkFormHtml(){
   const roster=scopedPeople().filter(p=>p.asg[bulkPlant]);
+  const eligible=scopedPeople().filter(p=>!p.asg[bulkPlant]);
   return `<div style="padding-top:10px">
     <div class="gh2" style="margin-top:6px">Plant</div>
     <select onchange="bulkPlant=this.value;render()">${scopedPlants().map(p=>`<option value="${p}" ${p===bulkPlant?"selected":""}>${p} — ${coName(p)} · ${scopedPeople().filter(x=>x.asg[p]).length} people</option>`).join("")}</select>
-    <div class="gh2">Who — the roster at ${bulkPlant} (untick to exclude)</div>
-    <div>${roster.length?roster.map(p=>`<label style="display:inline-flex;align-items:center;gap:6px;font-size:12.5px;margin:0 14px 6px 0;cursor:pointer"><input type="checkbox" class="bk_p" value="${p.id}" checked>${p.n} <span style="color:var(--ink-3)">· ${ROLES[p.asg[bulkPlant].tier].n}</span></label>`).join(""):`<span class="hint">Nobody is assigned here yet.</span>`}</div>
-    <div class="gh2">Action A — set a tier for everyone selected</div>
+    <div class="gh2">Action A — add people to this plant's access list</div>
+    <div>${eligible.length?eligible.map(p=>`<label style="display:inline-flex;align-items:center;gap:6px;font-size:12.5px;margin:0 14px 6px 0;cursor:pointer"><input type="checkbox" class="bk_add" value="${p.id}">${p.n} <span style="color:var(--ink-3)">· ${ROLES[p.role].n}</span></label>`).join(""):`<span class="hint">Everyone in your scope is already on this plant's roster.</span>`}</div>
     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-      <select id="bk_tier">${Object.keys(ROLES).map(r=>`<option value="${r}">${ROLES[r].n}</option>`).join("")}</select>
-      <button class="btn primary" style="padding:9px 18px" onclick="bulkTierSubmit()">Assign tier to selected</button>
-      <span class="hint">Resets each person to that tier's standard at this plant — custom-role bundles re-apply automatically; hand-made exceptions are cleared (they belonged to the old tier).</span>
+      <button class="btn primary" style="padding:9px 18px" onclick="bulkAddSubmit()">Add selected to ${bulkPlant}</button>
+      <span class="hint">They join at their <b>account-wide role</b> (shown next to each name) — the module ceiling caps per plant. To change someone's role, open their record: role changes apply at every plant, so they're never done plant-wide.</span>
     </div>
+    <div class="gh2">Who — the roster at ${bulkPlant} (untick to exclude)</div>
+    <div>${roster.length?roster.map(p=>`<label style="display:inline-flex;align-items:center;gap:6px;font-size:12.5px;margin:0 14px 6px 0;cursor:pointer"><input type="checkbox" class="bk_p" value="${p.id}" checked>${p.n} <span style="color:var(--ink-3)">· ${ROLES[p.role].n}</span></label>`).join(""):`<span class="hint">Nobody is assigned here yet.</span>`}</div>
     <div class="gh2">Action B — edit specific permissions for everyone selected</div>
     <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:8px">
       <label style="font-size:13px"><input type="radio" name="bk_mode" value="add" checked> ＋ Add</label>
@@ -1238,10 +1251,9 @@ function bulkFormHtml(){
       <span class="hint">Needs ≥1 person, ≥1 permission, and a reason. Every change lands as a per-person exception — amber in the review, counted as drift.</span>
     </div></div>`;
 }
-function bulkTierSubmit(){
-  const ids=[...document.querySelectorAll(".bk_p:checked")].map(c=>c.value);
-  const t=document.getElementById("bk_tier").value;
-  if(bulkSetTier(bulkPlant,ids,t)) { bulkOpen=false; render(); }
+function bulkAddSubmit(){
+  const ids=[...document.querySelectorAll(".bk_add:checked")].map(c=>c.value);
+  if(bulkAddToPlant(bulkPlant,ids)) { bulkOpen=false; render(); }
 }
 function bulkPermSubmit(){
   const ids=[...document.querySelectorAll(".bk_p:checked")].map(c=>c.value);
@@ -1257,13 +1269,13 @@ function renderPacks(){
   const tierHolders={}; Object.keys(ROLES).forEach(r=>tierHolders[r]=new Set());
   const grantHolders={}; Object.keys(GRANTS).forEach(g=>grantHolders[g]=new Set());
   PEOPLE.forEach(p=>{
-    Object.values(p.asg).forEach(a=>{ if(tierHolders[a.tier]) tierHolders[a.tier].add(p.id); });
+    if(tierHolders[p.role]) tierHolders[p.role].add(p.id);
     if(p.grant&&grantHolders[p.grant]) grantHolders[p.grant].add(p.id);
   });
   const abilityCount=std=>SETS.filter(s=>std.includes(s.id)).reduce((n,s)=>n+s.perms.length,0);
   let h=`<div class="panel" style="margin-bottom:18px"><div class="gh">The fixed catalog — five base roles, four admin grants</div>
     <div class="help"><span class="i">💡</span><span>These nine are <b>pre-defined and uneditable</b> — nobody can create, rename or delete them (role sprawl was the legacy disease). When a role isn't quite enough, the answer is a <b>highlighted custom role</b> below or a per-person exception — never a fork of this catalog.</span></div>
-    <div class="gh2" style="margin-top:14px">Base roles — one per plant, per person</div>
+    <div class="gh2" style="margin-top:14px">Base roles — one per person, account-wide</div>
     <div class="gridcards" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">`+
     Object.keys(ROLES).map(r=>`<div class="catcard clickable" onclick="roleModal('${r}')"><div class="t">${ROLES[r].n}</div><div class="s">${ROLES[r].s}</div>
       <div class="m">${ROLES[r].std.map(sid=>setById[sid].n).join(" · ")}</div>
@@ -1347,7 +1359,7 @@ function applyFormHtml(pk){
         ${scopedPlants().map(pl=>`<label style="display:block;font-size:12.5px;margin-bottom:4px;cursor:pointer"><input type="checkbox" class="ap_pl" value="${pl}" checked onchange="renderApplyPreview()"> ${pl}</label>`).join("")}</div>
       <div><div class="msec" style="font-family:var(--mono);font-size:10px;color:var(--ink-3);margin-bottom:5px">MODE</div>
         <label style="display:block;font-size:12.5px;margin-bottom:4px;cursor:pointer"><input type="radio" name="ap_mode" value="add" checked onchange="renderApplyPreview()"> <b>Add</b> — layer on top of current</label>
-        <label style="display:block;font-size:12.5px;cursor:pointer"><input type="radio" name="ap_mode" value="overwrite" onchange="renderApplyPreview()"> <b>Overwrite</b> — reset to tier standard first</label></div>
+        <label style="display:block;font-size:12.5px;cursor:pointer"><input type="radio" name="ap_mode" value="overwrite" onchange="renderApplyPreview()"> <b>Overwrite</b> — reset to role standard first</label></div>
     </div>
     <div class="gh2">Effect preview — what changes for each person</div>
     <div id="ap_preview" class="help" style="margin-top:0"><span>Pick at least one person to preview the effect.</span></div>
@@ -1419,7 +1431,7 @@ function renderCustomize(plant,a){
   }).join("");
   const dev=deviations(a);
   let g="";
-  if(setState(a,"work")==="off"&&ROLES[a.tier].cat==="ops") g+=`<div class="msg warn">Work execution is fully off for an operational tier — consider a read-only tier at this plant instead.</div>`;
+  if(setState(a,"work")==="off"&&ROLES[a.tier].cat==="ops") g+=`<div class="msg warn">Work execution is fully off here for an operational role — if that's true everywhere they work, a read-only (Non-op) role may fit better (roles are account-wide).</div>`;
   if(setState(a,"templates")!=="off") g+=`<div class="msg warn">Global templates affect every site. Restricted to DP / Wapp staff.</div>`;
   if(setById.flags.perms.some(p=>a.P["flags."+p.id])) g+=`<div class="msg warn">Exception flags are audited individually and expire on role change.</div>`;
   if(a.P["remote.actuate"]) g+=`<div class="msg warn">📡 IoT remote control lets this person actuate equipment remotely — sensitive, never a role default. Grant deliberately, per person.</div>`;
@@ -1441,7 +1453,7 @@ function renderSaveState(){
   });
   document.getElementById("driftn").textContent=totalDev;
   document.getElementById("driftn").style.color=totalDev?"var(--flag)":"var(--ops)";
-  document.getElementById("driftl").textContent=totalDev?`deviation${totalDev>1?"s":""} across ${[...selPlants].filter(p=>deviations(ASG[p]).length).length} plant${[...selPlants].filter(p=>deviations(ASG[p]).length).length>1?"s":""} — each needs its own reason`:"deviations — every plant matches its tier standard";
+  document.getElementById("driftl").textContent=totalDev?`deviation${totalDev>1?"s":""} across ${[...selPlants].filter(p=>deviations(ASG[p]).length).length} plant${[...selPlants].filter(p=>deviations(ASG[p]).length).length>1?"s":""} — each needs its own reason`:"deviations — every plant matches the role standard";
   document.getElementById("capmsg").innerHTML=capNotes.length?`<div class="msg warn">📦 Capped by plant modules — ${capNotes.join(" · ")}. Capped abilities stay on the profile and activate if the plant's plan is upgraded.</div>`:"";
   const canSave=selPlants.size>0&&!blocked.length;
   document.getElementById("savebtn").disabled=!canSave;
@@ -1460,23 +1472,24 @@ function save(){
       const key=s.id+"."+pr.id, cur=a.P[key], std=isStdFor(a.tier,s.id);
       if(cur&&!std) add.push(key); if(!cur&&std) rem.push(key);
     }));
-    return {plant:p,company:coName(p),tier:a.tier,overrides:{add:add,remove:rem},reason:a.reason.trim()||null,drift:deviations(a).length};
+    return {plant:p,company:coName(p),overrides:{add:add,remove:rem},reason:a.reason.trim()||null,drift:deviations(a).length};
   });
   const modulesByPlant={}, cappedByPlant={};
   [...selPlants].forEach(p=>{ modulesByPlant[p]=[...plantMods(p)]; const c=cappedKeys(ASG[p],p); if(c.length) cappedByPlant[p]=c; });
   const payload={userId:cur?cur.id:"demo-user-001",person:cur?cur.n:null,company:cur?(COMPANIES[cur.co]||cur.co):null,
-    assignments:assignments,grant:grant||null,
+    role:role,grant:grant||null,
+    assignments:assignments,
     requestedBy:"people-admin@digitalpaani.com",
     entitlementContext:{modulesByPlant:modulesByPlant,cappedByPlant:cappedByPlant}};
   const el=document.getElementById("payload");
   el.style.display="none"; // peak-end: the human confirmation is the moment; the record is one click away
-  el.textContent="// Stored on the user record — one row per (person, plant): different tiers\n// at different plants are first-class. entitlementContext is informational;\n// the runtime check at a plant is always: user permission AND plant module.\n"+JSON.stringify(payload,null,2);
+  el.textContent="// Stored on the user record — ONE role, account-wide (ruling 2026-07-30);\n// assignments[] is the plant access list, one row per plant with its overrides.\n// entitlementContext is informational; the runtime check at a plant is always:\n// user permission AND plant module.\n"+JSON.stringify(payload,null,2);
   if(cur) cur.lastSaved="this session";
   const totalDev=assignments.reduce((n,x)=>n+x.drift,0);
   document.getElementById("saveok").innerHTML=
-    `<div class="msg ok">✓ <b>${cur?cur.n:"User"} saved.</b> ${assignments.map(x=>`${ROLES[x.tier].n} at ${x.plant}`).join(" · ")||"No plant assignments"}${grant?` · ${GRANTNAMES[grant]} grant`:""}${totalDev?` · ${totalDev} reasoned exception${totalDev>1?"s":""}`:" · fully standard"} — change log updated.</div>
+    `<div class="msg ok">✓ <b>${cur?cur.n:"User"} saved.</b> ${assignments.length?`${ROLES[role].n} at ${assignments.length} plant${assignments.length>1?"s":""} (${assignments.map(x=>x.plant).join(", ")})`:"No plant access"}${grant?` · ${GRANTNAMES[grant]} grant`:""}${totalDev?` · ${totalDev} reasoned exception${totalDev>1?"s":""}`:" · fully standard"} — change log updated.</div>
      <button class="disclose" onclick="const p=document.getElementById('payload');p.style.display=p.style.display==='none'?'block':'none';this.classList.toggle('open')"><span class="chev">▶</span> For engineers — the exact stored record</button>`;
-  AUDIT.unshift({w:"now",t:`${cur?cur.n:"demo-user-001"} saved: ${assignments.map(x=>`${ROLES[x.tier].n} @ ${x.plant}${x.drift?` (+${x.drift} dev)`:""}`).join(" · ")||"no plant assignments"}${grant?` · grant: ${GRANTNAMES[grant]}`:""}`});
+  AUDIT.unshift({w:"now",t:`${cur?cur.n:"demo-user-001"} saved: ${assignments.length?`${ROLES[role].n} @ ${assignments.map(x=>`${x.plant}${x.drift?` (+${x.drift} dev)`:""}`).join(", ")}`:"no plant access"}${grant?` · grant: ${GRANTNAMES[grant]}`:""}`});
 }
 
 /* ================= ACCESS REVIEW — reads the same PEOPLE registry ================= */
@@ -1500,7 +1513,7 @@ function whyChain(person,plant,key){
   const tierN=ROLES[a.tier].n, setN=setById[setId].n;
   const grantN=person.grant?GRANTNAMES[person.grant]:null;
   const viaGrant=person.grant&&(GRANTS[person.grant]||[]).includes(setId);
-  const src=viaGrant?`${grantN} grant`:`${tierN} tier`;
+  const src=viaGrant?`${grantN} grant`:`${tierN} role (account-wide)`;
   if(st==="on") return `<b>Active.</b> ${src} includes <b>${setN}</b> ∧ <b>${mod.n}</b> module is licensed at ${plant} → “${perm.n}” works here.`;
   if(st==="added"){
     const viaPack=/^Custom role '/.test(a.reason||"");
@@ -1532,6 +1545,7 @@ function renderPersonLens(ppl){
   let h=`<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px">
     <span class="gh" style="margin:0">Person</span>
     <select onchange="setRevPerson(this.value)">${ppl.map(x=>`<option value="${x.id}" ${x.id===reviewPerson?"selected":""}>${x.n} — ${x.t}</option>`).join("")}</select>
+    <span class="chip c-nav" style="margin:0">${ROLES[person.role].n} · one role, every plant</span>
     ${person.grant?`<span class="chip c-adm" style="margin:0">${GRANTNAMES[person.grant]} · all assigned plants</span>`:""}
     ${cur&&cur.id===person.id?`<span class="chip c-nav" style="margin:0">◉ open in the User Center</span>`:""}
   </div>`;
@@ -1543,7 +1557,7 @@ function renderPersonLens(ppl){
     if(!openRevSets.size) openRevSets.add("work");
   }
   h+=`<div style="overflow-x:auto"><table class="rtable"><tr><th style="min-width:260px">Ability</th>`+
-    plants.map(pl=>`<th>${pl}<br><span style="font-weight:400;text-transform:none;letter-spacing:0">${ROLES[person.asg[pl].tier].n} · ${coName(pl)}</span></th>`).join("")+`</tr>`;
+    plants.map(pl=>`<th>${pl}<br><span style="font-weight:400;text-transform:none;letter-spacing:0">${coName(pl)} · ${plantMods(pl).size} modules</span></th>`).join("")+`</tr>`;
   SETS.forEach(s=>{
     const open=openRevSets.has(s.id);
     const mini=plants.map(pl=>{
@@ -1582,11 +1596,10 @@ function renderPlantLens(ppl){
   <div class="help" style="margin-top:0"><span class="i">💡</span><span>Remove a person's assignment row and they vanish from this list — and from every dashboard fed by this plant. There is no second place access can hide.</span></div>`;
   if(!roster.length) h+=`<p style="font-size:13px;color:var(--ink-3)">Nobody is assigned to this plant.</p>`;
   else h+=roster.map(x=>{
-    const a=x.asg[reviewPlant];
-    const dev=a.add.length+a.remove.length;
+    const dev=devCount(x,reviewPlant);
     const cap=SETS.flatMap(s=>s.perms.map(p=>s.id+"."+p.id)).filter(k=>personP(x,reviewPlant,k)&&!avail(k,reviewPlant)).length;
     return `<div class="rowitem"><span><span class="t">${x.n}</span> ${cur&&cur.id===x.id?`<span class="chip c-nav" style="margin:0;padding:1px 8px;font-size:10.5px">editing</span>`:""}<br><span class="s">${x.t}${x.grant?" · "+GRANTNAMES[x.grant]:""}</span></span>
-      <span><span class="pill p-nav" style="margin-right:6px">${ROLES[a.tier].n}</span>${dev?`<span class="pill p-amb" style="margin-right:6px">${dev} exception${dev>1?"s":""}</span>`:`<span class="pill p-grn" style="margin-right:6px">standard</span>`}${cap?`<span class="pill" style="background:var(--read-bg);color:var(--ink-3)">📦 ${cap} capped</span>`:""}</span></div>`;
+      <span><span class="pill p-nav" style="margin-right:6px">${ROLES[x.role].n}</span>${dev?`<span class="pill p-amb" style="margin-right:6px">${dev} exception${dev>1?"s":""}</span>`:`<span class="pill p-grn" style="margin-right:6px">standard</span>`}${cap?`<span class="pill" style="background:var(--read-bg);color:var(--ink-3)">📦 ${cap} capped</span>`:""}</span></div>`;
   }).join("");
   // capability query — "who can X here?"
   const allPerms=SETS.flatMap(s=>s.perms.map(p=>({key:s.id+"."+p.id,n:p.n,set:s.n})));
@@ -1601,8 +1614,8 @@ function renderPlantLens(ppl){
       const who=roster.filter(x=>personP(x,reviewPlant,capQuery));
       h+=who.length?`<div style="margin-top:10px">`+who.map(x=>{
         const st=cellState(x,reviewPlant,capQuery);
-        return `<div class="rowitem"><span class="t">${x.n}</span><span class="s">${st==="added"?"via exception — "+(x.asg[reviewPlant].reason||""):st==="on"?"via "+(x.grant&&(GRANTS[x.grant]||[]).includes(capQuery.split(".")[0])?GRANTNAMES[x.grant]+" grant":ROLES[x.asg[reviewPlant].tier].n+" tier"):""}</span></div>`;
-      }).join("")+`</div>`:`<div class="msg ok" style="margin-top:10px">Nobody at this plant — the module is licensed, but no one's tier or exceptions include it.</div>`;
+        return `<div class="rowitem"><span class="t">${x.n}</span><span class="s">${st==="added"?"via exception — "+(x.asg[reviewPlant].reason||""):st==="on"?"via "+(x.grant&&(GRANTS[x.grant]||[]).includes(capQuery.split(".")[0])?GRANTNAMES[x.grant]+" grant":ROLES[x.role].n+" role"):""}</span></div>`;
+      }).join("")+`</div>`:`<div class="msg ok" style="margin-top:10px">Nobody at this plant — the module is licensed, but no one's role or exceptions include it.</div>`;
     }
   }
   h+=`<div class="gh2">Changed recently — what a reviewer checks first</div>
@@ -1639,7 +1652,7 @@ function previewCtx(){
       const a=person.asg[ctxPlant];
       return {P:{...a.P},role:a.tier,grantId:person.grant,label:`${person.n} at ${ctxPlant}`,who:person.n};
     }
-    return {P:buildStdP("l1",person.grant),role:"l1",grantId:person.grant,label:`${person.n} (no plants assigned yet)`,who:person.n};
+    return {P:buildStdP(person.role||"l1",person.grant),role:person.role||"l1",grantId:person.grant,label:`${person.n} (no plants assigned yet)`,who:person.n};
   }
   const pr=PRESETS.find(x=>x.id===prevMode);
   return {P:buildStdP(pr.role,pr.grant),role:pr.role,grantId:pr.grant,label:"standard "+pr.label};
@@ -1722,7 +1735,7 @@ function bodyFor(tabId,c,why){
   }
   if(tabId==="people"){
     if(has("people.invite")){ b+=row("Ramesh K.","L1 Operator · 0 deviations",`<span class="pill p-nav" style="margin-right:6px">Edit</span><span class="pill p-grn">standard</span>`);
-      b+=row("Asha V.","L3 at Sector 62 · Non-op at Mansarovar · 1 exception",`<span class="pill p-nav" style="margin-right:6px">Edit</span><span class="pill p-amb">1 drift</span>`); }
+      b+=row("Asha V.","L3 Lead · 2 plants · 1 exception",`<span class="pill p-nav" style="margin-right:6px">Edit</span><span class="pill p-amb">1 drift</span>`); }
     if(has("people.rosters")) b+=row("Shift roster","Night gap Sunday — unassigned",`<span class="pill p-amb">Fix</span>`);
     if(has("people.skills")) b+=row("Skills","Pump maintenance: 4 users · Lab testing: 2",`<span class="pill p-nav">Manage</span>`);
     if(has("flags.impersonate")){ b+=row("View as user","Support: see Ramesh's screen",`<span class="pill p-nav">View as</span>`); why.push("View-as appears — impersonation flag is on"); }
@@ -1890,14 +1903,14 @@ function addPlantSubmit(){
 let plantAddOpen=false, lastPlantModalPl=null;
 function toggleAddToPlant(pl){ plantAddOpen=!plantAddOpen; plantModal(pl); }
 function addToPlant(pl){
-  const psel=document.getElementById("apPerson"), tsel=document.getElementById("apTier");
-  if(!psel||!tsel||!psel.value) return;
-  const uid=psel.value, tier=tsel.value;
+  const psel=document.getElementById("apPerson");
+  if(!psel||!psel.value) return;
+  const uid=psel.value;
   const p=PEOPLE.find(x=>x.id===uid); if(!p||p.asg[pl]) return;
-  const a={tier:tier,P:{},reason:"",openSets:{},open:false};
-  SETS.forEach(s=>s.perms.forEach(pr=>a.P[s.id+"."+pr.id]=isStdG(tier,p.grant,s.id)));
+  const a={tier:p.role,P:{},reason:"",openSets:{},open:false}; // access at their account-wide role
+  SETS.forEach(s=>s.perms.forEach(pr=>a.P[s.id+"."+pr.id]=isStdG(p.role,p.grant,s.id)));
   p.asg[pl]=a;
-  AUDIT.unshift({w:"now",t:`${p.n} added to ${pl} as ${ROLES[tier].n} · by ${personaName()}`});
+  AUDIT.unshift({w:"now",t:`${p.n} added to ${pl} at their account role (${ROLES[p.role].n}) · by ${personaName()}`});
   plantAddOpen=false;
   renderPlants(); render();
   plantModal(pl);
@@ -1931,9 +1944,9 @@ function plantModal(pl){
     const eligible=PEOPLE.filter(p=>!p.asg[pl]).sort((a,b)=>a.n.localeCompare(b.n));
     body+=eligible.length?
       `<div class="addform2">
-        <select id="apPerson" style="min-width:240px">${eligible.map(p=>`<option value="${p.id}">${p.n} — ${p.t} (${COMPANIES[p.co]||p.co})</option>`).join("")}</select>
-        <select id="apTier">${Object.entries(ROLES).map(([id,r])=>`<option value="${id}">${r.n}</option>`).join("")}</select>
+        <select id="apPerson" style="min-width:240px">${eligible.map(p=>`<option value="${p.id}">${p.n} — ${p.t} · ${ROLES[p.role].n} (${COMPANIES[p.co]||p.co})</option>`).join("")}</select>
         <button class="btn primary" onclick="addToPlant('${pl}')">Add to ${pl}</button>
+        <span class="hint" style="display:block;margin-top:6px">They join at their account-wide role (shown after their title) — a role change happens on their record, never per plant.</span>
       </div>`
       :`<div class="addform2">Everyone in the directory is already assigned here. <a href="#" onclick="event.preventDefault();closeModal();tab(1);startAddPerson()">Add a new person</a> from the User Center, then assign them to this plant.</div>`;
   }

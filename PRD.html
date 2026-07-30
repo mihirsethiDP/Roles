@@ -150,7 +150,7 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 
 <div class="topmeta">
   <div class="row"><b>Status</b> Ready to build</div>
-  <div class="row"><b>Date</b> 2026-07-27</div>
+  <div class="row"><b>Date</b> 2026-07-30</div>
   <div class="row"><b>Owner</b> Mihir Sethi (Associate Product Manager, DigitalPaani)</div>
   <div class="live">
     <b style="color:var(--navy)">Live reference:</b> <a href="index.html">index.html</a> is a full working click-through prototype of everything in this document. It's one HTML file — no build step, no server, no install. Open it in any browser. <b>Whenever you're not sure how something should look or behave, open the prototype and try it.</b> The code is plain JavaScript, so you can also just read the function that does the thing you're building.
@@ -221,8 +221,8 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 <p class="lede">Plain field lists — this is not a schema, just what data needs to exist somewhere. The prototype's in-memory variable names are in brackets so you can find the matching logic in <code>index.html</code>.</p>
 <div class="blocks">
 <div class="block"><b>Plant</b><div>name, company label, which modules are licensed. <span class="vars"><code>PLANTCO</code> <code>PLANTMODS</code></span></div></div>
-<div class="block"><b>Person</b><div>name, title, one admin grant (or none), a list of per-plant assignments. <span class="vars"><code>PEOPLE</code></span></div></div>
-<div class="block"><b>Assignment</b><div>one row per (person, plant): which of the 5 roles, plus any overrides (permissions manually added or removed) each with a mandatory written reason. <span class="vars"><code>ASG</code> / <code>p.asg[plant]</code></span></div></div>
+<div class="block"><b>Person</b><div>name, title, <b>one role</b> (account-wide — one of the 5, see Step 4), one admin grant (or none), a list of plant assignments. <span class="vars"><code>PEOPLE</code> <code>p.role</code></span></div></div>
+<div class="block"><b>Assignment</b><div>one row per (person, plant): plant access, plus any overrides (permissions manually added or removed) each with a mandatory written reason. The role is NOT on this row — it lives on the person. <span class="vars"><code>ASG</code> / <code>p.asg[plant]</code></span></div></div>
 <div class="block"><b>Custom role</b><div>a named "add these, remove these" template that an admin applies to chosen people later — not a 6th role, just a reusable exception template. <span class="vars"><code>PACKS</code></span></div></div>
 <div class="block"><b>Exception grant</b><div>a person + a plant + one of the 3 exception permissions + a reason. <span class="vars"><code>remote.actuate</code> <code>flags.impersonate</code> <code>flags.sensorhealth</code></span></div></div>
 <div class="block"><b>Audit log</b><div>one line per change: who did what, to whom, when, why. <span class="vars"><code>AUDIT</code></span></div></div>
@@ -254,8 +254,8 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 
 <div class="step" id="step3">
 <h3><span class="badge">3</span>People and admin grants</h3>
-<div class="chk"><span class="box"></span><span>A person record: name, title, at most <b>one</b> admin grant (People / Technical / Full Site / Global — or none).</span></div>
-<div class="chk"><span class="box"></span><span>A directory table (no avatars — just name, title, company, per-plant role chips, grant, status).</span></div>
+<div class="chk"><span class="box"></span><span>A person record: name, title, <b>one role</b> (account-wide — a role describes the person, not a plant; decided 2026-07-30), and at most <b>one</b> admin grant (People / Technical / Full Site / Global — or none).</span></div>
+<div class="chk"><span class="box"></span><span>A directory table (no avatars — just name, title, company, one role chip, the plants they can access, grant, status).</span></div>
 <div class="chk"><span class="box"></span><span>New people start with <b>zero access.</b> Nothing is granted until someone explicitly assigns them to a plant.</span></div>
 <div class="chk"><span class="box"></span><span>At this point the grant field is just a label — don't hardcode what each grant <i>does</i> yet. That's Step 4, next.</span></div>
 <div class="protorow"><span class="lbl">Prototype</span>the <b>People</b> tab (this is the landing screen). Read <code>renderDirectory()</code>, <code>startAddPerson()</code>.</div>
@@ -284,22 +284,23 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 </div>
 
 <div class="step" id="step5">
-<h3><span class="badge">5</span>Per-plant assignments</h3>
-<div class="chk"><span class="box"></span><span>Give a person a role <b>at a specific plant.</b> The same person can be an L1 Operator at one plant and a Regular Non-op (just a viewer) at another — this is normal, not an edge case. (11 real people in the migration data need exactly this on day one, and the old system already supports it — its Asset Roles are per-plant too. Service companies that operate some plants while monitoring others multiply the pattern.)</span></div>
-<div class="chk"><span class="box"></span><span>The admin grant is account-wide (one grant, works everywhere the person has any plant), but the role is per-plant.</span></div>
-<div class="chk"><span class="box"></span><span>Multi-plant screens don't need role-specific variants: each row (an issue, a task) carries its plant, and the actions on that row come from the viewer's role <b>at that plant</b> — the same per-row mechanic as a module being off there (Step 2). Show a quiet "view-only here" marker on rows where the person can't act; don't hide the rows and don't build separate screens per role.</span></div>
-<div class="chk"><span class="box"></span><span>The assignment UI can keep the common case simple: ~740 of 753 people have one role everywhere, so default to "same role at all selected plants," with per-plant splitting behind an explicit control.</span></div>
-<div class="protorow"><span class="lbl">Prototype</span>the person profile editor inside the People tab. Read <code>togglePlantSel()</code>, <code>initAsg()</code>.</div>
+<h3><span class="badge">5</span>Assignments: the plant access list</h3>
+<div class="chk"><span class="box"></span><span>The role is <b>account-wide</b> — one role per person, everywhere (decided 2026-07-30: a role is the person's capability level — "either the user has decision-making ability or they don't" — not a per-plant attribute). Changing it applies at every plant the person touches, and resets each plant back to the new role's standard (exceptions belonged to the old role).</span></div>
+<div class="chk"><span class="box"></span><span>An <b>assignment is plant access</b>, nothing more: one row per plant the person can see or act at. Rows differ by what each plant's <b>modules</b> license (and by per-plant overrides, Step 6) — never by role.</span></div>
+<div class="chk"><span class="box"></span><span>The admin grant is account-wide too (one grant, works everywhere the person has any plant).</span></div>
+<div class="chk"><span class="box"></span><span>Multi-plant screens don't need role-specific variants: each row (an issue, a task) carries its plant, and the actions on that row come from the person's role <code>AND</code> <b>that plant's modules</b> — rows differ by module, not by role (the same per-row mechanic as Step 2). Show a quiet "view-only here" marker on rows where the person can't act; don't hide the rows and don't build separate screens per role.</span></div>
+<div class="protorow"><span class="lbl">Prototype</span>the person profile editor inside the People tab. Read <code>togglePlantSel()</code>, <code>initAsg()</code>, <code>setRole()</code>.</div>
 <p style="font-weight:600;color:var(--navy);margin:16px 0 4px;font-size:14px">The exact shape to save, per person:</p>
 <pre class="saveshape">{
   userId,
-  assignments: [
-    { plant, company, tier, overrides: { add: [...], remove: [...] }, reason, drift }
-  ],
+  role,
   grant,
+  assignments: [
+    { plant, company, overrides: { add: [...], remove: [...] }, reason, drift }
+  ],
   entitlementContext: { modulesByPlant, cappedByPlant }
 }</pre>
-<p class="savenote">One <code>assignments</code> row per plant the person touches. <code>overrides.add</code>/<code>overrides.remove</code> are permission keys like <code>approve.forceclose</code>. <code>entitlementContext</code> is <b>informational only</b> — a snapshot for display and debugging. <b>Never use it to decide access.</b> The real check, every time, at runtime, is always Step 2's rule: <code>user permission AND plant module</code>, computed fresh — never read from what was saved at assignment time.</p>
+<p class="savenote"><code>role</code> is the person's one account-wide role. One <code>assignments</code> row per plant the person can access — note there is no role on the row. <code>overrides.add</code>/<code>overrides.remove</code> are permission keys like <code>approve.forceclose</code>. <code>entitlementContext</code> is <b>informational only</b> — a snapshot for display and debugging. <b>Never use it to decide access.</b> The real check, every time, at runtime, is always Step 2's rule: <code>user permission AND plant module</code>, computed fresh — never read from what was saved at assignment time.</p>
 <div class="protorow" style="border-top:none;margin-top:0;padding-top:0"><span class="lbl">Prototype</span>the <code>save()</code> function.</div>
 </div>
 
@@ -334,10 +335,11 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 
 <div class="step" id="step9">
 <h3><span class="badge">9</span>Plant-wide bulk actions</h3>
-<div class="chk"><span class="box"></span><span><b>Bulk set tier</b> ("tier" is just this field's name in the data model — it means role): assign one role to an entire plant's roster in a single audited action.</span></div>
+<div class="chk"><span class="box"></span><span><b>Bulk roster add:</b> put selected people on a plant's access list in one audited action. They join at their <b>account-wide role</b> — the action never asks for a role.</span></div>
+<div class="chk"><span class="box"></span><span>There is deliberately <b>no bulk role change.</b> A role change is account-wide (Step 5), so running one from a plant-scoped bulk surface would reach plants outside the acting admin's scope — a cluster or plant admin must never be able to change what someone can do at a plant they don't manage. Roles change on the person record, one person at a time.</span></div>
 <div class="chk"><span class="box"></span><span><b>Bulk edit permission:</b> add or remove one specific permission for a chosen set of people at a plant — this writes a separate reasoned exception per person (not a live-linked template — that's what Step 8 is for).</span></div>
 <div class="chk"><span class="box"></span><span>Every bulk action still checks the module ceiling and the exception-permission exclusion, person by person. Anyone skipped for either reason shows up in the action's summary line — never fail silently.</span></div>
-<div class="protorow"><span class="lbl">Prototype</span>read <code>bulkSetTier()</code>, <code>bulkEditPerm()</code>, <code>renderBulk()</code>.</div>
+<div class="protorow"><span class="lbl">Prototype</span>read <code>bulkAddToPlant()</code>, <code>bulkEditPerm()</code>, <code>renderBulk()</code>.</div>
 </div>
 
 <div class="step" id="step10">
@@ -383,6 +385,7 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 <div class="chk"><span class="box"></span><span><b>517 people</b> get their new role + grant fully automatically — no question for a human.</span></div>
 <div class="chk"><span class="box"></span><span><b>236 people</b> also migrate automatically, but each one carries exactly one follow-up question for a plant manager to answer later (mostly: "does this L1 Operator actually approve/close issues? If yes, promote to L3 Lead" — that's 219 of the 236; the rest are a handful of "does this viewer actually run the site?" and "does this lead need a bigger admin grant?" checks).</span></div>
 <div class="chk"><span class="box"></span><span><b>Zero people are blocked.</b> There is no "figure this out later" bucket. Every one of the 753 gets a real answer on day one.</span></div>
+<div class="chk"><span class="box"></span><span>The migration worksheet already lists <b>exactly one role per user — use it as-is.</b> The 11 people who looked "mixed-capacity" (different roles at different plants) were investigated and resolved: every one is an operator who also held a legacy client-viewer role at other plants purely for <i>visibility</i> — misconfigured role stacking, not mixed authority. They migrate at their operating role everywhere; the resolution record is <code>internal/single-role-resolution.md</code> (ask Mihir, same as the other internal files).</span></div>
 <div class="chk"><span class="box"></span><span><b>7 people</b> get their admin grant manually upgraded to Full Site Admin as part of this migration (they already held the other half of it under the old system).</span></div>
 <div class="chk"><span class="box"></span><span><b>49 people</b> currently have zero plants. 5 of those are pure admin-grant holders (handled automatically); the other 44 go into a short manual queue — assign them a real plant, or offboard them. Don't invent a plant for someone just to close the queue.</span></div>
 <div class="chk"><span class="box"></span><span>The <b>Issue Resolution</b> feature (the whole <code>ops</code> module) stays unlicensed everywhere on day one, on purpose — it isn't built yet. This is why the "is this person a lead?" question above doesn't block anything: approval authority simply has no effect until the feature ships.</span></div>
@@ -447,7 +450,7 @@ The 7 admin-grant upgrades, with evidence: <code>internal/admin-grants-applied.x
 </section>
 
 </main>
-<footer>User Center — Roles &amp; Permissions · PRD v2 · 2026-07-27 · source: PRD.md in this repo</footer>
+<footer>User Center — Roles &amp; Permissions · PRD v2 · 2026-07-30 · source: PRD.md in this repo</footer>
 
 </body>
 </html>

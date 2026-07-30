@@ -105,15 +105,23 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
   stacking, not mixed authority (internal/single-role-resolution.md). Day-one
   risk of flattening ≈ nil (ops module unlicensed; L1-everywhere ≈ viewer +
   stock at inv plants); the per-plant ops-enablement review catches the rest.
-  **Prototype (per-plant tier editor in index.html), PRD Step 5/9, and the
-  save payload (tier moves out of assignments[] to the user) are NOT yet
-  reworked to this ruling — pending.** Overrides and their mandatory reason are scoped
+  **Implemented 2026-07-30 across prototype + PRD:** index.html's profile
+  editor has ONE account-wide role picker (`p.role`/`setRole`; `ASG[plant].tier`
+  stays as storage but always mirrors the person's role; changing the role
+  resets every plant to the new standard — old-role exceptions are cleared),
+  the save payload moved tier out of assignments[] (see next bullet), seeds
+  flattened (Asha = l3 everywhere), directory/review/previews show the role
+  once with plants as an access list, and `bulkSetTier` was re-scoped to
+  `bulkAddToPlant` (see Plant-wide bulk actions). PRD Steps 3/5/9/13 + GUIDE
+  updated to match. Overrides and their mandatory reason are scoped
   per plant; drift is counted per plant; guardrail cascades run per
   assignment. Grant stays account-level (max one per user per site). The old
   "split vs edit the group assignment" open question is dissolved — you edit
   rows.
-- **Save payload shape v2** (backend contract — see `save()` in index.html):
-  `{userId, assignments:[{plant, company, tier, overrides:{add[],remove[]}, reason, drift}], grant, entitlementContext:{modulesByPlant, cappedByPlant}}`
+- **Save payload shape v2** (backend contract — see `save()` in index.html;
+  reshaped for the 2026-07-30 single-role ruling — role is top-level, no tier
+  on assignment rows):
+  `{userId, role, grant, assignments:[{plant, company, overrides:{add[],remove[]}, reason, drift}], entitlementContext:{modulesByPlant, cappedByPlant}}`
   Override keys are `set.permission` strings, e.g. `approve.forceclose`.
   `entitlementContext` is informational — the runtime permission check at a
   plant is always `user permission AND plant module`; entitlements live on the
@@ -129,13 +137,16 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
   chip locked, whole-cluster chips only at cluster level and above. All
   scoping flows through `inScope`/`scopedPlants`/`scopedPeople`; every
   bulk action is scope-checked in the function, not just hidden in UI.
-- **Plant-wide bulk actions** (`bulkSetTier`/`bulkEditPerm`, panel in the
-  User Center): assign a tier to a plant's whole roster in one audited
-  action (custom-role bundles re-apply via live link; hand-made exceptions
-  reset with the tier), or add/remove specific permissions for a selected
-  set of users — written as per-person per-plant reasoned exceptions
-  (stamped, NOT live-linked; the named live-linked variant is a custom
-  role). Module ceiling and flag prerequisites enforced per person;
+- **Plant-wide bulk actions** (`bulkAddToPlant`/`bulkEditPerm`, panel in the
+  User Center): add selected people to a plant's access list in one audited
+  action — they join at their ACCOUNT-WIDE role (2026-07-30 ruling; the old
+  `bulkSetTier` was deliberately NOT kept as an account-level role change:
+  a role change is account-wide, so from a plant-scoped bulk surface it
+  would reach plants outside the acting admin's scope — roles change on the
+  person record only, never in bulk). Or add/remove specific permissions for
+  a selected set of users — written as per-person per-plant reasoned
+  exceptions (stamped, NOT live-linked; the named live-linked variant is a
+  custom role). Module ceiling and flag prerequisites enforced per person;
   reason mandatory; skips are counted in the audit line.
 - **Custom roles = named grant/revoke templates, applied per person (owner
   ruling 2026-07-16)** (`PACKS`, `createCustomRole`/`applyCustomRole`) — NOT
@@ -164,13 +175,13 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
   action, apply custom role), a "who can do X here?" capability lookup, and the
   scoped roster with jump-to-manage. Everything scoped via `inScope`.
 - **People directory is a table** (no user avatars — icons removed per owner
-  ruling): name/title/company, per-plant tier chips, grant, status; row-click
-  opens the profile.
+  ruling): name/title/company, one role chip, plant-access chips, grant,
+  status; row-click opens the profile.
 - **User Center** (index.html tab 1) — the person registry everything drives
 - **User Center** (index.html tab 1) — the person registry everything drives
   from: `PEOPLE` (5 seeds + add-person), directory with KPIs/search/filters,
-  person profile = the per-plant assignment editor bound to that record
-  (`cur`; `ASG`/`grant` are views onto `cur.asg`/`cur.grant`), save writes
+  person profile = the role + plant-access editor bound to that record
+  (`cur`; `ASG`/`grant`/`role` are views onto `cur.asg`/`cur.grant`/`cur.role`), save writes
   back to the registry + `AUDIT`. Access review reads `PEOPLE` directly
   (`reviewPeople()===PEOPLE`, no fork); the smart preview's "Selected person"
   preset renders whoever is open. New people start with zero access.
@@ -262,7 +273,8 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
   "Edit on Product modules" jump-link and an inline add/remove-roster editor,
   add-plant for Global) · Product modules (the one write surface for module
   licensing, per ADR-003) · User Center (people directory with a needs-attention queue that
-  counts down to ✓ → per-plant assignment editor with progressive
+  counts down to ✓ → role + plant-access editor (one account-wide role,
+  per-plant customize rows) with progressive
   disclosure, a profile progress meter and a save button that counts
   remaining reasons → peak-end save confirmation with the payload behind a
   "For engineers" disclosure) · Access Review · smart UI preview engine. Single self-contained file,

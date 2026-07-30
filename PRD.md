@@ -1,7 +1,7 @@
 # PRD — User Center: Roles & Permissions (v2)
 
 **Status:** Ready to build
-**Date:** 2026-07-27
+**Date:** 2026-07-30
 **Owner:** Mihir Sethi (Associate Product Manager, DigitalPaani)
 **Live reference:** [`index.html`](index.html) is a full working click-through prototype of everything in this document. It's one HTML file — no build step, no server, no install. Open it in any browser. **Whenever you're not sure how something should look or behave, open the prototype and try it.** The code is plain JavaScript, so you can also just read the function that does the thing you're building.
 
@@ -64,8 +64,8 @@ That's it. Everything below is these five ideas turning into screens, tables, an
 Plain field lists — this is not a schema, just what data needs to exist somewhere. The prototype's in-memory variable names are in brackets so you can find the matching logic in `index.html`.
 
 - **Plant** — name, company label, which modules are licensed. [`PLANTCO`, `PLANTMODS`]
-- **Person** — name, title, one admin grant (or none), a list of per-plant assignments. [`PEOPLE`]
-- **Assignment** — one row per (person, plant): which of the 5 roles, plus any overrides (permissions manually added or removed) each with a mandatory written reason. [`ASG` / `p.asg[plant]`]
+- **Person** — name, title, **one role** (account-wide — one of the 5, see Step 4), one admin grant (or none), a list of plant assignments. [`PEOPLE`, `p.role`]
+- **Assignment** — one row per (person, plant): plant access, plus any overrides (permissions manually added or removed) each with a mandatory written reason. The role is NOT on this row — it lives on the person. [`ASG` / `p.asg[plant]`]
 - **Custom role** — a named "add these, remove these" template that an admin applies to chosen people later — not a 6th role, just a reusable exception template. [`PACKS`]
 - **Exception grant** — a person + a plant + one of the 3 exception permissions + a reason. [`remote.actuate`, `flags.impersonate`, `flags.sensorhealth`]
 - **Audit log** — one line per change: who did what, to whom, when, why. [`AUDIT`]
@@ -95,8 +95,8 @@ Each step names the prototype tab and the key functions to read in `index.html`.
 *Full permission → module mapping:* [`coverage-map.csv`](coverage-map.csv).
 
 ### Step 3 — People and admin grants
-- [ ] A person record: name, title, at most **one** admin grant (People / Technical / Full Site / Global — or none).
-- [ ] A directory table (no avatars — just name, title, company, per-plant role chips, grant, status).
+- [ ] A person record: name, title, **one role** (account-wide — a role describes the person, not a plant; decided 2026-07-30), and at most **one** admin grant (People / Technical / Full Site / Global — or none).
+- [ ] A directory table (no avatars — just name, title, company, one role chip, the plants they can access, grant, status).
 - [ ] New people start with **zero access.** Nothing is granted until someone explicitly assigns them to a plant.
 - [ ] At this point the grant field is just a label — don't hardcode what each grant *does* yet. That's Step 4, next.
 
@@ -124,26 +124,27 @@ Two similar-sounding words that are NOT the same thing: **portfolio** is a permi
 
 *Prototype:* read `SETS`, `ROLES`, `GRANTS`, `isStdG()`, and `roleModal()`/`grantModal()` for the detail views, in `index.html`. Full rule text: `CLAUDE.md` → "The v2 model."
 
-### Step 5 — Per-plant assignments
-- [ ] Give a person a role **at a specific plant.** The same person can be an L1 Operator at one plant and a Regular Non-op (just a viewer) at another — this is normal, not an edge case. (11 real people in the migration data need exactly this on day one, and the old system already supports it — its Asset Roles are per-plant too. Service companies that operate some plants while monitoring others multiply the pattern.)
-- [ ] The admin grant is account-wide (one grant, works everywhere the person has any plant), but the role is per-plant.
-- [ ] Multi-plant screens don't need role-specific variants: each row (an issue, a task) carries its plant, and the actions on that row come from the viewer's role **at that plant** — the same per-row mechanic as a module being off there (Step 2). Show a quiet "view-only here" marker on rows where the person can't act; don't hide the rows and don't build separate screens per role.
-- [ ] The assignment UI can keep the common case simple: ~740 of 753 people have one role everywhere, so default to "same role at all selected plants," with per-plant splitting behind an explicit control.
+### Step 5 — Assignments: the plant access list
+- [ ] The role is **account-wide** — one role per person, everywhere (decided 2026-07-30: a role is the person's capability level — "either the user has decision-making ability or they don't" — not a per-plant attribute). Changing it applies at every plant the person touches, and resets each plant back to the new role's standard (exceptions belonged to the old role).
+- [ ] An **assignment is plant access**, nothing more: one row per plant the person can see or act at. Rows differ by what each plant's **modules** license (and by per-plant overrides, Step 6) — never by role.
+- [ ] The admin grant is account-wide too (one grant, works everywhere the person has any plant).
+- [ ] Multi-plant screens don't need role-specific variants: each row (an issue, a task) carries its plant, and the actions on that row come from the person's role `AND` **that plant's modules** — rows differ by module, not by role (the same per-row mechanic as Step 2). Show a quiet "view-only here" marker on rows where the person can't act; don't hide the rows and don't build separate screens per role.
 
-*Prototype:* the person profile editor inside the People tab. Read `togglePlantSel()`, `initAsg()`.
+*Prototype:* the person profile editor inside the People tab. Read `togglePlantSel()`, `initAsg()`, `setRole()`.
 
 **The exact shape to save, per person:**
 ```
 {
   userId,
-  assignments: [
-    { plant, company, tier, overrides: { add: [...], remove: [...] }, reason, drift }
-  ],
+  role,
   grant,
+  assignments: [
+    { plant, company, overrides: { add: [...], remove: [...] }, reason, drift }
+  ],
   entitlementContext: { modulesByPlant, cappedByPlant }
 }
 ```
-One `assignments` row per plant the person touches. `overrides.add`/`overrides.remove` are permission keys like `approve.forceclose`. `entitlementContext` is **informational only** — a snapshot for display and debugging. **Never use it to decide access.** The real check, every time, at runtime, is always Step 2's rule: `user permission AND plant module`, computed fresh — never read from what was saved at assignment time.
+`role` is the person's one account-wide role. One `assignments` row per plant the person can access — note there is no role on the row. `overrides.add`/`overrides.remove` are permission keys like `approve.forceclose`. `entitlementContext` is **informational only** — a snapshot for display and debugging. **Never use it to decide access.** The real check, every time, at runtime, is always Step 2's rule: `user permission AND plant module`, computed fresh — never read from what was saved at assignment time.
 
 *Prototype:* the `save()` function.
 
@@ -176,11 +177,12 @@ One `assignments` row per plant the person touches. `overrides.add`/`overrides.r
 *Prototype:* the **Role library** tab. Read `createCustomRole()`, `applyCustomRole()`, `applyPreview()`, `customPalette()` for the scope-dependent picker.
 
 ### Step 9 — Plant-wide bulk actions
-- [ ] **Bulk set tier** ("tier" is just this field's name in the data model — it means role): assign one role to an entire plant's roster in a single audited action.
+- [ ] **Bulk roster add:** put selected people on a plant's access list in one audited action. They join at their **account-wide role** — the action never asks for a role.
+- [ ] There is deliberately **no bulk role change.** A role change is account-wide (Step 5), so running one from a plant-scoped bulk surface would reach plants outside the acting admin's scope — a cluster or plant admin must never be able to change what someone can do at a plant they don't manage. Roles change on the person record, one person at a time.
 - [ ] **Bulk edit permission:** add or remove one specific permission for a chosen set of people at a plant — this writes a separate reasoned exception per person (not a live-linked template — that's what Step 8 is for).
 - [ ] Every bulk action still checks the module ceiling and the exception-permission exclusion, person by person. Anyone skipped for either reason shows up in the action's summary line — never fail silently.
 
-*Prototype:* read `bulkSetTier()`, `bulkEditPerm()`, `renderBulk()`.
+*Prototype:* read `bulkAddToPlant()`, `bulkEditPerm()`, `renderBulk()`.
 
 ### Step 10 — Access Review (the audit surface)
 - [ ] **Person lens:** a grid of every permission × every plant for one person, with 5 possible states per cell: standard / added / removed (someone explicitly took it away) / capped-by-module / not-applicable (never part of this role to begin with — different from "removed"). Clicking a cell shows a one-sentence "why" (e.g. "capped — the `iot` module isn't licensed at this plant").
@@ -224,6 +226,7 @@ This step needs files that are **not in the git repo.** Ask Mihir for them befor
 - [ ] **517 people** get their new role + grant fully automatically — no question for a human.
 - [ ] **236 people** also migrate automatically, but each one carries exactly one follow-up question for a plant manager to answer later (mostly: "does this L1 Operator actually approve/close issues? If yes, promote to L3 Lead" — that's 219 of the 236; the rest are a handful of "does this viewer actually run the site?" and "does this lead need a bigger admin grant?" checks).
 - [ ] **Zero people are blocked.** There is no "figure this out later" bucket. Every one of the 753 gets a real answer on day one.
+- [ ] The migration worksheet already lists **exactly one role per user — use it as-is.** The 11 people who looked "mixed-capacity" (different roles at different plants) were investigated and resolved: every one is an operator who also held a legacy client-viewer role at other plants purely for *visibility* — misconfigured role stacking, not mixed authority. They migrate at their operating role everywhere; the resolution record is `internal/single-role-resolution.md` (ask Mihir, same as the other internal files).
 - [ ] **7 people** get their admin grant manually upgraded to Full Site Admin as part of this migration (they already held the other half of it under the old system).
 - [ ] **49 people** currently have zero plants. 5 of those are pure admin-grant holders (handled automatically); the other 44 go into a short manual queue — assign them a real plant, or offboard them. Don't invent a plant for someone just to close the queue.
 - [ ] The **Issue Resolution** feature (the whole `ops` module) stays unlicensed everywhere on day one, on purpose — it isn't built yet. This is why the "is this person a lead?" question above doesn't block anything: approval authority simply has no effect until the feature ships.

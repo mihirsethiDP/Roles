@@ -107,7 +107,6 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
     <a class="navstep" href="#r8">8 · Edit a plant's roster</a>
     <div class="grp">Reference</div>
     <a href="#colors">Colours &amp; badges</a>
-    <a href="#ruling">Heads-up: July 30 ruling</a>
   </nav>
   <a class="backlink" href="index.html">→ Open the prototype</a>
 </div>
@@ -136,7 +135,7 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 <section id="people">
 <div class="card">
 <h3><span class="badge">Screen</span>People (User Center) <span class="tag">landing screen</span></h3>
-<p>The person registry everything drives from. Top: KPI counts and a <b>needs-attention queue</b> that counts down as you fix things (missing reasons, people with zero access). Below: the directory table — every person with their per-plant role chips, admin grant, and status badges.</p>
+<p>The person registry everything drives from. Top: KPI counts and a <b>needs-attention queue</b> that counts down as you fix things (missing reasons, people with zero access). Below: the directory table — every person with their one role, the plants they can access, admin grant, and status badges.</p>
 <ul>
 <li><span class="ui">Search name or title…</span> and the filter dropdowns narrow the table.</li>
 <li><span class="ui">＋ Add person</span> creates someone new — they start with <b>zero access</b> until you assign plants.</li>
@@ -221,8 +220,8 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 <h3><span class="badge">1</span>Add a new person and give them access</h3>
 <ol class="steps">
 <li>As <b>Company admin</b>, open <span class="ui">People</span> and press <span class="ui">＋ Add person</span>. Give a name and title, then <span class="ui">Add &amp; open</span>.</li>
-<li>Their profile opens with zero access. In the <b>plant picker</b>, click each plant they should reach — plants are grouped by company label.</li>
-<li>Pick their <b>role</b> (the tier buttons). The disclosure below shows exactly which permission sets that role carries, and 📦 markers show anything the selected plants' modules would cap.</li>
+<li>Their profile opens with zero access. In the <b>plant picker</b>, click each plant they should reach — this is their access list, grouped by company label.</li>
+<li>Pick their <b>role</b> — one dropdown, one role for the person, applied at every plant you selected (a role describes the person, not a plant). Each plant row shows what that plant's modules cap with 📦 markers; changing the role later resets every row to the new standard.</li>
 <li>Administering people or plant config? Open the <b>Admin duties</b> disclosure and pick one grant. Otherwise skip it.</li>
 <li>Press <span class="ui">Save assignments</span>. If anything deviates from the role standard, the save button counts the missing reasons and stays blocked until each deviation has one.</li>
 <li>The save confirmation shows what was written; the exact JSON payload is behind the <b>For engineers</b> disclosure. The change also lands in the audit trail.</li>
@@ -274,7 +273,7 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 <h3><span class="badge">6</span>Run a plant-wide bulk action</h3>
 <ol class="steps">
 <li>On <span class="ui">People</span>, scroll to <b>Plant-wide actions — one plant, many people, one audited action</b>. Pick the plant.</li>
-<li>Either <b>bulk-assign a role</b> to the roster, or <b>bulk add/remove one permission</b> for ticked people.</li>
+<li>Either <b>bulk-add people to the plant's access list</b> (they join at their account-wide role — bulk actions never change roles, because a role change is account-wide and happens on the person's record), or <b>bulk add/remove one permission</b> for ticked people.</li>
 <li>Write the shared reason (mandatory). Sensitive exceptions are skipped automatically, and anyone blocked by the module ceiling is skipped too — the summary line counts every skip. Nothing fails silently.</li>
 </ol>
 </div>
@@ -293,7 +292,7 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 <h3><span class="badge">8</span>Add or remove someone from a plant's roster</h3>
 <ol class="steps">
 <li>Open <span class="ui">Plants</span> and click the plant.</li>
-<li><span class="ui">＋ Add person</span> in the roster section → pick any unassigned person and a role → add. It's written immediately and audited.</li>
+<li><span class="ui">＋ Add person</span> in the roster section → pick any unassigned person → add. They join at their account-wide role; it's written immediately and audited.</li>
 <li><span class="ui">Remove</span> on a roster row takes them off <i>this plant only</i> — their other plants are untouched.</li>
 <li>Scoping applies here too: a plant admin can only do this at their own plant.</li>
 </ol>
@@ -311,13 +310,6 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 <tr><td>📦</td><td>Capped count — abilities this person holds that a plant's modules currently switch off.</td></tr>
 <tr><td>🔒</td><td>Out of your persona's scope (e.g. module switches for non-Global admins, the Global grant chip).</td></tr>
 </table>
-</section>
-
-<section id="ruling">
-<h2>Heads-up: the July 30 ruling</h2>
-<div class="callout warn">
-<b>One person = one role, everywhere.</b> On July 30 we decided a user holds a single role account-wide — a role is the person's capability level, not a per-plant attribute. <b>The prototype hasn't been reworked yet</b>: its profile editor still offers a role picker per plant. Until the rework lands, use it with the same role at every plant to mirror the decided model. Plant assignments (which plants someone can access), the module ceiling, per-plant reasoned exceptions like remote control, and admin grants are all unaffected by this change.
-</div>
 </section>
 
 </main>
