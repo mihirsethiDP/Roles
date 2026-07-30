@@ -24,7 +24,7 @@ Every step in Sections 2–4 (the actual build) only needs files you already hav
 
 ## 0. Today's system — the current flow, the problem, and worked examples
 
-You're replacing something. This section is what that something actually does today, so every design choice in Sections 1–5 has its "compared to what?" (Full factual record: `LegacyRBAC.md` — ask Mihir; the findings below are lifted from it.)
+You're replacing something. This section is a record of what that something actually does today: the flow as it runs in production, the problems it causes, and walk-throughs of real tasks failing. **No solutions here** — nothing in this section describes v2. (Full factual record: `LegacyRBAC.md` — ask Mihir; the findings below are lifted from it.)
 
 ### 0.1 The current flow
 
@@ -50,7 +50,7 @@ Three objects, three owners, no screen that shows the combined result, and no wa
 - **Audits are unanswerable.** "What can this person do at plant X?" requires mentally intersecting three trees under a precedence rule that isn't displayed anywhere. In the production data, **725 of 753 users hold multiple stacked roles**, and **27 users point at a role that was deleted from the database** — nobody noticed.
 - **Role names lie.** "Operator Administrative Role" grants only dashboard viewing — roughly 300 users would be wrongly promoted by any name-based reasoning. "Client Role" (read-only by intent) carries manual-ticket *write* permissions.
 - **Every new need mints a new role.** Because roles double as feature switches, a customer wanting one extra capability gets a new bespoke role instead of a new assignment — that's how 56 roles happened, and it doesn't stop on its own.
-- **No operational semantics.** Nothing in the legacy 121 expresses approve / force-close / co-sign — the concepts the Issue Resolution feature is built on. They can't be retrofitted onto the old model; they need the new one (Step 4's `approve` set).
+- **No operational semantics.** Nothing in the legacy 121 permissions expresses approve / force-close / co-sign — the concepts the Issue Resolution feature is built on. Today there is no way to say who may approve or close anything.
 
 ### 0.3 Worked examples of today's flow
 
@@ -60,17 +60,16 @@ A new operator joins a plant. The admin assigns them "Operator Asset Role" on th
 - The admin finds the group, checks the module. Now it works — **for the entire group**, including three client viewers who were never meant to run tasks.
 - If the plant also wasn't in the group's Workspace List, there's a third stop nobody told the admin about.
 - The "assign a role" action is therefore **not one action** — it's three edits on three screens, must be done in the right order, silently over-grants in the middle, and no screen confirms the loop is closed.
-- *In v2:* one screen. Person → role (account-wide) → plant on their access list. What that plant's modules license is visible **on the same screen** (capped lines show as 📦), and effective access is one computable rule: `permission AND plant module`. Saving either completes the whole loop or tells you exactly what's missing.
 
 **Example 2 — offboarding from one plant (the reverse loop, currently a security bug).**
 A contractor finishes work at plant A. The admin opens their record and removes their Asset Role on plant A — the action that looks like "revoke access."
 - The contractor **still sees plant A and its dashboards**, because visibility comes from the group's Workspace List, which nobody touched. No warning, no error — the admin genuinely believes access is revoked.
-- *In v2:* removing the plant row from the person's access list is the whole revocation — visibility, capability, everything derives from that one row. (This defect is why ADR-001/002 removed groups and workspaces as containers entirely.)
+- To actually cut access the admin must also edit the group's Workspace List — but that list is shared, so removing the plant there removes it for **every** user in the group. There is no way to revoke one person's visibility at one plant.
 
 **Example 3 — the audit question.**
 The customer asks: "Who can configure alert tasks at our plant?"
-- Today: for each user — union their administrative roles' leaves, union their per-asset Asset Role leaves for that plant, then intersect with their group's Module List, then check the group's Workspace List even shows the plant. Repeat per user. In practice nobody does this; the honest answer is "we can't say with confidence." (This is also how 27 users ended up assigned to a deleted role without anyone noticing.)
-- *In v2:* Access review → plant lens → capability query → the list, with how each person got it (role standard vs reasoned exception), respecting the module ceiling. One click. (Try it in the prototype — [`GUIDE.html`](GUIDE.html), Recipe 4.)
+- For each user: union their administrative roles' leaves, union their per-asset Asset Role leaves for that plant, then intersect with their group's Module List, then check the group's Workspace List even shows the plant. Repeat per user. No screen does any of this.
+- In practice nobody does it, so the honest answer is "we can't say with confidence." (This is also how 27 users ended up assigned to a deleted role without anyone noticing.)
 
 ## 1. The five ideas that explain everything
 

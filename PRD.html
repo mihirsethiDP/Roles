@@ -178,7 +178,7 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 
 <section id="sec0">
 <h2><span class="num">0.</span>Today's system — the current flow, the problem, and worked examples</h2>
-<p class="lede">You're replacing something. This section is what that something actually does today, so every design choice in Sections 1–5 has its "compared to what?" (Full factual record: <code>LegacyRBAC.md</code> — ask Mihir; the findings below are lifted from it.)</p>
+<p class="lede">You're replacing something. This section is a record of what that something actually does today: the flow as it runs in production, the problems it causes, and walk-throughs of real tasks failing. <b>No solutions here</b> — nothing in this section describes v2. (Full factual record: <code>LegacyRBAC.md</code> — ask Mihir; the findings below are lifted from it.)</p>
 
 <div class="step" id="flow-today">
 <h3><span class="badge">0.1</span>The current flow</h3>
@@ -201,7 +201,7 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 <li><b>Audits are unanswerable.</b> "What can this person do at plant X?" requires mentally intersecting three trees under a precedence rule that isn't displayed anywhere. In the production data, <b>725 of 753 users hold multiple stacked roles</b>, and <b>27 users point at a role that was deleted from the database</b> — nobody noticed.</li>
 <li><b>Role names lie.</b> "Operator Administrative Role" grants only dashboard viewing — roughly 300 users would be wrongly promoted by any name-based reasoning. "Client Role" (read-only by intent) carries manual-ticket <i>write</i> permissions.</li>
 <li><b>Every new need mints a new role.</b> Because roles double as feature switches, a customer wanting one extra capability gets a new bespoke role instead of a new assignment — that's how 56 roles happened, and it doesn't stop on its own.</li>
-<li><b>No operational semantics.</b> Nothing in the legacy 121 expresses approve / force-close / co-sign — the concepts the Issue Resolution feature is built on. They can't be retrofitted onto the old model; they need the new one (Step 4's <code>approve</code> set).</li>
+<li><b>No operational semantics.</b> Nothing in the legacy 121 permissions expresses approve / force-close / co-sign — the concepts the Issue Resolution feature is built on. Today there is no way to say who may approve or close anything.</li>
 </ul>
 </div>
 
@@ -213,17 +213,16 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 <li>The admin finds the group, checks the module. Now it works — <b>for the entire group</b>, including three client viewers who were never meant to run tasks.</li>
 <li>If the plant also wasn't in the group's Workspace List, there's a third stop nobody told the admin about.</li>
 <li>The "assign a role" action is therefore <b>not one action</b> — it's three edits on three screens, must be done in the right order, silently over-grants in the middle, and no screen confirms the loop is closed.</li>
-<li><i>In v2:</i> one screen. Person → role (account-wide) → plant on their access list. What that plant's modules license is visible <b>on the same screen</b> (capped lines show as 📦), and effective access is one computable rule: <code>permission AND plant module</code>. Saving either completes the whole loop or tells you exactly what's missing.</li>
 </ul>
 <p><b>Example 2 — offboarding from one plant (the reverse loop, currently a security bug).</b><br>A contractor finishes work at plant A. The admin opens their record and removes their Asset Role on plant A — the action that looks like "revoke access."</p>
 <ul>
 <li>The contractor <b>still sees plant A and its dashboards</b>, because visibility comes from the group's Workspace List, which nobody touched. No warning, no error — the admin genuinely believes access is revoked.</li>
-<li><i>In v2:</i> removing the plant row from the person's access list is the whole revocation — visibility, capability, everything derives from that one row. (This defect is why ADR-001/002 removed groups and workspaces as containers entirely.)</li>
+<li>To actually cut access the admin must also edit the group's Workspace List — but that list is shared, so removing the plant there removes it for <b>every</b> user in the group. There is no way to revoke one person's visibility at one plant.</li>
 </ul>
 <p><b>Example 3 — the audit question.</b><br>The customer asks: "Who can configure alert tasks at our plant?"</p>
 <ul>
-<li>Today: for each user — union their administrative roles' leaves, union their per-asset Asset Role leaves for that plant, then intersect with their group's Module List, then check the group's Workspace List even shows the plant. Repeat per user. In practice nobody does this; the honest answer is "we can't say with confidence." (This is also how 27 users ended up assigned to a deleted role without anyone noticing.)</li>
-<li><i>In v2:</i> Access review → plant lens → capability query → the list, with how each person got it (role standard vs reasoned exception), respecting the module ceiling. One click. (Try it in the prototype — <a href="GUIDE.html#r4">GUIDE.html, Recipe 4</a>.)</li>
+<li>For each user: union their administrative roles' leaves, union their per-asset Asset Role leaves for that plant, then intersect with their group's Module List, then check the group's Workspace List even shows the plant. Repeat per user. No screen does any of this.</li>
+<li>In practice nobody does it, so the honest answer is "we can't say with confidence." (This is also how 27 users ended up assigned to a deleted role without anyone noticing.)</li>
 </ul>
 </div>
 </section>
