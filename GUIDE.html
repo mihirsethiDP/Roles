@@ -220,10 +220,10 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 <h3><span class="badge">1</span>Add a new person and give them access</h3>
 <ol class="steps">
 <li>As <b>Company admin</b>, open <span class="ui">People</span> and press <span class="ui">＋ Add person</span>. Give a name and title, then <span class="ui">Add &amp; open</span>.</li>
-<li>Their profile opens with zero access. In the <b>plant picker</b>, click each plant they should reach — this is their access list, grouped by company label.</li>
-<li>Pick their <b>role</b> — one dropdown, one role for the person, applied at every plant you selected (a role describes the person, not a plant). Each plant row shows what that plant's modules cap with 📦 markers; changing the role later resets every row to the new standard.</li>
-<li>Administering people or plant config? Open the <b>Admin duties</b> disclosure and pick one grant. Otherwise skip it.</li>
-<li>Press <span class="ui">Save assignments</span>. If anything deviates from the role standard, the save button counts the missing reasons and stays blocked until each deviation has one.</li>
+<li>Their profile opens with zero access. The editor runs top-to-bottom on the left: <b>1 · Their role</b> — one dropdown, one role for the whole person (a role describes the person, not a plant). Changing it later resets every plant row to the new standard.</li>
+<li><b>2 · Admin duties</b> — only if they administer people or plant config: open the disclosure and pick one grant. Most people skip this.</li>
+<li><b>3 · Their plants</b> — click each plant they should reach; that's their access list, grouped by company label. Each plant becomes a row on the right, where 📦 markers show anything that plant's modules cap.</li>
+<li>Press <span class="ui">Save assignments</span> in <b>5 · Review &amp; save</b>. If anything deviates from the role standard, the save button counts the missing reasons and stays blocked until each deviation has one.</li>
 <li>The save confirmation shows what was written; the exact JSON payload is behind the <b>For engineers</b> disclosure. The change also lands in the audit trail.</li>
 </ol>
 </div>

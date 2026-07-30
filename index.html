@@ -396,28 +396,37 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
   <div class="grid">
     <div>
       <div class="panel">
-        <div class="gh">1 · Which plants can this person access?</div>
-        <div class="help"><span class="i">💡</span><span>Pick <b>every</b> plant they should see or act at — this is their <b>access list</b>. Their one role (step 2) applies at each of these plants; each plant's licensed modules then cap what actually works there. Plants are grouped by the company on their record.</span></div>
-        <div id="plantbox"></div>
-        <button class="disclose" id="grantbtn" onclick="toggleGrantOpen()" style="padding-top:16px"><span class="chev">▶</span> <span id="grantlbl">Admin duties? — open only if this person administers</span></button>
+        <div class="gh">1 · Their role — the person's capability level</div>
+        <div class="help" id="step2help"><span class="i">💡</span><span>A role describes the <b>person</b>, not the plant — either they have decision-making ability or they don't, so everyone holds <b>one role account-wide</b>. Pick it once; it applies at every plant on the access list (step 3).</span></div>
+        <div id="rolebox"></div>
+      </div>
+
+      <div class="panel" style="margin-top:18px">
+        <div class="gh">2 · Admin duties — most people need none</div>
+        <button class="disclose" id="grantbtn" onclick="toggleGrantOpen()"><span class="chev">▶</span> <span id="grantlbl">Open only if this person administers</span></button>
         <div class="hiddenblock" id="grantblock" style="padding-top:8px">
-          <div class="help"><span class="i">💡</span><span>A grant adds <b>administration</b> on top of the role — it never changes day-to-day operating permissions, and it applies at every assigned plant. Most people need none.</span></div>
+          <div class="help"><span class="i">💡</span><span>A grant adds <b>administration</b> on top of the role — it never changes day-to-day operating permissions, and it applies at every assigned plant.</span></div>
           <div class="chipsel" id="grantchips"></div>
           <div class="granthelp" id="granthelp"></div>
         </div>
+      </div>
+
+      <div class="panel" style="margin-top:18px">
+        <div class="gh">3 · Their plants — the access list</div>
+        <div class="help"><span class="i">💡</span><span>Pick <b>every</b> plant they should see or act at. The role from step 1 applies at each; each plant's licensed modules then cap what actually works there. Plants are grouped by the company on their record.</span></div>
+        <div id="plantbox"></div>
       </div>
     </div>
 
     <div>
       <div class="panel">
-        <div class="gh">2 · What's their role? — one role, applied at every plant</div>
-        <div class="help" id="step2help"><span class="i">💡</span><span>A role describes the <b>person</b>, not the plant — either they have decision-making ability or they don't, so everyone holds <b>one role account-wide</b>. Pick it once; it applies at every plant on the access list. The rows below differ only by what each plant's <b>modules</b> license and by reasoned per-plant exceptions — never by role. Open “Customize” only when this person needs more or less than the standard at that one plant.</span></div>
-        <div id="rolebox"></div>
+        <div class="gh">4 · What they get at each plant — modules cap, exceptions flex</div>
+        <div class="help"><span class="i">💡</span><span>One row per plant on the access list. Rows differ only by what each plant's <b>modules</b> license and by reasoned per-plant exceptions — never by role. Open “Customize” only when this person needs more or less than the standard at that one plant.</span></div>
         <div id="arows"></div>
       </div>
 
       <div class="panel" style="margin-top:18px">
-        <div class="gh">3 · Review & save</div>
+        <div class="gh">5 · Review & save</div>
         <div class="help"><span class="i">💡</span><span>Nothing saves until every deviation has a written reason — deviations are audited and counted as drift. Standard rows save silently.</span></div>
         <div class="driftbar"><span class="driftnum" id="driftn">0</span><span style="font-size:13px;color:var(--ink-2)" id="driftl"></span>
           <button class="btn ghost" style="margin-left:auto;padding:7px 14px;font-size:12.5px" onclick="resetStd()">Reset all to standard</button></div>
@@ -1126,11 +1135,11 @@ function render(){
   // access rows — one per plant; summary first, detail on demand (progressive disclosure)
   const rowsEl=document.getElementById("arows");
   if(!selPlants.size){
-    rowsEl.innerHTML=`<div class="emptystate">Nothing here yet — this screen builds one <b>access row per plant</b>.
+    rowsEl.innerHTML=`<div class="emptystate">Nothing here yet — this panel builds one <b>access row per plant</b>.
       <div class="steps">
-        <div class="st"><b>1</b>Pick plants on the left</div>
-        <div class="st"><b>2</b>Their one role applies at each</div>
-        <div class="st"><b>3</b>Save — reasons required only for deviations</div>
+        <div class="st"><b>1</b>Their role is set on the left (applies everywhere)</div>
+        <div class="st"><b>2</b>Pick plants in step 3 — each becomes a row here</div>
+        <div class="st"><b>3</b>Save below — reasons required only for deviations</div>
       </div></div>`;
   }
   else rowsEl.innerHTML=[...selPlants].map(plant=>{
