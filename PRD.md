@@ -4,7 +4,7 @@
 **Date:** 2026-07-30
 **Owner:** Mihir Sethi (Associate Product Manager, DigitalPaani)
 **Live reference:** [`index.html`](index.html) is a full working click-through prototype of everything in this document. It's one HTML file — no build step, no server, no install. Open it in any browser. **Whenever you're not sure how something should look or behave, open the prototype and try it.** The code is plain JavaScript, so you can also just read the function that does the thing you're building.
-**User guide:** [`GUIDE.html`](GUIDE.html) — a step-by-step walkthrough of the prototype: the three admin personas, every screen, and eight click-by-click recipes. Open it side by side with the prototype.
+**User guide:** [`GUIDE.html`](GUIDE.html) — a step-by-step walkthrough of the prototype: the three admin personas, every screen, and nine click-by-click recipes. Open it side by side with the prototype. **Section 7** maps it recipe by recipe to the build steps below.
 
 ---
 
@@ -335,10 +335,58 @@ Only the documents this PRD actually points you to — every one of them either 
 | [`README.md`](README.md) | How the prototype is deployed (GitHub Pages) and how to run it locally. |
 | [`coverage-map.csv`](coverage-map.csv) | All 121 old permissions → their new home, one row each. |
 | [`index.html`](index.html) | The working prototype — the reference implementation for every step above. |
-| [`GUIDE.html`](GUIDE.html) | The prototype user guide — personas, every screen, eight click-by-click recipes. Read it alongside the prototype. |
+| [`GUIDE.html`](GUIDE.html) | The prototype user guide — personas, every screen, nine click-by-click recipes. Read it alongside the prototype; Section 7 is its index. |
 | [`presentation/index.html`](presentation/index.html) | A guided onboarding walkthrough version of the same model — useful for demos, not a build target. |
 | [`reference/role-permission-migration-map.xlsx`](reference/role-permission-migration-map.xlsx) | The developer-facing permission map (Section 4) — start here for mapping code. |
 | [`reference/permissions-decisions-reviewed.xlsx`](reference/permissions-decisions-reviewed.xlsx) | Optional — every one of the 121 permissions, decided, with reasoning. |
 | [`reference/permissions-catalog.xlsx`](reference/permissions-catalog.xlsx) | Optional — the raw legacy permission catalog, exported as-is from the old database. |
 
 **Step 13's migration files are the one exception** — `migration-final-mapping.xlsx`, `migration-worksheet-final-rev2.xlsx`, and `admin-grants-applied.xlsx` each contain real user records (753, 753, and 7 respectively), so they're **not linked here** and stay off the public site. Ask Mihir for these directly when you're ready to run the migration.
+
+## 7. Prototype walkthrough — how to drive it yourself
+
+Every rule in Sections 1–5 is already working and clickable in [the prototype](index.html). This section is the map: who to be, which screen does what, and nine click-by-click recipes that each demonstrate one rule end to end. The full walkthrough with every control described lives in [`GUIDE.html`](GUIDE.html) — each row below deep-links into it.
+
+> Nothing in the prototype is persisted — **refresh and everything resets** to the seed data (11 plants across 4 companies, 5 people, a full set of modules and licences). Click anything without fear; you cannot break it.
+
+### 7.1 The three personas — start by choosing who you are
+
+Three buttons at the bottom of the left rail. Everything re-scopes instantly when you switch. Switching personas is the fastest way to check the thing Step 11 insists on: scope is enforced inside every action, not merely hidden in the UI.
+
+| Persona | Scope | What it proves |
+|---|---|---|
+| **🌐 Company admin** (Global) | Every company, plant and person | The only persona that can license modules, onboard plants, and hand out the Global grant. Global Admin is the superuser — Step 3. |
+| **🏢 Cluster admin** (GreenGrid) | The 4 GreenGrid plants | Module matrix goes read-only (ADR-003); cluster-wide chips appear; nothing can reach a non-GreenGrid plant — Step 11. |
+| **🏭 Plant admin** (STP — Sector 62) | One plant's roster | The tightest scope: bulk actions, exceptions and reviews all clamp to one plant — Steps 9 and 11. |
+
+*Guide:* [GUIDE.html → Choose who you are](GUIDE.html#personas).
+
+### 7.2 The seven screens, and the build step each one implements
+
+| Screen | What it is | Build step |
+|---|---|---|
+| [People (User Center)](GUIDE.html#people) | The person registry everything drives from — directory, needs-attention queue, and the profile editor where role, admin grant, plant access and exceptions are set. | Steps 3, 5, 6, 7 |
+| [Plants](GUIDE.html#plants) | The plant registry grouped by company label, plant records with rosters, and the add-plant onboarding wizard. | Step 1 |
+| [Product modules](GUIDE.html#modules) | The licensing ceiling — the plant × module matrix, and the one write surface for licences after onboarding. | Step 2 |
+| [Role library](GUIDE.html#library) | The fixed 5 roles + 4 grants as detail cards, plus every custom role with its grant/revoke list and where it's applied. | Steps 3, 8 |
+| [Access review](GUIDE.html#review) | The reviewer cross-check: person lens (capability × plant matrix with why-chains) and plant lens ("who can do X here?"). | Step 10 |
+| [UI previews](GUIDE.html#previews) | The rule-driven visibility engine — what tabs, buttons and banners a given person actually sees at a given plant, with the permission that produced each one. | Step 11b |
+| [Control panel](GUIDE.html#control) | The scoped home for cluster and plant admins: scope KPIs, quick actions, capability lookup, scoped roster. | Step 11 |
+
+### 7.3 Nine recipes — one rule demonstrated per recipe
+
+Each recipe names the persona to start from and takes a few clicks. Run them in order the first time; together they cover every guardrail this PRD asks you to build.
+
+| # | Recipe | The rule it demonstrates |
+|---|---|---|
+| 1 | [Add a person and give them access](GUIDE.html#r1) | One account-wide role + a plant access list is the whole assignment. Deviations block the save until each has a written reason — Steps 3, 5, 6. |
+| 2 | [Grant remote control to one person at one plant](GUIDE.html#r2) | Sensitive permissions are per-person, per-plant, reasoned only — never in a role default, a custom role, or a bulk action — Step 7. |
+| 3 | [Simulate a contract change](GUIDE.html#r3) | The module ceiling: flip a licence off and watch capped lines grey out everywhere without a single user profile being edited — Step 2. |
+| 4 | [Answer "who can approve issues at this plant?"](GUIDE.html#r4) | The audit question today's system can't answer, resolved in one query that respects the ceiling — Step 10. |
+| 5 | [Create a custom role and apply it](GUIDE.html#r5) | Custom roles are named grant/revoke templates applied per person with an effect preview and a stamped reason — not catalog forks — Step 8. |
+| 6 | [Run a plant-wide bulk action](GUIDE.html#r6) | Bulk adds people to a plant or edits specific permissions for a set of them — with ceiling, prerequisites and skips audited. No bulk role change, by design — Step 9. |
+| 7 | [Preview exactly what someone will see](GUIDE.html#r7) | Frontend visibility is derived from permission state, not per-role mockups. The why-list is the spec the real UI follows — Step 11b. |
+| 8 | [Add or remove someone from a plant's roster](GUIDE.html#r8) | Removing a plant row is the complete revocation — the defect from §0.2 cannot occur in this model — Step 5. |
+| 9 | [Onboard a new plant end to end](GUIDE.html#r9) | Plant details → product modules → people as one audited action, committed only at the final step — Step 1. |
+
+*Also in the guide:* [Colours & badges](GUIDE.html#colors) — what amber, grey, the drift count and 📦 mean, consistently on every screen. Worth reading before recipe 1.
