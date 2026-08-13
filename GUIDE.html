@@ -101,11 +101,10 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
     <a class="navstep" href="#r2">2 · Grant remote control</a>
     <a class="navstep" href="#r3">3 · Simulate a plan change</a>
     <a class="navstep" href="#r4">4 · Who can approve here?</a>
-    <a class="navstep" href="#r5">5 · Create &amp; apply a custom role</a>
-    <a class="navstep" href="#r6">6 · Plant-wide bulk action</a>
-    <a class="navstep" href="#r7">7 · Preview what someone sees</a>
-    <a class="navstep" href="#r8">8 · Edit a plant's roster</a>
-    <a class="navstep" href="#r9">9 · Onboard a new plant</a>
+    <a class="navstep" href="#r5">5 · Plant-wide bulk action</a>
+    <a class="navstep" href="#r6">6 · Preview what someone sees</a>
+    <a class="navstep" href="#r7">7 · Edit a plant's roster</a>
+    <a class="navstep" href="#r8">8 · Onboard a new plant</a>
     <div class="grp">Reference</div>
     <a href="#colors">Colours &amp; badges</a>
   </nav>
@@ -141,7 +140,7 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 <li><span class="ui">Search name or title…</span> and the filter dropdowns narrow the table.</li>
 <li><span class="ui">＋ Add person</span> creates someone new — they start with <b>zero access</b> until you assign plants.</li>
 <li><b>Click any row</b> to open the profile editor — that's where all assignment work happens (see Recipe 1).</li>
-<li>Below the directory: the <b>Plant-wide actions</b> panel (bulk changes, Recipe 6) and the custom-role apply flow (Recipe 5).</li>
+<li>Below the directory: the <b>Plant-wide actions</b> panel (bulk changes, Recipe 5).</li>
 </ul>
 </div>
 </section>
@@ -151,8 +150,8 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 <h3><span class="badge">Screen</span>Plants</h3>
 <p>The plant registry, grouped by company label, with licensed-module chips, headcount, and the roster mix per plant.</p>
 <ul>
-<li><b>Click a plant row</b> to open its record: licensed modules, the full roster (click a person to jump to their profile), and roster editing (Recipe 8).</li>
-<li><span class="ui">＋ Add plant</span> (Company admin only) opens the <b>onboarding wizard</b>: plant details → product modules → people (Recipe 9). Licensing what was sold happens right there; from then on, licences change only in Product modules.</li>
+<li><b>Click a plant row</b> to open its record: licensed modules, the full roster (click a person to jump to their profile), and roster editing (Recipe 7).</li>
+<li><span class="ui">＋ Add plant</span> (Company admin only) opens the <b>onboarding wizard</b>: plant details → product modules → people (Recipe 8). Licensing what was sold happens right there; from then on, licences change only in Product modules.</li>
 <li>The modal's <span class="ui">✏️ Edit on Product modules →</span> button jumps you to that plant's row in the module matrix and highlights it.</li>
 </ul>
 </div>
@@ -173,11 +172,10 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 <section id="library">
 <div class="card">
 <h3><span class="badge">Screen</span>Role library</h3>
-<p>The full catalog: five base roles and four admin grants as cards (click any card for its complete brief — every permission it carries, who holds it), plus the <b>custom-role register</b> below.</p>
+<p>The full catalog — and all of it: five base roles and four admin grants as cards (click any card for its complete brief — every permission it carries, who holds it).</p>
 <ul>
-<li><b>Custom role = a named add/remove template</b>, not a new kind of role. Creating one does nothing by itself — you <b>apply</b> it to chosen people later (Recipe 5).</li>
-<li>Each custom role in the register shows its grants/revokes, reason, creator, and where it's been applied. <span class="ui">Retire</span> archives the template without touching anyone who already received it.</li>
-<li>The permission palette when building one is scope-aware: Company admin picks from everything; a cluster/plant admin only sees permissions their licensed modules unlock.</li>
+<li><b>Custom roles were removed by decision on 2026-08-13.</b> None will be created, and no admin — People Admins included — can create or apply one. The screen records the decision below the nine cards.</li>
+<li>When someone needs more or less than their role's standard: a <b>per-person reasoned exception</b> on their profile (Recipe 2 shows one), or a <b>plant-wide permission edit</b> (Recipe 5) for many people at once.</li>
 </ul>
 </div>
 </section>
@@ -209,7 +207,7 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 <section id="control">
 <div class="card">
 <h3><span class="badge">Screen</span>Control panel <span class="tag">cluster / plant personas only</span></h3>
-<p>The scoped home for the two smaller personas: their scope's key numbers, quick actions (plant-wide change, apply custom role), a "who can do X here?" lookup, and their roster with jump-to-manage. As Company admin you won't see it — Global lands on People instead.</p>
+<p>The scoped home for the two smaller personas: their scope's key numbers, quick actions (plant-wide change, role library), a "who can do X here?" lookup, and their roster with jump-to-manage. As Company admin you won't see it — Global lands on People instead.</p>
 </div>
 </section>
 
@@ -235,7 +233,7 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 <li>Open the person from <span class="ui">People</span> (try Asha — she already has this grant at STP — Sector 62, so you can see the end state).</li>
 <li>On the plant row where they need it, expand the permission sets and switch on <b>IoT remote control → actuate</b>.</li>
 <li>The row turns amber and the save blocks until you write a <b>reason</b> — certification reference, approver, ticket number.</li>
-<li><span class="ui">Save assignments</span>. Note what you <i>can't</i> do: remote control never appears in custom roles or bulk actions — one person, one plant, one reason is the only path. That's by design.</li>
+<li><span class="ui">Save assignments</span>. Note what you <i>can't</i> do: remote control can never be handed out in bulk (and there are no custom roles to bundle it into) — one person, one plant, one reason is the only path. That's by design.</li>
 </ol>
 </div>
 
@@ -260,18 +258,7 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 </div>
 
 <div class="card" id="r5">
-<h3><span class="badge">5</span>Create a custom role and apply it</h3>
-<ol class="steps">
-<li>Open <span class="ui">Role library</span> → create custom role. Name it for the situation (e.g. "Contract-X Inventory Auditor"), tick permissions to <b>add</b> and/or <b>remove</b>, write the reason. Creating it changes nobody.</li>
-<li>Go to <span class="ui">People</span> → the apply panel. Pick the custom role, the people, and the plants (Company admin gets ⚡ whole-cluster chips).</li>
-<li>Choose the mode: <b>add</b> layers it on top of what each person has; <b>overwrite</b> resets them to their role standard first.</li>
-<li>Read the <b>per-person preview</b> — it shows exactly what will change for each person, including things they already had and things the module ceiling will cap.</li>
-<li>Write the reason and apply. Applications are <b>stamped</b> — editing the template later never retroactively changes anyone.</li>
-</ol>
-</div>
-
-<div class="card" id="r6">
-<h3><span class="badge">6</span>Run a plant-wide bulk action</h3>
+<h3><span class="badge">5</span>Run a plant-wide bulk action</h3>
 <ol class="steps">
 <li>On <span class="ui">People</span>, scroll to <b>Plant-wide actions — one plant, many people, one audited action</b>. Pick the plant.</li>
 <li>Either <b>bulk-add people to the plant's access list</b> (they join at their account-wide role — bulk actions never change roles, because a role change is account-wide and happens on the person's record), or <b>bulk add/remove one permission</b> for ticked people.</li>
@@ -279,8 +266,8 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 </ol>
 </div>
 
-<div class="card" id="r7">
-<h3><span class="badge">7</span>Preview exactly what someone will see</h3>
+<div class="card" id="r6">
+<h3><span class="badge">6</span>Preview exactly what someone will see</h3>
 <ol class="steps">
 <li>Open the person in <span class="ui">People</span> (their live config, including unsaved edits, is what gets previewed).</li>
 <li>Go to <span class="ui">UI previews</span> and pick <span class="ui">◉ Selected person</span>.</li>
@@ -289,8 +276,8 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 </ol>
 </div>
 
-<div class="card" id="r8">
-<h3><span class="badge">8</span>Add or remove someone from a plant's roster</h3>
+<div class="card" id="r7">
+<h3><span class="badge">7</span>Add or remove someone from a plant's roster</h3>
 <ol class="steps">
 <li>Open <span class="ui">Plants</span> and click the plant.</li>
 <li><span class="ui">＋ Add person</span> in the roster section → pick any unassigned person → add. They join at their account-wide role; it's written immediately and audited.</li>
@@ -299,8 +286,8 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 </ol>
 </div>
 
-<div class="card" id="r9">
-<h3><span class="badge">9</span>Onboard a new plant end to end</h3>
+<div class="card" id="r8">
+<h3><span class="badge">8</span>Onboard a new plant end to end</h3>
 <ol class="steps">
 <li>As <b>Company admin</b>, open <span class="ui">Plants</span> and press <span class="ui">＋ Add plant</span>. A three-step wizard opens — nothing is created until the last step, so cancel any time.</li>
 <li><b>Step 1 · Plant details:</b> name the plant and pick its company label (or add a new label right there — labels group plants in pickers; they're not containers).</li>
@@ -325,7 +312,7 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 </section>
 
 </main>
-<footer>User Center — Roles &amp; Permissions · prototype user guide · 2026-07-30 · the prototype resets on refresh; nothing is saved</footer>
+<footer>User Center — Roles &amp; Permissions · prototype user guide · 2026-08-13 · the prototype resets on refresh; nothing is saved</footer>
 
 </body>
 </html>

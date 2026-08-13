@@ -63,10 +63,10 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
   `sensitive:true`.** It is in NO base role's std composition, so it is never
   granted by default; it can only be added deliberately per person (with a
   reason, capped by the IoT module). Because it's sensitive it is
-  **excluded from every bulk path** — not bundlable into a custom role and
-  skipped by plant-wide bulk-add (`createCustomRole`/`bulkEditPerm` both filter
-  `setById[k].sensitive`), so it can never be handed to a plant/cluster roster
-  at once. Seed Asha shows the intended path: +remote.actuate at STP — Sector 62
+  **excluded from every bulk path** — skipped by the plant-wide permission
+  edit (`bulkEditPerm` filters `setById[k].sensitive`), and since custom roles
+  were removed outright (ruling 2026-08-13) there is no template channel
+  either — so it can never be handed to a plant/cluster roster at once. Seed Asha shows the intended path: +remote.actuate at STP — Sector 62
   with a certification reason. (Supersedes the brief `approve.remote` placement;
   still consistent with canonical L3-actuation since remote requires acting
   authority in practice, but the grant is now always explicit, never a tier default.)
@@ -145,34 +145,30 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
   would reach plants outside the acting admin's scope — roles change on the
   person record only, never in bulk). Or add/remove specific permissions for
   a selected set of users — written as per-person per-plant reasoned
-  exceptions (stamped, NOT live-linked; the named live-linked variant is a
-  custom role). Module ceiling and flag prerequisites enforced per person;
-  reason mandatory; skips are counted in the audit line.
-- **Custom roles = named grant/revoke templates, applied per person (owner
-  ruling 2026-07-16)** (`PACKS`, `createCustomRole`/`applyCustomRole`) — NOT
-  catalog forks. A custom role is `{grant[], revoke[], reason, scope}` — it may
-  ADD permissions and/or REMOVE them. Built from a permission palette
-  (`customPalette`): a Company/Global admin builds **from scratch across the
-  full catalog**; a cluster/plant admin's palette is **limited to permissions
-  their licensed product modules unlock** (modules = source of truth). Defined
-  once (does not apply on creation), then **applied** to chosen people via
-  `applyCustomRole(id,users,plants,mode,reason)` in **add** (layer on current)
-  or **overwrite** (reset to tier standard first) mode, with a per-user
-  **effect preview** (`applyPreview` → willAdd/willRemove/capped/cleared)
-  showing what each person already has and what changes. Applications are
-  STAMPED (reasoned per-person exceptions, audited), not live-linked; `retire`
-  archives the template (keeps stamped perms). Flags + sensitive `remote` never
-  bundleable; module ceiling always enforced at apply. Role library (tab 4)
-  lists the fixed 9 + every custom role (highlighted) with grant/revoke, reason,
-  creator, and where applied. Global persona gets ⚡ whole-cluster chips in the
-  plant picker.
+  exceptions (stamped, NOT live-linked; there is no template layer — custom
+  roles were removed 2026-08-13). Module ceiling and flag prerequisites
+  enforced per person; reason mandatory; skips are counted in the audit line.
+- **Custom roles: REMOVED ENTIRELY (owner ruling 2026-08-13 — SUPERSEDES the
+  2026-07-16 custom-roles ruling).** None will ever be created, and no admin —
+  **People Admins included** — gets any create-or-apply capability. The whole
+  subsystem was deleted from index.html (`PACKS`, `createCustomRole`,
+  `applyCustomRole`, `applyPreview`, `customPalette`, `retirePack`, the
+  builder/apply UI); do not resurrect it. The fixed 9 (5 base roles + 4
+  grants) are the complete, permanent role vocabulary. Flexibility =
+  per-person per-plant reasoned overrides (profile editor) or the plant-wide
+  bulk permission edit — both stamped per person, audited, module-capped.
+  Role library (tab 4, `renderLibrary`) shows the fixed catalog with live
+  holder counts plus a panel recording this decision. PRD: top-level
+  "simplification" section added, Step 8 is a do-not-build tombstone, §5
+  rule 6 = "the role catalog is closed"; GUIDE recipe removed;
+  tests/verify-usercenter.js asserts the absence.
 - **Detail modals** (`roleModal`/`grantModal`/`moduleModal`) — clicking any
   base-role, grant, or module card opens a modal with the full brief (every
   permission it grants, holder counts, per-plant licensing, notes).
 - **Control panel** (index.html tab 5, `renderControlPanel`) — the scoped home
   for cluster/plant admins only (hidden + explained for Global; a Global admin
   landing on it is bounced to People): scope KPIs, quick actions (plant-wide
-  action, apply custom role), a "who can do X here?" capability lookup, and the
+  action, role library), a "who can do X here?" capability lookup, and the
   scoped roster with jump-to-manage. Everything scoped via `inScope`.
 - **People directory is a table** (no user avatars — icons removed per owner
   ruling): name/title/company, one role chip, plant-access chips, grant,
@@ -287,6 +283,17 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
   severity ladder (#FFF8E1/#B45309, #B80000), Figtree + IBM Plex Mono.
   No purple, no sage, no rust in product surfaces.
 - `coverage-map.csv` — all 121 legacy permission tags → v2 home + status.
+- `reference/module-feature-permission-map.xlsx` — the dev lookup workbook
+  (added 2026-08-13): module → feature → v2 permission tags (with legacy
+  sources), role × permission and grant × permission matrices, and the
+  legacy-tag audit that flags every DB tag not carried into v2. Generated
+  from `SETS`/`ROLES`/`GRANTS` + coverage-map.csv + data/Permissions.json;
+  regenerate rather than hand-edit if the model changes.
+- `tests/` — five dependency-free node suites (verify, verify-add, verify-inv,
+  verify-floc, verify-usercenter) asserting the model rules against both
+  prototypes: `node tests/verify-usercenter.js` (env `ROLES_ROOT` overrides
+  the repo root). Moved INTO the repo 2026-08-13 after the scratchpad copies
+  were lost to temp cleanup — keep them here.
 - `README.md` — GitHub Pages deploy steps (repo: github.com/mihirsethiDP/Roles;
   Pages had a transient deploy failure; Netlify Drop is the fallback).
 - `data/` (add locally if present) — production exports: Roles.json,
@@ -307,11 +314,11 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
 - Split index.html into modules only if it grows further; keep static hosting.
 - Add notification-preset preview (bell mock per role/severity).
 - Phase 2 of IMPROVEMENT-PLAN.md (local, gitignored — internal): PM-brief
-  one-pagers (cluster tree with (node, tier) rows / add-only Exception Packs /
-  stamp cloning / shielded templates), migration script spec, worksheet rev-2
-  (inventory routing + per-plant splits for the 74 mixed-capacity users),
-  SETS↔CAPS reconciliation, request roles-permissions.md + GAP-ANALYSIS.md
-  from Alex.
+  one-pagers, migration script spec, SETS↔CAPS reconciliation, request
+  roles-permissions.md + GAP-ANALYSIS.md from Alex. (The Exception-Packs /
+  stamp-cloning / shielded-templates items are DEAD — they were custom-role
+  machinery, removed by the 2026-08-13 ruling; per-plant splits are moot
+  under the 2026-07-30 single-role ruling.)
 - Generate backend spec: Mongo schema for roles/bundles/assignments/overrides,
   new APPR permissions, route→permission map completion (165 routes unmapped
   in the legacy Routes Permission sheet; 17 mapped tags are invalid).

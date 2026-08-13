@@ -1,10 +1,10 @@
 # PRD — User Center: Roles & Permissions (v2)
 
 **Status:** Ready to build
-**Date:** 2026-07-30
+**Date:** 2026-08-13
 **Owner:** Mihir Sethi (Associate Product Manager, DigitalPaani)
 **Live reference:** [`index.html`](index.html) is a full working click-through prototype of everything in this document. It's one HTML file — no build step, no server, no install. Open it in any browser. **Whenever you're not sure how something should look or behave, open the prototype and try it.** The code is plain JavaScript, so you can also just read the function that does the thing you're building.
-**User guide:** [`GUIDE.html`](GUIDE.html) — a step-by-step walkthrough of the prototype: the three admin personas, every screen, and nine click-by-click recipes. Open it side by side with the prototype. **Section 7** maps it recipe by recipe to the build steps below.
+**User guide:** [`GUIDE.html`](GUIDE.html) — a step-by-step walkthrough of the prototype: the three admin personas, every screen, and eight click-by-click recipes. Open it side by side with the prototype. **Section 7** maps it recipe by recipe to the build steps below.
 
 ---
 
@@ -19,6 +19,30 @@ Skip to whatever step you're working on. But read **Section 1** first — it's f
 - Files under `internal/` (Excel workbooks, migration lists) and `context-drop/` (background docs) are **not** in the git repo — they contain real user data or are working drafts, so they're kept off GitHub on purpose. If a step below needs one of these, it says so, and you should ask Mihir for it directly.
 
 Every step in Sections 2–4 (the actual build) only needs files you already have from git. Step 13 (running the real migration) needs a few `internal/` files — that's flagged clearly when you get there.
+
+---
+
+## The simplification — what's in, what's out (read before building)
+
+Three decisions cut this project down to a much smaller build than earlier drafts, older notes, or the prototype's git history suggest. **If anything you read elsewhere disagrees with this table, this table wins.**
+
+| Decision | What it means for the build | Decided |
+|---|---|---|
+| **One role per user, account-wide.** A role describes the person, not a plant. | The person record has ONE `role` field. No per-plant role picker, no role column on assignment rows, no "different role at different plants" logic anywhere. A plant assignment is just plant access. | 2026-07-30 |
+| **No custom roles — the feature is cut.** None will be created, and nobody — **People Admins included** — gets any create-or-apply capability. | Skip Step 8 entirely: no template storage, no builder UI, no apply flow, no scoped permission palettes. The 5 roles + 4 grants are the complete, permanent role vocabulary. | 2026-08-13 |
+| **No bulk role changes.** | The plant-wide bulk surface does exactly two things: add people to a plant's access list (at their existing role), and add/remove individual permissions as per-person exceptions. | 2026-07-30 |
+
+What's left is a system with exactly **four mechanisms** — nothing else grants or removes access:
+
+1. **Product modules**, licensed per plant — the ceiling (Step 2).
+2. **One of 5 roles** per person, plus **at most one of 4 admin grants** — the defaults (Steps 3–5).
+3. **Per-person, per-plant overrides** with a mandatory written reason — the only flexibility (Step 6).
+4. **3 exception permissions**, granted one person / one plant / one reason at a time (Step 7).
+
+Two things to keep open while building:
+
+- [`reference/module-feature-permission-map.xlsx`](reference/module-feature-permission-map.xlsx) — the lookup workbook: every product module → the features it includes → the permission tags behind them; every role and every grant → its permission tags; plus an audit of all 121 legacy database permission tags that **flags every tag that does not carry into v2** (deleted, retired, merged, or folded into the platform baseline).
+- The [`tests/`](tests/) folder — five plain-node scripts (no dependencies: `node tests/verify-usercenter.js`) that assert every rule in this PRD against the prototype. They are the executable version of this document; if your build passes an equivalent suite, you built the right thing.
 
 ---
 
@@ -66,6 +90,8 @@ A contractor finishes work at plant A. The admin opens their record and removes 
 - The contractor **still sees plant A and its dashboards**, because visibility comes from the group's Workspace List, which nobody touched. No warning, no error — the admin genuinely believes access is revoked.
 - To actually cut access the admin must also edit the group's Workspace List — but that list is shared, so removing the plant there removes it for **every** user in the group. There is no way to revoke one person's visibility at one plant.
 
+---
+
 ## 1. The five ideas that explain everything
 
 **1. A "Plant" is the only container.**
@@ -95,7 +121,7 @@ If a plant isn't licensed for a module, every permission tagged to that module g
 `work`, `approve`, `oversight`, `remote`, `readplant`, `portfolio`, `people`, `tech`, `templates`, `flags`. You never assign someone one permission at a time — you give them a role, and a role is just a fixed list of these boxes.
 
 **4. Roles and grants are fixed combinations of boxes — never invent a new one.**
-There are exactly **5 roles** (L1 Operator, L3 Lead, L4 Senior Lead, Regular Non-op, Senior Non-op) and **4 admin grants** (People Admin, Technical Admin, Full Site Admin, Global Admin). Each is just a named list of which of the 10 boxes it includes. If a real person needs something slightly different, that's an **override** on their one assignment (see Step 6) — you never create a 6th role.
+There are exactly **5 roles** (L1 Operator, L3 Lead, L4 Senior Lead, Regular Non-op, Senior Non-op) and **4 admin grants** (People Admin, Technical Admin, Full Site Admin, Global Admin). Each is just a named list of which of the 10 boxes it includes. If a real person needs something slightly different, that's an **override** on their assignment at that plant (see Step 6) — you never create a 6th role, and there is no custom-role mechanism of any kind (cut on 2026-08-13 — see the simplification table above and Step 8).
 
 **5. A few permissions are exceptions — never part of any role, ever.**
 Three permissions (remote-control actuation, "view as another user," the sensor-health dashboard) are never included in any role by default. They're switched on for one named person at a time, with a written reason, and they're the one thing **Global Admin still gets automatically** — see Step 7.
@@ -111,7 +137,6 @@ Plain field lists — this is not a schema, just what data needs to exist somewh
 - **Plant** — name, company label, which modules are licensed. [`PLANTCO`, `PLANTMODS`]
 - **Person** — name, title, **one role** (account-wide — one of the 5, see Step 4), one admin grant (or none), a list of plant assignments. [`PEOPLE`, `p.role`]
 - **Assignment** — one row per (person, plant): plant access, plus any overrides (permissions manually added or removed) each with a mandatory written reason. The role is NOT on this row — it lives on the person. [`ASG` / `p.asg[plant]`]
-- **Custom role** — a named "add these, remove these" template that an admin applies to chosen people later — not a 6th role, just a reusable exception template. [`PACKS`]
 - **Exception grant** — a person + a plant + one of the 3 exception permissions + a reason. [`remote.actuate`, `flags.impersonate`, `flags.sensorhealth`]
 - **Audit log** — one line per change: who did what, to whom, when, why. [`AUDIT`]
 - **Legacy deprecation flag** — one on/off switch per retiring old feature (see Step 12).
@@ -204,27 +229,24 @@ Two similar-sounding words that are NOT the same thing: **portfolio** is a permi
 ### Step 7 — The 3 exception grants
 - [ ] `remote.actuate` (remote-control actuation), `flags.impersonate` (view-as, requires the person also hold People Admin/Full Site/Global), `flags.sensorhealth` (sensor-health dashboard).
 - [ ] None of these are ever in a role by default. Each is switched on for **one person, one plant, one reason** at a time.
-- [ ] **Exclude these from every bulk action and every custom role.** A plant-wide "give everyone X" action must silently skip these — never let one action hand out a sensitive exception to a whole roster.
+- [ ] **Exclude these from every bulk action.** A plant-wide "give everyone X" action must silently skip these — never let one action hand out a sensitive exception to a whole roster. (There are no custom roles to bundle them into — that whole channel is gone, see Step 8.)
 - [ ] Global Admin gets all three automatically (see Step 4) — that's the one exception to "always requires an explicit grant."
 
-*Prototype:* read the `sensitive:true` flag on the `remote` set, the `preq` field on `flags.impersonate`, and the exclusion filters inside `createCustomRole()` / `bulkEditPerm()` — those two functions aren't built until Steps 8 and 9; come back and re-check this bullet once they exist.
+*Prototype:* read the `sensitive:true` flag on the `remote` set, the `preq` field on `flags.impersonate`, and the exclusion filter inside `bulkEditPerm()` — that function isn't built until Step 9; come back and re-check this bullet once it exists.
 
-### Step 8 — Custom roles (reusable exception templates)
-- [ ] A custom role is just `{name, permissions to add, permissions to remove, reason}` — not a new type of role, just a reusable add/remove template.
-- [ ] Defining one does nothing by itself. It's **applied** to chosen people later, in either:
-  - **add** mode (layer the template on top of whatever they already have), or
-  - **overwrite** mode (reset them to their role standard first, then apply the template).
-- [ ] Before applying, show each affected person a preview: what will actually change for them (some may already have some of it).
-- [ ] Applying a custom role writes a **stamped, per-person exception** — it is not a live link. If you edit the custom role later, people who already received it do NOT change retroactively.
-- [ ] The 3 exception permissions can never be bundled into a custom role.
-- [ ] The list of permissions someone can even pick from when building a template depends on who's building it: Global/Company admins pick from the full catalog; a cluster or single-plant admin only sees permissions their own licensed modules unlock.
+### Step 8 — Custom roles: REMOVED, do not build (decision 2026-08-13)
+Earlier drafts specified "custom roles" here — named, reusable add/remove permission templates an admin could define once and apply to many people. **The feature is cut.** No custom roles will ever be created, and no admin — **People Admins included** — gets any capability to create or apply one.
 
-*Prototype:* the **Role library** tab. Read `createCustomRole()`, `applyCustomRole()`, `applyPreview()`, `customPalette()` for the scope-dependent picker.
+- [ ] There is nothing to build in this step. Specifically do **not** build: template storage, a template-builder UI, an apply-to-people flow, per-user apply previews, or admin-scoped permission palettes.
+- [ ] Everything a custom role would have done is already covered: a **per-person override with a written reason** (Step 6) for one person, or a **bulk permission edit** (Step 9) for many people at one plant.
+- [ ] The step number is kept only so cross-references in older notes still line up.
+
+*Prototype:* the **Role library** tab now shows the fixed catalog only, with a panel recording this decision.
 
 ### Step 9 — Plant-wide bulk actions
 - [ ] **Bulk roster add:** put selected people on a plant's access list in one audited action. They join at their **account-wide role** — the action never asks for a role.
 - [ ] There is deliberately **no bulk role change.** A role change is account-wide (Step 5), so running one from a plant-scoped bulk surface would reach plants outside the acting admin's scope — a cluster or plant admin must never be able to change what someone can do at a plant they don't manage. Roles change on the person record, one person at a time.
-- [ ] **Bulk edit permission:** add or remove one specific permission for a chosen set of people at a plant — this writes a separate reasoned exception per person (not a live-linked template — that's what Step 8 is for).
+- [ ] **Bulk edit permission:** add or remove one specific permission for a chosen set of people at a plant — this writes a separate stamped, reasoned exception per person. There is no template layer behind it (custom roles were cut — Step 8).
 - [ ] Every bulk action still checks the module ceiling and the exception-permission exclusion, person by person. Anyone skipped for either reason shows up in the action's summary line — never fail silently.
 
 *Prototype:* read `bulkAddToPlant()`, `bulkEditPerm()`, `renderBulk()`.
@@ -310,10 +332,10 @@ Short list. If new code violates one of these, it's a bug, not a design choice.
 
 1. **Effective access is always `permission AND plant module`.** Never grant something that skips the module check.
 2. **Global Admin's own access check never says "no."** This is about what a Global Admin holds, not about handing things out — see rule 3.
-3. **The 3 exception permissions can never be bundled into a role, a custom role, or a bulk action — for anyone else.** They only ever reach someone else one person, one plant, one reason at a time. (Global Admin is the one person who already has them, per rule 2 — that's not the same as a bulk grant.)
+3. **The 3 exception permissions can never be bundled into a role or a bulk action — for anyone else.** They only ever reach someone else one person, one plant, one reason at a time. (Global Admin is the one person who already has them, per rule 2 — that's not the same as a bulk grant.)
 4. **Every override needs a written reason.** No silent deviations from a role standard.
 5. **Company is a label, not a container.** Never build a screen that treats "company" as something people or plants belong *inside*.
-6. **A custom role application is stamped, not live-linked.** Editing the template later must never retroactively change someone who already received it.
+6. **The role catalog is closed.** Exactly 5 roles and 4 grants, forever — no custom roles, no role-creation UI of any kind, for anyone (decision 2026-08-13). If a screen lets any admin mint or apply a new role shape, it's a bug.
 7. **Module writes happen in exactly one place** (Step 2). Every other screen that shows modules is read-only, with a link back to Step 2.
 8. **The word "workspace" and the phrase "CloseTheLoop" never appear in any user-facing text.** "Workspace" is retired; "CloseTheLoop" is an internal codename only — the product name is "User Center — Roles & Permissions."
 9. **Deprecation flags gate old screens, not the module ceiling.** Don't reuse Step 2's mechanism for Step 12 — they solve different problems (see Step 12 for why).
@@ -329,8 +351,10 @@ Only the documents this PRD actually points you to — every one of them either 
 | [`CLAUDE.md`](CLAUDE.md) | The full model spec — every ruling, in detail, with dates. The source of truth this PRD is built from. |
 | [`README.md`](README.md) | How the prototype is deployed (GitHub Pages) and how to run it locally. |
 | [`coverage-map.csv`](coverage-map.csv) | All 121 old permissions → their new home, one row each. |
+| [`reference/module-feature-permission-map.xlsx`](reference/module-feature-permission-map.xlsx) | The lookup workbook: module → feature → permission tags, role → permissions, grant → permissions, and the legacy-tag audit flagging every tag that doesn't carry into v2. |
+| [`tests/`](tests/) | Five dependency-free node scripts that assert every rule in this PRD against the prototype (`node tests/verify-usercenter.js`). |
 | [`index.html`](index.html) | The working prototype — the reference implementation for every step above. |
-| [`GUIDE.html`](GUIDE.html) | The prototype user guide — personas, every screen, nine click-by-click recipes. Read it alongside the prototype; Section 7 is its index. |
+| [`GUIDE.html`](GUIDE.html) | The prototype user guide — personas, every screen, eight click-by-click recipes. Read it alongside the prototype; Section 7 is its index. |
 | [`presentation/index.html`](presentation/index.html) | A guided onboarding walkthrough version of the same model — useful for demos, not a build target. |
 | [`reference/role-permission-migration-map.xlsx`](reference/role-permission-migration-map.xlsx) | The developer-facing permission map (Section 4) — start here for mapping code. |
 | [`reference/permissions-decisions-reviewed.xlsx`](reference/permissions-decisions-reviewed.xlsx) | Optional — every one of the 121 permissions, decided, with reasoning. |
@@ -340,7 +364,7 @@ Only the documents this PRD actually points you to — every one of them either 
 
 ## 7. Prototype walkthrough — how to drive it yourself
 
-Every rule in Sections 1–5 is already working and clickable in [the prototype](index.html). This section is the map: who to be, which screen does what, and nine click-by-click recipes that each demonstrate one rule end to end. The full walkthrough with every control described lives in [`GUIDE.html`](GUIDE.html) — each row below deep-links into it.
+Every rule in Sections 1–5 is already working and clickable in [the prototype](index.html). This section is the map: who to be, which screen does what, and eight click-by-click recipes that each demonstrate one rule end to end. The full walkthrough with every control described lives in [`GUIDE.html`](GUIDE.html) — each row below deep-links into it.
 
 > Nothing in the prototype is persisted — **refresh and everything resets** to the seed data (11 plants across 4 companies, 5 people, a full set of modules and licences). Click anything without fear; you cannot break it.
 
@@ -363,25 +387,24 @@ Three buttons at the bottom of the left rail. Everything re-scopes instantly whe
 | [People (User Center)](GUIDE.html#people) | The person registry everything drives from — directory, needs-attention queue, and the profile editor where role, admin grant, plant access and exceptions are set. | Steps 3, 5, 6, 7 |
 | [Plants](GUIDE.html#plants) | The plant registry grouped by company label, plant records with rosters, and the add-plant onboarding wizard. | Step 1 |
 | [Product modules](GUIDE.html#modules) | The licensing ceiling — the plant × module matrix, and the one write surface for licences after onboarding. | Step 2 |
-| [Role library](GUIDE.html#library) | The fixed 5 roles + 4 grants as detail cards, plus every custom role with its grant/revoke list and where it's applied. | Steps 3, 8 |
+| [Role library](GUIDE.html#library) | The fixed 5 roles + 4 grants as detail cards — the complete role vocabulary; a panel records the 2026-08-13 removal of custom roles. | Steps 4, 8 (8 = nothing to build) |
 | [Access review](GUIDE.html#review) | The reviewer cross-check: person lens (capability × plant matrix with why-chains) and plant lens ("who can do X here?"). | Step 10 |
 | [UI previews](GUIDE.html#previews) | The rule-driven visibility engine — what tabs, buttons and banners a given person actually sees at a given plant, with the permission that produced each one. | Step 11b |
 | [Control panel](GUIDE.html#control) | The scoped home for cluster and plant admins: scope KPIs, quick actions, capability lookup, scoped roster. | Step 11 |
 
-### 7.3 Nine recipes — one rule demonstrated per recipe
+### 7.3 Eight recipes — one rule demonstrated per recipe
 
 Each recipe names the persona to start from and takes a few clicks. Run them in order the first time; together they cover every guardrail this PRD asks you to build.
 
 | # | Recipe | The rule it demonstrates |
 |---|---|---|
 | 1 | [Add a person and give them access](GUIDE.html#r1) | One account-wide role + a plant access list is the whole assignment. Deviations block the save until each has a written reason — Steps 3, 5, 6. |
-| 2 | [Grant remote control to one person at one plant](GUIDE.html#r2) | Sensitive permissions are per-person, per-plant, reasoned only — never in a role default, a custom role, or a bulk action — Step 7. |
+| 2 | [Grant remote control to one person at one plant](GUIDE.html#r2) | Sensitive permissions are per-person, per-plant, reasoned only — never in a role default or a bulk action (and there are no custom roles to bundle them into) — Step 7. |
 | 3 | [Simulate a contract change](GUIDE.html#r3) | The module ceiling: flip a licence off and watch capped lines grey out everywhere without a single user profile being edited — Step 2. |
 | 4 | [Answer "who can approve issues at this plant?"](GUIDE.html#r4) | The audit question today's system can't answer, resolved in one query that respects the ceiling — Step 10. |
-| 5 | [Create a custom role and apply it](GUIDE.html#r5) | Custom roles are named grant/revoke templates applied per person with an effect preview and a stamped reason — not catalog forks — Step 8. |
-| 6 | [Run a plant-wide bulk action](GUIDE.html#r6) | Bulk adds people to a plant or edits specific permissions for a set of them — with ceiling, prerequisites and skips audited. No bulk role change, by design — Step 9. |
-| 7 | [Preview exactly what someone will see](GUIDE.html#r7) | Frontend visibility is derived from permission state, not per-role mockups. The why-list is the spec the real UI follows — Step 11b. |
-| 8 | [Add or remove someone from a plant's roster](GUIDE.html#r8) | Removing a plant row is the complete revocation — the defect from §0.2 cannot occur in this model — Step 5. |
-| 9 | [Onboard a new plant end to end](GUIDE.html#r9) | Plant details → product modules → people as one audited action, committed only at the final step — Step 1. |
+| 5 | [Run a plant-wide bulk action](GUIDE.html#r5) | Bulk adds people to a plant or edits specific permissions for a set of them — with ceiling, prerequisites and skips audited. No bulk role change — and no custom-role templates — by design — Step 9. |
+| 6 | [Preview exactly what someone will see](GUIDE.html#r6) | Frontend visibility is derived from permission state, not per-role mockups. The why-list is the spec the real UI follows — Step 11b. |
+| 7 | [Add or remove someone from a plant's roster](GUIDE.html#r7) | Removing a plant row is the complete revocation — the defect from §0.2 cannot occur in this model — Step 5. |
+| 8 | [Onboard a new plant end to end](GUIDE.html#r8) | Plant details → product modules → people as one audited action, committed only at the final step — Step 1. |
 
 *Also in the guide:* [Colours & badges](GUIDE.html#colors) — what amber, grey, the drift count and 📦 mean, consistently on every screen. Worth reading before recipe 1.

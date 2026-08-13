@@ -58,7 +58,6 @@ header.hero{background:var(--navy);color:#fff;padding:30px 0 0;border-bottom:4px
 .catcard .t{font-family:'Figtree';font-weight:700;font-size:14px;color:var(--navy)}
 .catcard .s{font-size:12px;color:var(--ink-2);margin:3px 0 6px}
 .catcard .m{font-family:var(--mono);font-size:10px;color:var(--ink-3);letter-spacing:.03em}
-.customcard{border-left:4px solid var(--teal-d)!important;background:linear-gradient(90deg,var(--teal-tint),var(--card) 220px)}
 .catcard.clickable{cursor:pointer;transition:border-color .12s,box-shadow .12s}
 .catcard.clickable:hover{border-color:var(--teal-d);box-shadow:0 4px 14px rgba(0,36,84,.08)}
 .catcard .more{font-family:var(--mono);font-size:9.5px;letter-spacing:.05em;color:var(--teal-d);margin-top:8px}
@@ -84,7 +83,6 @@ header.hero{background:var(--navy);color:#fff;padding:30px 0 0;border-bottom:4px
 .modal .mstat{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
 .modal .mstat .n{font-family:'Figtree';font-weight:800;font-size:20px;color:var(--navy)}
 .modal .mstat .l{font-size:11px;color:var(--ink-2)}
-.custombadge{font-family:var(--mono);font-size:9px;letter-spacing:.08em;background:var(--ops);color:#fff;border-radius:9px;padding:2px 8px;vertical-align:middle}
 /* Add-plant onboarding wizard */
 .npsteps{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
 .npsteps .s{font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;border:1px solid var(--line-strong);border-radius:999px;padding:4px 11px;color:var(--ink-3);background:var(--bg)}
@@ -105,8 +103,6 @@ header.hero{background:var(--navy);color:#fff;padding:30px 0 0;border-bottom:4px
 .npmod .tk{margin-left:auto;flex:none;font-size:14px;color:var(--ops);font-weight:700}
 .npfoot{display:flex;gap:8px;align-items:center;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
 .npfoot .spacer{flex:1}
-.pkstd{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;margin:0 14px 6px 0;background:var(--ops-bg);border-radius:8px;padding:2px 8px 2px 4px;color:var(--ops);cursor:default}
-.pkstd .inc{font-family:var(--mono);font-size:9px;letter-spacing:.05em;text-transform:uppercase;opacity:.75}
 .attnrow{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
 .attn{border:1px solid var(--flag-bg);background:var(--flag-bg);color:var(--flag);border-radius:14px;padding:5px 13px;font:600 12.5px 'Figtree';cursor:pointer}
 .attn:hover{border-color:var(--flag)}
@@ -397,7 +393,7 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
     </div>
     <div id="uclist"></div>
     <div id="bulkbox"></div>
-    <div style="margin-top:14px"><button class="disclose" onclick="tab(4)"><span class="chev">▶</span> Custom roles have their own screen — open the Role library</button></div>
+    <div style="margin-top:14px"><button class="disclose" onclick="tab(4)"><span class="chev">▶</span> The role catalog is fixed — browse the nine pre-defined roles in the Role library</button></div>
   </div>
 
   <!-- profile -->
@@ -508,7 +504,7 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
 <div class="pane" id="pane4">
   <div class="panel" style="margin-bottom:18px">
     <div class="gh">Role library — every role that exists, in one register</div>
-    <p style="font-size:13.5px;color:var(--ink-2);margin:0">The complete vocabulary: the <b>nine pre-defined roles</b> (five base roles + four admin grants — fixed, with live holder counts) and every <b>custom role</b> built on top of them, highlighted in teal. Internal teams track it all here: what exists, why it was created, exactly who holds it at which plants, and what's been retired. Nothing on a person's record can come from a role that isn't in this register.</p>
+    <p style="font-size:13.5px;color:var(--ink-2);margin:0">The complete vocabulary — and <b>all of it</b>: the <b>nine pre-defined roles</b> (five base roles + four admin grants), fixed, with live holder counts. <b>Custom roles were removed by decision on 2026-08-13</b> — nobody, People Admins included, can create or apply one. When someone needs more or less than their role's standard, the answer is a per-person, per-plant reasoned exception on their profile (or a plant-wide permission edit) — never a new role. Nothing on a person's record can come from a role that isn't in this register.</p>
   </div>
   <div id="packbox"></div>
 </div>
@@ -535,7 +531,7 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
 </div>
 </main>
 
-<footer><div class="wrap">User Center · Roles & Permissions · interactive prototype · DigitalPaani. Data model: plant = company label + licensed modules (ceiling) · person = one role (account-wide) + one grant + plant access list [{plant, exceptions}] · custom roles = grant/revoke templates applied per person (add or overwrite), audited · effective access = user permission ∧ plant module.</div></footer>
+<footer><div class="wrap">User Center · Roles & Permissions · interactive prototype · DigitalPaani. Data model: plant = company label + licensed modules (ceiling) · person = one role (account-wide) + one grant + plant access list [{plant, exceptions}] · effective access = user permission ∧ plant module.</div></footer>
 </div><!-- /appmain -->
 </div><!-- /layout -->
 
@@ -571,7 +567,7 @@ const SETS=[
  {id:"multiws",n:"Multi-plant view",mod:"ops"},
  {id:"cosign",n:"Eligible co-signer for force-close",mod:"ops"},
  {id:"deadline",n:"Deadline-only escalation alerts",mod:"ops"}]},
-{id:"remote",n:"IoT remote control",cat:"ops",sensitive:true,d:"Actuate plant equipment remotely — start, stop, adjust. Sensitive: never part of any role by default, granted only deliberately (per-person, or a named custom role), and always capped by the IoT module.",old:"was: Remote Control, Bi-Direction",perms:[
+{id:"remote",n:"IoT remote control",cat:"ops",sensitive:true,d:"Actuate plant equipment remotely — start, stop, adjust. Sensitive: never part of any role by default, granted only deliberately, per person, and always capped by the IoT module.",old:"was: Remote Control, Bi-Direction",perms:[
  {id:"actuate",n:"Remote control / bi-direction — actuate equipment",mod:"iot"}]},
 {id:"readplant",n:"Plant view & everyday work",cat:"read",d:"The existing product a plant already uses — dashboards, insights, and routine tasks/shifts. Standard for every plant-touching role; each line is gated by its own module.",old:"was: Client Role, Client Asset, Visualization, Insights Only, Tasks Only, Data Input",perms:[
  {id:"dash",n:"Plant dashboard & issue log",mod:"core"},
@@ -651,7 +647,7 @@ function roleModal(r){
       <div class="mstat"><div class="n">${R.std.length}</div><div class="l">permission sets</div></div>
       <div class="mstat"><div class="n">${holders}</div><div class="l">people hold it now</div></div></div>`+
     describeSets(R.std)+
-    `<div class="mnote">This is a <b>pre-defined role</b> — fixed and uneditable, held <b>once per person, account-wide</b>. Everything a holder can actually do at a plant is this set <b>capped by that plant's licensed modules</b>. Deviations happen per person per plant (with a reason) or via a custom role, never by changing this role.</div>`);
+    `<div class="mnote">This is a <b>pre-defined role</b> — fixed and uneditable, held <b>once per person, account-wide</b>. Everything a holder can actually do at a plant is this set <b>capped by that plant's licensed modules</b>. Deviations happen per person per plant (with a reason), never by changing this role.</div>`);
 }
 function grantModal(g){
   const n=GRANTS[g].reduce((a,sid)=>a+setById[sid].perms.length,0);
@@ -769,7 +765,7 @@ function setPersona(k){
   persona=k==="global"?{kind:"global"}
     :k==="cluster"?{kind:"cluster",plants:ALLPLANTS.filter(p=>PLANTCO[p]===CLUSTER_CO)}
     :{kind:"site",plants:SITE_SCOPE};
-  cur=null; addingP=false; packOpen=false; bulkOpen=false;
+  cur=null; addingP=false; bulkOpen=false;
   if(!scopedPeople().find(x=>x.id===reviewPerson)) reviewPerson=(scopedPeople()[0]||{}).id;
   if(!inScope(reviewPlant)) reviewPlant=scopedPlants()[0];
   ["global","cluster","site"].forEach(x=>document.getElementById("pers-"+x).classList.toggle("on",persona.kind===x));
@@ -777,7 +773,7 @@ function setPersona(k){
   // control panel is for cluster/plant admins; a global admin sitting on it gets bounced to People
   if(persona.kind==="global"&&document.getElementById("pane5")&&document.getElementById("pane5").classList.contains("on")) tab(1);
   document.getElementById("personanote").textContent=persona.kind==="global"
-    ?"Company admin: every company, plant and person. Set each person's one role, manage plant access lists, act on a whole plant's roster at once, edit single permissions for one person or a set of them, flip module flags, create custom roles anywhere."
+    ?"Company admin: every company, plant and person. Set each person's one role, manage plant access lists, act on a whole plant's roster at once, edit single permissions for one person or a set of them, flip module flags."
     :persona.kind==="cluster"
     ?"Cluster admin for GreenGrid Utilities: the four GreenGrid plants and everyone working at them. Manage plant access and run plant-wide or cluster-wide permission edits inside your cluster — module flags are read-only, and the Global grant isn't yours to give."
     :"Plant admin at STP — Sector 62: your plant's roster only. Manage plant access, run plant-wide edits and grant reasoned exceptions here — module flags are read-only, the Global grant isn't yours to give, and nothing you do can reach another plant.";
@@ -825,7 +821,7 @@ function renderControlPanel(){
   box.innerHTML=`
     <div class="panel" style="margin-bottom:18px">
       <div class="gh">🎚 Control panel — ${personaName()}</div>
-      <div class="help"><span class="i">💡</span><span>Everything here is scoped to the people and plants you run. Look up who can do what, jump to a person to fine-tune them, run a plant-wide change, or apply a custom role — all within your scope, all audited.</span></div>
+      <div class="help"><span class="i">💡</span><span>Everything here is scoped to the people and plants you run. Look up who can do what, jump to a person to fine-tune them, run a plant-wide change — all within your scope, all audited.</span></div>
       <div class="kpis">
         <div class="kpi"><div class="n">${ppl.length}</div><div class="l">people you manage</div></div>
         <div class="kpi"><div class="n">${plants.length}</div><div class="l">plant${plants.length>1?"s":""} in scope</div></div>
@@ -834,7 +830,7 @@ function renderControlPanel(){
       </div>
       <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
         <button class="btn primary" onclick="goBulk()">🏭 Plant-wide action</button>
-        <button class="btn ghost" onclick="tab(4)">🎛 Apply a custom role</button>
+        <button class="btn ghost" onclick="tab(4)">📚 Role library</button>
         <button class="btn ghost" onclick="tab(1)">👥 Full directory</button>
         <button class="btn ghost" onclick="tab(2)">🔍 Access review</button>
       </div>
@@ -867,70 +863,13 @@ function selectCluster(co){ /* Global Admin: one click = every plant of the clus
   render();
 }
 
-/* ================= CUSTOM ROLES — add-only, live-linked bundles (never a catalog fork) ================= */
-let PACKS=[], packOpen=false, packSeq=0, packApplyId=null;
-function packApplyKey(a,key){
-  const setId=key.split(".")[0];
-  (setById[setId].req||[]).forEach(r=>{ if(setState(a,r)!=="on") enableWithDeps(a,r); });
-  a.P[key]=true;
-}
-/* A custom role is a named, reusable DIFF: grant[] (turn on) + revoke[] (turn off),
-   built from a permission palette. Global admins build from the full palette (from scratch);
-   cluster/plant admins build from a palette LIMITED to their licensed product modules
-   (modules are the source of truth). It is DEFINED once, then APPLIED to selected users
-   per plant in add or overwrite mode. Flags & sensitive sets (IoT remote) are never
-   bundleable — they stay strictly per-person. */
-function cleanCustomKeys(keys){
-  return [...new Set(keys||[])].filter(k=>{ const s=setById[(k||"").split(".")[0]]; return s&&!s.sensitive&&s.id!=="flags"; });
-}
-/* the permission palette an admin may build a custom role from */
-function customPalette(){
-  if(persona.kind==="global") return SETS.filter(s=>s.id!=="flags"&&!s.sensitive); // full, from scratch
-  const licensed=new Set(); scopedPlants().forEach(pl=>plantMods(pl).forEach(m=>licensed.add(m)));
-  return SETS.filter(s=>s.id!=="flags"&&!s.sensitive) // only perms whose module is licensed somewhere in scope
-    .map(s=>({...s,perms:s.perms.filter(p=>licensed.has(p.mod||"core"))})).filter(s=>s.perms.length);
-}
-function createCustomRole(opts){ /* defines a reusable template only — application is a separate, staged step */
-  const name=(opts.name||"").trim(), reason=(opts.reason||"").trim();
-  const grant=cleanCustomKeys(opts.grant), revoke=cleanCustomKeys(opts.revoke).filter(k=>!grant.includes(k));
-  if(!name||!reason||(!grant.length&&!revoke.length)) return null;
-  packSeq++;
-  const pack={id:"pack"+packSeq,name,reason,grant,revoke,
-    scope:persona.kind==="global"?"global":"scoped",by:personaName(),retired:null,applications:[]};
-  PACKS.push(pack);
-  AUDIT.unshift({w:"now",t:`Custom role '${name}' created — ${grant.length} to grant, ${revoke.length} to revoke · by ${personaName()} (defined, not yet applied)`});
-  return pack;
-}
-/* effect of applying a pack to one (person, plant) in a mode — powers the per-user preview */
-function applyPreview(pack,person,plant,mode){
-  const a=person.asg[plant]; if(!a) return null;
-  const baseOn=k=>mode==="overwrite"?isStdG(a.tier,person.grant,k.split(".")[0]):!!a.P[k];
-  const willAdd=[],willRemove=[],capped=[],noop=[];
-  pack.grant.forEach(k=>{ if(!avail(k,plant)){ capped.push(k); return; } baseOn(k)?noop.push(k):willAdd.push(k); });
-  pack.revoke.forEach(k=>{ baseOn(k)?willRemove.push(k):noop.push(k); });
-  let cleared=0;
-  if(mode==="overwrite") SETS.forEach(s=>s.perms.forEach(pr=>{ const k=s.id+"."+pr.id;
-    if(!!a.P[k]!==isStdG(a.tier,person.grant,s.id)&&!pack.grant.includes(k)&&!pack.revoke.includes(k)) cleared++; }));
-  return {willAdd,willRemove,capped,noop,cleared};
-}
-function applyCustomRole(packId,userIds,plants,mode,reason){
-  const pack=PACKS.find(x=>x.id===packId); if(!pack||pack.retired) return 0;
-  plants=(plants||[]).filter(inScope);
-  const people=(userIds||[]).map(id=>PEOPLE.find(x=>x.id===id)).filter(p=>p&&scopedPeople().includes(p));
-  if(!people.length||!plants.length||!(reason||"").trim()) return 0;
-  let n=0;
-  people.forEach(p=>plants.forEach(pl=>{
-    const a=p.asg[pl]; if(!a) return; // only modifies existing assignments
-    if(mode==="overwrite") SETS.forEach(s=>s.perms.forEach(pr=>a.P[s.id+"."+pr.id]=isStdG(a.tier,p.grant,s.id)));
-    pack.grant.forEach(k=>{ if(avail(k,pl)) packApplyKey(a,k); });
-    pack.revoke.forEach(k=>{ const setId=k.split(".")[0]; a.P[k]=false;
-      if(setState(a,setId)==="off") dependents(setId).forEach(d=>{ if(setState(a,d)!=="off") disableCascade(a,d); }); });
-    a.reason=`Custom role '${pack.name}' (${mode}): ${reason.trim()}`;
-    pack.applications.push({userId:p.id,plant:pl,mode}); n++;
-  }));
-  if(n) AUDIT.unshift({w:"now",t:`Custom role '${pack.name}' ${mode==="overwrite"?"overwrote permissions for":"added to"} ${people.length} ${people.length>1?"people":"person"} at ${plants.length} plant${plants.length>1?"s":""} — reason: ${reason.trim()} · by ${personaName()}`});
-  return n;
-}
+/* ================= CUSTOM ROLES: REMOVED (owner ruling 2026-08-13) =================
+   The custom-role subsystem (named grant/revoke templates, define-then-apply,
+   scoped builder palette) was cut from the model entirely. Nobody — People
+   Admins included — can create or apply one. The fixed catalog of 5 base roles
+   + 4 admin grants is the complete role vocabulary; the only flexibility is a
+   per-person per-plant reasoned exception (profile editor) or a plant-wide
+   bulk permission edit below. */
 /* ================= PLANT-WIDE BULK ACTIONS =================
    Company admin: any plant · Cluster admin: their cluster · Plant admin: their plant.
    Bulk roster add = put people on this plant's access list in one action — they join
@@ -938,7 +877,8 @@ function applyCustomRole(packId,userIds,plants,mode,reason){
    change: a role change is account-wide, so from a plant-scoped surface it would reach
    plants outside the acting admin's scope — roles change on the person record only.
    Bulk permission edit = the same reasoned, per-plant exception written to many people
-   at once (stamped, not live-linked — the named live-linked variant is a Custom role). */
+   at once (stamped per person — there are no reusable templates; custom roles were
+   removed 2026-08-13). */
 let bulkOpen=false, bulkPlant=null;
 function bulkAddToPlant(plant,userIds){
   if(!inScope(plant)) return 0;
@@ -977,12 +917,6 @@ function bulkEditPerm(plant,userIds,keys,mode,reason){
   });
   if(n) AUDIT.unshift({w:"now",t:`Bulk permission edit at ${plant}: ${mode==="add"?"＋":"−"} ${keys.length} permission${keys.length>1?"s":""} for ${n} ${n>1?"people":"person"}${skipped?` (${skipped} skipped by module ceiling / prerequisites)`:""} · reason: ${reason.trim()} · by ${personaName()}`});
   return n;
-}
-function retirePack(id){
-  const pack=PACKS.find(x=>x.id===id); if(!pack||pack.retired) return;
-  pack.retired={by:personaName()};
-  AUDIT.unshift({w:"now",t:`Custom role '${pack.name}' retired from the library — no longer offered for new applications. Permissions already applied stay on each person's record (stamped with a reason, editable per person).`});
-  render();
 }
 function devCount(person,plant){
   const a=person.asg[plant]; if(!a) return 0; let n=0;
@@ -1239,7 +1173,7 @@ function renderDirectory(){
     }).join("")+`</tbody></table>`
     :`<div class="emptystate">Nobody matches — clear the search or filters.</div>`;
   renderBulk();
-  renderPacks();
+  renderLibrary();
 }
 /* ---- plant-wide actions panel ---- */
 function renderBulk(){
@@ -1291,9 +1225,8 @@ function bulkPermSubmit(){
   const reason=document.getElementById("bk_reason").value;
   if(bulkEditPerm(bulkPlant,ids,keys,mode,reason)) { bulkOpen=false; render(); }
 }
-/* ---- custom roles panel: list + builder ---- */
-const PERMNAME={}; SETS.forEach(s=>s.perms.forEach(p=>PERMNAME[s.id+"."+p.id]=p.n));
-function renderPacks(){
+/* ---- role library: the fixed catalog is the whole vocabulary (custom roles removed 2026-08-13) ---- */
+function renderLibrary(){
   // holders computed live from the registry
   const tierHolders={}; Object.keys(ROLES).forEach(r=>tierHolders[r]=new Set());
   const grantHolders={}; Object.keys(GRANTS).forEach(g=>grantHolders[g]=new Set());
@@ -1303,7 +1236,7 @@ function renderPacks(){
   });
   const abilityCount=std=>SETS.filter(s=>std.includes(s.id)).reduce((n,s)=>n+s.perms.length,0);
   let h=`<div class="panel" style="margin-bottom:18px"><div class="gh">The fixed catalog — five base roles, four admin grants</div>
-    <div class="help"><span class="i">💡</span><span>These nine are <b>pre-defined and uneditable</b> — nobody can create, rename or delete them (role sprawl was the legacy disease). When a role isn't quite enough, the answer is a <b>highlighted custom role</b> below or a per-person exception — never a fork of this catalog.</span></div>
+    <div class="help"><span class="i">💡</span><span>These nine are <b>pre-defined and uneditable</b> — nobody can create, rename or delete them (role sprawl was the legacy disease). When a role isn’t quite enough, the answer is a per-person reasoned exception — never a fork of this catalog, and never a new role: custom roles were removed on 2026-08-13.</span></div>
     <div class="gh2" style="margin-top:14px">Base roles — one per person, account-wide</div>
     <div class="gridcards" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">`+
     Object.keys(ROLES).map(r=>`<div class="catcard clickable" onclick="roleModal('${r}')"><div class="t">${ROLES[r].n}</div><div class="s">${ROLES[r].s}</div>
@@ -1318,119 +1251,9 @@ function renderPacks(){
       <div class="m" style="margin-top:4px">${abilityCount(GRANTS[g])} abilities · <b>${grantHolders[g].size}</b> ${grantHolders[g].size===1?"person holds":"people hold"} it</div>
       <div class="more">View details →</div></div>`).join("")+
     `</div></div>`;
-  const paletteNote=persona.kind==="global"
-    ?"As Company admin you build from a <b>blank slate</b> across the full permission catalog — no base role to start from."
-    :"The permissions you can pick are <b>limited to what your licensed product modules unlock</b> in your scope — product modules are the source of truth here.";
-  h+=`<div class="panel" style="border-left:4px solid var(--teal-d)"><div class="gh">Custom role library — the register of every custom role <span class="custombadge">CUSTOM</span></div>
-    <div class="help"><span class="i">💡</span><span>A custom role is a reusable, named change — some permissions to <b>grant (＋)</b> and some to <b>revoke (−)</b>, with one recorded reason. You <b>define it once</b>, then <b>apply it</b> to chosen people: <b>Add</b> layers the change on top of what they have, <b>Overwrite</b> resets them to their tier standard first. Each application is stamped on the person with the reason and audited. This is the register — internal teams look here to know what custom roles exist, why, and where they've been applied.</span></div>`;
-  h+=PACKS.length?PACKS.map(pk=>{
-    const dead=!!pk.retired;
-    const where=[...new Set(pk.applications.map(x=>x.plant))];
-    const who=[...new Set(pk.applications.map(x=>x.userId))].map(id=>(PEOPLE.find(p=>p.id===id)||{}).n).filter(Boolean);
-    return `<div class="rowitem customcard" style="${dead?"opacity:.55":""};align-items:flex-start">
-      <span style="min-width:0"><span class="t">🎛 ${pk.name}</span> <span class="custombadge">CUSTOM</span> <span class="tt" style="font-family:var(--mono);font-size:10px;color:var(--ink-3)">${pk.scope==="global"?"from scratch":"module-scoped"}</span> ${dead?`<span class="badge b-cap">retired${pk.retired.by?" by "+pk.retired.by:""}</span>`:`<span class="badge b-ok">live</span>`}<br>
-      ${pk.grant.length?`<span class="s"><b style="color:var(--ops)">＋ grant:</b> ${pk.grant.map(k=>PERMNAME[k]||k).join(" · ")}</span><br>`:""}
-      ${pk.revoke.length?`<span class="s"><b style="color:var(--amber-ink)">− revoke:</b> ${pk.revoke.map(k=>PERMNAME[k]||k).join(" · ")}</span><br>`:""}
-      <span class="s">reason: “${pk.reason}” · created by ${pk.by||"—"}</span><br>
-      <span class="s"><b>Applied to:</b> ${who.length?who.join(", ")+" · at "+where.join(", "):"not applied yet"}</span></span>
-      ${dead?"":`<span style="display:flex;gap:6px;flex:none"><button class="btn primary" style="padding:7px 14px;font-size:12px" onclick="openApply('${pk.id}')">Apply to people…</button><button class="btn ghost" style="padding:7px 14px;font-size:12px" onclick="retirePack('${pk.id}')">Retire</button></span>`}</div>
-      ${packApplyId===pk.id?`<div class="rowitem" style="display:block;background:var(--bg)">${applyFormHtml(pk)}</div>`:""}`;
-  }).join("")
-    :`<p style="font-size:13px;color:var(--ink-3);margin:4px 0">The library is empty — no custom roles exist yet.</p>`;
-  h+=`<button class="disclose ${packOpen?"open":""}" onclick="packOpen=!packOpen;render()"><span class="chev">▶</span> Create a custom role</button>
-    <div class="hiddenblock ${packOpen?"open":""}" id="packform">${packOpen?packFormHtml():""}</div>
-    <div class="help" style="margin-top:6px"><span class="i">💡</span><span>${paletteNote}</span></div></div>`;
+  h+=`<div class="panel" style="border-left:4px solid var(--flag)"><div class="gh">Custom roles — removed from the model (decision 2026-08-13)</div>
+    <p style="font-size:13.5px;color:var(--ink-2);margin:0">Custom roles (reusable grant/revoke templates) are <b>no longer part of the product</b>. None will be created, and no admin — <b>People Admins included</b> — has any create-or-apply capability. What replaces them: a <b>per-person, per-plant reasoned exception</b> on the profile (step 2 → Customize) for one person, or a <b>plant-wide permission edit</b> (People → Plant-wide actions) for many people at once — both stamped per person, both audited, both capped by the module ceiling. The nine cards above are the entire role vocabulary.</p></div>`;
   document.getElementById("packbox").innerHTML=h;
-}
-function packFormHtml(){
-  const palette=customPalette();
-  return `<div style="padding-top:10px">
-    <div class="gh2" style="margin-top:6px">Name this custom role</div>
-    <input id="pk_name" placeholder="e.g. Contract-X Inventory Auditor" style="border:1px solid var(--line-strong);border-radius:9px;padding:10px 13px;font:13.5px 'Figtree';min-width:300px">
-    <div class="gh2">Permissions — mark each to grant (＋), revoke (−), or leave alone <span id="pk_count" style="font-weight:400;text-transform:none;letter-spacing:0"></span></div>
-    <div style="max-height:260px;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:8px 12px">`+
-    palette.map(s=>`<div style="font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin:10px 0 5px">${s.n}</div>`+
-      s.perms.map(p=>`<div class="prow" style="border:none;padding:3px 0"><span class="pn" style="font-size:12.5px">${p.n}</span>
-        <select class="pk_ctl" data-key="${s.id}.${p.id}" onchange="updatePkCount()" style="padding:4px 8px;font-size:12px">
-          <option value="">— leave</option><option value="g">＋ grant</option><option value="r">− revoke</option></select></div>`).join("")).join("")+
-    `</div>
-    <div class="gh2">Reason (recorded on every application)</div>
-    <textarea id="pk_reason" placeholder="e.g. 'Contract X requires inventory costing sign-off, agreed with A. Loijos'"></textarea>
-    <div class="navrow" style="margin-top:8px">
-      <button class="btn primary" onclick="packSubmit()">Create custom role</button>
-      <span class="hint">Needs a name, a reason, and at least one permission marked ＋ or −. You'll apply it to people next.</span>
-    </div></div>`;
-}
-function updatePkCount(){
-  const g=[...document.querySelectorAll(".pk_ctl")].filter(c=>c.value==="g").length;
-  const r=[...document.querySelectorAll(".pk_ctl")].filter(c=>c.value==="r").length;
-  const el=document.getElementById("pk_count");
-  if(el) el.textContent=`· ${g} to grant, ${r} to revoke`;
-}
-function packSubmit(){
-  const grant=[...document.querySelectorAll(".pk_ctl")].filter(c=>c.value==="g").map(c=>c.dataset.key);
-  const revoke=[...document.querySelectorAll(".pk_ctl")].filter(c=>c.value==="r").map(c=>c.dataset.key);
-  const pack=createCustomRole({name:document.getElementById("pk_name").value,reason:document.getElementById("pk_reason").value,grant,revoke});
-  if(pack){ packOpen=false; packApplyId=pack.id; render(); }
-  else document.getElementById("pk_count").textContent=" · needs a name, a reason, and ≥1 permission marked";
-}
-/* ---- apply a custom role to selected people, with per-user effect preview ---- */
-function openApply(id){ packApplyId=id; packOpen=false; render(); }
-function closeApply(){ packApplyId=null; render(); }
-function applyFormHtml(pk){
-  const roster=scopedPeople();
-  return `<div style="padding:4px 2px">
-    <div class="gh2" style="margin-top:0">Apply “${pk.name}” — pick people, plants, and how to apply</div>
-    <div style="display:flex;gap:24px;flex-wrap:wrap">
-      <div><div class="msec" style="font-family:var(--mono);font-size:10px;color:var(--ink-3);margin-bottom:5px">PEOPLE</div>
-        ${roster.map(p=>`<label style="display:block;font-size:12.5px;margin-bottom:4px;cursor:pointer"><input type="checkbox" class="ap_p" value="${p.id}" onchange="renderApplyPreview()"> ${p.n}</label>`).join("")}</div>
-      <div><div class="msec" style="font-family:var(--mono);font-size:10px;color:var(--ink-3);margin-bottom:5px">PLANTS (in your scope)</div>
-        ${scopedPlants().map(pl=>`<label style="display:block;font-size:12.5px;margin-bottom:4px;cursor:pointer"><input type="checkbox" class="ap_pl" value="${pl}" checked onchange="renderApplyPreview()"> ${pl}</label>`).join("")}</div>
-      <div><div class="msec" style="font-family:var(--mono);font-size:10px;color:var(--ink-3);margin-bottom:5px">MODE</div>
-        <label style="display:block;font-size:12.5px;margin-bottom:4px;cursor:pointer"><input type="radio" name="ap_mode" value="add" checked onchange="renderApplyPreview()"> <b>Add</b> — layer on top of current</label>
-        <label style="display:block;font-size:12.5px;cursor:pointer"><input type="radio" name="ap_mode" value="overwrite" onchange="renderApplyPreview()"> <b>Overwrite</b> — reset to role standard first</label></div>
-    </div>
-    <div class="gh2">Effect preview — what changes for each person</div>
-    <div id="ap_preview" class="help" style="margin-top:0"><span>Pick at least one person to preview the effect.</span></div>
-    <div class="gh2">Reason (stamped on every affected person)</div>
-    <textarea id="ap_reason" placeholder="Why this change, for these people, now"></textarea>
-    <div class="navrow" style="margin-top:8px">
-      <button class="btn primary" onclick="applySubmit('${pk.id}')">Apply to selected</button>
-      <button class="btn ghost" onclick="closeApply()">Cancel</button>
-    </div></div>`;
-}
-function renderApplyPreview(){
-  const pk=PACKS.find(x=>x.id===packApplyId); if(!pk) return;
-  const box=document.getElementById("ap_preview"); if(!box) return;
-  const ids=[...document.querySelectorAll(".ap_p:checked")].map(c=>c.value);
-  const plants=[...document.querySelectorAll(".ap_pl:checked")].map(c=>c.value);
-  const mode=([...document.querySelectorAll("input[name=ap_mode]")].find(r=>r.checked)||{}).value||"add";
-  if(!ids.length){ box.innerHTML=`<span>Pick at least one person to preview the effect.</span>`; return; }
-  let rows="";
-  ids.forEach(id=>{
-    const p=PEOPLE.find(x=>x.id===id);
-    plants.forEach(pl=>{
-      const a=p.asg[pl];
-      if(!a){ rows+=`<div class="prow2"><b>${p.n}</b> <span class="capd">· ${pl}: not assigned here — skipped</span></div>`; return; }
-      const pv=applyPreview(pk,p,pl,mode); const dev=deviations(a).length;
-      const bits=[];
-      if(pv.willAdd.length) bits.push(`<span style="color:var(--ops)">＋${pv.willAdd.length}</span>`);
-      if(pv.willRemove.length) bits.push(`<span style="color:var(--amber-ink)">−${pv.willRemove.length}</span>`);
-      if(pv.capped.length) bits.push(`<span class="capd">📦 ${pv.capped.length} capped</span>`);
-      if(mode==="overwrite"&&pv.cleared) bits.push(`<span class="capd">clears ${pv.cleared} existing exception${pv.cleared>1?"s":""}</span>`);
-      if(!pv.willAdd.length&&!pv.willRemove.length&&!(mode==="overwrite"&&pv.cleared)) bits.push(`<span class="capd">no change</span>`);
-      rows+=`<div class="prow2"><b>${p.n}</b> <span class="capd">· ${pl} · ${ROLES[a.tier].n}${dev?` · has ${dev} exception${dev>1?"s":""} now`:""}</span> <span style="margin-left:auto">${bits.join(" ")}</span></div>`;
-    });
-  });
-  box.innerHTML=rows||`<span>No in-scope assignments among the selected people.</span>`;
-}
-function applySubmit(id){
-  const ids=[...document.querySelectorAll(".ap_p:checked")].map(c=>c.value);
-  const plants=[...document.querySelectorAll(".ap_pl:checked")].map(c=>c.value);
-  const mode=([...document.querySelectorAll("input[name=ap_mode]")].find(r=>r.checked)||{}).value||"add";
-  const reason=document.getElementById("ap_reason").value;
-  if(applyCustomRole(id,ids,plants,mode,reason)){ packApplyId=null; render(); }
-  else { const b=document.getElementById("ap_preview"); if(b) b.innerHTML=`<span style="color:var(--err)">Need ≥1 person with an in-scope assignment, ≥1 plant, and a reason.</span>`; }
 }
 function renderCustomize(plant,a){
   let h=`<div class="help" style="margin-top:0"><span class="i">💡</span><span>You're fine-tuning <b>${ROLES[a.tier].n}</b> at <b>${plant}</b> only — deviations here apply to this plant, nowhere else. Each group is a set of permissions with a master switch; open a group for individual toggles. Anything different from the standard turns <b>amber</b> and needs a reason.</span></div>`;
@@ -1545,8 +1368,7 @@ function whyChain(person,plant,key){
   const src=viaGrant?`${grantN} grant`:`${tierN} role (account-wide)`;
   if(st==="on") return `<b>Active.</b> ${src} includes <b>${setN}</b> ∧ <b>${mod.n}</b> module is licensed at ${plant} → “${perm.n}” works here.`;
   if(st==="added"){
-    const viaPack=/^Custom role '/.test(a.reason||"");
-    return `<b>Active — ${viaPack?"via a custom role":"by exception"}.</b> “${perm.n}” is not standard for ${tierN} at this plant. Added deliberately — reason on record: <i>“${a.reason||"(reason pending)"}”</i>. Counted as drift; audited.`;
+    return `<b>Active — by exception.</b> “${perm.n}” is not standard for ${tierN} at this plant. Added deliberately — reason on record: <i>“${a.reason||"(reason pending)"}”</i>. Counted as drift; audited.`;
   }
   if(st==="removed") return `<b>Withheld — by exception.</b> ${tierN} normally includes “${perm.n}”, but it was removed at ${plant} — reason: <i>“${a.reason||"(reason pending)"}”</i>. Removing it here does not affect ${person.n.split(" ")[0]}'s other plants.`;
   if(st==="capped") return `<b>In the profile, inactive here.</b> The ${viaGrant?grantN+" grant":tierN+" profile"} carries “${perm.n}”, but <b>${mod.n}</b> is not in ${plant}'s contract. It stays saved and switches on automatically if the plan is upgraded. It is never silently deleted.`;
@@ -2114,7 +1936,7 @@ function tab(i){
   if(i===1) render();
   if(i===2) renderReview();
   if(i===3) renderPreview();
-  if(i===4) renderPacks();
+  if(i===4) renderLibrary();
   if(i===5) renderControlPanel();
   if(i===6) renderPlants();
 }
