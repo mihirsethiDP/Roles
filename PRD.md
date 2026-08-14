@@ -320,9 +320,9 @@ The old system had **121 permissions** spread across 56 overlapping roles. Every
 
 Optional deeper reading, if you need the reasoning behind a specific call: [`reference/permissions-decisions-reviewed.xlsx`](reference/permissions-decisions-reviewed.xlsx) (the full decision record for all 121) and [`reference/permissions-catalog.xlsx`](reference/permissions-catalog.xlsx) (the raw legacy catalog, exported as-is from the old database). Neither is required to build.
 
-A few permissions in the new system have **no old equivalent at all** — they're genuinely new capabilities the redesign adds: the core of the `approve` set (approving/rejecting gates, self-approve, force-close, reopen, photo override) and the co-sign permission in `oversight`, plus `remote.actuate`, `approve.datacorrect`, `tech.stores`, and `flags.sensorhealth`. Don't go looking for a legacy source for these — there isn't one.
+A few permissions in the new system have **no old equivalent at all** — they're genuinely new capabilities the redesign adds: the core of the `approve` set (approving/rejecting gates, self-approve, force-close, reopen, photo override) and the co-sign permission in `oversight`, plus `remote.actuate`, `tech.stores`, and `flags.sensorhealth`. Don't go looking for a legacy source for these — there isn't one.
 
-Two permissions that *sit inside* the `approve` set are different — they DO have a legacy source, so don't skip them when reading `coverage-map.csv`: `approve.assign` (creating/assigning tasks) and `approve.invlogs` (the inventory movement log) both map back to old permissions.
+Three permissions that *sit inside* the `approve` set are different — they DO have a legacy source, so don't skip them when reading `coverage-map.csv`: `approve.assign` (creating/assigning tasks), `approve.invlogs` (the inventory movement log), and `approve.datacorrect` (editing a recorded entry — maps from `DataCorrection_Manage_WE`). For `approve.datacorrect`, what's new is its **placement and audience** (an approve-set line held by L3+ / Technical Admin+, per the 2026-07-22 ruling), not the capability itself.
 
 ---
 
