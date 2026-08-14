@@ -351,6 +351,7 @@ Only the documents this PRD actually points you to — every one of them either 
 | [`CLAUDE.md`](CLAUDE.md) | The full model spec — every ruling, in detail, with dates. The source of truth this PRD is built from. |
 | [`README.md`](README.md) | How the prototype is deployed (GitHub Pages) and how to run it locally. |
 | [`coverage-map.csv`](coverage-map.csv) | All 121 old permissions → their new home, one row each. |
+| [`build-note-roles-grants.html`](build-note-roles-grants.html) | One-page dev build note: the roles-vs-grants separation contract (zero shared permissions), the operate-vs-configure module table, and the runtime-check flow chart. |
 | [`reference/module-feature-permission-map.xlsx`](reference/module-feature-permission-map.xlsx) | The lookup workbook: module → feature → permission tags, role → permissions, grant → permissions, and the legacy-tag audit flagging every tag that doesn't carry into v2. |
 | [`tests/`](tests/) | Five dependency-free node scripts that assert every rule in this PRD against the prototype (`node tests/verify-usercenter.js`). |
 | [`index.html`](index.html) | The working prototype — the reference implementation for every step above. |

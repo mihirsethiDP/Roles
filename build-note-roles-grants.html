@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Build note — Roles vs Admin Grants (User Center v2)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#002454; --navy-tint:#E9F0F7; --navy-line:#C9D8E6;
+  --teal-d:#5AABB0; --teal-ink:#1F6B71; --teal-tint:#E8F5F6; --teal-line:#95CFD3;
+  --bg:#F7F8F9; --card:#FFFFFF; --line:#E2E6EA; --line-strong:#C7CFD8;
+  --ink:#1A2533; --ink-2:#4A5568; --ink-3:#8A95A3;
+  --amber:#B45309; --amber-bg:#FFF8E1; --amber-line:#F2C94C;
+  --err:#B80000; --err-bg:#FDECEA;
+  --mono:'IBM Plex Mono',ui-monospace,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 'Figtree',system-ui,sans-serif;padding:clamp(18px,4vw,48px) 18px 70px}
+.wrap{max-width:840px;margin:0 auto}
+.eyebrow{font:600 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--teal-ink);margin:0 0 8px}
+h1{font-weight:800;font-size:clamp(23px,3.6vw,30px);letter-spacing:-.02em;color:var(--navy);margin:0 0 8px;line-height:1.15;text-wrap:balance}
+.dek{color:var(--ink-2);font-size:14.5px;margin:0 0 16px;max-width:64ch}
+.meta{font-size:12px;color:var(--ink-3);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:9px 2px;margin:0 0 26px;display:flex;gap:22px;flex-wrap:wrap}
+h2{font-size:18.5px;font-weight:750;color:var(--navy);margin:32px 0 6px;text-wrap:balance}
+h2 .n{font:700 12px var(--mono);color:var(--teal-ink);margin-right:7px}
+p{margin:0 0 12px}
+b{font-weight:650}
+code{font:12.5px var(--mono);background:var(--navy-tint);border:1px solid var(--navy-line);border-radius:5px;padding:1px 5px;color:var(--navy)}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:16px 20px;margin:12px 0}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+th{background:var(--navy);color:#fff;text-align:left;padding:8px 12px;font-size:11.5px;letter-spacing:.03em}
+td{padding:8px 12px;border-top:1px solid var(--line);vertical-align:top}
+tr:nth-child(even) td{background:var(--bg)}
+.tblwrap{overflow-x:auto}
+ul.rules{margin:8px 0 0;padding-left:20px}
+ul.rules li{margin:7px 0}
+ul.rules li::marker{color:var(--teal-d)}
+/* ---- two-worlds diagram ---- */
+.worlds{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:stretch;margin:14px 0 10px}
+.world{border:1.5px solid var(--navy);border-radius:13px;background:var(--card);padding:14px 16px}
+.world .t{font-weight:750;color:var(--navy);font-size:14.5px}
+.world .s{font-size:12px;color:var(--ink-2);margin:2px 0 10px}
+.world .setchip{display:inline-block;font:600 11px var(--mono);background:var(--navy-tint);border:1px solid var(--navy-line);color:var(--navy);border-radius:8px;padding:3px 9px;margin:0 5px 5px 0}
+.world.grants{border-color:var(--teal-ink)}
+.world.grants .setchip{background:var(--teal-tint);border-color:var(--teal-line);color:var(--teal-ink)}
+.zero{align-self:center;text-align:center;font:700 12px var(--mono);color:var(--err);background:var(--err-bg);border:1.5px dashed var(--err);border-radius:999px;padding:10px 13px;white-space:nowrap}
+.band{border:1.5px dashed var(--line-strong);border-radius:13px;background:var(--bg);padding:11px 16px;font-size:12.5px;color:var(--ink-2);text-align:center}
+.excnote{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 0}
+.excnote .x{flex:1;min-width:240px;border-radius:11px;padding:10px 14px;font-size:12.5px;border:1px solid var(--line)}
+.excnote .x.fs{background:var(--navy-tint);border-color:var(--navy-line)}
+.excnote .x.gl{background:var(--amber-bg);border-color:var(--amber-line);color:var(--amber)}
+@media(max-width:680px){.worlds{grid-template-columns:1fr}.zero{justify-self:center}}
+/* ---- decision-flow ladder ---- */
+.flow{margin:14px 0 4px}
+.step{display:grid;grid-template-columns:minmax(250px,1fr) 34px minmax(240px,1fr);gap:0;align-items:center}
+.cond{border:1.5px solid var(--navy);background:var(--card);border-radius:12px;padding:11px 14px;font-size:13px;position:relative}
+.cond .sn{font:700 10.5px var(--mono);color:var(--teal-ink);letter-spacing:.06em;display:block;margin-bottom:2px}
+.arr{text-align:center;color:var(--ink-3);font-size:15px}
+.outs{display:flex;flex-direction:column;gap:6px}
+.out{border-radius:10px;padding:8px 12px;font-size:12px;border:1px solid var(--line)}
+.out .tag{font:700 10px var(--mono);letter-spacing:.05em;margin-right:6px;border-radius:6px;padding:1px 6px}
+.out.allow{background:var(--teal-tint);border-color:var(--teal-line)}
+.out.allow .tag{background:var(--teal-ink);color:#fff}
+.out.deny{background:var(--bg)}
+.out.deny .tag{background:var(--line-strong);color:var(--ink)}
+.out.amber{background:var(--amber-bg);border-color:var(--amber-line)}
+.out.amber .tag{background:var(--amber);color:#fff}
+.down{display:flex;align-items:center;gap:8px;color:var(--ink-3);font-size:11.5px;padding:4px 0 4px 22px}
+.down .vl{color:var(--ink-3);font-size:15px}
+.fine{font-size:12px;color:var(--ink-3);margin-top:8px}
+footer{margin-top:34px;border-top:1px solid var(--line);padding-top:12px;font:11.5px var(--mono);color:var(--ink-3);line-height:1.7}
+@media print{.panel,.step,table{break-inside:avoid}}
+@media(max-width:680px){.step{grid-template-columns:1fr}.arr{display:none}.outs{margin:6px 0 0 22px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<p class="eyebrow">DigitalPaani · User Center — Roles &amp; Permissions (v2) · build note</p>
+<h1>Roles vs Admin Grants — the separation contract, on one page</h1>
+<p class="dek">What the backend must guarantee about roles, admin grants, and how the two combine into effective access. Everything here is already true in the prototype and asserted by the test suites — this note is the contract, the flow chart is the runtime check.</p>
+<div class="meta"><span>2026-08-14</span><span>Owner: Mihir Sethi (Product)</span><span>Detail: <b>PRD.md</b> · lookup: <b>reference/module-feature-permission-map.xlsx</b> · executable spec: <b>tests/</b></span></div>
+
+<h2><span class="n">1</span>Two disjoint worlds — zero shared permissions</h2>
+<p>A <b>role</b> says what a person does day to day. A <b>grant</b> says what they administer. They are built from different permission sets and <b>share no permission tag</b> — verified by intersection over the live model.</p>
+<div class="worlds">
+  <div class="world">
+    <div class="t">5 roles — operate &amp; view</div>
+    <div class="s">One per person, account-wide · L1 Operator · L3 Lead · L4 Senior Lead · Regular Non-op · Senior Non-op</div>
+    <span class="setchip">work · 6</span><span class="setchip">approve · 9</span><span class="setchip">oversight · 3</span><span class="setchip">readplant · 8</span><span class="setchip">portfolio · 2</span>
+    <div class="s" style="margin:8px 0 0"><b>28 permissions</b>, all operational or read</div>
+  </div>
+  <div class="zero">∩ = 0<br>shared<br>permissions</div>
+  <div class="world grants">
+    <div class="t">3 admin grants — administer</div>
+    <div class="s">At most one per person, on top of the role · People Admin · Technical Admin · Full Site Admin</div>
+    <span class="setchip">people · 7</span><span class="setchip">tech · 10</span>
+    <div class="s" style="margin:8px 0 0"><b>17 permissions</b>, all administration</div>
+  </div>
+</div>
+<div class="band">🧩 The 8 <b>product modules</b> cut across both worlds on purpose: one plant licence flag caps the operate side <b>and</b> the configure side of a feature together.</div>
+<div class="excnote">
+  <div class="x fs"><b>Full Site Admin</b> = People + Technical, exactly — implement it as the <b>union of the other two grants</b>, never as a third permission list that could drift.</div>
+  <div class="x gl"><b>Global Admin is the one deliberate exception</b> — the superuser: all 10 sets everywhere, including the 3 exception permissions. Its check never returns “no”. It overlaps every role <b>by design</b>; don't “fix” that.</div>
+</div>
+
+<h2><span class="n">2</span>Same module, both sides — operate vs configure, never the same permission</h2>
+<p>Where people expect overlap, it's actually this pattern: roles <b>operate</b> a feature, grants <b>configure</b> it, and the module licence gates both at once.</p>
+<div class="tblwrap"><table>
+<tr><th>Module</th><th>Role side (operate / view)</th><th>Grant side (configure / administer)</th></tr>
+<tr><td>Issue Resolution <code>ops</code></td><td>sessions, root cause, raise, hand-off · approve, force-close, reopen, co-sign</td><td>issue/trigger rules, diagnostic flows, escalation routing <i>(Technical)</i></td></tr>
+<tr><td>Tasks &amp; Shifts <code>tasks</code></td><td>execute tasks, my shifts, history · assign tasks, plant-wide task view</td><td>rosters &amp; shift schedules <i>(People)</i></td></tr>
+<tr><td>Inventory <code>inv</code></td><td>add/remove stock · movement log</td><td>store &amp; item catalog setup <i>(Technical)</i></td></tr>
+<tr><td>Data &amp; Lab <code>data</code></td><td>enter data · data correction (L3+)</td><td>site analytics formulas <i>(Technical)</i></td></tr>
+<tr><td>Analytics <code>analytics</code></td><td>dashboards, insights, reports · portfolio views</td><td>dashboard &amp; widget configuration <i>(Technical)</i></td></tr>
+<tr><td>Platform Core <code>core</code></td><td>plant dashboard</td><td>users, skills, roles &amp; grants <i>(People)</i> · plant setup, site templates <i>(Technical)</i></td></tr>
+</table></div>
+<p class="fine">Near-miss pairs that are different permissions despite similar names: <code>approve.assign</code> (give someone a task) ≠ <code>people.rosters</code> (build the shift schedule) · <code>readplant.dash</code> (view dashboards) ≠ <code>tech.dashcfg</code> (build them) · <code>work.inventory</code> (use stock) ≠ <code>tech.stores</code> (define the catalog).</p>
+
+<h2><span class="n">3</span>The runtime check — one flow, every request</h2>
+<p>For any <b>user U</b>, <b>permission P</b>, <b>plant X</b> — evaluate top to bottom, stop at the first hit. Compute it fresh on every check; never trust a snapshot stored at assignment time.</p>
+<div class="flow">
+  <div class="step">
+    <div class="cond"><span class="sn">STEP 1 · THE CEILING</span>Is P's module licensed at plant X? <span style="color:var(--ink-3)">(flag on the plant record)</span></div>
+    <div class="arr">→</div>
+    <div class="outs"><div class="out deny"><span class="tag">NO → DENY</span>capped ▢ — P stays saved on the profile and re-activates if X licenses the module. Never delete it.</div></div>
+  </div>
+  <div class="down"><span class="vl">↓</span> licensed — continue</div>
+  <div class="step">
+    <div class="cond"><span class="sn">STEP 2 · SUPERUSER</span>Does U hold the <b>Global Admin</b> grant?</div>
+    <div class="arr">→</div>
+    <div class="outs"><div class="out allow"><span class="tag">YES → ALLOW</span>superuser — audited, never denied</div></div>
+  </div>
+  <div class="down"><span class="vl">↓</span> not Global — continue</div>
+  <div class="step">
+    <div class="cond"><span class="sn">STEP 3 · EXCEPTION PERMISSIONS</span>Is P one of the 3 exceptions — <code>remote.actuate</code>, <code>flags.impersonate</code>, <code>flags.sensorhealth</code>?</div>
+    <div class="arr">→</div>
+    <div class="outs">
+      <div class="out amber"><span class="tag">YES + explicit grant → ALLOW</span>one person + one plant + one written reason (impersonate also needs the People set)</div>
+      <div class="out deny"><span class="tag">YES, no grant → DENY</span>never via a role default or any bulk action</div>
+    </div>
+  </div>
+  <div class="down"><span class="vl">↓</span> an ordinary permission — continue</div>
+  <div class="step">
+    <div class="cond"><span class="sn">STEP 4 · PER-PLANT OVERRIDE</span>Does U have an override for P at plant X? <span style="color:var(--ink-3)">(reasoned, audited, counted as drift)</span></div>
+    <div class="arr">→</div>
+    <div class="outs">
+      <div class="out amber"><span class="tag">ADDED ✚ → ALLOW</span>beats the standard</div>
+      <div class="out amber"><span class="tag">REMOVED ⊘ → DENY</span>beats the standard</div>
+    </div>
+  </div>
+  <div class="down"><span class="vl">↓</span> no override — fall back to the standard</div>
+  <div class="step">
+    <div class="cond"><span class="sn">STEP 5 · THE STANDARD</span>Is P's set in U's <b>role</b> (work / approve / oversight / readplant / portfolio) <b>or</b> U's <b>grant</b> (people / tech)?</div>
+    <div class="arr">→</div>
+    <div class="outs">
+      <div class="out allow"><span class="tag">YES → ALLOW</span>standard ✓ — disjoint worlds, so exactly one of the two supplies it</div>
+      <div class="out deny"><span class="tag">NO → DENY</span>not granted −</div>
+    </div>
+  </div>
+</div>
+<p class="fine">The same five states drive the Access-review cells: ✓ standard · ✚ added · ⊘ removed · ▢ capped · − not granted. Amber always means a reasoned deviation; grey always means the module isn't licensed.</p>
+
+<h2><span class="n">4</span>Build rules to enforce (assert these, don't just document them)</h2>
+<div class="panel">
+<ul class="rules">
+<li><b>Role definitions may only reference</b> <code>work</code>, <code>approve</code>, <code>oversight</code>, <code>readplant</code>, <code>portfolio</code>. <b>People/Technical/Full Site may only reference</b> <code>people</code>, <code>tech</code>. A role touching an admin set — or vice versa — is a bug, not a configuration.</li>
+<li><b>The catalog is closed:</b> exactly 5 roles + 4 grants, no custom roles, no role-creation or role-editing endpoint for anyone (People Admins included).</li>
+<li><b>One role per user (account-wide) and at most one grant.</b> The save payload is <code>{userId, role, grant, assignments:[{plant, company, overrides, reason, drift}], entitlementContext}</code> — no role on assignment rows, and <code>entitlementContext</code> is informational only.</li>
+<li><b>Every override and every exception carries a written reason</b> and lands in the audit log; bulk actions skip sensitive permissions and report every skip.</li>
+<li><b>Full Site = union(People, Technical)</b> computed, not copied. <b>Global = everything</b>, checked first, never filtered.</li>
+<li>Run <code>node tests/verify-usercenter.js</code> — the suites already assert the disjointness, the closed catalog, the payload shape, the ceiling, and the exception rules against the prototype.</li>
+</ul>
+</div>
+
+<footer>User Center — Roles &amp; Permissions (v2) · build note · 2026-08-14 · sources: PRD.md (steps 4–7), reference/module-feature-permission-map.xlsx (Role × Permission and Grant × Permission sheets), tests/ · overlap figures computed from the live model in index.html</footer>
+</div>
+</body>
+</html>

@@ -299,6 +299,11 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
   severity ladder (#FFF8E1/#B45309, #B80000), Figtree + IBM Plex Mono.
   No purple, no sage, no rust in product surfaces.
 - `coverage-map.csv` — all 121 legacy permission tags → v2 home + status.
+- `build-note-roles-grants.html` — one-page dev build note (added 2026-08-14):
+  roles vs grants are disjoint (0 shared permissions across the 5 roles and
+  People/Technical/Full Site; Global is the deliberate superuser exception),
+  the operate-vs-configure module table, the 5-step runtime-check flow chart,
+  and the build rules to assert. Linked from the PRD reference index.
 - `reference/module-feature-permission-map.xlsx` — the dev lookup workbook
   (added 2026-08-13): module → feature → v2 permission tags (with legacy
   sources), role × permission and grant × permission matrices, and the
