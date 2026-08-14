@@ -32,7 +32,7 @@ const grab = f => fs.readFileSync(f, 'utf8').match(/<script>([\s\S]*)<\/script>/
   `);
   const R = fn();
   assert('[studio] inv module in catalog', R.MODULES.some(m => m.id === 'inv'));
-  assert('[studio] inv licensed at Sector 62', R.PLANTMODS['STP — Sector 62'].includes('inv'));
+  assert('[studio] inv licensed at Essentia STP', R.PLANTMODS['Essentia STP'].includes('inv'));
   assert('[studio] perms mapped to inv', R.PERMMOD['work.inventory'] === 'inv' && R.PERMMOD['approve.invlogs'] === 'inv');
   const p1 = R.buildStdP('l1', '');
   assert('[studio] L1 std has operator inventory', p1['work.inventory'] === true && p1['approve.invlogs'] === false);

@@ -315,7 +315,7 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 
 <div class="step" id="step1">
 <h3><span class="badge">1</span>Plants: the base registry</h3>
-<div class="chk"><span class="box"></span><span>Store plant name + company label. The label is an explicit company <b>name picked from a small managed list</b> — not free text (free text would let "GreenGrid" and "Greengrid Utilities" silently split one cluster in two), and not a container with its own screens. New labels get added inline from step 1 of the add-plant wizard (Global Admin only); rename/merge tooling can come later.</span></div>
+<div class="chk"><span class="box"></span><span>Store plant name + company label. The label is an explicit company <b>name picked from a small managed list</b> — not free text (free text would let "Vedanta" and "Vedanta Ltd" silently split one cluster in two), and not a container with its own screens. New labels get added inline from step 1 of the add-plant wizard (Global Admin only); rename/merge tooling can come later.</span></div>
 <div class="chk"><span class="box"></span><span>A screen listing all plants, grouped by company label, with an "add plant" action.</span></div>
 <div class="chk"><span class="box"></span><span>Adding a plant is a <b>guided onboarding wizard</b> (Global Admin only), not a bare name form: <b>1. plant details</b> (name + company label) → <b>2. product modules</b> (license what was sold — this is the one sanctioned moment licensing happens outside the Step-2 matrix) → <b>3. people</b> (put existing users on the access list at their account-wide role, and/or create new users with their role). Nothing is written until the final confirm — cancel leaves the registry untouched — and the whole onboarding lands as <b>one audited action</b>. A plant <i>can</i> still be created with no modules and no people (Platform Core is always on for everyone, everywhere, for free).</span></div>
 <div class="protorow"><span class="lbl">Prototype</span>the <b>Plants</b> tab. Read <code>renderPlants()</code>, <code>startAddPlant()</code> → <code>renderNP()</code>/<code>npFinish()</code> (the wizard), <code>plantModal()</code>.</div>
@@ -532,7 +532,7 @@ The 7 admin-grant upgrades, with evidence: <code>internal/admin-grants-applied.x
 <section id="sec7">
 <h2><span class="num">7.</span>Prototype walkthrough — how to drive it yourself</h2>
 <p class="lede">Every rule in Sections 1–5 is already working and clickable in <a href="index.html">the prototype</a>. This section is the map: who to be, which screen does what, and eight click-by-click recipes that each demonstrate one rule end to end. The full walkthrough with screenshots of every control lives in <a href="GUIDE.html">GUIDE.html</a> — each row below deep-links into it.</p>
-<div class="callout">Nothing in the prototype is persisted — <b>refresh and everything resets</b> to the seed data (11 plants across 4 companies, 5 people, a full set of modules and licences). Click anything without fear; you cannot break it or leak state into another session.</div>
+<div class="callout">Nothing in the prototype is persisted — <b>refresh and everything resets</b> to the seed data (6 plants across 4 clusters, 5 people, a full set of modules and licences). Click anything without fear; you cannot break it or leak state into another session.</div>
 
 <div class="step" id="walk-personas">
 <h3><span class="badge">7.1</span>The three personas — start by choosing who you are</h3>
@@ -540,8 +540,8 @@ The 7 admin-grant upgrades, with evidence: <code>internal/admin-grants-applied.x
 <table>
 <tr><th>Persona</th><th>Scope</th><th>What it proves</th></tr>
 <tr><td><b>🌐 Company admin</b> (Global)</td><td>Every company, plant and person</td><td>The only persona that can license modules, onboard plants, and hand out the Global grant. Global Admin is the superuser — Step 3.</td></tr>
-<tr><td><b>🏢 Cluster admin</b> (GreenGrid)</td><td>The 4 GreenGrid plants</td><td>Module matrix goes read-only (ADR-003); cluster-wide chips appear; nothing can reach a non-GreenGrid plant — Step 11.</td></tr>
-<tr><td><b>🏭 Plant admin</b> (STP — Sector 62)</td><td>One plant's roster</td><td>The tightest scope: bulk actions, exceptions and reviews all clamp to one plant — Step 9 and Step 11.</td></tr>
+<tr><td><b>🏢 Cluster admin</b> (Vedanta)</td><td>The 2 Vedanta plants</td><td>Module matrix goes read-only (ADR-003); cluster-wide chips appear; nothing can reach a non-Vedanta plant — Step 11.</td></tr>
+<tr><td><b>🏭 Plant admin</b> (Essentia STP)</td><td>One plant's roster</td><td>The tightest scope: bulk actions, exceptions and reviews all clamp to one plant — Step 9 and Step 11.</td></tr>
 </table>
 <div class="protorow"><span class="lbl">Guide</span><a href="GUIDE.html#personas">GUIDE.html → Choose who you are</a></div>
 </div>
@@ -555,7 +555,7 @@ The 7 admin-grant upgrades, with evidence: <code>internal/admin-grants-applied.x
 <tr><td><a href="GUIDE.html#modules">Product modules</a></td><td>The licensing ceiling — the plant × module matrix, and the one write surface for licences after onboarding.</td><td>Step 2</td></tr>
 <tr><td><a href="GUIDE.html#library">Role library</a></td><td>The fixed 5 roles + 4 grants as detail cards — the complete role vocabulary; a panel records the 2026-08-13 removal of custom roles.</td><td>Steps 4, 8 (8 = nothing to build)</td></tr>
 <tr><td><a href="GUIDE.html#review">Access review</a></td><td>The reviewer cross-check: person lens (capability × plant matrix with why-chains) and plant lens ("who can do X here?").</td><td>Step 10</td></tr>
-<tr><td><a href="GUIDE.html#previews">UI previews</a></td><td>The rule-driven visibility engine — what tabs, buttons and banners a given person actually sees at a given plant, with the permission that produced each one.</td><td>Step 11b</td></tr>
+<tr><td><a href="GUIDE.html#previews">App preview</a></td><td>The rule-driven visibility engine — what tabs, buttons and banners a given person actually sees at a given plant, with the permission that produced each one.</td><td>Step 11b</td></tr>
 <tr><td><a href="GUIDE.html#control">Control panel</a></td><td>The scoped home for cluster and plant admins: scope KPIs, quick actions, capability lookup, scoped roster.</td><td>Step 11</td></tr>
 </table>
 </div>

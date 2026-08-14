@@ -30,29 +30,29 @@ const fn = new Function('els', script + `
     SETS.forEach(s=>s.perms.forEach(pr=>a.P[s.id+'.'+pr.id]=isStdG(p.role,p.grant,s.id))); p.asg[plant]=a; return a; }
   // --- directory renders with seeds ---
   render();
-  out.dirDefault = els.uclist.innerHTML.includes('Asha Verma') && els.uclist.innerHTML.includes('Priya Sharma');
+  out.dirDefault = els.uclist.innerHTML.includes('Satyadev Singh') && els.uclist.innerHTML.includes('Piyush Negi');
   out.kpis = els.uckpis.innerHTML.includes('people');
   out.seedDrift = els.uclist.innerHTML.includes('deviation'); // asha + vikram carry exceptions
 
   // --- filters ---
-  els.ucsearch.value='vikram'; render();
-  out.searchWorks = els.uclist.innerHTML.includes('Vikram') && !els.uclist.innerHTML.includes('Asha');
+  els.ucsearch.value='garvit'; render();
+  out.searchWorks = els.uclist.innerHTML.includes('Garvit') && !els.uclist.innerHTML.includes('Satyadev');
   els.ucsearch.value=''; els.ucfstate.value='grant'; render();
-  out.grantFilter = els.uclist.innerHTML.includes('Vikram') && !els.uclist.innerHTML.includes('Ramesh');
+  out.grantFilter = els.uclist.innerHTML.includes('Garvit') && !els.uclist.innerHTML.includes('Mohit');
   els.ucfstate.value=''; render();
 
   // --- open a person: editor binds to their record ---
-  selectPerson('asha');
-  out.profileBound = cur.id==='asha' && ASG===cur.asg && grant===cur.grant && role===cur.role;
-  out.ashaSingleRole = cur.role==='l3' && ASG['STP — Sector 62'].tier==='l3' && ASG['WTP — Mansarovar'].tier==='l3';
-  out.ashaException = ASG['STP — Sector 62'].P['remote.actuate']===true && deviations(ASG['STP — Sector 62']).length>=1;
-  out.headerFilled = els.ucnm.textContent==='Asha Verma';
+  selectPerson('satyadev');
+  out.profileBound = cur.id==='satyadev' && ASG===cur.asg && grant===cur.grant && role===cur.role;
+  out.singleRole = cur.role==='l3' && ASG['Essentia STP'].tier==='l3' && ASG['Vedanta- 200 KLD (WTP)'].tier==='l3';
+  out.seedException = ASG['Essentia STP'].P['remote.actuate']===true && deviations(ASG['Essentia STP']).length>=1;
+  out.headerFilled = els.ucnm.textContent==='Satyadev Singh';
 
   // --- save writes back to the registry & audit; role is top-level, no per-row tier ---
   save();
   out.savedRoleTop = els.payload.textContent.includes('"role": "l3"') && !els.payload.textContent.includes('"tier"');
-  out.payloadPerson = els.payload.textContent.includes('"userId": "asha"') && els.payload.textContent.includes('Asha Verma');
-  out.auditNamed = AUDIT[0].t.includes('Asha Verma');
+  out.payloadPerson = els.payload.textContent.includes('"userId": "satyadev"') && els.payload.textContent.includes('Satyadev Singh');
+  out.auditNamed = AUDIT[0].t.includes('Satyadev Singh');
 
   // --- add person: no access until assigned ---
   backToDirectory(); startAddPerson();
@@ -63,72 +63,72 @@ const fn = new Function('els', script + `
   out.addedNoAccess = Object.keys(cur.asg).length===0;
   out.addAudited = AUDIT[0].t.includes('Sunil Joshi') && AUDIT[0].t.includes('no access');
   // give him plant access + the one role, save
-  togglePlantSel('STP — Pari Chowk'); setRole('l1'); save();
-  out.newPersonSaved = PEOPLE.find(x=>x.n==='Sunil Joshi').asg['STP — Pari Chowk'].tier==='l1'
+  togglePlantSel('Vedanta- 50KLD (Gas Holder)'); setRole('l1'); save();
+  out.newPersonSaved = PEOPLE.find(x=>x.n==='Sunil Joshi').asg['Vedanta- 50KLD (Gas Holder)'].tier==='l1'
                     && PEOPLE.find(x=>x.n==='Sunil Joshi').role==='l1';
   // a role change lands at EVERY plant on the access list (account-wide)
-  togglePlantSel('STP — Alpha 2'); setRole('l3');
-  out.roleEverywhere = cur.role==='l3' && ASG['STP — Pari Chowk'].tier==='l3' && ASG['STP — Alpha 2'].tier==='l3';
-  setRole('l1'); togglePlantSel('STP — Alpha 2'); save(); // revert: back to L1, Pari Chowk only
+  togglePlantSel('EMS'); setRole('l3');
+  out.roleEverywhere = cur.role==='l3' && ASG['Vedanta- 50KLD (Gas Holder)'].tier==='l3' && ASG['EMS'].tier==='l3';
+  setRole('l1'); togglePlantSel('EMS'); save(); // revert: back to L1, one plant only
 
   // --- review reads the same registry ---
   out.reviewIsRegistry = reviewPeople()===PEOPLE;
   out.reviewSeesNew = reviewPeople().some(x=>x.n==='Sunil Joshi');
   // no seed carries an add now (Asha's is a removal); create a real added exception to exercise the state
-  PEOPLE.find(x=>x.id==='ramesh').asg['STP — Alpha 2'].P['approve.gates']=true;
-  out.st_added = cellState(PEOPLE.find(x=>x.id==='ramesh'),'STP — Alpha 2','approve.gates')==='added';
-  PEOPLE.find(x=>x.id==='ramesh').asg['STP — Alpha 2'].P['approve.gates']=false;
-  out.st_removed = cellState(PEOPLE.find(x=>x.id==='vikram'),'STP — Udyog Vihar','approve.selfapprove')==='removed';
-  out.st_capped = cellState(PEOPLE.find(x=>x.id==='vikram'),'STP — Udyog Vihar','tech.sensors')==='capped';
-  reviewPerson='asha'; lens='person'; whySel=null; openRevSets=null; renderReview();
-  out.editingChipGone = !els.reviewbody.innerHTML.includes('open in the User Center'); // cur is Sunil, not asha
-  selectPerson('asha'); renderReview();
+  PEOPLE.find(x=>x.id==='mohit').asg['Vedanta- 200 KLD (WTP)'].P['approve.gates']=true;
+  out.st_added = cellState(PEOPLE.find(x=>x.id==='mohit'),'Vedanta- 200 KLD (WTP)','approve.gates')==='added';
+  PEOPLE.find(x=>x.id==='mohit').asg['Vedanta- 200 KLD (WTP)'].P['approve.gates']=false;
+  out.st_removed = cellState(PEOPLE.find(x=>x.id==='garvit'),'Amazon DEL-4','approve.selfapprove')==='removed';
+  out.st_capped = cellState(PEOPLE.find(x=>x.id==='garvit'),'Amazon DEL-4','tech.sensors')==='capped';
+  reviewPerson='satyadev'; lens='person'; whySel=null; openRevSets=null; renderReview();
+  out.editingChipGone = !els.reviewbody.innerHTML.includes('open in the User Center'); // cur is Sunil, not satyadev
+  selectPerson('satyadev'); renderReview();
   out.editingChip = els.reviewbody.innerHTML.includes('open in the User Center');
-  out.whyStill = whyChain(PEOPLE.find(x=>x.id==='asha'),'STP — Sector 62','remote.actuate').includes('DP-1188');
-  out.whyAdded = cellState(PEOPLE.find(x=>x.id==='asha'),'STP — Sector 62','remote.actuate')==='added';
+  out.whyStill = whyChain(PEOPLE.find(x=>x.id==='satyadev'),'Essentia STP','remote.actuate').includes('DP-1188');
+  out.whyAdded = cellState(PEOPLE.find(x=>x.id==='satyadev'),'Essentia STP','remote.actuate')==='added';
 
   // --- preview drives from the selected person ---
   prevMode='live'; prevPlant='all';
   const ctx=previewCtx();
-  out.previewPerson = ctx.who==='Asha Verma' && ctx.role==='l3';
+  out.previewPerson = ctx.who==='Satyadev Singh' && ctx.role==='l3';
   // guardrails still alive on person records
-  togglePerm('STP — Sector 62','approve','gates'); // turning OFF a std l3 perm -> deviation
-  out.guardrailsLive = deviations(ASG['STP — Sector 62']).length>=1;
+  togglePerm('Essentia STP','approve','gates'); // turning OFF a std l3 perm -> deviation
+  out.guardrailsLive = deviations(ASG['Essentia STP']).length>=1;
 
   // ================= PERSONA TOGGLE =================
   setPersona('site');
   out.siteNote = els.personanote.textContent.includes('your plant');
   const sp = scopedPeople();
-  out.siteRoster = sp.some(x=>x.id==='asha') && !sp.some(x=>x.id==='priya') && !sp.some(x=>x.id==='ramesh');
-  out.sitePlants = scopedPlants().length===1 && scopedPlants()[0]==='STP — Sector 62';
+  out.siteRoster = sp.some(x=>x.id==='satyadev') && !sp.some(x=>x.id==='piyush') && !sp.some(x=>x.id==='mohit');
+  out.sitePlants = scopedPlants().length===1 && scopedPlants()[0]==='Essentia STP';
   out.modsReadOnly = els.modmatrix.innerHTML.includes('Read-only for you') && els.modmatrix.innerHTML.includes('disabled');
-  selectPerson('asha'); // in scope
+  selectPerson('satyadev'); // in scope
   out.grantLocked = els.grantchips.innerHTML.includes('🔒');
   out.noClusterChipForSite = !els.plantbox.innerHTML.includes('whole cluster');
   // site admin adds a person -> lands in their scope
   backToDirectory(); startAddPerson();
   document.getElementById('np_name').value='Meena Iyer'; document.getElementById('np_title').value='Trainee operator';
   addPersonSubmit();
-  out.siteAddHome = cur.home==='STP — Sector 62' && scopedPeople().some(x=>x.n==='Meena Iyer');
+  out.siteAddHome = cur.home==='Essentia STP' && scopedPeople().some(x=>x.n==='Meena Iyer');
 
   // ================= GLOBAL: CLUSTER SELECT =================
   setPersona('global');
   out.globalSeesAll = scopedPeople().length===PEOPLE.length && reviewPeople()===PEOPLE;
-  out.clusterChipForGlobal = (selectPerson('ramesh'), els.plantbox.innerHTML.includes('whole cluster'));
-  selectCluster('greengrid');
-  out.clusterSelected = ['STP — Sector 62','WTP — Knowledge Park','STP — Alpha 2','STP — Pari Chowk'].every(p=>cur.asg[p]);
+  out.clusterChipForGlobal = (selectPerson('mohit'), els.plantbox.innerHTML.includes('whole cluster'));
+  selectCluster('vedanta');
+  out.clusterSelected = ['Vedanta- 200 KLD (WTP)','Vedanta- 50KLD (Gas Holder)'].every(p=>cur.asg[p]);
 
   // ================= CUSTOM ROLES: REMOVED (owner decision 2026-08-13) =================
   // the entire subsystem is gone — nobody, People Admins included, can create or apply one
   out.customGone = typeof createCustomRole==='undefined' && typeof applyCustomRole==='undefined'
                 && typeof PACKS==='undefined' && typeof customPalette==='undefined'
                 && typeof applyPreview==='undefined' && typeof retirePack==='undefined';
-  seedAsg('ramesh','STP — Pari Chowk'); // explicit precondition for the bulk tests below (l1 by role)
+  seedAsg('mohit','Vedanta- 50KLD (Gas Holder)'); // explicit precondition for the bulk tests below (l1 by role)
 
   // model: flags hold impersonate + sensorhealth; remote is its OWN sensitive set, never a role default, excluded from bulk
   out.remoteOwnSet = !!setById.remote && setById.remote.sensitive===true && PERMMOD['remote.actuate']==='iot';
   out.remoteNoDefault = !Object.values(ROLES).some(r=>r.std.includes('remote'));
-  out.remoteNotBulkAddable = bulkEditPerm('STP — Sector 62',['ramesh'],['remote.actuate'],'add','deliberate?')===0 || (()=>{const r=PEOPLE.find(x=>x.id==='ramesh');return !r.asg['STP — Sector 62']||r.asg['STP — Sector 62'].P['remote.actuate']!==true;})();
+  out.remoteNotBulkAddable = bulkEditPerm('Essentia STP',['mohit'],['remote.actuate'],'add','deliberate?')===0 || (()=>{const r=PEOPLE.find(x=>x.id==='mohit');return !r.asg['Essentia STP']||r.asg['Essentia STP'].P['remote.actuate']!==true;})();
   // 2026-07-22 ruling: flags = impersonate (preq people) + sensorhealth (no preq, mod iot); backdate stays gone
   out.flagsOnlyImpersonate = setById.flags.perms.length===2
     && setById.flags.perms.some(p=>p.id==='impersonate'&&p.preq==='people')
@@ -151,32 +151,32 @@ const fn = new Function('els', script + `
 
   // ================= CLUSTER PERSONA + PLANT-WIDE BULK ACTIONS =================
   setPersona('cluster');
-  out.clusterPlants = scopedPlants().length===4 && scopedPlants().every(p=>PLANTCO[p]==='greengrid');
+  out.clusterPlants = scopedPlants().length===2 && scopedPlants().every(p=>PLANTCO[p]==='vedanta');
   out.clusterModsRO = els.modmatrix.innerHTML.includes('Read-only for you') && els.modmatrix.innerHTML.includes("cluster");
-  selectPerson('asha');
+  selectPerson('satyadev');
   out.clusterGrantLock = els.grantchips.innerHTML.includes('🔒');
   out.clusterChipShown = els.plantbox.innerHTML.includes('whole cluster');
   backToDirectory();
   out.bulkPanelShown = els.bulkbox.innerHTML.includes('Plant-wide actions');
-  // bulk roster add (single-role model: no bulk role change exists) — asha is not at Pari Chowk
-  // yet and joins at her ACCOUNT role (l3); ramesh is already on the roster and is skipped untouched
-  const n1 = bulkAddToPlant('STP — Pari Chowk',['ramesh','asha']);
-  out.bulkAdd = n1===1 && PEOPLE.find(x=>x.id==='asha').asg['STP — Pari Chowk'].tier==='l3'
-             && PEOPLE.find(x=>x.id==='ramesh').asg['STP — Pari Chowk'].tier==='l1'
+  // bulk roster add (single-role model: no bulk role change exists) — Satyadev is not at the Gas
+  // Holder plant yet and joins at his ACCOUNT role (l3); Mohit is already on the roster, skipped untouched
+  const n1 = bulkAddToPlant('Vedanta- 50KLD (Gas Holder)',['mohit','satyadev']);
+  out.bulkAdd = n1===1 && PEOPLE.find(x=>x.id==='satyadev').asg['Vedanta- 50KLD (Gas Holder)'].tier==='l3'
+             && PEOPLE.find(x=>x.id==='mohit').asg['Vedanta- 50KLD (Gas Holder)'].tier==='l1'
              && typeof bulkSetTier==='undefined';
   // bulk add: people.invite applies (core); portfolio.overview skipped (analytics not licensed at Pari Chowk)
-  const n2 = bulkEditPerm('STP — Pari Chowk',['ramesh','asha'],['people.invite','portfolio.overview'],'add','Client audit staffing, DP-1500');
-  const kavA = PEOPLE.find(x=>x.id==='asha').asg['STP — Pari Chowk'];
+  const n2 = bulkEditPerm('Vedanta- 50KLD (Gas Holder)',['mohit','satyadev'],['people.invite','portfolio.overview'],'add','Client audit staffing, DP-1500');
+  const kavA = PEOPLE.find(x=>x.id==='satyadev').asg['Vedanta- 50KLD (Gas Holder)'];
   out.bulkAddApplied = n2===2 && kavA.P['people.invite']===true;
   out.bulkCeilingHolds = kavA.P['portfolio.overview']===false;
   // both rows were freshly created with no reason yet, so the bulk edit stamps each one
-  out.bulkReasonStamped = PEOPLE.find(x=>x.id==='asha').asg['STP — Pari Chowk'].reason.includes('DP-1500');
+  out.bulkReasonStamped = PEOPLE.find(x=>x.id==='satyadev').asg['Vedanta- 50KLD (Gas Holder)'].reason.includes('DP-1500');
   // bulk remove: strip work.raise from the roster (std for l1/l3 -> becomes an amber removal)
-  const n3 = bulkEditPerm('STP — Pari Chowk',['ramesh','asha'],['work.raise'],'remove','Only leads raise manual issues here, DP-1501');
-  out.bulkRemove = n3===2 && PEOPLE.find(x=>x.id==='ramesh').asg['STP — Pari Chowk'].P['work.raise']===false
-                && cellState(PEOPLE.find(x=>x.id==='ramesh'),'STP — Pari Chowk','work.raise')==='removed';
-  out.bulkNeedsReason = bulkEditPerm('STP — Pari Chowk',['ramesh'],['work.media'],'add','')===0;
-  out.bulkScopeBlocked = bulkEditPerm('STP — Sitapura',['asha'],['work.media'],'add','out of cluster')===0;
+  const n3 = bulkEditPerm('Vedanta- 50KLD (Gas Holder)',['mohit','satyadev'],['work.raise'],'remove','Only leads raise manual issues here, DP-1501');
+  out.bulkRemove = n3===2 && PEOPLE.find(x=>x.id==='mohit').asg['Vedanta- 50KLD (Gas Holder)'].P['work.raise']===false
+                && cellState(PEOPLE.find(x=>x.id==='mohit'),'Vedanta- 50KLD (Gas Holder)','work.raise')==='removed';
+  out.bulkNeedsReason = bulkEditPerm('Vedanta- 50KLD (Gas Holder)',['mohit'],['work.media'],'add','')===0;
+  out.bulkScopeBlocked = bulkEditPerm('EMS',['satyadev'],['work.media'],'add','out of cluster')===0;
   out.bulkAudited = AUDIT.slice(0,3).some(e=>e.t.includes('Bulk permission edit')) && AUDIT.slice(0,3).some(e=>e.t.includes('Bulk roster add'));
   setPersona('global');
 
@@ -197,9 +197,9 @@ const fn = new Function('els', script + `
   out.ctrlShownForCluster = document.getElementById('nav-ctrl').style.display==='block';
   const cp = els.ctrlpanel.innerHTML;
   out.ctrlScoped = cp.includes('Control panel') && cp.includes('people you manage') && cp.includes('Plant-wide action');
-  out.ctrlRoster = cp.includes('Your people') && cp.includes('Ramesh') && !cp.includes('Priya'); // priya is jmc, out of greengrid scope
+  out.ctrlRoster = cp.includes('Your people') && cp.includes('Mohit') && !cp.includes('Piyush'); // priya is jmc, out of greengrid scope
   out.ctrlLookup = cp.includes('Who can do this, here');
-  setCtrlCap('approve.gates'); setCtrlPlant('STP — Sector 62');
+  setCtrlCap('approve.gates'); setCtrlPlant('Essentia STP');
   out.ctrlLookupAnswers = els.ctrlpanel.innerHTML.includes('via role')||els.ctrlpanel.innerHTML.includes('via exception')||els.ctrlpanel.innerHTML.includes('nobody')||els.ctrlpanel.innerHTML.includes('licensed here');
   setPersona('global');
   return out;
@@ -213,8 +213,8 @@ Object.entries({
   'search filters people': o.searchWorks,
   'grant filter works': o.grantFilter,
   'editor binds to person record': o.profileBound,
-  'one role account-wide on seed (JULY 30 RULING)': o.ashaSingleRole,
-  'seed exception present in P': o.ashaException,
+  'one role account-wide on seed (JULY 30 RULING)': o.singleRole,
+  'seed exception present in P': o.seedException,
   'profile header filled': o.headerFilled,
   'save: role is top-level, no per-row tier': o.savedRoleTop,
   'payload carries person identity': o.payloadPerson,
@@ -260,7 +260,7 @@ Object.entries({
   'model: work set is the issue lifecycle (ops)': o.workIsIssueLifecycle,
   'model: remote is never a role default': o.remoteNoDefault,
   'model: remote cannot be bulk-added': o.remoteNotBulkAddable,
-  'cluster persona: 4 GreenGrid plants in scope': o.clusterPlants,
+  'cluster persona: the 2 Vedanta plants in scope': o.clusterPlants,
   'cluster persona: modules read-only': o.clusterModsRO,
   'cluster persona: global grant locked': o.clusterGrantLock,
   'cluster persona: whole-cluster chip shown': o.clusterChipShown,

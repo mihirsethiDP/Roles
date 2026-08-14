@@ -66,7 +66,7 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
   **excluded from every bulk path** — skipped by the plant-wide permission
   edit (`bulkEditPerm` filters `setById[k].sensitive`), and since custom roles
   were removed outright (ruling 2026-08-13) there is no template channel
-  either — so it can never be handed to a plant/cluster roster at once. Seed Asha shows the intended path: +remote.actuate at STP — Sector 62
+  either — so it can never be handed to a plant/cluster roster at once. Seed Satyadev Singh shows the intended path: +remote.actuate at Essentia STP
   with a certification reason. (Supersedes the brief `approve.remote` placement;
   still consistent with canonical L3-actuation since remote requires acting
   authority in practice, but the grant is now always explicit, never a tier default.)
@@ -129,10 +129,10 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
 - **Product name (owner ruling 2026-07-13): "User Center — Roles &
   Permissions".** "CloseTheLoop" stays only as the internal project codename
   in docs — it must not appear in any UI string of either prototype.
-- **Personas** (index.html hero toggle, three admin altitudes): 🌐 Company
-  admin (Global) sees everything and edits module flags; 🏢 Cluster admin
-  (GreenGrid, `CLUSTER_CO`) manages the 4 GreenGrid plants; 🏭 Plant admin
-  (People Admin @ STP — Sector 62, `SITE_SCOPE`) manages one plant. Cluster
+- **Personas** (index.html sidenav toggle, three admin altitudes): 🌐
+  DigitalPaani admin (Global) sees everything and edits module flags; 🏢
+  Cluster admin (Vedanta, `CLUSTER_CO`) manages the 2 Vedanta plants; 🏭
+  Plant admin (Essentia STP, `SITE_SCOPE`) manages one plant. Cluster
   and plant admins: read-only module matrix (ADR-003 gating), Global grant
   chip locked, whole-cluster chips only at cluster level and above. All
   scoping flows through `inScope`/`scopedPlants`/`scopedPeople`; every
@@ -276,8 +276,18 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
   per-plant customize rows) with progressive
   disclosure, a profile progress meter and a save button that counts
   remaining reasons → peak-end save confirmation with the payload behind a
-  "For engineers" disclosure) · Access Review · smart UI preview engine. Single self-contained file,
-  vanilla JS, no build step.
+  "For engineers" disclosure) · Access Review · smart UI preview engine ("App
+  preview" tab). Single self-contained file, vanilla JS, no build step.
+  **Demo data swapped to real clients 2026-08-14 (owner request, for client
+  demos):** 6 plants across 4 cluster labels — Essentia STP (Adern),
+  Vedanta- 200 KLD (WTP) + Vedanta- 50KLD (Gas Holder) (Vedanta), EMS (EMS),
+  Amazon DEL-4 + DEL-5 (Amazon) — and 5 real users (Satyadev Singh l3 w/
+  remote exception @ Essentia, Garvit Kumar l3+tech, Mohit Joshi l1,
+  Piyush Negi senior, Mandeep Dagar l1). Personas: cluster = Vedanta,
+  site = Essentia STP. Same copy pass shortened every helper text, trimmed
+  preview presets to 7, dropped the capped KPI/filter, and removed internal
+  jargon (ruling dates, DP/Wapp) from UI strings. Names are real people/
+  clients and the repo is public — owner accepted this for demo purposes.
   Brand Book v7 tokens (owner ruling 2026-07-14): navy #002454, teal
   #95CFD3/#5AABB0 (dark-teal #1F6B71 for AA text), warn/err from the
   severity ladder (#FFF8E1/#B45309, #B80000), Figtree + IBM Plex Mono.

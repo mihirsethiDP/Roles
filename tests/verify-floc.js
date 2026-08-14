@@ -38,7 +38,7 @@ const grab = f => fs.readFileSync(f, 'utf8').match(/<script>([\s\S]*)<\/script>/
   assert('[studio] floc in catalog, flagged noperm', R.MODULES.some(m => m.id === 'floc' && m.noperm));
   assert('[studio] 8 modules total', R.MODULES.length === 8);
   assert('[studio] no permission maps to floc', !Object.values(R.PERMMOD).includes('floc'));
-  assert('[studio] floc licensed at Sector 62 + demos', R.PLANTMODS['STP — Sector 62'].includes('floc') && R.PLANTMODS['Demo WTP — Sales'].includes('floc'));
+  assert('[studio] floc licensed at Essentia + EMS', R.PLANTMODS['Essentia STP'].includes('floc') && R.PLANTMODS['EMS'].includes('floc'));
   assert('[studio] catalog says entitlement-only', R.catalog.includes('HARDWARE ADD-ON') && R.catalog.includes('grants no user permissions'));
   assert('[studio] no zero-abilities text', !R.catalog.includes('Unlocks 0 abilities'));
 })();

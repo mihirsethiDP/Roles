@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>User Guide — Role Studio prototype</title>
+<title>User Guide — User Center prototype</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -82,7 +82,7 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 <div class="rail">
   <div class="brand">
     <div class="eyebrow">DigitalPaani</div>
-    <h1>User Guide<br>Role Studio prototype</h1>
+    <h1>User Guide<br>User Center prototype</h1>
     <div class="sub">how to drive every screen, step by step</div>
   </div>
   <nav>
@@ -94,7 +94,7 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
     <a class="navstep" href="#modules">Product modules</a>
     <a class="navstep" href="#library">Role library</a>
     <a class="navstep" href="#review">Access review</a>
-    <a class="navstep" href="#previews">UI previews</a>
+    <a class="navstep" href="#previews">App preview</a>
     <a class="navstep" href="#control">Control panel</a>
     <div class="grp">Recipes</div>
     <a class="navstep" href="#r1">1 · Add a person, give access</a>
@@ -117,7 +117,7 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 <h2>Start here</h2>
 <p class="lede">The prototype at <a href="index.html">mihirsethidp.github.io/Roles</a> is a full working model of the new roles &amp; permissions system — every screen, rule, and guardrail is real and clickable. Nothing you do is saved permanently: <b>refresh the page and everything resets</b> to the seed data, so click anything without fear.</p>
 <div class="callout">One rule runs the whole system, on every screen: <b>what a person can actually do at a plant = their permission <code>AND</code> that plant's licensed modules.</b> When something is greyed out or a save is blocked, it's this rule (or one of its guardrails) doing its job.</div>
-<p class="lede">It ships with seed data: 11 plants across 4 companies, 5 people (Asha, Vikram, Ramesh, Priya, Kavita), and a full set of modules, roles, and licences — enough to try every flow below.</p>
+<p class="lede">It ships with real demo data: 6 plants across 4 clusters (Adern, Vedanta, EMS, Amazon), 5 people (Mohit, Satyadev, Garvit, Piyush, Mandeep), and a full set of modules, roles, and licences — enough to try every flow below.</p>
 </section>
 
 <section id="personas">
@@ -126,8 +126,8 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 <table>
 <tr><th>Persona</th><th>Scope</th><th>What's different</th></tr>
 <tr><td><b>🌐 Company admin</b> (DigitalPaani, Global)</td><td>Everything</td><td>Sees all plants and people. The only one who can toggle module licences, add plants, and hand out the Global grant.</td></tr>
-<tr><td><b>🏢 Cluster admin</b> (GreenGrid)</td><td>The 4 GreenGrid plants</td><td>Manages only GreenGrid's people and plants. Module matrix is read-only. Gets the Control panel as a home screen.</td></tr>
-<tr><td><b>🏭 Plant admin</b> (STP — Sector 62)</td><td>One plant</td><td>Manages one roster. Everything else is filtered down to that plant. Also gets the Control panel.</td></tr>
+<tr><td><b>🏢 Cluster admin</b> (Vedanta)</td><td>The 2 Vedanta plants</td><td>Manages only Vedanta's people and plants. Module matrix is read-only. Gets the Control panel as a home screen.</td></tr>
+<tr><td><b>🏭 Plant admin</b> (Essentia STP)</td><td>One plant</td><td>Manages one roster. Everything else is filtered down to that plant. Also gets the Control panel.</td></tr>
 </table>
 <p class="lede">Tip: whenever a button seems missing, check which persona you're in — most "where did it go?" moments are scoping working correctly.</p>
 </section>
@@ -194,7 +194,7 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 
 <section id="previews">
 <div class="card">
-<h3><span class="badge">Screen</span>UI previews <span class="tag">verify</span></h3>
+<h3><span class="badge">Screen</span>App preview <span class="tag">verify</span></h3>
 <p>A live mock of what the actual product shows each kind of user — computed from permission state by the same rules the real frontend will use, not hand-drawn per role.</p>
 <ul>
 <li>Pick a preset (each role, each grant) or <span class="ui">◉ Selected person</span> — which renders whoever you currently have open in the People tab, including their exceptions.</li>
@@ -230,7 +230,7 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 <div class="card" id="r2">
 <h3><span class="badge">2</span>Grant remote control to one person at one plant</h3>
 <ol class="steps">
-<li>Open the person from <span class="ui">People</span> (try Asha — she already has this grant at STP — Sector 62, so you can see the end state).</li>
+<li>Open the person from <span class="ui">People</span> (try Satyadev — they already have this grant at Essentia STP, so you can see the end state).</li>
 <li>On the plant row where they need it, expand the permission sets and switch on <b>IoT remote control → actuate</b>.</li>
 <li>The row turns amber and the save blocks until you write a <b>reason</b> — certification reference, approver, ticket number.</li>
 <li><span class="ui">Save assignments</span>. Note what you <i>can't</i> do: remote control can never be handed out in bulk (and there are no custom roles to bundle it into) — one person, one plant, one reason is the only path. That's by design.</li>
@@ -240,10 +240,10 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 <div class="card" id="r3">
 <h3><span class="badge">3</span>Simulate a contract change (module ceiling in action)</h3>
 <ol class="steps">
-<li>As <b>Company admin</b>, open <span class="ui">Access review</span>, person lens, and pick someone with several plants (Priya). Note which cells are live.</li>
-<li>Go to <span class="ui">Product modules</span> and switch <b>off</b> a module at one of her plants — say Dashboards &amp; Analytics at STP — Sitapura.</li>
+<li>As the <b>DigitalPaani admin</b>, open <span class="ui">Access review</span>, person lens, and pick someone with several plants (Piyush). Note which cells are live.</li>
+<li>Go to <span class="ui">Product modules</span> and switch <b>off</b> a module at one of their plants — say Dashboards &amp; Analytics at Amazon DEL-5.</li>
 <li>Return to <span class="ui">Access review</span>: the analytics cells at that plant are now ▢ grey ("capped"). Click one — the why-chain names the missing module.</li>
-<li>Switch the module back on: the cells come back exactly as they were. <b>The ceiling caps but never edits</b> — nothing was deleted from her profile.</li>
+<li>Switch the module back on: the cells come back exactly as they were. <b>The ceiling caps but never edits</b> — nothing was deleted from their profile.</li>
 </ol>
 </div>
 
@@ -270,7 +270,7 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 <h3><span class="badge">6</span>Preview exactly what someone will see</h3>
 <ol class="steps">
 <li>Open the person in <span class="ui">People</span> (their live config, including unsaved edits, is what gets previewed).</li>
-<li>Go to <span class="ui">UI previews</span> and pick <span class="ui">◉ Selected person</span>.</li>
+<li>Go to <span class="ui">App preview</span> and pick <span class="ui">◉ Selected person</span>.</li>
 <li>Switch the <b>plant context</b> between their plants — watch tabs and buttons appear/disappear as each plant's module ceiling applies.</li>
 <li>Read the <b>why-list</b>: every element of the mock is explained by the permission that produced it. This is the spec the real frontend follows.</li>
 </ol>

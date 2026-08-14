@@ -336,13 +336,13 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
     <button class="tab on" data-pane="0" onclick="tab(0)">Product modules</button>
     <div class="nav-label">Verify</div>
     <button class="tab" data-pane="2" onclick="tab(2)">Access review</button>
-    <button class="tab" data-pane="3" onclick="tab(3)">UI previews</button>
+    <button class="tab" data-pane="3" onclick="tab(3)">App preview</button>
   </div>
   <div class="nav-personas">
     <div class="nav-label" style="padding:0 6px 6px">You're working as</div>
-    <button class="pchip on" id="pers-global" onclick="setPersona('global')">🌐 Company admin · DigitalPaani (Global)</button>
-    <button class="pchip" id="pers-cluster" onclick="setPersona('cluster')">🏢 Cluster admin · GreenGrid Utilities</button>
-    <button class="pchip" id="pers-site" onclick="setPersona('site')">🏭 Plant admin · STP — Sector 62</button>
+    <button class="pchip on" id="pers-global" onclick="setPersona('global')">🌐 DigitalPaani admin (Global)</button>
+    <button class="pchip" id="pers-cluster" onclick="setPersona('cluster')">🏢 Cluster admin · Vedanta</button>
+    <button class="pchip" id="pers-site" onclick="setPersona('site')">🏭 Plant admin · Essentia STP</button>
     <p class="personanote" id="personanote"></p>
   </div>
   <div class="nav-foot">amber = deviation<br>grey = not in this plant's plan</div>
@@ -356,13 +356,13 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
 <div class="pane on" id="pane0">
   <div class="panel" style="margin-bottom:18px">
     <div class="gh">The hierarchy — modules cap, roles default, exceptions flex</div>
-    <p style="font-size:13.5px;color:var(--ink-2);margin:0 0 8px">We sell <b>product modules</b> to companies. A module is a sellable slice of the product that unlocks permissions — each permission still lives in its role type. Modules are switched on <b>per plant</b>, on the plant record itself: the plant carries its company label and its module flags. There is no container of any kind in between — people connect straight to plants.</p>
-    <p style="font-size:13.5px;color:var(--ink-2);margin:0">Effective access at a plant = <b>user permission ∧ plant module</b>. Module flags are written only here, by Global Admin only — every other screen reads them.</p>
+    <p style="font-size:13.5px;color:var(--ink-2);margin:0 0 8px">Each plant is licensed for the <b>product modules</b> in its contract — that is the ceiling on what anyone can do there.</p>
+    <p style="font-size:13.5px;color:var(--ink-2);margin:0">The one rule everywhere: <b>what a person can do at a plant = their permission AND the plant's licensed modules</b>. Licences are edited only on this screen.</p>
   </div>
   <div class="gridcards" id="modcatalog" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin-bottom:18px"></div>
   <div class="panel">
     <div class="gh">Plant records — company label + licensed modules</div>
-    <div class="help"><span class="i">💡</span><span><b>This table is the source of truth for what exists at each plant.</b> Toggle a module to simulate a contract change — the configurator, the review and the previews all respect it instantly. In production only a Global Admin (at onboarding) or Technical Admin can write here.</span></div>
+    <div class="help"><span class="i">💡</span><span><b>This table is the source of truth.</b> Toggle a module to simulate a contract change — every other screen updates instantly.</span></div>
     <div style="overflow-x:auto"><table class="mtable" id="modmatrix"></table></div>
   </div>
 </div>
@@ -374,7 +374,7 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
   <div id="ucdir">
     <div class="panel" style="margin-bottom:18px">
       <div class="gh">User Center — everyone lives here, everything drives from here</div>
-      <div class="help"><span class="i">💡</span><span>Every screen starts from a <b>person</b>. Open someone to set their one role and their plant access; the Access review and UI previews follow whoever you pick. Adding, changing and saving all land in the change log.</span></div>
+      <div class="help"><span class="i">💡</span><span>Open a person to set their <b>one role</b> and <b>plant access</b>. Every change lands in the change log.</span></div>
       <div class="kpis" id="uckpis"></div>
       <div class="attnrow" id="ucattn"></div>
       <div class="ucbar">
@@ -384,7 +384,6 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
           <option value="">Everyone</option>
           <option value="dev">With deviations</option>
           <option value="grant">With admin grants</option>
-          <option value="capped">With capped abilities</option>
           <option value="zero">No access yet</option>
         </select>
         <button class="btn primary" onclick="startAddPerson()">＋ Add person</button>
@@ -413,7 +412,7 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
     <div>
       <div class="panel">
         <div class="gh">1 · Their role — the person's capability level</div>
-        <div class="help" id="step2help"><span class="i">💡</span><span>A role describes the <b>person</b>, not the plant — either they have decision-making ability or they don't, so everyone holds <b>one role account-wide</b>. Pick it once; it applies at every plant on the access list (step 3).</span></div>
+        <div class="help" id="step2help"><span class="i">💡</span><span>One role per person — it describes the <b>person</b>, not a plant, and applies at every plant they can access (step 3).</span></div>
         <div id="rolebox"></div>
       </div>
 
@@ -421,7 +420,7 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
         <div class="gh">2 · Admin duties — most people need none</div>
         <button class="disclose" id="grantbtn" onclick="toggleGrantOpen()"><span class="chev">▶</span> <span id="grantlbl">Open only if this person administers</span></button>
         <div class="hiddenblock" id="grantblock" style="padding-top:8px">
-          <div class="help"><span class="i">💡</span><span>A grant adds <b>administration</b> on top of the role — it never changes day-to-day operating permissions, and it applies at every assigned plant.</span></div>
+          <div class="help"><span class="i">💡</span><span>A grant adds <b>administration</b> on top of the role — it never changes day-to-day permissions.</span></div>
           <div class="chipsel" id="grantchips"></div>
           <div class="granthelp" id="granthelp"></div>
         </div>
@@ -429,7 +428,7 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
 
       <div class="panel" style="margin-top:18px">
         <div class="gh">3 · Their plants — the access list</div>
-        <div class="help"><span class="i">💡</span><span>Pick <b>every</b> plant they should see or act at. The role from step 1 applies at each; each plant's licensed modules then cap what actually works there. Plants are grouped by the company on their record.</span></div>
+        <div class="help"><span class="i">💡</span><span>Pick <b>every</b> plant they should see or act at — their role applies at each one, capped by that plant's licensed modules.</span></div>
         <div id="plantbox"></div>
       </div>
     </div>
@@ -437,13 +436,13 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
     <div>
       <div class="panel">
         <div class="gh">4 · What they get at each plant — modules cap, exceptions flex</div>
-        <div class="help"><span class="i">💡</span><span>One row per plant on the access list. Rows differ only by what each plant's <b>modules</b> license and by reasoned per-plant exceptions — never by role. Open “Customize” only when this person needs more or less than the standard at that one plant.</span></div>
+        <div class="help"><span class="i">💡</span><span>One row per plant. Rows differ by the plant's <b>modules</b> and by reasoned exceptions — never by role. Open “Customize” only when this person needs more or less at that one plant.</span></div>
         <div id="arows"></div>
       </div>
 
       <div class="panel" style="margin-top:18px">
         <div class="gh">5 · Review & save</div>
-        <div class="help"><span class="i">💡</span><span>Nothing saves until every deviation has a written reason — deviations are audited and counted as drift. Standard rows save silently.</span></div>
+        <div class="help"><span class="i">💡</span><span>Every deviation needs a written reason before saving — all of it is audited.</span></div>
         <div class="driftbar"><span class="driftnum" id="driftn">0</span><span style="font-size:13px;color:var(--ink-2)" id="driftl"></span>
           <button class="btn ghost" style="margin-left:auto;padding:7px 14px;font-size:12.5px" onclick="resetStd()">Reset all to standard</button></div>
         <div id="capmsg"></div>
@@ -463,8 +462,8 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
 <div class="pane" id="pane2">
   <div class="panel" style="margin-bottom:18px">
     <div class="gh">Access review — the cross-check surface</div>
-    <p style="font-size:13.5px;color:var(--ink-2);margin:0 0 10px">One screen answers <b>“what can this person do, at which plant, right now — and why?”</b> Nothing here is editable — it's the reviewer's view, computed live.</p>
-    <div class="help" style="margin:0"><span class="i">📖</span><span><b>How to read it:</b> each row is an ability, each column is one plant. Click any cell and it explains itself in one sentence — who granted it, why, and what would switch it off. The colors never change meaning:</span></div>
+    <p style="font-size:13.5px;color:var(--ink-2);margin:0 0 10px">Answers <b>“what can this person do, at which plant, right now — and why?”</b> Read-only, computed live.</p>
+    <div class="help" style="margin:0"><span class="i">📖</span><span><b>How to read it:</b> rows are abilities, columns are plants. Click any cell for a one-sentence explanation.</span></div>
     <div class="legend" style="margin:10px 0 0">
       <span><span class="cell st-on">✓</span> comes with the role</span>
       <span><span class="cell st-added">✚</span> added by exception — reasoned & audited</span>
@@ -484,8 +483,8 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
 <!-- ============ PANE 3: SMART UI PREVIEW ============ -->
 <div class="pane" id="pane3">
   <div class="panel" style="margin-bottom:18px">
-    <div class="gh">Smart preview — generated live from permissions, not hand-drawn per role</div>
-    <p style="font-size:13.5px;color:var(--ink-2);margin:0">Every navigation tab, button, and banner below is decided by a rule reading the permission state. Pick a preset, or preview the configurator's live state. The plant context applies that plant's module ceiling, exactly as at runtime.</p>
+    <div class="gh">App preview — what each person actually sees, computed from their permissions</div>
+    <p style="font-size:13.5px;color:var(--ink-2);margin:0">Pick a role or the selected person, choose a plant, and see exactly which tabs and buttons the app would show them there.</p>
   </div>
   <div style="display:flex;gap:12px;align-items:center;margin:0 0 12px;flex-wrap:wrap">
     <span class="gh" style="margin:0">Plant context</span>
@@ -504,7 +503,7 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
 <div class="pane" id="pane4">
   <div class="panel" style="margin-bottom:18px">
     <div class="gh">Role library — every role that exists, in one register</div>
-    <p style="font-size:13.5px;color:var(--ink-2);margin:0">The complete vocabulary — and <b>all of it</b>: the <b>nine pre-defined roles</b> (five base roles + four admin grants), fixed, with live holder counts. <b>Custom roles were removed by decision on 2026-08-13</b> — nobody, People Admins included, can create or apply one. When someone needs more or less than their role's standard, the answer is a per-person, per-plant reasoned exception on their profile (or a plant-wide permission edit) — never a new role. Nothing on a person's record can come from a role that isn't in this register.</p>
+    <p style="font-size:13.5px;color:var(--ink-2);margin:0">The complete vocabulary — <b>five base roles and four admin grants, fixed</b>, with live holder counts. There are no custom roles. When someone needs more or less than the standard, the answer is a reasoned per-person exception — never a new role.</p>
   </div>
   <div id="packbox"></div>
 </div>
@@ -518,7 +517,7 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
 <div class="pane" id="pane6">
   <div class="panel" style="margin-bottom:18px">
     <div class="gh">Plants — the record everything hangs off</div>
-    <div class="help"><span class="i">💡</span><span>The plant is the ONLY container in the model (ADR-002): <b>company is a label on the plant</b>, people are assigned per plant, and product modules are licensed per plant. This screen is the registry — licensing lives on <b>Product modules</b>, people on the <b>User Center</b>.</span></div>
+    <div class="help"><span class="i">💡</span><span>Plants are grouped by their <b>cluster label</b> — there are no folders or groups above a plant. Licences live on <b>Product modules</b>; people on <b>People</b>.</span></div>
     <div class="kpis" id="plantkpis"></div>
   </div>
   <div class="panel">
@@ -531,7 +530,7 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
 </div>
 </main>
 
-<footer><div class="wrap">User Center · Roles & Permissions · interactive prototype · DigitalPaani. Data model: plant = company label + licensed modules (ceiling) · person = one role (account-wide) + one grant + plant access list [{plant, exceptions}] · effective access = user permission ∧ plant module.</div></footer>
+<footer><div class="wrap">User Center · Roles &amp; Permissions · DigitalPaani · interactive demo — refresh to reset. One rule runs everything: what a person can do at a plant = their permission AND the plant's licensed modules.</div></footer>
 </div><!-- /appmain -->
 </div><!-- /layout -->
 
@@ -600,7 +599,7 @@ const SETS=[
  {id:"sitetpl",n:"Site templates (task, event, insight, logbook, data-input)",mod:"core"},
  {id:"formulas",n:"Site analytics formulas",mod:"data"},
  {id:"stores",n:"Store & item catalog setup",mod:"inv"}]},
-{id:"templates",req:["people","tech"],n:"Global templates",cat:"adm",d:"Affects every site — DP / Wapp staff only",old:"was: Super Admin, Company List, System templates/triggers/workflows",perms:[
+{id:"templates",req:["people","tech"],n:"Global templates",cat:"adm",d:"Affects every site — DigitalPaani staff only",old:"was: Super Admin, Company List, System templates/triggers/workflows",perms:[
  {id:"library",n:"Global template & role governance (system task/trigger/workflow)",mod:"core"},
  {id:"publish",n:"Publish versions to all sites",mod:"core"},
  {id:"onboard",n:"Onboard sites, plants & company list",mod:"core"}]},
@@ -669,7 +668,7 @@ function moduleModal(m){
    <div class="mnote">${M.d}</div>`;
   if(M.noperm) body+=`<div class="mnote" style="background:var(--flag-bg);border-color:var(--amber-line);color:var(--amber-ink)">Hardware add-on — a plant-level entitlement only. It grants no user permissions and never appears in any role or override; it exists on the contract so sales & support know what's installed.</div>`;
   else body+=Object.keys(bySet).map(sid=>`<div class="msec">${setById[sid].n}</div>`+bySet[sid].map(p=>`<div class="prow2"><span class="tick">✓</span><span>${p.n}</span></div>`).join("")).join("")+
-    `<div class="mnote">These abilities exist at a plant only if this module is licensed there. Effective access = <b>user permission ∧ plant module</b>.</div>`;
+    `<div class="mnote">These abilities work at a plant only if this module is licensed there: <b>permission AND licensed module</b>.</div>`;
   openModal(`${M.icon} ${M.n}`,"Product module"+(M.always?" · included with every contract":""),body);
 }
 const ROLES={
@@ -687,29 +686,25 @@ const GRANTHELP={
  people:{t:"People Admin — manages the humans",d:"Invite, edit & offboard users · rosters & shift schedules · skills · assign roles and grants · notification overrides · audit export. No access to plant logic or hardware."},
  tech:{t:"Technical Admin — configures the plant",d:"Dashboards & widgets · issue / task / trigger rules · diagnostic flows · plant, lab & sensor setup · PLC / IoT · escalation routing · site templates & formulas. No user management. Also the grant that may edit a plant's module flags after onboarding."},
  fullsite:{t:"Full Site Admin — People + Technical combined",d:"Everything both admins can do, for this site: the users and the plant configuration. Use when one person genuinely runs the whole site."},
- global:{t:"Global Admin — DigitalPaani / Wapp staff only",d:"The superuser grant (owner ruling 2026-07-22): every one of the 10 sets, at every plant — including the 3 exception permissions (remote actuation, view-as, sensor health), which are never a default for anyone else. Nothing is ever denied to a Global Admin. Affects every site — audited accordingly."},
+ global:{t:"Global Admin — DigitalPaani staff only",d:"The superuser grant: every permission set at every plant, including the 3 exception permissions (remote actuation, view-as, sensor health). Nothing is ever denied to a Global Admin. Affects every site — audited accordingly."},
 };
 const setById=Object.fromEntries(SETS.map(s=>[s.id,s]));
 
-/* ---- Plant records: company is a LABEL on the plant (ADR-002) — never a container. ---- */
-const COMPANIES={greengrid:"GreenGrid Utilities",aquacore:"AquaCore O&M",jmc:"Jaipur Municipal Corp",demo:"DigitalPaani Demo"};
+/* ---- Plant records: the cluster (company) is a LABEL on the plant (ADR-002) — never a container. ----
+   Real client demo data (swapped in 2026-08-14). */
+const COMPANIES={adern:"Adern",vedanta:"Vedanta",ems:"EMS",amazon:"Amazon"};
 const PLANTCO={
- "STP — Sector 62":"greengrid","WTP — Knowledge Park":"greengrid","STP — Alpha 2":"greengrid","STP — Pari Chowk":"greengrid",
- "STP — Cyber Park":"aquacore","WTP — Sector 29":"aquacore","STP — Udyog Vihar":"aquacore",
- "STP — Sitapura":"jmc","WTP — Mansarovar":"jmc",
- "Demo STP — Training":"demo","Demo WTP — Sales":"demo"};
+ "Essentia STP":"adern",
+ "Vedanta- 200 KLD (WTP)":"vedanta","Vedanta- 50KLD (Gas Holder)":"vedanta",
+ "EMS":"ems",
+ "Amazon DEL-4":"amazon","Amazon DEL-5":"amazon"};
 let PLANTMODS={
- "STP — Sector 62":["ops","tasks","data","analytics","iot","inv","floc"],
- "WTP — Knowledge Park":["ops","tasks","data","analytics","floc"],
- "STP — Alpha 2":["ops","tasks"],
- "STP — Pari Chowk":["ops","tasks","data","inv"],
- "STP — Cyber Park":["ops","tasks","data","analytics","iot","inv"],
- "WTP — Sector 29":["ops","data","analytics"],
- "STP — Udyog Vihar":["ops","tasks"],
- "STP — Sitapura":["ops","tasks","data","analytics","iot","inv","floc"],
- "WTP — Mansarovar":["analytics"],
- "Demo STP — Training":["ops","tasks","data","analytics","iot","inv","floc"],
- "Demo WTP — Sales":["ops","tasks","data","analytics","iot","inv","floc"],
+ "Essentia STP":["ops","tasks","data","analytics","iot","inv","floc"],
+ "Vedanta- 200 KLD (WTP)":["ops","tasks","data","analytics","iot"],
+ "Vedanta- 50KLD (Gas Holder)":["ops","tasks"],
+ "EMS":["ops","tasks","data","analytics","inv","floc"],
+ "Amazon DEL-4":["ops","tasks","data","analytics"],
+ "Amazon DEL-5":["tasks","data","analytics","iot"],
 };
 const ALLPLANTS=Object.keys(PLANTCO);
 function plantMods(p){ return new Set(["core",...(PLANTMODS[p]||[])]); }
@@ -733,33 +728,32 @@ function mkPerson(id,av,n,t,co,grantId,roleId,rows){
   return p;
 }
 let PEOPLE=[
- // Asha flattened to L3 everywhere per the 2026-07-30 ruling (was L3 + Regular Non-op at Mansarovar —
- // legacy viewer-role stacking for visibility, not mixed authority; Mansarovar's modules cap her there anyway)
- mkPerson("asha","🧰","Asha Verma","Shift supervisor","greengrid","","l3",[
-   {plant:"STP — Sector 62",add:["remote.actuate"],reason:"Trained & certified for remote blower control at this plant, approved A. Loijos, DP-1188"},
-   {plant:"WTP — Mansarovar"}]),
- mkPerson("vikram","🔌","Vikram Desai","Automation engineer","aquacore","tech","l3",[
-   {plant:"STP — Cyber Park"},
-   {plant:"STP — Udyog Vihar",remove:["approve.selfapprove"],reason:"Four-eyes rule at client site, DP-1201"}]),
- mkPerson("ramesh","👷","Ramesh Kumar","Plant operator","greengrid","","l1",[
-   {plant:"STP — Alpha 2"}]),
- mkPerson("priya","📈","Priya Sharma","Sustainability head","jmc","","senior",[
-   {plant:"STP — Sitapura"},
-   {plant:"WTP — Mansarovar"}]),
- mkPerson("kavita","👩‍🔬","Kavita Rao","Lab technician","demo","","l1",[
-   {plant:"Demo STP — Training"}]),
+ // one role per person, account-wide (ruling 2026-07-30); exceptions are per plant, with a reason
+ mkPerson("satyadev","🧰","Satyadev Singh","Shift supervisor","adern","","l3",[
+   {plant:"Essentia STP",add:["remote.actuate"],reason:"Trained & certified for remote blower control at this plant, approved A. Loijos, DP-1188"},
+   {plant:"Vedanta- 200 KLD (WTP)"}]),
+ mkPerson("garvit","🔌","Garvit Kumar","Automation engineer","ems","tech","l3",[
+   {plant:"EMS"},
+   {plant:"Amazon DEL-4",remove:["approve.selfapprove"],reason:"Four-eyes rule at client site, DP-1201"}]),
+ mkPerson("mohit","👷","Mohit Joshi","Plant operator","vedanta","","l1",[
+   {plant:"Vedanta- 200 KLD (WTP)"}]),
+ mkPerson("piyush","📈","Piyush Negi","Sustainability head","amazon","","senior",[
+   {plant:"Amazon DEL-4"},
+   {plant:"Amazon DEL-5"}]),
+ mkPerson("mandeep","🧑‍🔬","Mandeep Dagar","Lab technician","ems","","l1",[
+   {plant:"EMS"}]),
 ];
 let cur=null, addingP=false, addSeq=0;
 const AVPOOL=["🧑‍🔧","👩‍💻","🧑‍💼","👨‍🏭","🧑‍🔬"];
 
 /* ================= PERSONA — who is using this console ================= */
-const SITE_SCOPE=["STP — Sector 62"];
-const CLUSTER_CO="greengrid";
+const SITE_SCOPE=["Essentia STP"];
+const CLUSTER_CO="vedanta";
 let persona={kind:"global"};
 function personaName(){
-  return persona.kind==="global"?"Company admin (DigitalPaani)"
+  return persona.kind==="global"?"DigitalPaani admin (Global)"
        :persona.kind==="cluster"?`Cluster admin (${COMPANIES[CLUSTER_CO]})`
-       :"Plant admin (STP — Sector 62)";
+       :"Plant admin (Essentia STP)";
 }
 function setPersona(k){
   persona=k==="global"?{kind:"global"}
@@ -773,10 +767,10 @@ function setPersona(k){
   // control panel is for cluster/plant admins; a global admin sitting on it gets bounced to People
   if(persona.kind==="global"&&document.getElementById("pane5")&&document.getElementById("pane5").classList.contains("on")) tab(1);
   document.getElementById("personanote").textContent=persona.kind==="global"
-    ?"Company admin: every company, plant and person. Set each person's one role, manage plant access lists, act on a whole plant's roster at once, edit single permissions for one person or a set of them, flip module flags."
+    ?"Sees every cluster, plant and person. Sets roles, manages plant access, runs plant-wide actions, licenses modules."
     :persona.kind==="cluster"
-    ?"Cluster admin for GreenGrid Utilities: the four GreenGrid plants and everyone working at them. Manage plant access and run plant-wide or cluster-wide permission edits inside your cluster — module flags are read-only, and the Global grant isn't yours to give."
-    :"Plant admin at STP — Sector 62: your plant's roster only. Manage plant access, run plant-wide edits and grant reasoned exceptions here — module flags are read-only, the Global grant isn't yours to give, and nothing you do can reach another plant.";
+    ?"Runs the two Vedanta plants and everyone working at them. Module licences are read-only; the Global grant isn't yours to give."
+    :"Runs Essentia STP only — your plant's roster, edits and exceptions. Nothing you do can reach another plant.";
   render(); renderModules(); renderPlants(); renderReview(); renderPreview(); renderControlPanel();
 }
 function inScope(plant){ return persona.kind==="global"||persona.plants.includes(plant); }
@@ -795,7 +789,7 @@ function renderControlPanel(){
   const box=document.getElementById("ctrlpanel"); if(!box) return;
   if(persona.kind==="global"){
     box.innerHTML=`<div class="panel"><div class="gh">Control panel</div>
-      <div class="help"><span class="i">💡</span><span>The control panel is the focused home for <b>cluster and plant admins</b> — it scopes everything to the people and plants they run. As <b>Company admin</b> you have the whole console: use <b>People</b>, the <b>Role library</b>, and <b>Plants &amp; modules</b>. Switch persona in the sidenav to see the scoped control panel.</span></div></div>`;
+      <div class="help"><span class="i">💡</span><span>The control panel is the focused home for <b>cluster and plant admins</b>. As the DigitalPaani admin you have the whole console — switch persona in the sidenav to see the scoped view.</span></div></div>`;
     return;
   }
   const ppl=scopedPeople(), plants=scopedPlants();
@@ -821,7 +815,7 @@ function renderControlPanel(){
   box.innerHTML=`
     <div class="panel" style="margin-bottom:18px">
       <div class="gh">🎚 Control panel — ${personaName()}</div>
-      <div class="help"><span class="i">💡</span><span>Everything here is scoped to the people and plants you run. Look up who can do what, jump to a person to fine-tune them, run a plant-wide change — all within your scope, all audited.</span></div>
+      <div class="help"><span class="i">💡</span><span>Everything here is scoped to the people and plants you run — and everything is audited.</span></div>
       <div class="kpis">
         <div class="kpi"><div class="n">${ppl.length}</div><div class="l">people you manage</div></div>
         <div class="kpi"><div class="n">${plants.length}</div><div class="l">plant${plants.length>1?"s":""} in scope</div></div>
@@ -837,7 +831,7 @@ function renderControlPanel(){
     </div>
     <div class="panel" style="margin-bottom:18px">
       <div class="gh">Who can do this, here?</div>
-      <div class="help" style="margin-top:0"><span class="i">💡</span><span>Pick an ability and a plant — see exactly who holds it and how (by role or by exception). Click a name to fine-tune that person.</span></div>
+      <div class="help" style="margin-top:0"><span class="i">💡</span><span>Pick an ability and a plant — see who holds it and how. Click a name to fine-tune them.</span></div>
       <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
         <select onchange="setCtrlCap(this.value)" style="min-width:280px"><option value="">Pick an ability…</option>${allPerms.map(p=>`<option value="${p.key}" ${ctrlCap===p.key?"selected":""}>${p.set} · ${p.n}</option>`).join("")}</select>
         <span style="font-size:13px;color:var(--ink-2)">at</span>
@@ -849,7 +843,7 @@ function renderControlPanel(){
       <table class="utable"><thead><tr><th>Person</th><th>Role</th><th>Plants (in scope)</th><th>Status</th><th></th></tr></thead><tbody>`+
       ppl.map(p=>{
         const drift=personDrift(p);
-        const plch=Object.keys(p.asg).filter(inScope).map(pl=>`<span class="tierchip" title="${pl}">${pl.replace("STP — ","").replace("WTP — ","").replace("Demo ","")}</span>`).join("");
+        const plch=Object.keys(p.asg).filter(inScope).map(pl=>`<span class="tierchip" title="${pl} · ${coName(pl)}">${pl}</span>`).join("");
         return `<tr onclick="goManage('${p.id}')"><td><span class="nm">${p.n}</span><br><span class="tt">${p.t}</span></td>
           <td><span class="tierchip">${ROLES[p.role].n}</span></td>
           <td><span class="chips">${plch||`<span class="tierchip" style="background:var(--bg);color:var(--ink-3)">—</span>`}</span></td>
@@ -939,7 +933,7 @@ function addPersonSubmit(){
   if(!n) return;
   const t=document.getElementById("np_title").value.trim()||"Team member";
   addSeq++;
-  const co=persona.kind==="site"?PLANTCO[persona.plants[0]]:"greengrid";
+  const co=persona.kind==="site"?PLANTCO[persona.plants[0]]:Object.keys(COMPANIES)[0];
   const p=mkPerson("new"+addSeq,AVPOOL[addSeq%AVPOOL.length],n,t,co,"","l1",[]);
   if(persona.kind==="site") p.home=persona.plants[0];
   PEOPLE.push(p);
@@ -1083,7 +1077,7 @@ function render(){
   document.getElementById("rolebox").innerHTML=
     `<div class="setall" style="margin-bottom:${outScope?"4px":"12px"}">Role
       <select onchange="setRole(this.value)" title="One role per person — it applies at every plant on the access list">${Object.keys(ROLES).map(r=>`<option value="${r}" title="${ROLES[r].s}" ${role===r?"selected":""}>${ROLES[r].n} — ${ROLES[r].s}</option>`).join("")}</select>
-      <span class="hint" style="font-size:12px;color:var(--ink-3)">changing it resets every plant to the new standard — exceptions belonged to the old role and are cleared.</span></div>`+
+      <span class="hint" style="font-size:12px;color:var(--ink-3)">changing it resets every plant to the new role's standard.</span></div>`+
     (outScope?`<div class="msg warn" style="margin:0 0 12px">This person also works at plants outside your scope — the role is account-wide, so changing it applies there too.</div>`:"");
 
   // access rows — one per plant; summary first, detail on demand (progressive disclosure)
@@ -1122,13 +1116,11 @@ function renderDirectory(){
   const totalRows=POP.reduce((n,p)=>n+Object.keys(p.asg).filter(inScope).length,0);
   const withDev=POP.filter(p=>personDrift(p)>0).length;
   const withGrant=POP.filter(p=>p.grant).length;
-  const withCap=POP.filter(p=>personCapped(p)>0).length;
   document.getElementById("uckpis").innerHTML=
     `<div class="kpi"><div class="n">${POP.length}</div><div class="l">people${persona.kind==="site"?" at your site":""}</div></div>
-     <div class="kpi"><div class="n">${totalRows}</div><div class="l">plant assignments</div></div>
+     <div class="kpi"><div class="n">${totalRows}</div><div class="l">plant access rows</div></div>
      <div class="kpi"><div class="n">${withGrant}</div><div class="l">admin grants</div></div>
-     <div class="kpi"><div class="n" style="color:${withDev?"var(--flag)":"var(--ops)"}">${withDev}</div><div class="l">with deviations</div></div>
-     <div class="kpi"><div class="n">${withCap}</div><div class="l">with capped abilities</div></div>`;
+     <div class="kpi"><div class="n" style="color:${withDev?"var(--flag)":"var(--ops)"}">${withDev}</div><div class="l">with deviations</div></div>`;
   // needs-attention queue: a finish line, not a dashboard (goal gradient — watch it count down to ✓)
   const needReason=POP.filter(p=>Object.entries(p.asg).some(([pl,a])=>inScope(pl)&&devCount(p,pl)>0&&!a.reason.trim())).length;
   const zeroAccess=POP.filter(p=>!Object.keys(p.asg).length&&!p.grant).length;
@@ -1142,7 +1134,7 @@ function renderDirectory(){
   else if(!fp.options.length) fp.innerHTML=`<option value="">All plants</option>`+wanted.map(p=>`<option value="${p}">${p}</option>`).join("");
   document.getElementById("ucaddform").innerHTML=addingP?
     `<div class="addform2"><b style="font-size:13px">New person</b> <span style="font-size:12px;color:var(--ink-3)">— they start with no access; nothing is granted until you assign plants and save.</span><br>
-     <input id="np_name" placeholder="Name — e.g. Kavita Rao">
+     <input id="np_name" placeholder="Name — e.g. Rohan Mehta">
      <input id="np_title" placeholder="What do they do? — e.g. Lab technician">
      <button class="btn primary" onclick="addPersonSubmit()">Add & open</button>
      <button class="btn ghost" onclick="startAddPerson()">Cancel</button></div>`:"";
@@ -1153,7 +1145,6 @@ function renderDirectory(){
     if(fplant&&!p.asg[fplant]) return false;
     if(fstate==="dev"&&!personDrift(p)) return false;
     if(fstate==="grant"&&!p.grant) return false;
-    if(fstate==="capped"&&!personCapped(p)) return false;
     if(fstate==="zero"&&(Object.keys(p.asg).length||p.grant)) return false;
     return true;
   });
@@ -1162,7 +1153,7 @@ function renderDirectory(){
        <th>Person</th><th>Role</th><th>Plants</th><th>Admin grant</th><th>Status</th><th></th>
      </tr></thead><tbody>`+rows.map(p=>{
       const drift=personDrift(p), cap=personCapped(p);
-      const plants=Object.keys(p.asg).map(pl=>`<span class="tierchip" title="${pl} · ${coName(pl)}">${pl.replace("STP — ","").replace("WTP — ","").replace("Demo ","")}</span>`).join("");
+      const plants=Object.keys(p.asg).map(pl=>`<span class="tierchip" title="${pl} · ${coName(pl)}">${pl}</span>`).join("");
       return `<tr onclick="selectPerson('${p.id}')">
         <td><span class="nm">${p.n}</span><br><span class="tt">${p.t}</span> <span class="co">· ${COMPANIES[p.co]||p.co}</span></td>
         <td><span class="tierchip" title="One role per person — applies at every plant on the access list">${ROLES[p.role].n}</span></td>
@@ -1179,7 +1170,7 @@ function renderDirectory(){
 function renderBulk(){
   if(!bulkPlant||!inScope(bulkPlant)) bulkPlant=scopedPlants()[0];
   let h=`<div class="panel" style="margin-top:18px"><div class="gh">Plant-wide actions — one plant, many people, one audited action</div>
-    <div class="help"><span class="i">💡</span><span><b>${personaName()}:</b> pick a plant, tick who it applies to, act once. Roster add puts people on this plant's access list at their <b>account-wide role</b>; bulk permission edit writes the <b>same reasoned exception</b> onto each selected person at this plant — visible per person in the Access review, never a hidden group rule. The module ceiling and prerequisites still apply per person. Roles themselves are never changed in bulk — a role change is account-wide, so it happens on the person's record.</span></div>
+    <div class="help"><span class="i">💡</span><span>Pick a plant, tick people, act once. Adds join at each person's <b>account-wide role</b>; permission edits land as a <b>reasoned exception on each person</b>. Roles never change in bulk.</span></div>
     <button class="disclose ${bulkOpen?"open":""}" onclick="bulkOpen=!bulkOpen;render()"><span class="chev">▶</span> Open plant-wide actions</button>
     <div class="hiddenblock ${bulkOpen?"open":""}">${bulkOpen?bulkFormHtml():""}</div></div>`;
   document.getElementById("bulkbox").innerHTML=h;
@@ -1194,7 +1185,7 @@ function bulkFormHtml(){
     <div>${eligible.length?eligible.map(p=>`<label style="display:inline-flex;align-items:center;gap:6px;font-size:12.5px;margin:0 14px 6px 0;cursor:pointer"><input type="checkbox" class="bk_add" value="${p.id}">${p.n} <span style="color:var(--ink-3)">· ${ROLES[p.role].n}</span></label>`).join(""):`<span class="hint">Everyone in your scope is already on this plant's roster.</span>`}</div>
     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
       <button class="btn primary" style="padding:9px 18px" onclick="bulkAddSubmit()">Add selected to ${bulkPlant}</button>
-      <span class="hint">They join at their <b>account-wide role</b> (shown next to each name) — the module ceiling caps per plant. To change someone's role, open their record: role changes apply at every plant, so they're never done plant-wide.</span>
+      <span class="hint">They join at their account-wide role (shown next to each name). To change a role, open the person's record.</span>
     </div>
     <div class="gh2">Who — the roster at ${bulkPlant} (untick to exclude)</div>
     <div>${roster.length?roster.map(p=>`<label style="display:inline-flex;align-items:center;gap:6px;font-size:12.5px;margin:0 14px 6px 0;cursor:pointer"><input type="checkbox" class="bk_p" value="${p.id}" checked>${p.n} <span style="color:var(--ink-3)">· ${ROLES[p.role].n}</span></label>`).join(""):`<span class="hint">Nobody is assigned here yet.</span>`}</div>
@@ -1211,7 +1202,7 @@ function bulkFormHtml(){
     <textarea id="bk_reason" placeholder="e.g. 'Client audit at this plant: photo capture mandatory for all operators, DP-1410'"></textarea>
     <div class="navrow" style="margin-top:8px">
       <button class="btn primary" onclick="bulkPermSubmit()">Apply permission edit</button>
-      <span class="hint">Needs ≥1 person, ≥1 permission, and a reason. Every change lands as a per-person exception — amber in the review, counted as drift.</span>
+      <span class="hint">Needs people, permissions, and a reason — each change lands as an amber per-person exception.</span>
     </div></div>`;
 }
 function bulkAddSubmit(){
@@ -1236,7 +1227,7 @@ function renderLibrary(){
   });
   const abilityCount=std=>SETS.filter(s=>std.includes(s.id)).reduce((n,s)=>n+s.perms.length,0);
   let h=`<div class="panel" style="margin-bottom:18px"><div class="gh">The fixed catalog — five base roles, four admin grants</div>
-    <div class="help"><span class="i">💡</span><span>These nine are <b>pre-defined and uneditable</b> — nobody can create, rename or delete them (role sprawl was the legacy disease). When a role isn’t quite enough, the answer is a per-person reasoned exception — never a fork of this catalog, and never a new role: custom roles were removed on 2026-08-13.</span></div>
+    <div class="help"><span class="i">💡</span><span>These nine are <b>pre-defined and uneditable</b>. When a role isn't quite enough, add a per-person exception with a reason — never a new role.</span></div>
     <div class="gh2" style="margin-top:14px">Base roles — one per person, account-wide</div>
     <div class="gridcards" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">`+
     Object.keys(ROLES).map(r=>`<div class="catcard clickable" onclick="roleModal('${r}')"><div class="t">${ROLES[r].n}</div><div class="s">${ROLES[r].s}</div>
@@ -1251,12 +1242,12 @@ function renderLibrary(){
       <div class="m" style="margin-top:4px">${abilityCount(GRANTS[g])} abilities · <b>${grantHolders[g].size}</b> ${grantHolders[g].size===1?"person holds":"people hold"} it</div>
       <div class="more">View details →</div></div>`).join("")+
     `</div></div>`;
-  h+=`<div class="panel" style="border-left:4px solid var(--flag)"><div class="gh">Custom roles — removed from the model (decision 2026-08-13)</div>
-    <p style="font-size:13.5px;color:var(--ink-2);margin:0">Custom roles (reusable grant/revoke templates) are <b>no longer part of the product</b>. None will be created, and no admin — <b>People Admins included</b> — has any create-or-apply capability. What replaces them: a <b>per-person, per-plant reasoned exception</b> on the profile (step 2 → Customize) for one person, or a <b>plant-wide permission edit</b> (People → Plant-wide actions) for many people at once — both stamped per person, both audited, both capped by the module ceiling. The nine cards above are the entire role vocabulary.</p></div>`;
+  h+=`<div class="panel" style="border-left:4px solid var(--flag)"><div class="gh">Custom roles — removed from the model</div>
+    <p style="font-size:13.5px;color:var(--ink-2);margin:0">No admin — <b>People Admins included</b> — can create or apply a custom role. Instead: a <b>per-person exception</b> on the profile, or a <b>plant-wide permission edit</b> for many people — both reasoned, audited, and capped by the plant's modules. The nine cards above are the entire vocabulary.</p></div>`;
   document.getElementById("packbox").innerHTML=h;
 }
 function renderCustomize(plant,a){
-  let h=`<div class="help" style="margin-top:0"><span class="i">💡</span><span>You're fine-tuning <b>${ROLES[a.tier].n}</b> at <b>${plant}</b> only — deviations here apply to this plant, nowhere else. Each group is a set of permissions with a master switch; open a group for individual toggles. Anything different from the standard turns <b>amber</b> and needs a reason.</span></div>`;
+  let h=`<div class="help" style="margin-top:0"><span class="i">💡</span><span>Fine-tuning <b>${ROLES[a.tier].n}</b> at <b>${plant}</b> only. Anything different from the standard turns <b>amber</b> and needs a reason.</span></div>`;
   h+=SETS.map(s=>{
     const st=setState(a,s.id);
     const on=s.perms.filter(p=>a.P[s.id+"."+p.id]).length;
@@ -1284,7 +1275,7 @@ function renderCustomize(plant,a){
   const dev=deviations(a);
   let g="";
   if(setState(a,"work")==="off"&&ROLES[a.tier].cat==="ops") g+=`<div class="msg warn">Work execution is fully off here for an operational role — if that's true everywhere they work, a read-only (Non-op) role may fit better (roles are account-wide).</div>`;
-  if(setState(a,"templates")!=="off") g+=`<div class="msg warn">Global templates affect every site. Restricted to DP / Wapp staff.</div>`;
+  if(setState(a,"templates")!=="off") g+=`<div class="msg warn">Global templates affect every site. Restricted to DigitalPaani staff.</div>`;
   if(setById.flags.perms.some(p=>a.P["flags."+p.id])) g+=`<div class="msg warn">Exception flags are audited individually and expire on role change.</div>`;
   if(a.P["remote.actuate"]) g+=`<div class="msg warn">📡 IoT remote control lets this person actuate equipment remotely — sensitive, never a role default. Grant deliberately, per person.</div>`;
   h+=g;
@@ -1313,9 +1304,9 @@ function renderSaveState(){
   document.getElementById("savehint").textContent=!selPlants.size?"Pick at least one plant.":blocked.length?`Write a reason for: ${blocked.join(", ")}.`:totalDev?"Deviations will be stored with their reasons and audited.":"All standard — saves without a reason.";
 }
 let AUDIT=[
- {w:"seed",t:"Asha Verma: exception (+ IoT remote control) at STP — Sector 62 · reason 'Trained & certified for remote blower control, DP-1188' · by A. Sharma"},
- {w:"seed",t:"Vikram Desai: exception (− self-approve) at STP — Udyog Vihar · reason 'Four-eyes rule at client site, DP-1201' · by S. Singh"},
- {w:"seed",t:"Plant record edited: WTP — Mansarovar → Analytics only (contract renewal) · by Global Admin"},
+ {w:"seed",t:"Satyadev Singh: exception (+ IoT remote control) at Essentia STP · reason 'Trained & certified for remote blower control, DP-1188' · by DigitalPaani admin"},
+ {w:"seed",t:"Garvit Kumar: exception (− self-approve) at Amazon DEL-4 · reason 'Four-eyes rule at client site, DP-1201' · by DigitalPaani admin"},
+ {w:"seed",t:"Plant record edited: Vedanta- 50KLD (Gas Holder) → Issue Resolution + Tasks (contract renewal) · by DigitalPaani admin"},
 ];
 function save(){
   const assignments=[...selPlants].map(p=>{
@@ -1366,7 +1357,7 @@ function whyChain(person,plant,key){
   const grantN=person.grant?GRANTNAMES[person.grant]:null;
   const viaGrant=person.grant&&(GRANTS[person.grant]||[]).includes(setId);
   const src=viaGrant?`${grantN} grant`:`${tierN} role (account-wide)`;
-  if(st==="on") return `<b>Active.</b> ${src} includes <b>${setN}</b> ∧ <b>${mod.n}</b> module is licensed at ${plant} → “${perm.n}” works here.`;
+  if(st==="on") return `<b>Active.</b> ${src} includes <b>${setN}</b>, and the <b>${mod.n}</b> module is licensed at ${plant} — so “${perm.n}” works here.`;
   if(st==="added"){
     return `<b>Active — by exception.</b> “${perm.n}” is not standard for ${tierN} at this plant. Added deliberately — reason on record: <i>“${a.reason||"(reason pending)"}”</i>. Counted as drift; audited.`;
   }
@@ -1484,9 +1475,6 @@ const PRESETS=[
  {id:"l4",label:"L4 Senior Lead",role:"l4",grant:""},
  {id:"regular",label:"Regular Non-op",role:"regular",grant:""},
  {id:"senior",label:"Senior Non-op",role:"senior",grant:""},
- {id:"l1tech",label:"L1 + Technical Admin",role:"l1",grant:"tech"},
- {id:"l3people",label:"L3 + People Admin",role:"l3",grant:"people"},
- {id:"fullsite",label:"Full Site Admin only",role:"regular",grant:"fullsite"},
  {id:"global",label:"Global Admin",role:"l3",grant:"global"},
 ];
 function buildStdP(role,grantId){
@@ -1533,7 +1521,7 @@ function bodyFor(tabId,c,why){
   const has=k=>!!c.P[k];
   let b="";
   if(tabId==="approvals"){
-    if(has("approve.gates")){ b+=row("Root cause: “Diffuser membrane clogged”","MBBR blower trip · submitted by Ramesh · 12 min ago",`<span class="pill p-grn" style="margin-right:6px">Approve</span><span class="pill p-red">Reject</span>`);
+    if(has("approve.gates")){ b+=row("Root cause: “Diffuser membrane clogged”","MBBR blower trip · submitted by Mohit · 12 min ago",`<span class="pill p-grn" style="margin-right:6px">Approve</span><span class="pill p-red">Reject</span>`);
       b+=row("Manual close request","Inlet screen jam · photo attached",`<span class="pill p-grn" style="margin-right:6px">Approve</span><span class="pill p-red">Reject</span>`);}
     else { b+=mut("Gate approvals hidden — ‘Approve / reject gates’ is off"); why.push("Approve/Reject buttons hidden — gates permission is off"); }
     if(has("approve.forceclose")) b+=row("Force-close: sensor fault duplicate","Auto-generated — needs co-sign",`<span class="pill p-amb">Co-sign</span>`);
@@ -1564,7 +1552,7 @@ function bodyFor(tabId,c,why){
       why.push("Add / remove item actions shown — work.inventory is on (operator view)");
     } else { b+=mut("Add / remove items hidden — work.inventory is off"); why.push("Item actions hidden — work.inventory is off"); }
     if(has("approve.invlogs")){
-      b+=row("Inventory log — today","Ramesh: −2 chlorine drums (usage) · Vikram: +50 kg polymer (purchase)",`<span class="pill p-nav">Full log</span>`);
+      b+=row("Inventory log — today","Mohit: −2 chlorine drums (usage) · Garvit: +50 kg polymer (purchase)",`<span class="pill p-nav">Full log</span>`);
       b+=row("Inventory log — this week","14 movements · 1 expiry removal · 2 purchases",`<span class="pill p-nav">Export</span>`);
       why.push("Movement logs shown — approve.invlogs is on (supervisor view)");
     } else { b+=mut("Movement logs hidden — supervisors only (approve.invlogs)"); why.push("Inventory logs hidden — approve.invlogs is off"); }
@@ -1581,15 +1569,15 @@ function bodyFor(tabId,c,why){
     if(!canAct){ b+=mut("View-only — acting on issues is not part of this user's permissions"); why.push("Read-only banner shown — no operational permissions"); }
   }
   if(tabId==="portfolio"){
-    if(has("portfolio.overview")) b+=`<div class="gridcards"><div class="pcard"><div class="t">GreenGrid Utilities</div><div class="s">4 plants · 98% SLA</div></div><div class="pcard"><div class="t">AquaCore O&M</div><div class="s">3 plants · 94% SLA</div></div><div class="pcard"><div class="t">Jaipur Municipal</div><div class="s">2 plants · 99% SLA</div></div><div class="pcard"><div class="t">2 at deadline</div><div class="s">needs attention</div></div></div>`;
+    if(has("portfolio.overview")) b+=`<div class="gridcards"><div class="pcard"><div class="t">Vedanta</div><div class="s">2 plants · 98% SLA</div></div><div class="pcard"><div class="t">Amazon</div><div class="s">2 plants · 94% SLA</div></div><div class="pcard"><div class="t">Adern · EMS</div><div class="s">1 plant each · 99% SLA</div></div><div class="pcard"><div class="t">1 at deadline</div><div class="s">needs attention</div></div></div>`;
     if(has("portfolio.compare")) b+=row("Compare plants","Energy · SLA · issues per MLD",`<span class="pill p-nav">Open</span>`);
   }
   if(tabId==="people"){
-    if(has("people.invite")){ b+=row("Ramesh K.","L1 Operator · 0 deviations",`<span class="pill p-nav" style="margin-right:6px">Edit</span><span class="pill p-grn">standard</span>`);
-      b+=row("Asha V.","L3 Lead · 2 plants · 1 exception",`<span class="pill p-nav" style="margin-right:6px">Edit</span><span class="pill p-amb">1 drift</span>`); }
+    if(has("people.invite")){ b+=row("Mohit J.","L1 Operator · 0 deviations",`<span class="pill p-nav" style="margin-right:6px">Edit</span><span class="pill p-grn">standard</span>`);
+      b+=row("Satyadev S.","L3 Lead · 2 plants · 1 exception",`<span class="pill p-nav" style="margin-right:6px">Edit</span><span class="pill p-amb">1 drift</span>`); }
     if(has("people.rosters")) b+=row("Shift roster","Night gap Sunday — unassigned",`<span class="pill p-amb">Fix</span>`);
     if(has("people.skills")) b+=row("Skills","Pump maintenance: 4 users · Lab testing: 2",`<span class="pill p-nav">Manage</span>`);
-    if(has("flags.impersonate")){ b+=row("View as user","Support: see Ramesh's screen",`<span class="pill p-nav">View as</span>`); why.push("View-as appears — impersonation flag is on"); }
+    if(has("flags.impersonate")){ b+=row("View as user","Support: see Mohit's screen",`<span class="pill p-nav">View as</span>`); why.push("View-as appears — impersonation flag is on"); }
     if(has("people.invite")) b+=`<button class="bigbtn" style="background:var(--navy)">+ Invite user</button>`;
   }
   if(tabId==="technical"){
@@ -1819,7 +1807,7 @@ function renderNP(){
   }
   if(NP.step===1){
     body+=`<div class="npfield"><label>Plant name</label>
-      <input id="npName" value="${esc(NP.name)}" placeholder="e.g. STP — Sector 90"></div>
+      <input id="npName" value="${esc(NP.name)}" placeholder="e.g. Vedanta- 500 KLD (STP)"></div>
       <div class="npfield"><label>Company — a label on the plant record that groups plants in pickers (not an entity)</label>
       <select id="npCo" onchange="npCoChange(this.value)">
         ${Object.entries(COMPANIES).map(([id,n])=>`<option value="${id}" ${NP.co===id?"selected":""}>${esc(n)}</option>`).join("")}
@@ -1837,7 +1825,7 @@ function renderNP(){
         <span><span class="nn">${m.n}</span>${m.always?` <span class="tt">· always included</span>`:""}<br><span class="dd">${m.d}</span></span>
         <span class="tk">${on?"✓":""}</span></div>`;
     }).join("")+`</div>
-      <div class="help" style="margin-top:12px"><span class="i">💡</span><span>Modules are the ceiling at this plant: <b>effective access = user permission ∧ plant module</b>. Onboarding is when the Company admin licenses what was sold — after today, licences change on the <b>Product modules</b> screen only.</span></div>
+      <div class="help" style="margin-top:12px"><span class="i">💡</span><span>Modules are the ceiling at this plant: <b>what anyone can do here = their permission AND these licences</b>. After onboarding, licences change on the <b>Product modules</b> screen only.</span></div>
       <div class="npfoot"><button class="btn ghost" onclick="npGo(1)">← Back</button><span class="spacer"></span>
         <button class="btn primary" onclick="npGo(3)">Next: People →</button></div>`;
     openModal("New plant — onboarding",`Step 2 of 3 · License product modules at ${NP.name.trim()||"the new plant"}`,body);
@@ -1926,7 +1914,7 @@ function plantModal(pl){
         <td class="rowchev">›</td></tr>`;
     }).join("")+`</tbody></table>`
     :`<div class="emptystate">Nobody is assigned here yet${canEdit?" — add someone above.":" — assign people from the User Center."}</div>`;
-  body+=`<div class="help" style="margin-top:14px"><span class="i">💡</span><span>Effective access here = each person's permission ∧ this plant's modules. Grey lines in the Access review mean a module above is not licensed at ${pl}.</span></div>`;
+  body+=`<div class="help" style="margin-top:14px"><span class="i">💡</span><span>What anyone can do here = their permission AND this plant's licensed modules.</span></div>`;
   openModal(pl,`${co} · plant record`,body);
 }
 function tab(i){

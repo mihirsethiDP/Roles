@@ -148,7 +148,7 @@ Plain field lists — this is not a schema, just what data needs to exist somewh
 Each step names the prototype tab and the key functions to read in `index.html`. Build and test each step before moving to the next — later steps assume earlier ones work.
 
 ### Step 1 — Plants: the base registry
-- [ ] Store plant name + company label. The label is an explicit company **name picked from a small managed list** — not free text (free text would let "GreenGrid" and "Greengrid Utilities" silently split one cluster in two), and not a container with its own screens. New labels get added inline from step 1 of the add-plant wizard (Global Admin only); rename/merge tooling can come later.
+- [ ] Store plant name + company label. The label is an explicit company **name picked from a small managed list** — not free text (free text would let "Vedanta" and "Vedanta Ltd" silently split one cluster in two), and not a container with its own screens. New labels get added inline from step 1 of the add-plant wizard (Global Admin only); rename/merge tooling can come later.
 - [ ] A screen listing all plants, grouped by company label, with an "add plant" action.
 - [ ] Adding a plant is a **guided onboarding wizard** (Global Admin only), not a bare name form: **1. plant details** (name + company label) → **2. product modules** (license what was sold — this is the one sanctioned moment licensing happens outside the Step-2 matrix) → **3. people** (put existing users on the access list at their account-wide role, and/or create new users with their role). Nothing is written until the final confirm — cancel leaves the registry untouched — and the whole onboarding lands as **one audited action**. A plant *can* still be created with no modules and no people (Platform Core is always on for everyone, everywhere, for free).
 
@@ -366,7 +366,7 @@ Only the documents this PRD actually points you to — every one of them either 
 
 Every rule in Sections 1–5 is already working and clickable in [the prototype](index.html). This section is the map: who to be, which screen does what, and eight click-by-click recipes that each demonstrate one rule end to end. The full walkthrough with every control described lives in [`GUIDE.html`](GUIDE.html) — each row below deep-links into it.
 
-> Nothing in the prototype is persisted — **refresh and everything resets** to the seed data (11 plants across 4 companies, 5 people, a full set of modules and licences). Click anything without fear; you cannot break it.
+> Nothing in the prototype is persisted — **refresh and everything resets** to the seed data (6 plants across 4 clusters, 5 people, a full set of modules and licences). Click anything without fear; you cannot break it.
 
 ### 7.1 The three personas — start by choosing who you are
 
@@ -375,8 +375,8 @@ Three buttons at the bottom of the left rail. Everything re-scopes instantly whe
 | Persona | Scope | What it proves |
 |---|---|---|
 | **🌐 Company admin** (Global) | Every company, plant and person | The only persona that can license modules, onboard plants, and hand out the Global grant. Global Admin is the superuser — Step 3. |
-| **🏢 Cluster admin** (GreenGrid) | The 4 GreenGrid plants | Module matrix goes read-only (ADR-003); cluster-wide chips appear; nothing can reach a non-GreenGrid plant — Step 11. |
-| **🏭 Plant admin** (STP — Sector 62) | One plant's roster | The tightest scope: bulk actions, exceptions and reviews all clamp to one plant — Steps 9 and 11. |
+| **🏢 Cluster admin** (Vedanta) | The 2 Vedanta plants | Module matrix goes read-only (ADR-003); cluster-wide chips appear; nothing can reach a non-Vedanta plant — Step 11. |
+| **🏭 Plant admin** (Essentia STP) | One plant's roster | The tightest scope: bulk actions, exceptions and reviews all clamp to one plant — Steps 9 and 11. |
 
 *Guide:* [GUIDE.html → Choose who you are](GUIDE.html#personas).
 
@@ -389,7 +389,7 @@ Three buttons at the bottom of the left rail. Everything re-scopes instantly whe
 | [Product modules](GUIDE.html#modules) | The licensing ceiling — the plant × module matrix, and the one write surface for licences after onboarding. | Step 2 |
 | [Role library](GUIDE.html#library) | The fixed 5 roles + 4 grants as detail cards — the complete role vocabulary; a panel records the 2026-08-13 removal of custom roles. | Steps 4, 8 (8 = nothing to build) |
 | [Access review](GUIDE.html#review) | The reviewer cross-check: person lens (capability × plant matrix with why-chains) and plant lens ("who can do X here?"). | Step 10 |
-| [UI previews](GUIDE.html#previews) | The rule-driven visibility engine — what tabs, buttons and banners a given person actually sees at a given plant, with the permission that produced each one. | Step 11b |
+| [App preview](GUIDE.html#previews) | The rule-driven visibility engine — what tabs, buttons and banners a given person actually sees at a given plant, with the permission that produced each one. | Step 11b |
 | [Control panel](GUIDE.html#control) | The scoped home for cluster and plant admins: scope KPIs, quick actions, capability lookup, scoped roster. | Step 11 |
 
 ### 7.3 Eight recipes — one rule demonstrated per recipe
