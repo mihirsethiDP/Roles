@@ -125,7 +125,7 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 <p class="lede">At the <b>bottom of the left rail</b> there are three persona buttons. Everything on every screen re-scopes instantly when you switch — this is how you experience the product as three different kinds of admin:</p>
 <table>
 <tr><th>Persona</th><th>Scope</th><th>What's different</th></tr>
-<tr><td><b>🌐 Company admin</b> (DigitalPaani, Global)</td><td>Everything</td><td>Sees all plants and people. The only one who can toggle module licences, add plants, and hand out the Global grant.</td></tr>
+<tr><td><b>🌐 DigitalPaani admin</b> (Global)</td><td>Everything</td><td>Sees all plants and people. The only one who can toggle module licences, add plants, and hand out the Global grant.</td></tr>
 <tr><td><b>🏢 Cluster admin</b> (Vedanta)</td><td>The 2 Vedanta plants</td><td>Manages only Vedanta's people and plants. Module matrix is read-only. Gets the Control panel as a home screen.</td></tr>
 <tr><td><b>🏭 Plant admin</b> (Essentia STP)</td><td>One plant</td><td>Manages one roster. Everything else is filtered down to that plant. Also gets the Control panel.</td></tr>
 </table>
@@ -151,7 +151,7 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 <p>The plant registry, grouped by company label, with licensed-module chips, headcount, and the roster mix per plant.</p>
 <ul>
 <li><b>Click a plant row</b> to open its record: licensed modules, the full roster (click a person to jump to their profile), and roster editing (Recipe 7).</li>
-<li><span class="ui">＋ Add plant</span> (Company admin only) opens the <b>onboarding wizard</b>: plant details → product modules → people (Recipe 8). Licensing what was sold happens right there; from then on, licences change only in Product modules.</li>
+<li><span class="ui">＋ Add plant</span> (DigitalPaani admin only) opens the <b>onboarding wizard</b>: plant details → product modules → people (Recipe 8). Licensing what was sold happens right there; from then on, licences change only in Product modules.</li>
 <li>The modal's <span class="ui">✏️ Edit on Product modules →</span> button jumps you to that plant's row in the module matrix and highlights it.</li>
 </ul>
 </div>
@@ -162,7 +162,7 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 <h3><span class="badge">Screen</span>Product modules</h3>
 <p>The licensing ceiling — the one place module flags are written. Top: a card per module (click one for its detail: what it unlocks, how many plants have it). Bottom: the plant × module matrix with a switch per cell.</p>
 <ul>
-<li>Switches work only as the <b>Company admin</b> persona — cluster/plant admins see the matrix read-only with a 🔒 banner. That's the model, not a bug.</li>
+<li>Switches work only as the <b>DigitalPaani admin</b> persona — cluster/plant admins see the matrix read-only with a 🔒 banner. That's the model, not a bug.</li>
 <li>Toggling a module is the best "what if" in the prototype: every other screen updates instantly (see Recipe 3).</li>
 <li>Floc Detector (BioHealthTrack) legitimately unlocks nothing — it's a hardware entitlement that tracks what was sold.</li>
 </ul>
@@ -207,7 +207,7 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 <section id="control">
 <div class="card">
 <h3><span class="badge">Screen</span>Control panel <span class="tag">cluster / plant personas only</span></h3>
-<p>The scoped home for the two smaller personas: their scope's key numbers, quick actions (plant-wide change, role library), a "who can do X here?" lookup, and their roster with jump-to-manage. As Company admin you won't see it — Global lands on People instead.</p>
+<p>The scoped home for the two smaller personas: their scope's key numbers, quick actions (plant-wide change, role library), a "who can do X here?" lookup, and their roster with jump-to-manage. As the DigitalPaani admin you won't see it — Global lands on People instead.</p>
 </div>
 </section>
 
@@ -218,11 +218,11 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 <div class="card">
 <h3><span class="badge">1</span>Add a new person and give them access</h3>
 <ol class="steps">
-<li>As <b>Company admin</b>, open <span class="ui">People</span> and press <span class="ui">＋ Add person</span>. Give a name and title, then <span class="ui">Add &amp; open</span>.</li>
-<li>Their profile opens with zero access. The editor runs top-to-bottom on the left: <b>1 · Their role</b> — one dropdown, one role for the whole person (a role describes the person, not a plant). Changing it later resets every plant row to the new standard.</li>
-<li><b>2 · Admin duties</b> — only if they administer people or plant config: open the disclosure and pick one grant. Most people skip this.</li>
-<li><b>3 · Their plants</b> — click each plant they should reach; that's their access list, grouped by company label. Each plant becomes a row on the right, where 📦 markers show anything that plant's modules cap.</li>
-<li>Press <span class="ui">Save assignments</span> in <b>5 · Review &amp; save</b>. If anything deviates from the role standard, the save button counts the missing reasons and stays blocked until each deviation has one.</li>
+<li>As the <b>DigitalPaani admin</b>, open <span class="ui">People</span> and press <span class="ui">＋ Add person</span>. Give a name and title, then <span class="ui">Add &amp; open</span>.</li>
+<li>Their profile opens with zero access. In the identity card at the top, pick their <b>Role</b> — one dropdown, one role for the whole person (it describes the person, not a plant). Changing it later resets every plant row to the new standard.</li>
+<li>Next to it, the <b>Admin grant</b> dropdown — only if they administer people or plant config. Most people stay on “No grant”.</li>
+<li>In <b>Plant access</b>, click each plant they should reach. Each plant becomes a row below, where 📦 markers show anything that plant's modules cap.</li>
+<li>Press <span class="ui">Save</span> in the bottom bar. If anything deviates from the role standard, the button counts the missing reasons and stays blocked until each deviation has one.</li>
 <li>The save confirmation shows what was written; the exact JSON payload is behind the <b>For engineers</b> disclosure. The change also lands in the audit trail.</li>
 </ol>
 </div>
@@ -233,7 +233,7 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 <li>Open the person from <span class="ui">People</span> (try Satyadev — they already have this grant at Essentia STP, so you can see the end state).</li>
 <li>On the plant row where they need it, expand the permission sets and switch on <b>IoT remote control → actuate</b>.</li>
 <li>The row turns amber and the save blocks until you write a <b>reason</b> — certification reference, approver, ticket number.</li>
-<li><span class="ui">Save assignments</span>. Note what you <i>can't</i> do: remote control can never be handed out in bulk (and there are no custom roles to bundle it into) — one person, one plant, one reason is the only path. That's by design.</li>
+<li><span class="ui">Save</span>. Note what you <i>can't</i> do: remote control can never be handed out in bulk (and there are no custom roles to bundle it into) — one person, one plant, one reason is the only path. That's by design.</li>
 </ol>
 </div>
 
@@ -289,7 +289,7 @@ footer{margin-left:var(--sidew);padding:24px 48px 50px;font-size:12.5px;color:va
 <div class="card" id="r8">
 <h3><span class="badge">8</span>Onboard a new plant end to end</h3>
 <ol class="steps">
-<li>As <b>Company admin</b>, open <span class="ui">Plants</span> and press <span class="ui">＋ Add plant</span>. A three-step wizard opens — nothing is created until the last step, so cancel any time.</li>
+<li>As the <b>DigitalPaani admin</b>, open <span class="ui">Plants</span> and press <span class="ui">＋ Add plant</span>. A three-step wizard opens — nothing is created until the last step, so cancel any time.</li>
 <li><b>Step 1 · Plant details:</b> name the plant and pick its company label (or add a new label right there — labels group plants in pickers; they're not containers).</li>
 <li><b>Step 2 · Product modules:</b> switch on what was sold. This is the onboarding licensing moment — after today, licences change only on <span class="ui">Product modules</span>. Whatever you leave off caps everyone at this plant until it's licensed.</li>
 <li><b>Step 3 · People:</b> tick existing people to put the plant on their access list — they join at their account-wide role, nothing to pick. Or create brand-new people with a name, title, and their one role.</li>

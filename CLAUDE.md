@@ -272,11 +272,17 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
   one audited action; onboarding is the one sanctioned licensing moment
   outside the matrix) · Product modules (the one write surface for module
   licensing after onboarding, per ADR-003) · User Center (people directory with a needs-attention queue that
-  counts down to ✓ → role + plant-access editor (one account-wide role,
-  per-plant customize rows) with progressive
-  disclosure, a profile progress meter and a save button that counts
-  remaining reasons → peak-end save confirmation with the payload behind a
-  "For engineers" disclosure) · Access Review · smart UI preview engine ("App
+  counts down to ✓ → role + plant-access editor bound to the record;
+  **profile layout matched to the production Edit User screen 2026-08-14
+  (owner request — "introduce visual hierarchy")**: single column —
+  identity card (initials avatar, Role and Admin-grant DROPDOWNS side by
+  side; the grant select keeps the 🔒-locked Global option for scoped
+  personas, still asserted via `#grantchips`) → Plant access card (chip
+  picker, whole-cluster chips) → per-plant customize rows → sticky bottom
+  save bar (drift count, progress meter, Cancel, Save that counts
+  remaining reasons). The old numbered 5-step panels, the Admin-duties
+  disclosure and the grant chip row are gone → peak-end save confirmation
+  with the payload behind a "For engineers" disclosure) · Access Review · smart UI preview engine ("App
   preview" tab). Single self-contained file, vanilla JS, no build step.
   **Demo data swapped to real clients 2026-08-14 (owner request, for client
   demos):** 6 plants across 4 cluster labels — Essentia STP (Adern),

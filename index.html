@@ -168,9 +168,16 @@ select{padding:8px 11px;border:1px solid var(--line-strong);border-radius:8px;fo
 .addform2{background:var(--bg);border:1px dashed var(--line-strong);border-radius:12px;padding:14px;margin-top:12px}
 .addform2 input{border:1px solid var(--line-strong);border-radius:9px;padding:10px 13px;font:13.5px 'Figtree';margin:0 8px 8px 0;min-width:220px}
 .profhead{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-.profhead .av{font-size:30px}
-.profhead .nm{font-family:'Figtree';font-size:17px;font-weight:600}
+.profhead .nm{font-family:'Figtree';font-size:17px;font-weight:600;color:var(--navy)}
 .profhead .tt{font-size:12.5px;color:var(--ink-2)}
+.avc{width:46px;height:46px;border-radius:50%;background:var(--navy);color:#fff;font:700 15px 'Figtree';display:inline-flex;align-items:center;justify-content:center;flex:none;letter-spacing:.02em}
+.idrow{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}
+@media(max-width:880px){.idrow{grid-template-columns:1fr}}
+.fld label{display:block;font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:6px;font-family:var(--mono);letter-spacing:.05em;text-transform:uppercase}
+.fld .lh{font-weight:400;color:var(--ink-3);text-transform:none;letter-spacing:0;font-family:'Figtree';font-size:12px}
+.fld select{width:100%}
+.fldhint{font-size:12px;color:var(--ink-3);margin-top:6px;line-height:1.5}
+.savebar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;position:sticky;bottom:14px;box-shadow:0 10px 30px rgba(0,36,84,.14);z-index:40}
 .msg{border-radius:8px;padding:9px 13px;font-size:13px;margin:8px 0}
 .msg.warn{background:var(--flag-bg);color:var(--flag)}
 .msg.err{background:var(--err-bg);color:var(--err)}
@@ -395,66 +402,56 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-3);f
     <div style="margin-top:14px"><button class="disclose" onclick="tab(4)"><span class="chev">▶</span> The role catalog is fixed — browse the nine pre-defined roles in the Role library</button></div>
   </div>
 
-  <!-- profile -->
+  <!-- profile — production-style layout: identity card → plant access → per-plant detail → save bar -->
   <div id="ucprofile" style="display:none">
-    <div class="panel" style="margin-bottom:18px">
+    <div style="margin:0 0 10px"><button class="disclose" onclick="backToDirectory()"><span class="chev" style="transform:rotate(180deg)">▶</span> All people</button></div>
+
+    <div class="panel" style="margin-bottom:14px">
       <div class="profhead">
-        <button class="btn ghost" onclick="backToDirectory()">← All people</button>
+        <span class="avc" id="ucav"></span>
         <span><span class="nm" id="ucnm"></span><br><span class="tt" id="uctt"></span></span>
-        <span class="meter" id="ucmeter"></span>
         <span style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap">
-          <button class="btn ghost" onclick="jumpReview()">🔍 See in Access review</button>
-          <button class="btn ghost" onclick="jumpPreview()">🖥 Preview as this person</button>
+          <button class="btn ghost" onclick="jumpReview()">🔍 Access review</button>
+          <button class="btn ghost" onclick="jumpPreview()">🖥 Preview app</button>
         </span>
       </div>
-    </div>
-  <div class="grid">
-    <div>
-      <div class="panel">
-        <div class="gh">1 · Their role — the person's capability level</div>
-        <div class="help" id="step2help"><span class="i">💡</span><span>One role per person — it describes the <b>person</b>, not a plant, and applies at every plant they can access (step 3).</span></div>
-        <div id="rolebox"></div>
-      </div>
-
-      <div class="panel" style="margin-top:18px">
-        <div class="gh">2 · Admin duties — most people need none</div>
-        <button class="disclose" id="grantbtn" onclick="toggleGrantOpen()"><span class="chev">▶</span> <span id="grantlbl">Open only if this person administers</span></button>
-        <div class="hiddenblock" id="grantblock" style="padding-top:8px">
-          <div class="help"><span class="i">💡</span><span>A grant adds <b>administration</b> on top of the role — it never changes day-to-day permissions.</span></div>
-          <div class="chipsel" id="grantchips"></div>
-          <div class="granthelp" id="granthelp"></div>
+      <div class="idrow">
+        <div class="fld">
+          <label>Role <span class="lh">— one per person, applies at every plant</span></label>
+          <div id="rolebox"></div>
+        </div>
+        <div class="fld">
+          <label>Admin grant <span class="lh">— most people need none</span></label>
+          <div id="grantchips"></div>
+          <div class="fldhint" id="granthelp"></div>
         </div>
       </div>
-
-      <div class="panel" style="margin-top:18px">
-        <div class="gh">3 · Their plants — the access list</div>
-        <div class="help"><span class="i">💡</span><span>Pick <b>every</b> plant they should see or act at — their role applies at each one, capped by that plant's licensed modules.</span></div>
-        <div id="plantbox"></div>
-      </div>
     </div>
 
-    <div>
-      <div class="panel">
-        <div class="gh">4 · What they get at each plant — modules cap, exceptions flex</div>
-        <div class="help"><span class="i">💡</span><span>One row per plant. Rows differ by the plant's <b>modules</b> and by reasoned exceptions — never by role. Open “Customize” only when this person needs more or less at that one plant.</span></div>
-        <div id="arows"></div>
-      </div>
-
-      <div class="panel" style="margin-top:18px">
-        <div class="gh">5 · Review & save</div>
-        <div class="help"><span class="i">💡</span><span>Every deviation needs a written reason before saving — all of it is audited.</span></div>
-        <div class="driftbar"><span class="driftnum" id="driftn">0</span><span style="font-size:13px;color:var(--ink-2)" id="driftl"></span>
-          <button class="btn ghost" style="margin-left:auto;padding:7px 14px;font-size:12.5px" onclick="resetStd()">Reset all to standard</button></div>
-        <div id="capmsg"></div>
-        <div style="display:flex;gap:10px;align-items:center;margin-top:14px">
-          <button class="btn primary" id="savebtn" onclick="save()">Save assignments</button>
-          <span style="font-size:12.5px;color:var(--ink-3)" id="savehint"></span>
-        </div>
-        <div id="saveok"></div>
-        <pre class="payload" id="payload" style="display:none"></pre>
-      </div>
+    <div class="panel" style="margin-bottom:14px">
+      <div class="gh">Plant access — every plant this person can see or act at</div>
+      <div id="plantbox"></div>
     </div>
-  </div>
+
+    <div class="panel" style="margin-bottom:14px">
+      <div class="gh">At each plant — the plant's modules cap the role's standard</div>
+      <div class="help"><span class="i">💡</span><span>One row per plant. Open “Customize” only when this person needs more or less at that one plant — every deviation turns amber and needs a reason.</span></div>
+      <div id="arows"></div>
+    </div>
+
+    <div class="panel savebar">
+      <span class="driftbar" style="margin:0"><span class="driftnum" id="driftn">0</span><span style="font-size:13px;color:var(--ink-2)" id="driftl"></span></span>
+      <span class="meter" id="ucmeter" style="margin:0"></span>
+      <span style="margin-left:auto;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <span style="font-size:12.5px;color:var(--ink-3)" id="savehint"></span>
+        <button class="btn ghost" onclick="resetStd()">Reset to standard</button>
+        <button class="btn ghost" onclick="backToDirectory()">Cancel</button>
+        <button class="btn primary" id="savebtn" onclick="save()">Save</button>
+      </span>
+      <div id="capmsg" style="flex-basis:100%;margin:0"></div>
+      <div id="saveok" style="flex-basis:100%"></div>
+      <pre class="payload" id="payload" style="display:none;flex-basis:100%"></pre>
+    </div>
   </div><!-- /ucprofile -->
 </div>
 
@@ -944,8 +941,7 @@ function jumpReview(){ if(cur){ reviewPerson=cur.id; lens="person"; whySel=null;
 function jumpPreview(){ prevMode="live"; prevTab=null; tab(3); }
 
 /* ================= ASSIGNMENT EDITOR STATE (bound to the selected person) ================= */
-let grant="", role="l1", selPlants=new Set(), ASG={}, grantOpen=false;
-function toggleGrantOpen(){ grantOpen=!grantOpen; render(); }
+let grant="", role="l1", selPlants=new Set(), ASG={};
 function avail(key,plant){ return plantMods(plant).has(PERMMOD[key]); }
 function modAvail(mod){ /* across selected plants: all | some | none | na */
   if(mod==="core") return "all";
@@ -1033,8 +1029,9 @@ function render(){
   const dir=document.getElementById("ucdir"), prof=document.getElementById("ucprofile");
   if(!cur){ dir.style.display=""; prof.style.display="none"; renderDirectory(); return; }
   dir.style.display="none"; prof.style.display="";
+  document.getElementById("ucav").textContent=cur.n.trim().split(/\s+/).map(w=>w[0]).slice(0,2).join("").toUpperCase();
   document.getElementById("ucnm").textContent=cur.n;
-  document.getElementById("uctt").textContent=`${cur.t} · ${COMPANIES[cur.co]||cur.co}${cur.grant?" · "+GRANTNAMES[cur.grant]:""}`;
+  document.getElementById("uctt").textContent=`${cur.t} · ${COMPANIES[cur.co]||cur.co}`;
   { // profile progress meter (goal gradient): plants -> standard -> reasons outstanding
     const pls=[...selPlants];
     const std=pls.filter(p=>!deviations(ASG[p]).length).length;
@@ -1052,42 +1049,37 @@ function render(){
         <span class="tick">${selPlants.has(p)?"✓":""}</span>${p} <span style="font-weight:400;opacity:.7">· ${plantMods(p).size} mods</span></button>`).join("");
   }).join("");
 
-  // grant behind a disclosure — most users never need it (progressive disclosure)
-  document.getElementById("grantbtn").classList.toggle("open",grantOpen);
-  document.getElementById("grantblock").classList.toggle("open",grantOpen);
-  document.getElementById("grantlbl").innerHTML=grant?`Admin duties — <b style="color:var(--adm)">${GRANTNAMES[grant]} ✓</b>`:"Admin duties? — open only if this person administers";
+  // grant as a compact single-select — same shape as the production Edit User field
   const GLIST=[["","No grant"],["people","People Admin"],["tech","Technical Admin"],["fullsite","Full Site Admin"],["global","Global Admin"]];
-  document.getElementById("grantchips").innerHTML=GLIST.map(g=>{
-    const locked=persona.kind!=="global"&&g[0]==="global";
-    return `<button class="gchip ${g[0]===""?"none":""} ${grant===g[0]?"on":""}" ${locked?'disabled style="opacity:.45;cursor:not-allowed"':""} title="${locked?"DigitalPaani staff only — a Global grant can't be handed out by a site admin":GRANTHELP[g[0]].t}" onclick="setGrant('${g[0]}')">${g[1]}${locked?" 🔒":""}</button>`;
-  }).join("");
+  document.getElementById("grantchips").innerHTML=
+    `<select onchange="setGrant(this.value)">${GLIST.map(g=>{
+      const locked=persona.kind!=="global"&&g[0]==="global";
+      return `<option value="${g[0]}" ${grant===g[0]?"selected":""} ${locked?"disabled":""}>${g[1]}${locked?" 🔒 DigitalPaani staff only":""}</option>`;
+    }).join("")}</select>`;
   const gh=GRANTHELP[grant];
   let gcap="";
   if(grant&&selPlants.size){
     let tot=0,none=0;
     GRANTS[grant].forEach(sid=>setById[sid].perms.forEach(p=>{ tot++; if(modAvail(PERMMOD[sid+"."+p.id])==="none") none++; }));
-    if(none) gcap=` <span style="color:var(--flag)">📦 ${none} of ${tot} abilities in this grant are capped at the selected plants — module not licensed.</span>`;
+    if(none) gcap=` <span style="color:var(--flag)">📦 ${none} of ${tot} abilities in this grant are capped at the selected plants.</span>`;
   }
-  const ghEl=document.getElementById("granthelp");
-  ghEl.className="granthelp"+(grant?"":" none");
-  ghEl.innerHTML=`<b>${gh.t}.</b> ${gh.d}${gcap}`;
+  document.getElementById("granthelp").innerHTML=grant?`<b>${gh.t}.</b>${gcap}`:`Adds administration on top of the role — it never changes day-to-day permissions.`;
 
   // the one role picker — account-wide (ruling 2026-07-30)
   const outScope=persona.kind!=="global"&&Object.keys(cur.asg).some(pl=>!inScope(pl));
   document.getElementById("rolebox").innerHTML=
-    `<div class="setall" style="margin-bottom:${outScope?"4px":"12px"}">Role
-      <select onchange="setRole(this.value)" title="One role per person — it applies at every plant on the access list">${Object.keys(ROLES).map(r=>`<option value="${r}" title="${ROLES[r].s}" ${role===r?"selected":""}>${ROLES[r].n} — ${ROLES[r].s}</option>`).join("")}</select>
-      <span class="hint" style="font-size:12px;color:var(--ink-3)">changing it resets every plant to the new role's standard.</span></div>`+
-    (outScope?`<div class="msg warn" style="margin:0 0 12px">This person also works at plants outside your scope — the role is account-wide, so changing it applies there too.</div>`:"");
+    `<select onchange="setRole(this.value)" title="One role per person — it applies at every plant on the access list">${Object.keys(ROLES).map(r=>`<option value="${r}" title="${ROLES[r].s}" ${role===r?"selected":""}>${ROLES[r].n} — ${ROLES[r].s}</option>`).join("")}</select>
+     <div class="fldhint">changing it resets every plant to the new role's standard.</div>`+
+    (outScope?`<div class="msg warn" style="margin:8px 0 0">This person also works at plants outside your scope — the role is account-wide, so changing it applies there too.</div>`:"");
 
   // access rows — one per plant; summary first, detail on demand (progressive disclosure)
   const rowsEl=document.getElementById("arows");
   if(!selPlants.size){
-    rowsEl.innerHTML=`<div class="emptystate">Nothing here yet — this panel builds one <b>access row per plant</b>.
+    rowsEl.innerHTML=`<div class="emptystate">No plants yet — each plant you pick above becomes a row here.
       <div class="steps">
-        <div class="st"><b>1</b>Their role is set on the left (applies everywhere)</div>
-        <div class="st"><b>2</b>Pick plants in step 3 — each becomes a row here</div>
-        <div class="st"><b>3</b>Save below — reasons required only for deviations</div>
+        <div class="st"><b>1</b>Role &amp; grant are set at the top</div>
+        <div class="st"><b>2</b>Pick plants above — each becomes a row</div>
+        <div class="st"><b>3</b>Save below — reasons needed only for deviations</div>
       </div></div>`;
   }
   else rowsEl.innerHTML=[...selPlants].map(plant=>{
@@ -1300,7 +1292,7 @@ function renderSaveState(){
   document.getElementById("capmsg").innerHTML=capNotes.length?`<div class="msg warn">📦 Capped by plant modules — ${capNotes.join(" · ")}. Capped abilities stay on the profile and activate if the plant's plan is upgraded.</div>`:"";
   const canSave=selPlants.size>0&&!blocked.length;
   document.getElementById("savebtn").disabled=!canSave;
-  document.getElementById("savebtn").textContent=blocked.length?`Save — ${blocked.length} reason${blocked.length>1?"s":""} to go`:"Save assignments";
+  document.getElementById("savebtn").textContent=blocked.length?`Save — ${blocked.length} reason${blocked.length>1?"s":""} to go`:"Save";
   document.getElementById("savehint").textContent=!selPlants.size?"Pick at least one plant.":blocked.length?`Write a reason for: ${blocked.join(", ")}.`:totalDev?"Deviations will be stored with their reasons and audited.":"All standard — saves without a reason.";
 }
 let AUDIT=[
