@@ -3,218 +3,263 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Design mockups — User Center · Role library · Plants (tree model)</title>
+<title>Access console — design study (User Center · Library · Plants)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --navy:#002454; --navy-deep:#001B3F; --navy-tint:#E9F0F7; --navy-line:#C9D8E6;
-  --teal:#95CFD3; --teal-d:#5AABB0; --teal-ink:#1F6B71; --teal-tint:#E8F5F6;
-  --bg:#F7F8F9; --card:#FFFFFF; --line:#E2E6EA; --line-strong:#C7CFD8;
-  --ink:#1A2533; --ink-2:#4A5568; --ink-3:#8A95A3;
-  --amber:#B45309; --amber-bg:#FFF8E1; --amber-line:#F2C94C;
-  --err:#B80000; --err-bg:#FDECEA;
-  --mono:'IBM Plex Mono',ui-monospace,Consolas,monospace;
+  /* from-scratch system: paper + graphite; color carries meaning only */
+  --paper:#F5F5F2; --surface:#FFFFFF; --well:#EFEFEB;
+  --hair:#E3E3DE; --hair-2:#D2D2CC;
+  --ink:#1A1B1E; --muted:#5F6167; --faint:#989A9F;
+  --ok:#177245; --ok-bg:#E7F3EC; --ok-line:#BFDECB;          /* granted by role */
+  --act:#8A5A00; --act-bg:#FBF3DF; --act-line:#EBD9A9;        /* named actions + overrides */
+  --off:#8E9094; --off-bg:#EEEEEA;                            /* not licensed / not granted */
+  --sans:'Schibsted Grotesk',-apple-system,'Segoe UI',sans-serif;
+  --mono:'Spline Sans Mono',ui-monospace,Consolas,monospace;
+  --r:12px;
+  --ink-3:var(--faint); /* alias used by inline styles */
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:14.5px/1.55 'Figtree',system-ui,sans-serif}
-.topbar{background:var(--navy);color:#fff;padding:14px 0 0;border-bottom:4px solid var(--teal-ink)}
-.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
-.eyebrow{font:600 10px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--teal-d);margin:0 0 4px}
-.topbar h1{font-size:19px;font-weight:800;margin:0;letter-spacing:-.2px}
-.topbar .sub{font-size:12px;color:rgba(255,255,255,.65);margin:4px 0 12px;max-width:840px}
-.scrtabs{display:flex;gap:6px;flex-wrap:wrap}
-.scrtab{border:none;background:rgba(255,255,255,.08);color:rgba(255,255,255,.7);font:600 13px 'Figtree';padding:10px 18px;border-radius:10px 10px 0 0;cursor:pointer}
-.scrtab.on{background:var(--bg);color:var(--navy)}
-main{padding:24px 0 70px}
+::selection{background:#1A1B1E;color:#fff}
+body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.6 var(--sans)}
+button{font:inherit}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px;border-radius:4px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+
+/* ---------- shell: quiet header, one segmented control ---------- */
+header{background:var(--surface);border-bottom:1px solid var(--hair)}
+.hrow{display:flex;align-items:baseline;gap:14px;padding:20px 0 0;flex-wrap:wrap}
+.mark{font-weight:800;font-size:17px;letter-spacing:-.02em}
+.mark .dot{color:var(--faint);font-weight:400}
+.hsub{font-size:12.5px;color:var(--muted)}
+.study{margin-left:auto;font:500 10.5px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
+.seg{display:inline-flex;background:var(--well);border:1px solid var(--hair);border-radius:999px;padding:3px;margin:14px 0 -1px;gap:2px}
+.seg button{border:none;background:transparent;border-radius:999px;padding:8px 18px;font-weight:600;font-size:13.5px;color:var(--muted);cursor:pointer}
+.seg button.on{background:var(--ink);color:#fff}
+.legend{background:var(--surface);border-bottom:1px solid var(--hair)}
+.legend .in{display:flex;gap:20px;flex-wrap:wrap;align-items:center;padding:9px 0;font-size:12px;color:var(--muted)}
+.legend .k{display:inline-flex;align-items:center;gap:6px}
+.sw{width:11px;height:11px;border-radius:3.5px;display:inline-block}
+.sw.ok{background:var(--ok)} .sw.act{background:var(--act)} .sw.off{background:var(--off-bg);border:1px solid var(--hair-2)}
+.legend b{color:var(--ink);font-weight:600}
+
+main{padding:26px 0 80px}
 .scr{display:none}.scr.on{display:block}
-.panel{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:16px 18px;margin:0 0 14px}
-.gh{font:600 10.5px var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);margin:0 0 10px}
-.note{display:flex;gap:8px;background:var(--navy-tint);border:1px solid var(--navy-line);border-radius:9px;padding:8px 12px;font-size:12px;color:var(--ink-2);margin:0 0 12px}
-.note b{color:var(--navy)}
-.dnote{border-left:4px solid var(--teal-d);background:var(--teal-tint);border-radius:0 9px 9px 0;padding:9px 13px;font-size:12px;color:var(--ink-2);margin:0 0 14px}
-.dnote b{color:var(--teal-ink)}
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:9px;margin:0 0 12px}
-.kpi{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 12px}
-.kpi .n{font-size:19px;font-weight:700;color:var(--navy)}
-.kpi .l{font-size:10.5px;color:var(--ink-2)}
-select,input[type=text]{padding:8px 11px;border:1px solid var(--line-strong);border-radius:8px;font:13px 'Figtree';color:var(--ink);background:var(--card)}
-.btn{border:none;border-radius:9px;padding:10px 18px;font:600 13.5px 'Figtree';cursor:pointer}
-.btn.primary{background:var(--navy);color:#fff}
-.btn.ghost{background:transparent;color:var(--navy);border:1px solid var(--line-strong)}
-.btn.sm{padding:6px 12px;font-size:12px}
-table.dir{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
-table.dir th{font:600 10px var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);text-align:left;padding:10px 14px;background:var(--bg);border-bottom:1px solid var(--line)}
-table.dir td{padding:11px 14px;border-bottom:1px solid var(--line);font-size:13px;vertical-align:middle}
+.intent{font-size:13px;color:var(--muted);max-width:74ch;margin:0 0 20px}
+.intent b{color:var(--ink)}
+h2{font-size:21px;font-weight:800;letter-spacing:-.02em;margin:0 0 4px;text-wrap:balance}
+.sub{font-size:13px;color:var(--muted);margin:0 0 16px}
+.lbl{font:600 10.5px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin:0 0 10px}
+.card{background:var(--surface);border:1px solid var(--hair);border-radius:var(--r);padding:18px 20px;margin:0 0 16px}
+select,input[type=text]{padding:9px 12px;border:1px solid var(--hair-2);border-radius:9px;font:14px var(--sans);color:var(--ink);background:var(--surface)}
+select:hover,input[type=text]:hover{border-color:var(--faint)}
+.btn{border:none;border-radius:9px;padding:10px 18px;font-weight:600;font-size:13.5px;cursor:pointer;background:var(--ink);color:#fff}
+.btn:hover{background:#000}
+.btn.ghost{background:var(--surface);color:var(--ink);border:1px solid var(--hair-2)}
+.btn.ghost:hover{border-color:var(--ink);background:var(--surface)}
+.btn.sm{padding:6px 12px;font-size:12.5px}
+
+/* ---------- directory ---------- */
+table.dir{width:100%;border-collapse:collapse}
+table.dir th{font:600 10.5px var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--faint);text-align:left;padding:8px 12px;border-bottom:1px solid var(--hair)}
+table.dir td{padding:13px 12px;border-bottom:1px solid var(--hair);font-size:13.5px;vertical-align:middle;font-variant-numeric:tabular-nums}
 table.dir tbody tr{cursor:pointer}
-table.dir tbody tr:hover{background:var(--teal-tint)}
-table.dir tr.sel{background:var(--navy-tint)}
+table.dir tbody tr:hover{background:var(--well)}
+table.dir tr.sel td{background:var(--well)}
 table.dir tr:last-child td{border-bottom:none}
-.nm{font-weight:650;color:var(--navy)}
-.tt{font-size:11.5px;color:var(--ink-2)}
-.chip{display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:10px;background:var(--navy-tint);color:var(--navy);margin:0 4px 4px 0;white-space:nowrap}
-.chip.grant{background:#E9EEF4;color:#193650}
-.chip.amber{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-line)}
-.chip.ok{background:var(--teal-tint);color:var(--teal-ink)}
-.chip.dim{background:var(--bg);color:var(--ink-3)}
-/* editor */
-.idcard{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
-.avc{width:44px;height:44px;border-radius:50%;background:var(--navy);color:#fff;font:700 14px 'Figtree';display:inline-flex;align-items:center;justify-content:center;flex:none}
-.fldrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;padding-top:14px;border-top:1px solid var(--line);margin-bottom:14px}
-.fld label{display:block;font:600 10px var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);margin-bottom:5px}
+.nm{font-weight:700}
+.tt{font-size:12px;color:var(--muted)}
+.chip{display:inline-block;font-size:11.5px;font-weight:600;padding:3px 10px;border-radius:999px;border:1px solid var(--hair-2);color:var(--ink);background:var(--surface);margin:0 4px 4px 0;white-space:nowrap}
+.chip.grant{background:var(--well);border-color:var(--hair-2)}
+.chip.amber{background:var(--act-bg);border-color:var(--act-line);color:var(--act)}
+.chip.ok{background:var(--ok-bg);border-color:var(--ok-line);color:var(--ok)}
+.chip.dim{color:var(--muted);background:var(--surface)}
+
+/* ---------- person editor ---------- */
+.idcard{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
+.avc{width:46px;height:46px;border-radius:50%;background:var(--ink);color:#fff;font:700 14px var(--sans);display:inline-flex;align-items:center;justify-content:center;flex:none}
+.fldrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:16px;padding-top:16px;border-top:1px solid var(--hair);margin-bottom:16px}
+.fld label{display:block;font:600 10px var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--faint);margin-bottom:6px}
 .fld select{width:100%}
-.fld .hint{font-size:11px;color:var(--ink-3);margin-top:4px;display:block}
-.excbox{border:1px solid var(--amber-line);background:var(--amber-bg);border-radius:10px;padding:9px 12px}
-.excbox .x{display:flex;gap:8px;align-items:baseline;font-size:12px;color:var(--amber);margin-bottom:4px}
-.excbox .k{font:600 10.5px var(--mono)}
-/* tree */
-.mod{border:1px solid var(--line);border-radius:12px;margin-bottom:9px;overflow:hidden;background:var(--card)}
-.mod.dark{opacity:.6;background:var(--bg)}
-.modh{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer}
-.modh:hover{background:var(--navy-tint)}
-.modh .chev{color:var(--ink-3);font-size:11px;transition:transform .15s;display:inline-block}
+.fld .hint{font-size:11.5px;color:var(--faint);margin-top:5px;display:block}
+.excbox{border:1px dashed var(--act-line);background:var(--act-bg);border-radius:10px;padding:9px 12px}
+.excbox .x{display:flex;gap:8px;align-items:baseline;font-size:12px;color:var(--act);margin-bottom:5px;flex-wrap:wrap}
+.excbox .k{font:600 11px var(--mono)}
+
+/* ---------- the permission tree ---------- */
+.mod{border:1px solid var(--hair);border-radius:var(--r);margin-bottom:10px;overflow:hidden;background:var(--surface)}
+.mod.dark{background:var(--paper)}
+.mod.dark .modb,.mod.dark .mn{opacity:.55}
+.modh{display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;background:transparent}
+.modh:hover{background:var(--well)}
+.modh .chev{color:var(--faint);font-size:10px;transition:transform .15s;display:inline-block}
 .mod.open .modh .chev{transform:rotate(90deg)}
-.modh .mn{font-weight:700;font-size:13.5px;color:var(--navy)}
-.modh .lic{margin-left:auto;font:600 10px var(--mono);letter-spacing:.05em}
-.lic.on{color:var(--teal-ink)} .lic.off{color:var(--ink-3)}
-.modb{display:none;border-top:1px solid var(--line);padding:10px 14px 12px}
+.modh .mn{font-weight:700;font-size:14px}
+.modh .lic{margin-left:auto;font:500 10px var(--mono);letter-spacing:.06em;text-transform:uppercase}
+.lic.on{color:var(--ok)} .lic.off{color:var(--faint)}
+.modb{display:none;border-top:1px solid var(--hair);padding:6px 16px 12px}
 .mod.open .modb{display:block}
-.feat{padding:8px 0;border-bottom:1px dashed var(--line)}
+.feat{padding:10px 0;border-bottom:1px solid var(--hair)}
 .feat:last-child{border-bottom:none}
-.featn{font-weight:650;font-size:12.5px;margin-bottom:6px}
+.featn{font-weight:600;font-size:13px;margin-bottom:8px}
 .crudrow{display:flex;gap:8px;flex-wrap:wrap}
-.crud{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--navy-line);border-radius:8px;padding:4px 10px;font-size:12px;cursor:pointer;background:var(--card);user-select:none}
-.crud .bx{width:14px;height:14px;border-radius:4px;border:1.5px solid var(--line-strong);display:inline-flex;align-items:center;justify-content:center;font-size:9px;color:#fff;flex:none}
-.crud.on .bx{background:var(--teal-ink);border-color:var(--teal-ink)}
-.crud.ovr{border-color:var(--amber);box-shadow:0 0 0 1px var(--amber-line)}
-.actlbl{font:600 9.5px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--amber);margin:6px 0 3px}
-.actrow{display:flex;align-items:center;gap:8px;padding:5px 9px;border-radius:8px;margin:3px 0;font-size:12.5px;background:var(--amber-bg);border:1px solid var(--amber-line);cursor:pointer;user-select:none;flex-wrap:wrap}
-.actrow .bx{width:14px;height:14px;border-radius:4px;border:1.5px solid var(--amber-line);background:var(--card);display:inline-flex;align-items:center;justify-content:center;font-size:9px;color:#fff;flex:none}
-.actrow.on .bx{background:var(--amber);border-color:var(--amber)}
-.actrow.ovr{box-shadow:0 0 0 1.5px var(--amber)}
-.actrow .key{margin-left:auto;font:600 10px var(--mono);color:var(--amber);white-space:nowrap}
-.actrow .tier{font:600 9.5px var(--mono);background:var(--card);border:1px solid var(--amber-line);color:var(--amber);border-radius:7px;padding:1px 6px;white-space:nowrap}
-.excrowline{display:flex;align-items:center;gap:8px;padding:5px 9px;border-radius:8px;margin:3px 0;font-size:12px;border:1.5px dashed var(--amber-line);color:var(--amber);background:var(--card)}
-.ovrbar{display:none;background:var(--amber-bg);border:1px solid var(--amber-line);border-radius:10px;padding:9px 13px;font-size:12.5px;color:var(--amber);margin-top:10px;align-items:center;gap:10px;flex-wrap:wrap}
+.crud{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--hair-2);border-radius:999px;padding:5px 13px 5px 7px;font-size:12.5px;color:var(--muted);cursor:pointer;background:var(--surface);user-select:none}
+.crud .bx{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--hair-2);display:inline-flex;align-items:center;justify-content:center;font-size:9px;color:#fff;flex:none;background:var(--surface)}
+.crud.on{border-color:var(--ok-line);background:var(--ok-bg);color:var(--ok);font-weight:600}
+.crud.on .bx{background:var(--ok);border-color:var(--ok)}
+.crud.ovr{border-color:var(--act);box-shadow:0 0 0 1px var(--act-line)}
+.actlbl{font:600 9.5px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--act);margin:10px 0 5px}
+.actrow{display:flex;align-items:center;gap:9px;padding:7px 11px;border-radius:9px;margin:4px 0;font-size:13px;background:var(--act-bg);border:1px solid var(--act-line);cursor:pointer;user-select:none;flex-wrap:wrap}
+.actrow .bx{width:16px;height:16px;border-radius:5px;border:1.5px solid var(--act-line);background:var(--surface);display:inline-flex;align-items:center;justify-content:center;font-size:9px;color:#fff;flex:none}
+.actrow.on .bx{background:var(--act);border-color:var(--act)}
+.actrow.ovr{box-shadow:0 0 0 1.5px var(--act)}
+.actrow .key{margin-left:auto;font:500 10.5px var(--mono);color:var(--act);white-space:nowrap}
+.actrow .tier{font:600 10px var(--mono);background:var(--surface);border:1px solid var(--act-line);color:var(--act);border-radius:999px;padding:1px 8px;white-space:nowrap}
+.excrowline{display:flex;align-items:center;gap:8px;padding:7px 11px;border-radius:9px;margin:4px 0;font-size:12.5px;border:1.5px dashed var(--act-line);color:var(--act);background:var(--surface)}
+.ovrbar{display:none;background:var(--act-bg);border:1px solid var(--act-line);border-radius:10px;padding:10px 14px;font-size:13px;color:var(--act);margin-top:12px;align-items:center;gap:10px;flex-wrap:wrap}
 .ovrbar.show{display:flex}
-.plantpick{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
-/* library */
-.libgrid{display:grid;grid-template-columns:255px 1fr;gap:14px;align-items:start}
+.plantpick{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:0 0 12px}
+
+/* ---------- library ---------- */
+.libgrid{display:grid;grid-template-columns:260px 1fr;gap:16px;align-items:start}
 @media(max-width:840px){.libgrid{grid-template-columns:1fr}}
-.rolechip{display:flex;align-items:center;gap:8px;width:100%;text-align:left;background:var(--card);border:1.5px solid var(--line-strong);border-radius:10px;padding:9px 12px;font:600 13px 'Figtree';color:var(--ink-2);cursor:pointer;margin-bottom:7px}
-.rolechip.on{border-color:var(--navy);background:var(--navy-tint);color:var(--navy)}
-.rolechip .s{display:block;font-weight:400;font-size:11px;color:var(--ink-3)}
-.lockbadge{margin-left:auto;font-size:11px}
-.grantcap{border:1px solid var(--line);border-radius:10px;padding:11px 14px;margin-bottom:9px;background:var(--card)}
-.grantcap .t{font-weight:700;font-size:13.5px;color:var(--navy)}
-.grantcap .s{font-size:12px;color:var(--ink-2);margin:2px 0 6px}
-.grantcap ul{margin:6px 0 0;padding-left:18px;font-size:12.5px;color:var(--ink-2)}
-.grantcap li{margin:2px 0}
-/* plants */
-.plgroup{font:600 10.5px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin:16px 0 8px}
-.plrow{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin-bottom:8px;flex-wrap:wrap}
-.plrow .pn{font-weight:700;font-size:14px;color:var(--navy);min-width:200px}
+.rolechip{display:flex;align-items:center;gap:8px;width:100%;text-align:left;background:var(--surface);border:1px solid var(--hair);border-radius:10px;padding:10px 13px;font-weight:600;font-size:13.5px;color:var(--muted);cursor:pointer;margin-bottom:7px}
+.rolechip:hover{border-color:var(--hair-2)}
+.rolechip.on{border-color:var(--ink);color:var(--ink);background:var(--well)}
+.rolechip .s{display:block;font-weight:400;font-size:11.5px;color:var(--faint)}
+.lockbadge{margin-left:auto;font-size:11px;color:var(--faint)}
+.grantcap{border:1px solid var(--hair);border-radius:10px;padding:12px 15px;margin-bottom:9px;background:var(--surface)}
+.grantcap .t{font-weight:700;font-size:14px}
+.grantcap .s{font-size:12.5px;color:var(--muted);margin:2px 0 6px}
+.grantcap ul{margin:6px 0 0;padding-left:18px;font-size:13px;color:var(--muted)}
+.grantcap li{margin:3px 0}
+.callout{display:flex;gap:9px;border:1px solid var(--hair);border-radius:10px;padding:10px 14px;font-size:12.5px;color:var(--muted);background:var(--surface);margin:0 0 14px}
+.callout b{color:var(--ink)}
+
+/* ---------- plants ---------- */
+.kpis{display:flex;gap:26px;flex-wrap:wrap;margin:0 0 18px;font-variant-numeric:tabular-nums}
+.kpi .n{font-size:26px;font-weight:800;letter-spacing:-.02em}
+.kpi .l{font-size:11px;color:var(--muted)}
+.plgroup{font:600 10.5px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin:20px 0 8px}
+.plrow{display:flex;align-items:center;gap:16px;background:var(--surface);border:1px solid var(--hair);border-radius:var(--r);padding:13px 18px;margin-bottom:8px;flex-wrap:wrap}
+.plrow .pn{font-weight:700;font-size:14.5px;min-width:205px}
 .plrow .pn .tt{display:block;font-weight:400}
-.modchips{display:flex;gap:5px;flex-wrap:wrap;flex:1;min-width:280px}
-.mc{font-size:10.5px;font-weight:600;border-radius:8px;padding:3px 8px;border:1px solid;cursor:pointer;user-select:none}
-.mc.on{background:var(--teal-tint);color:var(--teal-ink);border-color:var(--teal)}
-.mc.off{background:var(--bg);color:var(--ink-3);border-color:var(--line);text-decoration:line-through}
-.mc.core{background:var(--navy-tint);color:var(--navy);border-color:var(--navy-line);cursor:default}
-.plmeta{font-size:11.5px;color:var(--ink-2);white-space:nowrap}
-/* wizard */
-.wiz{border:1.5px dashed var(--line-strong);border-radius:13px;padding:16px 18px;margin-bottom:14px;background:var(--card)}
-.wsteps{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
-.wstep{font:600 10.5px var(--mono);border:1px solid var(--line-strong);border-radius:999px;padding:4px 12px;color:var(--ink-3);background:var(--bg)}
-.wstep.on{background:var(--navy);border-color:var(--navy);color:#fff}
-.wstep.done{background:var(--teal-tint);border-color:var(--teal-d);color:var(--teal-ink)}
-.wfield{margin-bottom:11px;max-width:420px}
-.wfield label{display:block;font:600 10px var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);margin-bottom:5px}
+.modchips{display:flex;gap:6px;flex-wrap:wrap;flex:1;min-width:280px}
+.mc{font-size:11px;font-weight:600;border-radius:999px;padding:4px 11px;border:1px solid;cursor:pointer;user-select:none}
+.mc.on{background:var(--ok-bg);color:var(--ok);border-color:var(--ok-line)}
+.mc.off{background:var(--surface);color:var(--faint);border-color:var(--hair);text-decoration:line-through}
+.mc.core{background:var(--well);color:var(--muted);border-color:var(--hair);cursor:default}
+.plmeta{font-size:12px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+
+/* ---------- wizard ---------- */
+.wiz{border:1px solid var(--hair);border-radius:var(--r);padding:18px 20px;margin-bottom:16px;background:var(--surface)}
+.wsteps{display:flex;gap:0;margin-bottom:18px;border-bottom:1px solid var(--hair)}
+.wstep{font-size:12.5px;font-weight:600;padding:0 0 10px;margin-right:22px;color:var(--faint);border-bottom:2px solid transparent}
+.wstep.on{color:var(--ink);border-bottom-color:var(--ink)}
+.wstep.done{color:var(--ok)}
+.wfield{margin-bottom:12px;max-width:420px}
+.wfield label{display:block;font:600 10px var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--faint);margin-bottom:6px}
 .wfield input,.wfield select{width:100%}
-.wmods{display:flex;flex-direction:column;gap:6px;max-width:560px}
-.wmod{display:flex;align-items:center;gap:10px;border:1.5px solid var(--line-strong);border-radius:10px;padding:9px 12px;cursor:pointer;background:var(--card);font-size:13px}
-.wmod.on{border-color:var(--teal-d);background:var(--teal-tint)}
-.wmod .d{font-size:11px;color:var(--ink-2)}
-.wmod .tk{margin-left:auto;color:var(--teal-ink);font-weight:700}
-.wfoot{display:flex;gap:8px;align-items:center;margin-top:14px;padding-top:12px;border-top:1px solid var(--line);flex-wrap:wrap}
-.wppl label{display:flex;align-items:center;gap:8px;font-size:13px;margin-bottom:6px;cursor:pointer}
-.okmsg{background:var(--teal-tint);border:1px solid var(--teal);border-radius:10px;padding:10px 14px;font-size:13px;color:var(--teal-ink);margin-top:10px}
-footer{border-top:1px solid var(--line);padding:16px 0 40px;color:var(--ink-3);font-size:11.5px}
+.wmods{display:flex;flex-direction:column;gap:7px;max-width:600px}
+.wmod{display:flex;align-items:center;gap:11px;border:1px solid var(--hair-2);border-radius:10px;padding:10px 13px;cursor:pointer;background:var(--surface);font-size:13.5px}
+.wmod:hover{border-color:var(--faint)}
+.wmod.on{border-color:var(--ok);background:var(--ok-bg)}
+.wmod .d{font-size:11.5px;color:var(--muted)}
+.wmod .tk{margin-left:auto;color:var(--ok);font-weight:700}
+.wfoot{display:flex;gap:8px;align-items:center;margin-top:16px;padding-top:14px;border-top:1px solid var(--hair);flex-wrap:wrap}
+.wppl label{display:flex;align-items:center;gap:9px;font-size:13.5px;margin-bottom:7px;cursor:pointer}
+.okmsg{background:var(--ok-bg);border:1px solid var(--ok-line);border-radius:10px;padding:11px 14px;font-size:13.5px;color:var(--ok);margin-top:10px}
+footer{border-top:1px solid var(--hair);padding:18px 0 46px;color:var(--faint);font-size:11.5px}
 </style>
 </head>
 <body>
-<div class="topbar"><div class="wrap">
-  <p class="eyebrow">DigitalPaani · User Center — Roles &amp; Permissions · design mockups</p>
-  <h1>The three screens, on the accepted tree model</h1>
-  <p class="sub">Module → Feature → CRUD + named actions · one role per person · grants &amp; exceptions as their own dropdowns · plant licences cap everything. Interactive mockup — CRUD ticks are illustrative, action keys are real.</p>
-  <div class="scrtabs">
-    <button class="scrtab on" data-s="0" onclick="scr(0)">1 · User Center</button>
-    <button class="scrtab" data-s="1" onclick="scr(1)">2 · Roles &amp; admin grants</button>
-    <button class="scrtab" data-s="2" onclick="scr(2)">3 · Plants &amp; product modules</button>
+<header><div class="wrap">
+  <div class="hrow">
+    <span class="mark">User Center<span class="dot"> · access console</span></span>
+    <span class="hsub">One role per person · plant licences cap everything · every deviation carries a reason</span>
+    <span class="study">design study · v2</span>
   </div>
-</div></div>
+  <div class="seg" role="tablist">
+    <button class="on" data-s="0" onclick="scr(0)">People</button>
+    <button data-s="1" onclick="scr(1)">Roles &amp; grants</button>
+    <button data-s="2" onclick="scr(2)">Plants &amp; modules</button>
+  </div>
+</div></header>
+<div class="legend"><div class="wrap"><div class="in">
+  <b>How to read every screen:</b>
+  <span class="k"><span class="sw ok"></span> granted by the role</span>
+  <span class="k"><span class="sw act"></span> named action / override — always carries a reason</span>
+  <span class="k"><span class="sw off"></span> not licensed here — greyed, never deleted</span>
+</div></div></div>
 <main><div class="wrap">
 
-<!-- ============ SCREEN 1 · USER CENTER ============ -->
+<!-- ============ SCREEN 1 · PEOPLE ============ -->
 <div class="scr on" id="scr0">
-  <div class="dnote"><b>Design intent — one decision at a time, top to bottom.</b> Directory → pick a person → three account-level fields (role · admin grant · exceptions) → plant access → the permission tree, per plant. The tree is read-mostly: standard ticks come from the role; touching any box becomes an amber override that demands a written reason before save.</div>
-  <div class="panel">
-    <div class="gh">People</div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+  <h2>People</h2>
+  <p class="sub">Pick a person. Their whole record is three fields and a plant list — the tree below just shows what that adds up to at each plant.</p>
+  <div class="card">
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px">
       <input type="text" placeholder="Search name or title…" style="flex:1;min-width:200px">
       <select><option>All plants</option></select>
-      <button class="btn primary">＋ Add person</button>
+      <button class="btn">＋ Add person</button>
     </div>
     <table class="dir"><thead><tr><th>Person</th><th>Role</th><th>Admin grant</th><th>Plants</th><th>Exceptions</th></tr></thead><tbody id="dirbody"></tbody></table>
   </div>
-  <div class="panel" id="editor"></div>
+  <div class="card" id="editor"></div>
+  <p class="intent" style="margin-top:14px"><b>Why it looks like this:</b> one decision per moment — role, then grant, then plants, then fine detail (progressive disclosure). The tree is read-mostly; anything you change turns amber and asks for a reason, so the safe path is always the default path.</p>
 </div>
 
 <!-- ============ SCREEN 2 · LIBRARY ============ -->
 <div class="scr" id="scr1">
-  <div class="dnote"><b>Design intent — a read-only register.</b> Pick a role and see its exact tick-pattern over the whole tree (amber actions included; co-sign visibly L4-only). The four grants live on the same screen as their own plane: what each one administers, Full Site shown as the union, Global as the superuser. Nothing here is editable — the catalog is closed.</div>
-  <div class="note"><span>🔒</span><span><b>Hard-locked.</b> Five roles, four grants — nobody can create, rename or edit one (People Admins included). When a role isn't quite right, the answer is a per-person override with a reason, on the person's record.</span></div>
+  <h2>Roles &amp; admin grants</h2>
+  <p class="sub">A read-only register. Five roles, four grants — the whole vocabulary. Nothing here can be created, renamed or edited.</p>
+  <div class="callout"><span>🔒</span><span><b>The catalog is closed.</b> When a role isn't quite right, the answer is a per-person override with a reason on that person's record — never a new role.</span></div>
   <div class="libgrid">
     <div>
-      <div class="gh">Roles — one per person, account-wide</div>
+      <div class="lbl">Roles — one per person, account-wide</div>
       <div id="rolelist"></div>
-      <div class="gh" style="margin-top:16px">Admin grants — at most one, on top</div>
+      <div class="lbl" style="margin-top:18px">Admin grants — at most one, on top</div>
       <div id="grantlist"></div>
     </div>
-    <div class="panel" style="margin:0" id="libdetail"></div>
+    <div class="card" style="margin:0" id="libdetail"></div>
   </div>
+  <p class="intent" style="margin-top:14px"><b>Why it looks like this:</b> the pattern is the content — you learn a role by seeing its exact ticks, not by reading prose. Actions stay amber here too, so “dangerous” looks the same everywhere it appears.</p>
 </div>
 
 <!-- ============ SCREEN 3 · PLANTS ============ -->
 <div class="scr" id="scr2">
-  <div class="dnote"><b>Design intent — the whole contract on one row.</b> A plant is its name, its cluster label, and its licence chips. Chips are the single write surface (DigitalPaani admin only); every other screen reads them. New plants come through a three-step wizard that commits only at the end, as one audited action.</div>
+  <h2>Plants &amp; product modules</h2>
+  <p class="sub">A plant is one row: name, cluster, and its licence chips — the whole contract at a glance. Chips are the only place licences change.</p>
   <div class="kpis">
     <div class="kpi"><div class="n" id="kplants">—</div><div class="l">plants</div></div>
     <div class="kpi"><div class="n" id="kclusters">—</div><div class="l">clusters (labels)</div></div>
-    <div class="kpi"><div class="n" id="lictotal">—</div><div class="l">module licences (beyond core)</div></div>
+    <div class="kpi"><div class="n" id="lictotal">—</div><div class="l">licences beyond core</div></div>
     <div class="kpi"><div class="n">5</div><div class="l">people with access</div></div>
   </div>
-  <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:6px;flex-wrap:wrap">
-    <div class="note" style="flex:1;min-width:280px;margin:0"><span>💡</span><span>Green chip = licensed. Struck-through = not in the contract — everything that module unlocks is dimmed for everyone there (never deleted). <b>Issue Resolution ships dark:</b> approval actions are already ticked into the roles and light up the day <b>ops</b> is licensed at a plant.</span></div>
-    <button class="btn primary" onclick="wizOpen()">＋ Add plant</button>
+  <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:8px;flex-wrap:wrap">
+    <div class="callout" style="flex:1;min-width:280px;margin:0"><span>💡</span><span>Switching a licence off greys that module everywhere at the plant — settings are kept, never deleted. <b>Issue Resolution ships dark:</b> approval actions are already in the roles and light up the day it's licensed.</span></div>
+    <button class="btn" onclick="wizOpen()">＋ Add plant</button>
   </div>
   <div id="wizbox"></div>
   <div id="plantlist"></div>
+  <p class="intent" style="margin-top:14px"><b>Why it looks like this:</b> licence state is the one fact everyone needs about a plant, so it lives on the row itself. Creation is a three-step wizard that commits once at the end — nothing half-made ever exists.</p>
 </div>
 
 </div></main>
-<footer><div class="wrap">Design mockups · accepted model: permission tree (CRUD + named actions) · one role per person · plant licences cap everything · DigitalPaani</div></footer>
+<footer><div class="wrap">Design study · the accepted model: permission tree (CRUD + named actions) · one role per person · plant licences cap everything · CRUD ticks illustrative, action keys real</div></footer>
 
 <script>
 /* ================= DATA (real demo data; ticks illustrative, action keys real) ================= */
 const MODULES=[
- {id:"core",n:"Platform Core",icon:"🧩",always:true},
- {id:"ops",n:"Issue Resolution",icon:"🔧"},
- {id:"tasks",n:"Tasks & Shifts",icon:"📋"},
- {id:"data",n:"Data, Lab & Logbook",icon:"🧪"},
- {id:"analytics",n:"Dashboards & Analytics",icon:"📊"},
- {id:"iot",n:"IoT & Remote Control",icon:"📡"},
- {id:"inv",n:"Inventory Management",icon:"🧯"},
- {id:"floc",n:"Floc Detector",icon:"🔬",noperm:true},
+ {id:"core",n:"Platform Core",always:true},
+ {id:"ops",n:"Issue Resolution"},
+ {id:"tasks",n:"Tasks & Shifts"},
+ {id:"data",n:"Data, Lab & Logbook"},
+ {id:"analytics",n:"Dashboards & Analytics"},
+ {id:"iot",n:"IoT & Remote Control"},
+ {id:"inv",n:"Inventory"},
+ {id:"floc",n:"Floc Detector",noperm:true},
 ];
 const modById=Object.fromEntries(MODULES.map(m=>[m.id,m]));
 let PLANTS=[
@@ -225,7 +270,7 @@ let PLANTS=[
  {name:"Amazon DEL-4",cluster:"Amazon",mods:["ops","tasks","data","analytics"]},
  {name:"Amazon DEL-5",cluster:"Amazon",mods:["tasks","data","analytics","iot"]},
 ];
-/* the master tree: Module -> Feature -> CRUD + named actions (amber) */
+/* the master tree: Module -> Feature -> CRUD + named actions */
 const TREE=[
  {mod:"ops",feats:[
    {n:"Issue sessions",crud:true},
@@ -259,7 +304,6 @@ const TREE=[
  {mod:"core",feats:[
    {n:"Plant dashboard",crud:true}]},
 ];
-/* role default tick patterns (illustrative CRUD; the action ladder is the real one) */
 const ROLES={
  l1:{n:"L1 Operator",s:"works the plant — no approval actions"},
  l3:{n:"L3 Lead",s:"L1 + the approve actions"},
@@ -285,7 +329,7 @@ const GRANTS={
  people:{n:"People Admin",s:"manages the humans",caps:["Invite / edit / offboard users","Rosters & shift schedules","Skills & competencies","Plant rosters & directories","Assign roles & grants","Per-user notification overrides","Directory & audit-log export"]},
  tech:{n:"Technical Admin",s:"configures the plant",caps:["Dashboards & widgets","Issue / task / trigger rules","Diagnostic flows & workflows","Plant, lab & test setup","Sensors & thresholds","PLC / data logger","Escalation routing & auto email","Site templates","Site analytics formulas","Store & item catalog setup"]},
  fullsite:{n:"Full Site Admin",s:"People + Technical, combined",union:true},
- global:{n:"Global Admin",s:"DigitalPaani staff — the superuser",global:true},
+ global:{n:"Global Admin",s:"the superuser — staff only",global:true},
 };
 let USERS=[
  {id:"satyadev",n:"Satyadev Singh",t:"Shift supervisor",cluster:"Adern",role:"l3",grant:"",plants:["Essentia STP","Vedanta- 200 KLD (WTP)"],
@@ -299,13 +343,13 @@ let USERS=[
 
 /* ================= SHELL ================= */
 function scr(i){
-  document.querySelectorAll(".scrtab").forEach(t=>t.classList.toggle("on",+t.dataset.s===i));
+  document.querySelectorAll(".seg button").forEach(t=>t.classList.toggle("on",+t.dataset.s===i));
   document.querySelectorAll(".scr").forEach((s,j)=>s.classList.toggle("on",i===j));
 }
 const initials=n=>n.trim().split(/\s+/).map(w=>w[0]).slice(0,2).join("").toUpperCase();
 const plantByName=n=>PLANTS.find(p=>p.name===n);
 
-/* ================= SCREEN 1 — USER CENTER ================= */
+/* ================= SCREEN 1 — PEOPLE ================= */
 let selUser="satyadev", selPlant=null, pendingOvr=0, openMods={};
 function renderDir(){
   document.getElementById("dirbody").innerHTML=USERS.map(u=>`
@@ -332,37 +376,37 @@ function renderEditor(){
   if(!selPlant||!u.plants.includes(selPlant)) selPlant=u.plants[0];
   const pl=plantByName(selPlant);
   const scopeSel=(u.grant&&u.grant!=="global")?`
-      <div class="fld"><label>Admin scope <span style="text-transform:none;letter-spacing:0">— which plants they administer</span></label>
+      <div class="fld"><label>Admin scope — which plants they administer</label>
         <select><option>${u.scope||u.cluster} (cluster)</option><option>One plant…</option></select></div>`:"";
   const excChips=u.exceptions.length?u.exceptions.map(e=>`
       <div class="x"><span class="k">${e.k}</span><span>@ ${e.plant}</span><span style="color:var(--ink-3)">· ${e.reason}</span></div>`).join("")
-    :`<div class="x" style="color:var(--ink-3)">None — the 3 exception permissions are granted one person + one plant + one reason at a time.</div>`;
+    :`<div class="x" style="color:var(--ink-3)">None. Exceptions are granted one person + one plant + one reason at a time.</div>`;
   document.getElementById("editor").innerHTML=`
     <div class="idcard">
       <span class="avc">${initials(u.n)}</span>
       <span><span class="nm" style="font-size:16px">${u.n}</span><br><span class="tt">${u.t} · ${u.cluster}</span></span>
-      <span style="margin-left:auto;display:flex;gap:8px"><button class="btn ghost sm">🔍 Access review</button><button class="btn ghost sm">🖥 Preview app</button></span>
+      <span style="margin-left:auto;display:flex;gap:8px"><button class="btn ghost sm">Access review</button><button class="btn ghost sm">Preview app</button></span>
     </div>
     <div class="fldrow">
       <div class="fld"><label>Role — one per person, every plant</label>
         <select>${Object.entries(ROLES).map(([k,r])=>`<option ${k===u.role?"selected":""}>${r.n} — ${r.s}</option>`).join("")}</select>
         <span class="hint">changing it resets every plant to the new role's standard</span></div>
       <div class="fld"><label>Admin grant — most people need none</label>
-        <select><option ${!u.grant?"selected":""}>No grant</option>${Object.entries(GRANTS).map(([k,g])=>`<option ${k===u.grant?"selected":""} ${k==="global"?"disabled":""}>${g.n}${k==="global"?" 🔒 DigitalPaani staff only":""}</option>`).join("")}</select>
+        <select><option ${!u.grant?"selected":""}>No grant</option>${Object.entries(GRANTS).map(([k,g])=>`<option ${k===u.grant?"selected":""} ${k==="global"?"disabled":""}>${g.n}${k==="global"?" 🔒 staff only":""}</option>`).join("")}</select>
         <span class="hint">administration only — never changes day-to-day permissions</span></div>
       ${scopeSel}
       <div class="fld"><label>Exception permissions — separate from the tree</label>
         <div class="excbox">${excChips}<button class="btn ghost sm" style="margin-top:4px">＋ Grant an exception…</button></div></div>
     </div>
-    <div class="gh">Plant access — their role applies at each of these</div>
-    <div style="margin-bottom:14px">${u.plants.map(p=>`<span class="chip ok">✓ ${p} <span style="opacity:.65">· ${plantByName(p).cluster}</span></span>`).join("")}<button class="btn ghost sm">＋ Add plant access</button></div>
+    <div class="lbl">Plant access — their role applies at each of these</div>
+    <div style="margin-bottom:16px">${u.plants.map(p=>`<span class="chip ok">✓ ${p} <span style="opacity:.65">· ${plantByName(p).cluster}</span></span>`).join("")}<button class="btn ghost sm">＋ Add plant access</button></div>
     <div class="plantpick">
-      <span class="gh" style="margin:0">Permissions at</span>
+      <span class="lbl" style="margin:0">Permissions at</span>
       <select onchange="pickPlant(this.value)">${u.plants.map(p=>`<option ${p===selPlant?"selected":""}>${p}</option>`).join("")}</select>
       <span class="tt">standard = ${ROLES[u.role].n} defaults · ${pl.mods.length+1} of ${MODULES.length} modules licensed here</span>
     </div>
     ${renderTree(u,pl)}
-    <div class="ovrbar" id="ovrbar"><b><span id="ovrn">0</span> unsaved override(s)</b> — each needs a written reason before saving. <span style="margin-left:auto;display:flex;gap:8px"><button class="btn ghost sm" onclick="pickPlant(selPlant)">Discard</button><button class="btn primary sm">Save with reasons…</button></span></div>`;
+    <div class="ovrbar" id="ovrbar"><b><span id="ovrn">0</span> unsaved override(s)</b> — each needs a written reason before saving. <span style="margin-left:auto;display:flex;gap:8px"><button class="btn ghost sm" onclick="pickPlant(selPlant)">Discard</button><button class="btn sm">Save with reasons…</button></span></div>`;
 }
 function renderTree(u,pl){
   return TREE.map(node=>{
@@ -371,13 +415,13 @@ function renderTree(u,pl){
     const open=openMods[node.mod]!==undefined?openMods[node.mod]:lic&&(node.mod==="ops"||node.mod==="data");
     const body=node.feats.map(f=>{
       if(f.exception) return `<div class="feat"><div class="featn">${f.n}</div>
-        <div class="excrowline">⚡ Exception permission — never a tree tick. ${u.exceptions.some(e=>e.plant===pl.name&&e.k==="remote.actuate")?"<b>Granted to this person at this plant (reasoned & audited).</b>":"Granted per person + plant + reason from the Exceptions field above."}</div></div>`;
+        <div class="excrowline">⚡ Exception permission — never a tree tick. ${u.exceptions.some(e=>e.plant===pl.name&&e.k==="remote.actuate")?"<b>Granted to this person at this plant (reasoned & audited).</b>":"Granted per person + plant + reason from the field above."}</div></div>`;
       let h=`<div class="feat"><div class="featn">${f.n}</div>`;
       if(f.crud) h+=`<div class="crudrow">`+["C","R","U","D"].map(op=>{
         const on=crudDefault(u.role,f.n,op);
-        return `<span class="crud ${on?"on":""}" onclick="${lic?"mockToggle(this)":""}" title="${lic?"click to override (reason required)":"module not licensed — dimmed"}"><span class="bx">${on?"✓":""}</span>${{C:"Create",R:"Read",U:"Update",D:"Delete"}[op]}</span>`;
+        return `<span class="crud ${on?"on":""}" onclick="${lic?"mockToggle(this)":""}" title="${lic?"click to override (reason required)":"module not licensed — greyed"}"><span class="bx">${on?"✓":""}</span>${{C:"Create",R:"Read",U:"Update",D:"Delete"}[op]}</span>`;
       }).join("")+`</div>`;
-      if(f.actions){ h+=`<div class="actlbl">Actions — named permissions, danger-tier</div>`+f.actions.map(a=>{
+      if(f.actions){ h+=`<div class="actlbl">Actions — named permissions</div>`+f.actions.map(a=>{
         const ovr=u.overrides.find(o=>o.k===a.k&&o.plant===pl.name);
         const on=ovr?ovr.dir!=="remove":actDefault(u.role,a.k);
         return `<div class="actrow ${on?"on":""} ${ovr?"ovr":""}" onclick="${lic?"mockToggle(this)":""}">
@@ -388,10 +432,10 @@ function renderTree(u,pl){
       return h+`</div>`;
     }).join("");
     return `<div class="mod ${lic?"":"dark"} ${open?"open":""}">
-      <div class="modh" onclick="toggleMod('${node.mod}')"><span class="chev">▶</span><span class="mn">${m.icon} ${m.n}</span>
-        <span class="lic ${lic?"on":"off"}">${lic?"LICENSED":"NOT LICENSED — DIMMED, NEVER DELETED"}</span></div>
+      <div class="modh" onclick="toggleMod('${node.mod}')"><span class="chev">▶</span><span class="mn">${m.n}</span>
+        <span class="lic ${lic?"on":"off"}">${lic?"Licensed":"Not licensed — greyed, never deleted"}</span></div>
       <div class="modb">${body}</div></div>`;
-  }).join("")+`<div class="mod dark"><div class="modh" style="cursor:default"><span class="mn">🔬 Floc Detector</span><span class="lic off">HARDWARE ADD-ON — NO USER PERMISSIONS</span></div></div>`;
+  }).join("")+`<div class="mod dark"><div class="modh" style="cursor:default"><span class="mn">Floc Detector</span><span class="lic off">Hardware add-on — no user permissions</span></div></div>`;
 }
 
 /* ================= SCREEN 2 — LIBRARY ================= */
@@ -410,12 +454,12 @@ function renderLib(){
       if(f.crud) ["C","R","U","D"].forEach(op=>{ if(crudDefault(libSel.id,f.n,op)) crudN++; });
       (f.actions||[]).forEach(a=>{ if(actDefault(libSel.id,a.k)) actN++; });
     }));
-    box.innerHTML=`<div class="gh">${r.n} — default tick-pattern (read-only)</div>
-      <div style="margin-bottom:10px"><span class="chip ok">${crudN} CRUD ticks</span><span class="chip amber">${actN} action permissions</span><span class="chip dim">applies at every plant on the person's access list, capped by that plant's licences</span></div>
+    box.innerHTML=`<div class="lbl">${r.n} — default pattern (read-only)</div>
+      <div style="margin-bottom:12px"><span class="chip ok">${crudN} CRUD ticks</span><span class="chip amber">${actN} action permissions</span><span class="chip dim">applies at every plant on the person's list, capped by licences</span></div>
       ${TREE.map(node=>{
         const m=modById[node.mod];
         const body=node.feats.map(f=>{
-          if(f.exception) return `<div class="feat"><div class="featn">${f.n}</div><div class="excrowline">⚡ Never part of any role — exception dropdown only (Global Admin holds it implicitly).</div></div>`;
+          if(f.exception) return `<div class="feat"><div class="featn">${f.n}</div><div class="excrowline">⚡ Never part of any role — exception grants only (Global Admin holds it implicitly).</div></div>`;
           let h=`<div class="feat"><div class="featn">${f.n}</div>`;
           if(f.crud) h+=`<div class="crudrow">`+["C","R","U","D"].map(op=>{
             const on=crudDefault(libSel.id,f.n,op);
@@ -427,25 +471,25 @@ function renderLib(){
           }).join("");
           return h+`</div>`;
         }).join("");
-        return `<div class="mod open"><div class="modh" style="cursor:default"><span class="mn">${m.icon} ${m.n}</span></div><div class="modb">${body}</div></div>`;
+        return `<div class="mod open"><div class="modh" style="cursor:default"><span class="mn">${m.n}</span></div><div class="modb">${body}</div></div>`;
       }).join("")}`;
   } else {
     const g=GRANTS[libSel.id];
     let inner="";
     if(g.global){
-      inner=`<div class="grantcap" style="border-color:var(--amber-line);background:var(--amber-bg)"><div class="t">Superuser — its check never says no</div>
-        <div class="s">Every CRUD tick, every action, every admin capability, at every plant — including the 3 exception permissions (remote actuation, view-as, sensor health), which nobody else holds by default. Every use is audited.</div></div>`;
+      inner=`<div class="grantcap" style="border-color:var(--act-line);background:var(--act-bg)"><div class="t">Superuser — its check never says no</div>
+        <div class="s">Every tick, every action, every admin capability, at every plant — including the 3 exception permissions, which nobody else holds by default. Every use is audited.</div></div>`;
     } else if(g.union){
       inner=`<div class="grantcap"><div class="t">People Admin — everything it administers</div><ul>${GRANTS.people.caps.map(c=>`<li>${c}</li>`).join("")}</ul></div>
         <div class="grantcap"><div class="t">Technical Admin — everything it administers</div><ul>${GRANTS.tech.caps.map(c=>`<li>${c}</li>`).join("")}</ul></div>
-        <div class="note" style="margin:0"><span>＝</span><span><b>Full Site is computed as the union of the two</b> — never a third list that could drift.</span></div>`;
+        <div class="callout" style="margin:0"><span>＝</span><span><b>Full Site is computed as the union of the two</b> — never a third list that could drift.</span></div>`;
     } else {
       inner=`<div class="grantcap"><div class="t">${g.n} — everything it administers</div><ul>${g.caps.map(c=>`<li>${c}</li>`).join("")}</ul></div>`;
     }
-    box.innerHTML=`<div class="gh">${g.n} — capability plane (read-only)</div>
-      <div style="margin-bottom:10px"><span class="chip grant">at most one grant per person</span><span class="chip dim">non-Global grants carry a cluster or plant scope</span></div>
+    box.innerHTML=`<div class="lbl">${g.n} — capability plane (read-only)</div>
+      <div style="margin-bottom:12px"><span class="chip grant">at most one grant per person</span><span class="chip dim">non-Global grants carry a cluster or plant scope</span></div>
       ${inner}
-      <div class="note" style="margin-top:12px"><span>🧭</span><span><b>Grants share zero permissions with the roles.</b> Roles operate and view; grants configure and administer. Same modules, different checkboxes — one licence flag caps both sides together.</span></div>`;
+      <div class="callout" style="margin-top:12px"><span>🧭</span><span><b>Grants share zero permissions with the roles.</b> Roles operate and view; grants configure and administer. Same modules, different checkboxes — one licence caps both sides together.</span></div>`;
   }
 }
 
@@ -463,9 +507,9 @@ function renderPlants(){
       return `<div class="plrow">
         <span class="pn">${p.name}<span class="tt">${cl} · ${p.mods.length} licensed modules</span></span>
         <span class="modchips">`+MODULES.map(m=>{
-          if(m.always) return `<span class="mc core" title="always included">🧩 Core</span>`;
+          if(m.always) return `<span class="mc core" title="always included">Core</span>`;
           const on=p.mods.includes(m.id);
-          return `<span class="mc ${on?"on":"off"}" title="${m.n} — click to ${on?"remove from":"add to"} the contract (DigitalPaani admin only)" onclick="togLic('${p.name}','${m.id}')">${m.icon} ${m.n.split(" ")[0].replace(",","")}</span>`;
+          return `<span class="mc ${on?"on":"off"}" title="${m.n} — click to ${on?"remove from":"add to"} the contract" onclick="togLic('${p.name}','${m.id}')">${m.n}</span>`;
         }).join("")+`</span>
         <span class="plmeta">${ppl} ${ppl===1?"person":"people"} ›</span>
       </div>`;
@@ -475,11 +519,11 @@ function togLic(plant,mod){
   const p=plantByName(plant);
   p.mods=p.mods.includes(mod)?p.mods.filter(x=>x!==mod):[...p.mods,mod];
   renderPlants();
-  if(selUser) renderEditor(); // the tree dims/undims live — one licence flag, every screen
+  if(selUser) renderEditor(); // one licence flag — the tree greys/ungreys live on the People screen
 }
-function wizOpen(){ wiz={step:1,name:"",cluster:"Vedanta",newCluster:"",mods:new Set(["tasks"]),people:new Set(),done:false}; renderWiz(); }
+function wizOpen(){ wiz={step:1,name:"",cluster:"Vedanta",mods:new Set(["tasks"]),people:new Set(),done:false}; renderWiz(); }
 function wizClose(){ wiz=null; renderWiz(); }
-function wizGo(s){ if(wiz.step===1){ wiz.name=document.getElementById("wname").value; const c=document.getElementById("wcluster").value; wiz.cluster=c; } wiz.step=s; renderWiz(); }
+function wizGo(s){ if(wiz.step===1){ wiz.name=document.getElementById("wname").value; wiz.cluster=document.getElementById("wcluster").value; } wiz.step=s; renderWiz(); }
 function wizMod(id){ wiz.mods.has(id)?wiz.mods.delete(id):wiz.mods.add(id); renderWiz(); }
 function wizPpl(id){ wiz.people.has(id)?wiz.people.delete(id):wiz.people.add(id); renderWiz(); }
 function wizFinish(){
@@ -499,15 +543,15 @@ function renderWiz(){
     <div class="wfield"><label>Plant name</label><input type="text" id="wname" value="${wiz.name}" placeholder="e.g. Vedanta- 500 KLD (STP)"></div>
     <div class="wfield"><label>Cluster label — groups plants in pickers; not a folder</label>
       <select id="wcluster">${[...new Set(PLANTS.map(p=>p.cluster))].map(c=>`<option ${wiz.cluster===c?"selected":""}>${c}</option>`).join("")}<option>＋ New cluster label…</option></select></div>
-    <div class="wfoot"><button class="btn ghost sm" onclick="wizClose()">Cancel</button><span style="flex:1"></span><button class="btn primary" onclick="wizGo(2)">Next — modules →</button></div>`;
+    <div class="wfoot"><button class="btn ghost sm" onclick="wizClose()">Cancel</button><span style="flex:1"></span><button class="btn" onclick="wizGo(2)">Next — modules →</button></div>`;
   if(wiz.step===2) body=`
     <div class="wmods">${MODULES.filter(m=>!m.always).map(m=>`
-      <div class="wmod ${wiz.mods.has(m.id)?"on":""}" onclick="wizMod('${m.id}')"><span>${m.icon}</span><span><b>${m.n}</b>${m.noperm?`<span class="d"> — hardware add-on, no user permissions</span>`:""}${m.id==="ops"?`<span class="d"> — ships dark until the feature launches; approval actions light up here on licensing day</span>`:""}</span><span class="tk">${wiz.mods.has(m.id)?"✓":""}</span></div>`).join("")}</div>
-    <div class="wfoot"><button class="btn ghost sm" onclick="wizGo(1)">← Back</button><span style="flex:1"></span><button class="btn primary" onclick="wizGo(3)">Next — people →</button></div>`;
+      <div class="wmod ${wiz.mods.has(m.id)?"on":""}" onclick="wizMod('${m.id}')"><span><b>${m.n}</b>${m.noperm?`<span class="d"> — hardware add-on, no user permissions</span>`:""}${m.id==="ops"?`<span class="d"> — ships dark until the feature launches; approval actions light up here on licensing day</span>`:""}</span><span class="tk">${wiz.mods.has(m.id)?"✓":""}</span></div>`).join("")}</div>
+    <div class="wfoot"><button class="btn ghost sm" onclick="wizGo(1)">← Back</button><span style="flex:1"></span><button class="btn" onclick="wizGo(3)">Next — people →</button></div>`;
   if(wiz.step===3) body=`
     <div class="wppl">${USERS.map(u=>`<label><input type="checkbox" ${wiz.people.has(u.id)?"checked":""} onchange="wizPpl('${u.id}')"> ${u.n} <span class="tt">· joins at their account role — ${ROLES[u.role].n}</span></label>`).join("")}</div>
-    <div class="note" style="margin-top:8px"><span>💡</span><span>People join at their <b>existing account-wide role</b> — the wizard never asks for a role. Nothing is created until Finish; then it's one audited action.</span></div>
-    <div class="wfoot"><button class="btn ghost sm" onclick="wizGo(2)">← Back</button><span style="flex:1"></span><button class="btn primary" onclick="wizFinish()">Create ${wiz.name.trim()||"plant"}${wiz.people.size?` · ${wiz.people.size} ${wiz.people.size===1?"person":"people"}`:""}</button></div>`;
+    <div class="callout" style="margin-top:10px"><span>💡</span><span>People join at their <b>existing account-wide role</b> — the wizard never asks for a role. Nothing is created until Finish; then it's one audited action.</span></div>
+    <div class="wfoot"><button class="btn ghost sm" onclick="wizGo(2)">← Back</button><span style="flex:1"></span><button class="btn" onclick="wizFinish()">Create ${wiz.name.trim()||"plant"}${wiz.people.size?` · ${wiz.people.size} ${wiz.people.size===1?"person":"people"}`:""}</button></div>`;
   box.innerHTML=`<div class="wiz">${steps}${body}</div>`;
 }
 
