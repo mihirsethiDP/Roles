@@ -18,10 +18,31 @@
   --sans:'Schibsted Grotesk',-apple-system,'Segoe UI',sans-serif;
   --mono:'Spline Sans Mono',ui-monospace,Consolas,monospace;
   --r:12px;
+  --bad:#B3362B; --bad-bg:#FBEAE7;
   --ink-3:var(--faint); /* alias used by inline styles */
 }
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#131417; --surface:#1C1E23; --well:#25272D;
+    --hair:#2F3238; --hair-2:#3D4149;
+    --ink:#EDEEF0; --muted:#A6A9B0; --faint:#7A7E86;
+    --ok:#5BC48E; --ok-bg:#152A1E; --ok-line:#2A4A38;
+    --act:#E3B45C; --act-bg:#2A2413; --act-line:#554920;
+    --off:#8A8D93; --off-bg:#232529;
+    --bad:#F08A7A; --bad-bg:#33201C;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#131417; --surface:#1C1E23; --well:#25272D;
+  --hair:#2F3238; --hair-2:#3D4149;
+  --ink:#EDEEF0; --muted:#A6A9B0; --faint:#7A7E86;
+  --ok:#5BC48E; --ok-bg:#152A1E; --ok-line:#2A4A38;
+  --act:#E3B45C; --act-bg:#2A2413; --act-line:#554920;
+  --off:#8A8D93; --off-bg:#232529;
+  --bad:#F08A7A; --bad-bg:#33201C;
+}
 *{box-sizing:border-box}
-::selection{background:#1A1B1E;color:#fff}
+::selection{background:var(--ink);color:var(--paper)}
 body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.6 var(--sans)}
 button{font:inherit}
 :focus-visible{outline:2px solid var(--ink);outline-offset:2px;border-radius:4px}
@@ -36,7 +57,7 @@ header{background:var(--surface);border-bottom:1px solid var(--hair)}
 .study{margin-left:auto;font:500 10.5px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
 .seg{display:inline-flex;background:var(--well);border:1px solid var(--hair);border-radius:999px;padding:3px;margin:14px 0 -1px;gap:2px}
 .seg button{border:none;background:transparent;border-radius:999px;padding:8px 18px;font-weight:600;font-size:13.5px;color:var(--muted);cursor:pointer}
-.seg button.on{background:var(--ink);color:#fff}
+.seg button.on{background:var(--ink);color:var(--paper)}
 .legend{background:var(--surface);border-bottom:1px solid var(--hair)}
 .legend .in{display:flex;gap:20px;flex-wrap:wrap;align-items:center;padding:9px 0;font-size:12px;color:var(--muted)}
 .legend .k{display:inline-flex;align-items:center;gap:6px}
@@ -54,8 +75,8 @@ h2{font-size:21px;font-weight:800;letter-spacing:-.02em;margin:0 0 4px;text-wrap
 .card{background:var(--surface);border:1px solid var(--hair);border-radius:var(--r);padding:18px 20px;margin:0 0 16px}
 select,input[type=text]{padding:9px 12px;border:1px solid var(--hair-2);border-radius:9px;font:14px var(--sans);color:var(--ink);background:var(--surface)}
 select:hover,input[type=text]:hover{border-color:var(--faint)}
-.btn{border:none;border-radius:9px;padding:10px 18px;font-weight:600;font-size:13.5px;cursor:pointer;background:var(--ink);color:#fff}
-.btn:hover{background:#000}
+.btn{border:none;border-radius:9px;padding:10px 18px;font-weight:600;font-size:13.5px;cursor:pointer;background:var(--ink);color:var(--paper)}
+.btn:hover{opacity:.88}
 .btn.ghost{background:var(--surface);color:var(--ink);border:1px solid var(--hair-2)}
 .btn.ghost:hover{border-color:var(--ink);background:var(--surface)}
 .btn.sm{padding:6px 12px;font-size:12.5px}
@@ -78,7 +99,7 @@ table.dir tr:last-child td{border-bottom:none}
 
 /* ---------- person editor ---------- */
 .idcard{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
-.avc{width:46px;height:46px;border-radius:50%;background:var(--ink);color:#fff;font:700 14px var(--sans);display:inline-flex;align-items:center;justify-content:center;flex:none}
+.avc{width:46px;height:46px;border-radius:50%;background:var(--ink);color:var(--paper);font:700 14px var(--sans);display:inline-flex;align-items:center;justify-content:center;flex:none}
 .fldrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:16px;padding-top:16px;border-top:1px solid var(--hair);margin-bottom:16px}
 .fld label{display:block;font:600 10px var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--faint);margin-bottom:6px}
 .fld select{width:100%}
@@ -170,6 +191,18 @@ table.dir tr:last-child td{border-bottom:none}
 .wfoot{display:flex;gap:8px;align-items:center;margin-top:16px;padding-top:14px;border-top:1px solid var(--hair);flex-wrap:wrap}
 .wppl label{display:flex;align-items:center;gap:9px;font-size:13.5px;margin-bottom:7px;cursor:pointer}
 .okmsg{background:var(--ok-bg);border:1px solid var(--ok-line);border-radius:10px;padding:11px 14px;font-size:13.5px;color:var(--ok);margin-top:10px}
+/* ---------- back bar + add-person modal ---------- */
+.backbar{margin:0 0 12px}
+.modal-ov{position:fixed;inset:0;background:rgba(10,11,13,.55);display:flex;align-items:flex-start;justify-content:center;padding:9vh 20px 20px;z-index:100}
+.modal-ov[hidden]{display:none}
+.modal{background:var(--surface);border:1px solid var(--hair);border-radius:14px;max-width:540px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,.28)}
+.mh{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--hair);font-weight:800;font-size:16px;letter-spacing:-.01em}
+.mx{border:none;background:var(--well);color:var(--muted);width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:14px;flex:none}
+.mx:hover{color:var(--ink)}
+.mb{padding:16px 20px}
+.mf{display:flex;justify-content:flex-end;gap:8px;padding:14px 20px;border-top:1px solid var(--hair)}
+.mgrid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.formerr{display:none;background:var(--bad-bg);color:var(--bad);border-radius:8px;padding:8px 12px;font-size:12.5px;margin-top:10px}
 footer{border-top:1px solid var(--hair);padding:18px 0 46px;color:var(--faint);font-size:11.5px}
 </style>
 </head>
@@ -179,6 +212,7 @@ footer{border-top:1px solid var(--hair);padding:18px 0 46px;color:var(--faint);f
     <span class="mark">User Center<span class="dot"> · access console</span></span>
     <span class="hsub">One role per person · plant licences cap everything · every deviation carries a reason</span>
     <span class="study">design study · v2</span>
+    <button class="btn ghost sm" id="themebtn" onclick="cycleTheme()" style="margin-left:10px">◐ Dark mode</button>
   </div>
   <div class="seg" role="tablist">
     <button class="on" data-s="0" onclick="scr(0)">People</button>
@@ -197,17 +231,22 @@ footer{border-top:1px solid var(--hair);padding:18px 0 46px;color:var(--faint);f
 <!-- ============ SCREEN 1 · PEOPLE ============ -->
 <div class="scr on" id="scr0">
   <h2>People</h2>
-  <p class="sub">Pick a person. Their whole record is three fields and a plant list — the tree below just shows what that adds up to at each plant.</p>
-  <div class="card">
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px">
-      <input type="text" placeholder="Search name or title…" style="flex:1;min-width:200px">
-      <select><option>All plants</option></select>
-      <button class="btn">＋ Add person</button>
+  <p class="sub">Everyone in one table. <b>Edit</b> opens a person’s settings; <b>＋ Add person</b> creates one in a dialog. A record is three fields and a plant list — nothing more.</p>
+  <div id="uclist">
+    <div class="card">
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px">
+        <input type="text" placeholder="Search name or title…" style="flex:1;min-width:200px">
+        <select><option>All plants</option></select>
+        <button class="btn" onclick="openAdd()">＋ Add person</button>
+      </div>
+      <table class="dir"><thead><tr><th>Person</th><th>Role</th><th>Admin grant</th><th>Plants</th><th>Exceptions</th><th></th></tr></thead><tbody id="dirbody"></tbody></table>
     </div>
-    <table class="dir"><thead><tr><th>Person</th><th>Role</th><th>Admin grant</th><th>Plants</th><th>Exceptions</th></tr></thead><tbody id="dirbody"></tbody></table>
   </div>
-  <div class="card" id="editor"></div>
-  <p class="intent" style="margin-top:14px"><b>Why it looks like this:</b> one decision per moment — role, then grant, then plants, then fine detail (progressive disclosure). The tree is read-mostly; anything you change turns amber and asks for a reason, so the safe path is always the default path.</p>
+  <div id="ucsettings" style="display:none">
+    <div class="backbar"><button class="btn ghost sm" onclick="backToList()">← All people</button></div>
+    <div class="card" id="editor"></div>
+  </div>
+  <p class="intent" style="margin-top:14px"><b>Why it looks like this:</b> the list and a person’s settings are separate views — you’re always doing one thing (Hick’s law). Inside settings it’s one decision per moment: role, then grant, then plants, then fine detail (progressive disclosure). The tree is read-mostly; anything you change turns amber and asks for a reason, so the safe path is always the default path.</p>
 </div>
 
 <!-- ============ SCREEN 2 · LIBRARY ============ -->
@@ -247,6 +286,24 @@ footer{border-top:1px solid var(--hair);padding:18px 0 46px;color:var(--faint);f
 </div>
 
 </div></main>
+<div class="modal-ov" id="addOv" hidden onclick="if(event.target===this)closeAdd()">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="addTitle">
+    <div class="mh"><span id="addTitle">Add a person</span><button class="mx" onclick="closeAdd()" aria-label="Close">✕</button></div>
+    <div class="mb">
+      <div class="wfield" style="max-width:none"><label>Full name</label><input type="text" id="ad_name" placeholder="e.g. Rohan Mehta"></div>
+      <div class="wfield" style="max-width:none"><label>What do they do?</label><input type="text" id="ad_title" placeholder="e.g. Plant operator"></div>
+      <div class="mgrid2">
+        <div class="wfield" style="max-width:none"><label>Role — one per person</label><select id="ad_role"></select></div>
+        <div class="wfield" style="max-width:none"><label>Admin grant</label><select id="ad_grant"></select></div>
+        <div class="wfield" style="max-width:none"><label>Cluster</label><select id="ad_cluster"></select></div>
+      </div>
+      <div class="callout" style="margin:6px 0 0"><span>💡</span><span>New people start with <b>no plant access</b> — their role does nothing anywhere until you add plants in their settings.</span></div>
+      <div class="formerr" id="ad_err">A name is required.</div>
+    </div>
+    <div class="mf"><button class="btn ghost" onclick="closeAdd()">Cancel</button><button class="btn" onclick="createUser()">Create &amp; open settings</button></div>
+  </div>
+</div>
+
 <footer><div class="wrap">Design study · the accepted model: permission tree (CRUD + named actions) · one role per person · plant licences cap everything · CRUD ticks illustrative, action keys real</div></footer>
 
 <script>
@@ -350,18 +407,24 @@ const initials=n=>n.trim().split(/\s+/).map(w=>w[0]).slice(0,2).join("").toUpper
 const plantByName=n=>PLANTS.find(p=>p.name===n);
 
 /* ================= SCREEN 1 — PEOPLE ================= */
-let selUser="satyadev", selPlant=null, pendingOvr=0, openMods={};
+let selUser="satyadev", selPlant=null, pendingOvr=0, openMods={}, ucView="list", addSeq=0;
 function renderDir(){
   document.getElementById("dirbody").innerHTML=USERS.map(u=>`
-    <tr class="${u.id===selUser?"sel":""}" onclick="pickUser('${u.id}')">
+    <tr class="${u.id===selUser?"sel":""}" onclick="openSettings('${u.id}')">
       <td><span class="nm">${u.n}</span><br><span class="tt">${u.t} · ${u.cluster}</span></td>
       <td><span class="chip">${ROLES[u.role].n}</span></td>
       <td>${u.grant?`<span class="chip grant">${GRANTS[u.grant].n}${u.scope?" · "+u.scope:""}</span>`:`<span class="tt">—</span>`}</td>
       <td>${u.plants.map(p=>`<span class="chip dim">${p}</span>`).join("")}</td>
       <td>${(u.exceptions.length+u.overrides.length)?`<span class="chip amber">${u.exceptions.length+u.overrides.length} reasoned</span>`:`<span class="chip ok">standard</span>`}</td>
+      <td style="text-align:right"><button class="btn ghost sm" onclick="event.stopPropagation();openSettings('${u.id}')">Edit ›</button></td>
     </tr>`).join("");
 }
-function pickUser(id){ selUser=id; selPlant=null; pendingOvr=0; openMods={}; renderDir(); renderEditor(); }
+function renderUC(){
+  document.getElementById("uclist").style.display=ucView==="list"?"":"none";
+  document.getElementById("ucsettings").style.display=ucView==="settings"?"":"none";
+}
+function openSettings(id){ selUser=id; selPlant=null; pendingOvr=0; openMods={}; ucView="settings"; renderDir(); renderEditor(); renderUC(); }
+function backToList(){ ucView="list"; renderDir(); renderUC(); }
 function pickPlant(p){ selPlant=p; pendingOvr=0; openMods={}; renderEditor(); }
 function toggleMod(id){ openMods[id]=!openMods[id]; renderEditor(); }
 function mockToggle(el){
@@ -373,8 +436,9 @@ function mockToggle(el){
 }
 function renderEditor(){
   const u=USERS.find(x=>x.id===selUser);
-  if(!selPlant||!u.plants.includes(selPlant)) selPlant=u.plants[0];
-  const pl=plantByName(selPlant);
+  const hasPlants=u.plants.length>0;
+  if(hasPlants&&(!selPlant||!u.plants.includes(selPlant))) selPlant=u.plants[0];
+  const pl=hasPlants?plantByName(selPlant):null;
   const scopeSel=(u.grant&&u.grant!=="global")?`
       <div class="fld"><label>Admin scope — which plants they administer</label>
         <select><option>${u.scope||u.cluster} (cluster)</option><option>One plant…</option></select></div>`:"";
@@ -400,13 +464,14 @@ function renderEditor(){
     </div>
     <div class="lbl">Plant access — their role applies at each of these</div>
     <div style="margin-bottom:16px">${u.plants.map(p=>`<span class="chip ok">✓ ${p} <span style="opacity:.65">· ${plantByName(p).cluster}</span></span>`).join("")}<button class="btn ghost sm">＋ Add plant access</button></div>
-    <div class="plantpick">
+    ${hasPlants?`<div class="plantpick">
       <span class="lbl" style="margin:0">Permissions at</span>
       <select onchange="pickPlant(this.value)">${u.plants.map(p=>`<option ${p===selPlant?"selected":""}>${p}</option>`).join("")}</select>
       <span class="tt">standard = ${ROLES[u.role].n} defaults · ${pl.mods.length+1} of ${MODULES.length} modules licensed here</span>
     </div>
     ${renderTree(u,pl)}
-    <div class="ovrbar" id="ovrbar"><b><span id="ovrn">0</span> unsaved override(s)</b> — each needs a written reason before saving. <span style="margin-left:auto;display:flex;gap:8px"><button class="btn ghost sm" onclick="pickPlant(selPlant)">Discard</button><button class="btn sm">Save with reasons…</button></span></div>`;
+    <div class="ovrbar" id="ovrbar"><b><span id="ovrn">0</span> unsaved override(s)</b> — each needs a written reason before saving. <span style="margin-left:auto;display:flex;gap:8px"><button class="btn ghost sm" onclick="pickPlant(selPlant)">Discard</button><button class="btn sm">Save with reasons…</button></span></div>`
+    :`<div class="callout" style="margin:0"><span>🕒</span><span><b>No plant access yet</b> — this person can sign in but sees nothing. Add a plant above to give their role somewhere to apply.</span></div>`}`;
 }
 function renderTree(u,pl){
   return TREE.map(node=>{
@@ -555,8 +620,35 @@ function renderWiz(){
   box.innerHTML=`<div class="wiz">${steps}${body}</div>`;
 }
 
+/* ================= ADD-PERSON MODAL ================= */
+function openAdd(){
+  document.getElementById("ad_role").innerHTML=Object.entries(ROLES).map(([k,r])=>`<option value="${k}">${r.n} — ${r.s}</option>`).join("");
+  document.getElementById("ad_grant").innerHTML=`<option value="">No grant</option>`+Object.entries(GRANTS).map(([k,g])=>`<option value="${k}" ${k==="global"?"disabled":""}>${g.n}${k==="global"?" 🔒 staff only":""}</option>`).join("");
+  document.getElementById("ad_cluster").innerHTML=[...new Set(PLANTS.map(p=>p.cluster))].map(c=>`<option>${c}</option>`).join("");
+  document.getElementById("ad_name").value=""; document.getElementById("ad_title").value="";
+  document.getElementById("ad_err").style.display="none";
+  document.getElementById("addOv").hidden=false;
+  document.getElementById("ad_name").focus();
+}
+function closeAdd(){ document.getElementById("addOv").hidden=true; }
+function createUser(){
+  const name=document.getElementById("ad_name").value.trim();
+  if(!name){ document.getElementById("ad_err").style.display="block"; return; }
+  const id="new"+(++addSeq);
+  USERS.push({id,n:name,t:document.getElementById("ad_title").value.trim()||"Team member",
+    cluster:document.getElementById("ad_cluster").value,role:document.getElementById("ad_role").value,
+    grant:document.getElementById("ad_grant").value,plants:[],exceptions:[],overrides:[]});
+  closeAdd(); renderPlants(); openSettings(id);
+}
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeAdd(); });
+
+/* ================= THEME (system default · manual toggle) ================= */
+function curTheme(){ return document.documentElement.dataset.theme||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"); }
+function cycleTheme(){ document.documentElement.dataset.theme=curTheme()==="dark"?"light":"dark"; updateThemeBtn(); }
+function updateThemeBtn(){ document.getElementById("themebtn").textContent=curTheme()==="dark"?"◑ Light mode":"◐ Dark mode"; }
+
 /* boot */
-renderDir(); renderEditor(); renderLib(); renderPlants();
+renderDir(); renderEditor(); renderUC(); renderLib(); renderPlants(); updateThemeBtn();
 </script>
 </body>
 </html>

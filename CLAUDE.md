@@ -318,6 +318,11 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
   neutral paper/graphite system, color reserved for meaning only (green =
   granted, amber = action/override, grey = unlicensed), Schibsted Grotesk +
   Spline Sans Mono, one shared legend strip, per-screen design-law notes.
+  v3 additions: directory → per-row Edit button opening the person's
+  settings as its own view (back bar returns); ＋ Add person = modal
+  (name/title/role/grant/cluster, zero plant access on create, opens
+  settings); full dark theme — three-state tokens (system default via
+  prefers-color-scheme, manual ◐/◑ header toggle stamps data-theme).
   Standalone mockup — does NOT replace index.html as the model prototype.
 - `reference/module-feature-permission-map.xlsx` — the dev lookup workbook
   (added 2026-08-13): module → feature → v2 permission tags (with legacy
