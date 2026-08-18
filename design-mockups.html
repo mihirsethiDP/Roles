@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Design mockups — User Center · Role library · Plants (tree model)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#002454; --navy-deep:#001B3F; --navy-tint:#E9F0F7; --navy-line:#C9D8E6;
+  --teal:#95CFD3; --teal-d:#5AABB0; --teal-ink:#1F6B71; --teal-tint:#E8F5F6;
+  --bg:#F7F8F9; --card:#FFFFFF; --line:#E2E6EA; --line-strong:#C7CFD8;
+  --ink:#1A2533; --ink-2:#4A5568; --ink-3:#8A95A3;
+  --amber:#B45309; --amber-bg:#FFF8E1; --amber-line:#F2C94C;
+  --err:#B80000; --err-bg:#FDECEA;
+  --mono:'IBM Plex Mono',ui-monospace,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14.5px/1.55 'Figtree',system-ui,sans-serif}
+.topbar{background:var(--navy);color:#fff;padding:14px 0 0;border-bottom:4px solid var(--teal-ink)}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+.eyebrow{font:600 10px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--teal-d);margin:0 0 4px}
+.topbar h1{font-size:19px;font-weight:800;margin:0;letter-spacing:-.2px}
+.topbar .sub{font-size:12px;color:rgba(255,255,255,.65);margin:4px 0 12px;max-width:840px}
+.scrtabs{display:flex;gap:6px;flex-wrap:wrap}
+.scrtab{border:none;background:rgba(255,255,255,.08);color:rgba(255,255,255,.7);font:600 13px 'Figtree';padding:10px 18px;border-radius:10px 10px 0 0;cursor:pointer}
+.scrtab.on{background:var(--bg);color:var(--navy)}
+main{padding:24px 0 70px}
+.scr{display:none}.scr.on{display:block}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:16px 18px;margin:0 0 14px}
+.gh{font:600 10.5px var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);margin:0 0 10px}
+.note{display:flex;gap:8px;background:var(--navy-tint);border:1px solid var(--navy-line);border-radius:9px;padding:8px 12px;font-size:12px;color:var(--ink-2);margin:0 0 12px}
+.note b{color:var(--navy)}
+.dnote{border-left:4px solid var(--teal-d);background:var(--teal-tint);border-radius:0 9px 9px 0;padding:9px 13px;font-size:12px;color:var(--ink-2);margin:0 0 14px}
+.dnote b{color:var(--teal-ink)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:9px;margin:0 0 12px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 12px}
+.kpi .n{font-size:19px;font-weight:700;color:var(--navy)}
+.kpi .l{font-size:10.5px;color:var(--ink-2)}
+select,input[type=text]{padding:8px 11px;border:1px solid var(--line-strong);border-radius:8px;font:13px 'Figtree';color:var(--ink);background:var(--card)}
+.btn{border:none;border-radius:9px;padding:10px 18px;font:600 13.5px 'Figtree';cursor:pointer}
+.btn.primary{background:var(--navy);color:#fff}
+.btn.ghost{background:transparent;color:var(--navy);border:1px solid var(--line-strong)}
+.btn.sm{padding:6px 12px;font-size:12px}
+table.dir{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+table.dir th{font:600 10px var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);text-align:left;padding:10px 14px;background:var(--bg);border-bottom:1px solid var(--line)}
+table.dir td{padding:11px 14px;border-bottom:1px solid var(--line);font-size:13px;vertical-align:middle}
+table.dir tbody tr{cursor:pointer}
+table.dir tbody tr:hover{background:var(--teal-tint)}
+table.dir tr.sel{background:var(--navy-tint)}
+table.dir tr:last-child td{border-bottom:none}
+.nm{font-weight:650;color:var(--navy)}
+.tt{font-size:11.5px;color:var(--ink-2)}
+.chip{display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:10px;background:var(--navy-tint);color:var(--navy);margin:0 4px 4px 0;white-space:nowrap}
+.chip.grant{background:#E9EEF4;color:#193650}
+.chip.amber{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-line)}
+.chip.ok{background:var(--teal-tint);color:var(--teal-ink)}
+.chip.dim{background:var(--bg);color:var(--ink-3)}
+/* editor */
+.idcard{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.avc{width:44px;height:44px;border-radius:50%;background:var(--navy);color:#fff;font:700 14px 'Figtree';display:inline-flex;align-items:center;justify-content:center;flex:none}
+.fldrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;padding-top:14px;border-top:1px solid var(--line);margin-bottom:14px}
+.fld label{display:block;font:600 10px var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);margin-bottom:5px}
+.fld select{width:100%}
+.fld .hint{font-size:11px;color:var(--ink-3);margin-top:4px;display:block}
+.excbox{border:1px solid var(--amber-line);background:var(--amber-bg);border-radius:10px;padding:9px 12px}
+.excbox .x{display:flex;gap:8px;align-items:baseline;font-size:12px;color:var(--amber);margin-bottom:4px}
+.excbox .k{font:600 10.5px var(--mono)}
+/* tree */
+.mod{border:1px solid var(--line);border-radius:12px;margin-bottom:9px;overflow:hidden;background:var(--card)}
+.mod.dark{opacity:.6;background:var(--bg)}
+.modh{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer}
+.modh:hover{background:var(--navy-tint)}
+.modh .chev{color:var(--ink-3);font-size:11px;transition:transform .15s;display:inline-block}
+.mod.open .modh .chev{transform:rotate(90deg)}
+.modh .mn{font-weight:700;font-size:13.5px;color:var(--navy)}
+.modh .lic{margin-left:auto;font:600 10px var(--mono);letter-spacing:.05em}
+.lic.on{color:var(--teal-ink)} .lic.off{color:var(--ink-3)}
+.modb{display:none;border-top:1px solid var(--line);padding:10px 14px 12px}
+.mod.open .modb{display:block}
+.feat{padding:8px 0;border-bottom:1px dashed var(--line)}
+.feat:last-child{border-bottom:none}
+.featn{font-weight:650;font-size:12.5px;margin-bottom:6px}
+.crudrow{display:flex;gap:8px;flex-wrap:wrap}
+.crud{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--navy-line);border-radius:8px;padding:4px 10px;font-size:12px;cursor:pointer;background:var(--card);user-select:none}
+.crud .bx{width:14px;height:14px;border-radius:4px;border:1.5px solid var(--line-strong);display:inline-flex;align-items:center;justify-content:center;font-size:9px;color:#fff;flex:none}
+.crud.on .bx{background:var(--teal-ink);border-color:var(--teal-ink)}
+.crud.ovr{border-color:var(--amber);box-shadow:0 0 0 1px var(--amber-line)}
+.actlbl{font:600 9.5px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--amber);margin:6px 0 3px}
+.actrow{display:flex;align-items:center;gap:8px;padding:5px 9px;border-radius:8px;margin:3px 0;font-size:12.5px;background:var(--amber-bg);border:1px solid var(--amber-line);cursor:pointer;user-select:none;flex-wrap:wrap}
+.actrow .bx{width:14px;height:14px;border-radius:4px;border:1.5px solid var(--amber-line);background:var(--card);display:inline-flex;align-items:center;justify-content:center;font-size:9px;color:#fff;flex:none}
+.actrow.on .bx{background:var(--amber);border-color:var(--amber)}
+.actrow.ovr{box-shadow:0 0 0 1.5px var(--amber)}
+.actrow .key{margin-left:auto;font:600 10px var(--mono);color:var(--amber);white-space:nowrap}
+.actrow .tier{font:600 9.5px var(--mono);background:var(--card);border:1px solid var(--amber-line);color:var(--amber);border-radius:7px;padding:1px 6px;white-space:nowrap}
+.excrowline{display:flex;align-items:center;gap:8px;padding:5px 9px;border-radius:8px;margin:3px 0;font-size:12px;border:1.5px dashed var(--amber-line);color:var(--amber);background:var(--card)}
+.ovrbar{display:none;background:var(--amber-bg);border:1px solid var(--amber-line);border-radius:10px;padding:9px 13px;font-size:12.5px;color:var(--amber);margin-top:10px;align-items:center;gap:10px;flex-wrap:wrap}
+.ovrbar.show{display:flex}
+.plantpick{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+/* library */
+.libgrid{display:grid;grid-template-columns:255px 1fr;gap:14px;align-items:start}
+@media(max-width:840px){.libgrid{grid-template-columns:1fr}}
+.rolechip{display:flex;align-items:center;gap:8px;width:100%;text-align:left;background:var(--card);border:1.5px solid var(--line-strong);border-radius:10px;padding:9px 12px;font:600 13px 'Figtree';color:var(--ink-2);cursor:pointer;margin-bottom:7px}
+.rolechip.on{border-color:var(--navy);background:var(--navy-tint);color:var(--navy)}
+.rolechip .s{display:block;font-weight:400;font-size:11px;color:var(--ink-3)}
+.lockbadge{margin-left:auto;font-size:11px}
+.grantcap{border:1px solid var(--line);border-radius:10px;padding:11px 14px;margin-bottom:9px;background:var(--card)}
+.grantcap .t{font-weight:700;font-size:13.5px;color:var(--navy)}
+.grantcap .s{font-size:12px;color:var(--ink-2);margin:2px 0 6px}
+.grantcap ul{margin:6px 0 0;padding-left:18px;font-size:12.5px;color:var(--ink-2)}
+.grantcap li{margin:2px 0}
+/* plants */
+.plgroup{font:600 10.5px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin:16px 0 8px}
+.plrow{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin-bottom:8px;flex-wrap:wrap}
+.plrow .pn{font-weight:700;font-size:14px;color:var(--navy);min-width:200px}
+.plrow .pn .tt{display:block;font-weight:400}
+.modchips{display:flex;gap:5px;flex-wrap:wrap;flex:1;min-width:280px}
+.mc{font-size:10.5px;font-weight:600;border-radius:8px;padding:3px 8px;border:1px solid;cursor:pointer;user-select:none}
+.mc.on{background:var(--teal-tint);color:var(--teal-ink);border-color:var(--teal)}
+.mc.off{background:var(--bg);color:var(--ink-3);border-color:var(--line);text-decoration:line-through}
+.mc.core{background:var(--navy-tint);color:var(--navy);border-color:var(--navy-line);cursor:default}
+.plmeta{font-size:11.5px;color:var(--ink-2);white-space:nowrap}
+/* wizard */
+.wiz{border:1.5px dashed var(--line-strong);border-radius:13px;padding:16px 18px;margin-bottom:14px;background:var(--card)}
+.wsteps{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.wstep{font:600 10.5px var(--mono);border:1px solid var(--line-strong);border-radius:999px;padding:4px 12px;color:var(--ink-3);background:var(--bg)}
+.wstep.on{background:var(--navy);border-color:var(--navy);color:#fff}
+.wstep.done{background:var(--teal-tint);border-color:var(--teal-d);color:var(--teal-ink)}
+.wfield{margin-bottom:11px;max-width:420px}
+.wfield label{display:block;font:600 10px var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);margin-bottom:5px}
+.wfield input,.wfield select{width:100%}
+.wmods{display:flex;flex-direction:column;gap:6px;max-width:560px}
+.wmod{display:flex;align-items:center;gap:10px;border:1.5px solid var(--line-strong);border-radius:10px;padding:9px 12px;cursor:pointer;background:var(--card);font-size:13px}
+.wmod.on{border-color:var(--teal-d);background:var(--teal-tint)}
+.wmod .d{font-size:11px;color:var(--ink-2)}
+.wmod .tk{margin-left:auto;color:var(--teal-ink);font-weight:700}
+.wfoot{display:flex;gap:8px;align-items:center;margin-top:14px;padding-top:12px;border-top:1px solid var(--line);flex-wrap:wrap}
+.wppl label{display:flex;align-items:center;gap:8px;font-size:13px;margin-bottom:6px;cursor:pointer}
+.okmsg{background:var(--teal-tint);border:1px solid var(--teal);border-radius:10px;padding:10px 14px;font-size:13px;color:var(--teal-ink);margin-top:10px}
+footer{border-top:1px solid var(--line);padding:16px 0 40px;color:var(--ink-3);font-size:11.5px}
+</style>
+</head>
+<body>
+<div class="topbar"><div class="wrap">
+  <p class="eyebrow">DigitalPaani · User Center — Roles &amp; Permissions · design mockups</p>
+  <h1>The three screens, on the accepted tree model</h1>
+  <p class="sub">Module → Feature → CRUD + named actions · one role per person · grants &amp; exceptions as their own dropdowns · plant licences cap everything. Interactive mockup — CRUD ticks are illustrative, action keys are real.</p>
+  <div class="scrtabs">
+    <button class="scrtab on" data-s="0" onclick="scr(0)">1 · User Center</button>
+    <button class="scrtab" data-s="1" onclick="scr(1)">2 · Roles &amp; admin grants</button>
+    <button class="scrtab" data-s="2" onclick="scr(2)">3 · Plants &amp; product modules</button>
+  </div>
+</div></div>
+<main><div class="wrap">
+
+<!-- ============ SCREEN 1 · USER CENTER ============ -->
+<div class="scr on" id="scr0">
+  <div class="dnote"><b>Design intent — one decision at a time, top to bottom.</b> Directory → pick a person → three account-level fields (role · admin grant · exceptions) → plant access → the permission tree, per plant. The tree is read-mostly: standard ticks come from the role; touching any box becomes an amber override that demands a written reason before save.</div>
+  <div class="panel">
+    <div class="gh">People</div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+      <input type="text" placeholder="Search name or title…" style="flex:1;min-width:200px">
+      <select><option>All plants</option></select>
+      <button class="btn primary">＋ Add person</button>
+    </div>
+    <table class="dir"><thead><tr><th>Person</th><th>Role</th><th>Admin grant</th><th>Plants</th><th>Exceptions</th></tr></thead><tbody id="dirbody"></tbody></table>
+  </div>
+  <div class="panel" id="editor"></div>
+</div>
+
+<!-- ============ SCREEN 2 · LIBRARY ============ -->
+<div class="scr" id="scr1">
+  <div class="dnote"><b>Design intent — a read-only register.</b> Pick a role and see its exact tick-pattern over the whole tree (amber actions included; co-sign visibly L4-only). The four grants live on the same screen as their own plane: what each one administers, Full Site shown as the union, Global as the superuser. Nothing here is editable — the catalog is closed.</div>
+  <div class="note"><span>🔒</span><span><b>Hard-locked.</b> Five roles, four grants — nobody can create, rename or edit one (People Admins included). When a role isn't quite right, the answer is a per-person override with a reason, on the person's record.</span></div>
+  <div class="libgrid">
+    <div>
+      <div class="gh">Roles — one per person, account-wide</div>
+      <div id="rolelist"></div>
+      <div class="gh" style="margin-top:16px">Admin grants — at most one, on top</div>
+      <div id="grantlist"></div>
+    </div>
+    <div class="panel" style="margin:0" id="libdetail"></div>
+  </div>
+</div>
+
+<!-- ============ SCREEN 3 · PLANTS ============ -->
+<div class="scr" id="scr2">
+  <div class="dnote"><b>Design intent — the whole contract on one row.</b> A plant is its name, its cluster label, and its licence chips. Chips are the single write surface (DigitalPaani admin only); every other screen reads them. New plants come through a three-step wizard that commits only at the end, as one audited action.</div>
+  <div class="kpis">
+    <div class="kpi"><div class="n" id="kplants">—</div><div class="l">plants</div></div>
+    <div class="kpi"><div class="n" id="kclusters">—</div><div class="l">clusters (labels)</div></div>
+    <div class="kpi"><div class="n" id="lictotal">—</div><div class="l">module licences (beyond core)</div></div>
+    <div class="kpi"><div class="n">5</div><div class="l">people with access</div></div>
+  </div>
+  <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:6px;flex-wrap:wrap">
+    <div class="note" style="flex:1;min-width:280px;margin:0"><span>💡</span><span>Green chip = licensed. Struck-through = not in the contract — everything that module unlocks is dimmed for everyone there (never deleted). <b>Issue Resolution ships dark:</b> approval actions are already ticked into the roles and light up the day <b>ops</b> is licensed at a plant.</span></div>
+    <button class="btn primary" onclick="wizOpen()">＋ Add plant</button>
+  </div>
+  <div id="wizbox"></div>
+  <div id="plantlist"></div>
+</div>
+
+</div></main>
+<footer><div class="wrap">Design mockups · accepted model: permission tree (CRUD + named actions) · one role per person · plant licences cap everything · DigitalPaani</div></footer>
+
+<script>
+/* ================= DATA (real demo data; ticks illustrative, action keys real) ================= */
+const MODULES=[
+ {id:"core",n:"Platform Core",icon:"🧩",always:true},
+ {id:"ops",n:"Issue Resolution",icon:"🔧"},
+ {id:"tasks",n:"Tasks & Shifts",icon:"📋"},
+ {id:"data",n:"Data, Lab & Logbook",icon:"🧪"},
+ {id:"analytics",n:"Dashboards & Analytics",icon:"📊"},
+ {id:"iot",n:"IoT & Remote Control",icon:"📡"},
+ {id:"inv",n:"Inventory Management",icon:"🧯"},
+ {id:"floc",n:"Floc Detector",icon:"🔬",noperm:true},
+];
+const modById=Object.fromEntries(MODULES.map(m=>[m.id,m]));
+let PLANTS=[
+ {name:"Essentia STP",cluster:"Adern",mods:["ops","tasks","data","analytics","iot","inv","floc"]},
+ {name:"Vedanta- 200 KLD (WTP)",cluster:"Vedanta",mods:["ops","tasks","data","analytics","iot"]},
+ {name:"Vedanta- 50KLD (Gas Holder)",cluster:"Vedanta",mods:["ops","tasks"]},
+ {name:"EMS",cluster:"EMS",mods:["ops","tasks","data","analytics","inv","floc"]},
+ {name:"Amazon DEL-4",cluster:"Amazon",mods:["ops","tasks","data","analytics"]},
+ {name:"Amazon DEL-5",cluster:"Amazon",mods:["tasks","data","analytics","iot"]},
+];
+/* the master tree: Module -> Feature -> CRUD + named actions (amber) */
+const TREE=[
+ {mod:"ops",feats:[
+   {n:"Issue sessions",crud:true},
+   {n:"Photo / video evidence",crud:true},
+   {n:"Approvals & actions",actions:[
+     {k:"approve.gates",n:"Approve / reject gates (RC, remediation, close)",tier:"L3+"},
+     {k:"approve.selfapprove",n:"Self-approve own RC / close",tier:"L3+"},
+     {k:"approve.forceclose",n:"Force-close (auto issues need a co-sign)",tier:"L3+"},
+     {k:"oversight.cosign",n:"Co-sign a force-close",tier:"L4 only"},
+     {k:"approve.reopen",n:"Reopen & change root cause",tier:"L3+"},
+     {k:"approve.override",n:"Photo override (waive evidence)",tier:"L3+"}]}]},
+ {mod:"tasks",feats:[
+   {n:"Tasks / shifts",crud:true},
+   {n:"Task actions",actions:[
+     {k:"approve.assign",n:"Assign one-off tasks & insights",tier:"L3+"},
+     {k:"approve.shiftview",n:"Plant-wide shift view",tier:"L3+"}]}]},
+ {mod:"data",feats:[
+   {n:"Lab entry / logbook",crud:true},
+   {n:"Data actions",actions:[
+     {k:"approve.datacorrect",n:"Data correction — edit recorded entries",tier:"L3+ · Tech Admin+"}]}]},
+ {mod:"analytics",feats:[
+   {n:"Dashboards / reports",crud:true},
+   {n:"Insights & events",crud:true}]},
+ {mod:"iot",feats:[
+   {n:"Live sensors",crud:true},
+   {n:"Remote actuation",exception:true}]},
+ {mod:"inv",feats:[
+   {n:"Stock items (usage / expiry / purchase)",crud:true},
+   {n:"Inventory actions",actions:[
+     {k:"approve.invlogs",n:"Movement log — every item movement",tier:"L3+"}]}]},
+ {mod:"core",feats:[
+   {n:"Plant dashboard",crud:true}]},
+];
+/* role default tick patterns (illustrative CRUD; the action ladder is the real one) */
+const ROLES={
+ l1:{n:"L1 Operator",s:"works the plant — no approval actions"},
+ l3:{n:"L3 Lead",s:"L1 + the approve actions"},
+ l4:{n:"L4 Senior Lead",s:"L3 + co-sign + multi-plant oversight"},
+ regular:{n:"Regular Non-op",s:"read-only, one plant"},
+ senior:{n:"Senior Non-op",s:"read-only across plants (portfolio)"},
+};
+const CRUDDEF={
+ "Issue sessions":"CRU","Photo / video evidence":"CR","Tasks / shifts":"CRU",
+ "Lab entry / logbook":"CRU","Dashboards / reports":"R","Insights & events":"R",
+ "Live sensors":"R","Stock items (usage / expiry / purchase)":"CRU","Plant dashboard":"R"};
+function crudDefault(role,feat,op){
+  const pat=CRUDDEF[feat]||"";
+  if(role==="regular"||role==="senior") return op==="R"&&pat.includes("R");
+  return pat.includes(op);
+}
+function actDefault(role,key){
+  if(role==="l4") return true;
+  if(role==="l3") return key!=="oversight.cosign";
+  return false;
+}
+const GRANTS={
+ people:{n:"People Admin",s:"manages the humans",caps:["Invite / edit / offboard users","Rosters & shift schedules","Skills & competencies","Plant rosters & directories","Assign roles & grants","Per-user notification overrides","Directory & audit-log export"]},
+ tech:{n:"Technical Admin",s:"configures the plant",caps:["Dashboards & widgets","Issue / task / trigger rules","Diagnostic flows & workflows","Plant, lab & test setup","Sensors & thresholds","PLC / data logger","Escalation routing & auto email","Site templates","Site analytics formulas","Store & item catalog setup"]},
+ fullsite:{n:"Full Site Admin",s:"People + Technical, combined",union:true},
+ global:{n:"Global Admin",s:"DigitalPaani staff — the superuser",global:true},
+};
+let USERS=[
+ {id:"satyadev",n:"Satyadev Singh",t:"Shift supervisor",cluster:"Adern",role:"l3",grant:"",plants:["Essentia STP","Vedanta- 200 KLD (WTP)"],
+  exceptions:[{k:"remote.actuate",n:"Remote actuation",plant:"Essentia STP",reason:"Trained & certified for remote blower control, DP-1188"}],overrides:[]},
+ {id:"garvit",n:"Garvit Kumar",t:"Automation engineer",cluster:"EMS",role:"l3",grant:"tech",scope:"EMS",plants:["EMS","Amazon DEL-4"],exceptions:[],
+  overrides:[{k:"approve.selfapprove",dir:"remove",plant:"Amazon DEL-4",reason:"Four-eyes rule at client site, DP-1201"}]},
+ {id:"mohit",n:"Mohit Joshi",t:"Plant operator",cluster:"Vedanta",role:"l1",grant:"",plants:["Vedanta- 200 KLD (WTP)"],exceptions:[],overrides:[]},
+ {id:"piyush",n:"Piyush Negi",t:"Sustainability head",cluster:"Amazon",role:"senior",grant:"",plants:["Amazon DEL-4","Amazon DEL-5"],exceptions:[],overrides:[]},
+ {id:"mandeep",n:"Mandeep Dagar",t:"Lab technician",cluster:"EMS",role:"l1",grant:"",plants:["EMS"],exceptions:[],overrides:[]},
+];
+
+/* ================= SHELL ================= */
+function scr(i){
+  document.querySelectorAll(".scrtab").forEach(t=>t.classList.toggle("on",+t.dataset.s===i));
+  document.querySelectorAll(".scr").forEach((s,j)=>s.classList.toggle("on",i===j));
+}
+const initials=n=>n.trim().split(/\s+/).map(w=>w[0]).slice(0,2).join("").toUpperCase();
+const plantByName=n=>PLANTS.find(p=>p.name===n);
+
+/* ================= SCREEN 1 — USER CENTER ================= */
+let selUser="satyadev", selPlant=null, pendingOvr=0, openMods={};
+function renderDir(){
+  document.getElementById("dirbody").innerHTML=USERS.map(u=>`
+    <tr class="${u.id===selUser?"sel":""}" onclick="pickUser('${u.id}')">
+      <td><span class="nm">${u.n}</span><br><span class="tt">${u.t} · ${u.cluster}</span></td>
+      <td><span class="chip">${ROLES[u.role].n}</span></td>
+      <td>${u.grant?`<span class="chip grant">${GRANTS[u.grant].n}${u.scope?" · "+u.scope:""}</span>`:`<span class="tt">—</span>`}</td>
+      <td>${u.plants.map(p=>`<span class="chip dim">${p}</span>`).join("")}</td>
+      <td>${(u.exceptions.length+u.overrides.length)?`<span class="chip amber">${u.exceptions.length+u.overrides.length} reasoned</span>`:`<span class="chip ok">standard</span>`}</td>
+    </tr>`).join("");
+}
+function pickUser(id){ selUser=id; selPlant=null; pendingOvr=0; openMods={}; renderDir(); renderEditor(); }
+function pickPlant(p){ selPlant=p; pendingOvr=0; openMods={}; renderEditor(); }
+function toggleMod(id){ openMods[id]=!openMods[id]; renderEditor(); }
+function mockToggle(el){
+  el.classList.toggle("on"); el.classList.toggle("ovr");
+  pendingOvr+=el.classList.contains("ovr")?1:-1;
+  const bar=document.getElementById("ovrbar");
+  bar.classList.toggle("show",pendingOvr>0);
+  document.getElementById("ovrn").textContent=pendingOvr;
+}
+function renderEditor(){
+  const u=USERS.find(x=>x.id===selUser);
+  if(!selPlant||!u.plants.includes(selPlant)) selPlant=u.plants[0];
+  const pl=plantByName(selPlant);
+  const scopeSel=(u.grant&&u.grant!=="global")?`
+      <div class="fld"><label>Admin scope <span style="text-transform:none;letter-spacing:0">— which plants they administer</span></label>
+        <select><option>${u.scope||u.cluster} (cluster)</option><option>One plant…</option></select></div>`:"";
+  const excChips=u.exceptions.length?u.exceptions.map(e=>`
+      <div class="x"><span class="k">${e.k}</span><span>@ ${e.plant}</span><span style="color:var(--ink-3)">· ${e.reason}</span></div>`).join("")
+    :`<div class="x" style="color:var(--ink-3)">None — the 3 exception permissions are granted one person + one plant + one reason at a time.</div>`;
+  document.getElementById("editor").innerHTML=`
+    <div class="idcard">
+      <span class="avc">${initials(u.n)}</span>
+      <span><span class="nm" style="font-size:16px">${u.n}</span><br><span class="tt">${u.t} · ${u.cluster}</span></span>
+      <span style="margin-left:auto;display:flex;gap:8px"><button class="btn ghost sm">🔍 Access review</button><button class="btn ghost sm">🖥 Preview app</button></span>
+    </div>
+    <div class="fldrow">
+      <div class="fld"><label>Role — one per person, every plant</label>
+        <select>${Object.entries(ROLES).map(([k,r])=>`<option ${k===u.role?"selected":""}>${r.n} — ${r.s}</option>`).join("")}</select>
+        <span class="hint">changing it resets every plant to the new role's standard</span></div>
+      <div class="fld"><label>Admin grant — most people need none</label>
+        <select><option ${!u.grant?"selected":""}>No grant</option>${Object.entries(GRANTS).map(([k,g])=>`<option ${k===u.grant?"selected":""} ${k==="global"?"disabled":""}>${g.n}${k==="global"?" 🔒 DigitalPaani staff only":""}</option>`).join("")}</select>
+        <span class="hint">administration only — never changes day-to-day permissions</span></div>
+      ${scopeSel}
+      <div class="fld"><label>Exception permissions — separate from the tree</label>
+        <div class="excbox">${excChips}<button class="btn ghost sm" style="margin-top:4px">＋ Grant an exception…</button></div></div>
+    </div>
+    <div class="gh">Plant access — their role applies at each of these</div>
+    <div style="margin-bottom:14px">${u.plants.map(p=>`<span class="chip ok">✓ ${p} <span style="opacity:.65">· ${plantByName(p).cluster}</span></span>`).join("")}<button class="btn ghost sm">＋ Add plant access</button></div>
+    <div class="plantpick">
+      <span class="gh" style="margin:0">Permissions at</span>
+      <select onchange="pickPlant(this.value)">${u.plants.map(p=>`<option ${p===selPlant?"selected":""}>${p}</option>`).join("")}</select>
+      <span class="tt">standard = ${ROLES[u.role].n} defaults · ${pl.mods.length+1} of ${MODULES.length} modules licensed here</span>
+    </div>
+    ${renderTree(u,pl)}
+    <div class="ovrbar" id="ovrbar"><b><span id="ovrn">0</span> unsaved override(s)</b> — each needs a written reason before saving. <span style="margin-left:auto;display:flex;gap:8px"><button class="btn ghost sm" onclick="pickPlant(selPlant)">Discard</button><button class="btn primary sm">Save with reasons…</button></span></div>`;
+}
+function renderTree(u,pl){
+  return TREE.map(node=>{
+    const m=modById[node.mod];
+    const lic=m.always||pl.mods.includes(node.mod);
+    const open=openMods[node.mod]!==undefined?openMods[node.mod]:lic&&(node.mod==="ops"||node.mod==="data");
+    const body=node.feats.map(f=>{
+      if(f.exception) return `<div class="feat"><div class="featn">${f.n}</div>
+        <div class="excrowline">⚡ Exception permission — never a tree tick. ${u.exceptions.some(e=>e.plant===pl.name&&e.k==="remote.actuate")?"<b>Granted to this person at this plant (reasoned & audited).</b>":"Granted per person + plant + reason from the Exceptions field above."}</div></div>`;
+      let h=`<div class="feat"><div class="featn">${f.n}</div>`;
+      if(f.crud) h+=`<div class="crudrow">`+["C","R","U","D"].map(op=>{
+        const on=crudDefault(u.role,f.n,op);
+        return `<span class="crud ${on?"on":""}" onclick="${lic?"mockToggle(this)":""}" title="${lic?"click to override (reason required)":"module not licensed — dimmed"}"><span class="bx">${on?"✓":""}</span>${{C:"Create",R:"Read",U:"Update",D:"Delete"}[op]}</span>`;
+      }).join("")+`</div>`;
+      if(f.actions){ h+=`<div class="actlbl">Actions — named permissions, danger-tier</div>`+f.actions.map(a=>{
+        const ovr=u.overrides.find(o=>o.k===a.k&&o.plant===pl.name);
+        const on=ovr?ovr.dir!=="remove":actDefault(u.role,a.k);
+        return `<div class="actrow ${on?"on":""} ${ovr?"ovr":""}" onclick="${lic?"mockToggle(this)":""}">
+          <span class="bx">${on?"✓":""}</span>${a.n}
+          ${ovr?`<span class="tier" title="${ovr.reason}">override ⊘ · reasoned</span>`:`<span class="tier">${a.tier}</span>`}
+          <span class="key">${a.k}</span></div>`;
+      }).join(""); }
+      return h+`</div>`;
+    }).join("");
+    return `<div class="mod ${lic?"":"dark"} ${open?"open":""}">
+      <div class="modh" onclick="toggleMod('${node.mod}')"><span class="chev">▶</span><span class="mn">${m.icon} ${m.n}</span>
+        <span class="lic ${lic?"on":"off"}">${lic?"LICENSED":"NOT LICENSED — DIMMED, NEVER DELETED"}</span></div>
+      <div class="modb">${body}</div></div>`;
+  }).join("")+`<div class="mod dark"><div class="modh" style="cursor:default"><span class="mn">🔬 Floc Detector</span><span class="lic off">HARDWARE ADD-ON — NO USER PERMISSIONS</span></div></div>`;
+}
+
+/* ================= SCREEN 2 — LIBRARY ================= */
+let libSel={kind:"role",id:"l3"};
+function pickLib(kind,id){ libSel={kind,id}; renderLib(); }
+function renderLib(){
+  document.getElementById("rolelist").innerHTML=Object.entries(ROLES).map(([k,r])=>`
+    <button class="rolechip ${libSel.kind==="role"&&libSel.id===k?"on":""}" onclick="pickLib('role','${k}')"><span>${r.n}<span class="s">${r.s}</span></span><span class="lockbadge">🔒</span></button>`).join("");
+  document.getElementById("grantlist").innerHTML=Object.entries(GRANTS).map(([k,g])=>`
+    <button class="rolechip ${libSel.kind==="grant"&&libSel.id===k?"on":""}" onclick="pickLib('grant','${k}')"><span>${g.n}<span class="s">${g.s}</span></span><span class="lockbadge">🔒</span></button>`).join("");
+  const box=document.getElementById("libdetail");
+  if(libSel.kind==="role"){
+    const r=ROLES[libSel.id];
+    let crudN=0,actN=0;
+    TREE.forEach(node=>node.feats.forEach(f=>{
+      if(f.crud) ["C","R","U","D"].forEach(op=>{ if(crudDefault(libSel.id,f.n,op)) crudN++; });
+      (f.actions||[]).forEach(a=>{ if(actDefault(libSel.id,a.k)) actN++; });
+    }));
+    box.innerHTML=`<div class="gh">${r.n} — default tick-pattern (read-only)</div>
+      <div style="margin-bottom:10px"><span class="chip ok">${crudN} CRUD ticks</span><span class="chip amber">${actN} action permissions</span><span class="chip dim">applies at every plant on the person's access list, capped by that plant's licences</span></div>
+      ${TREE.map(node=>{
+        const m=modById[node.mod];
+        const body=node.feats.map(f=>{
+          if(f.exception) return `<div class="feat"><div class="featn">${f.n}</div><div class="excrowline">⚡ Never part of any role — exception dropdown only (Global Admin holds it implicitly).</div></div>`;
+          let h=`<div class="feat"><div class="featn">${f.n}</div>`;
+          if(f.crud) h+=`<div class="crudrow">`+["C","R","U","D"].map(op=>{
+            const on=crudDefault(libSel.id,f.n,op);
+            return `<span class="crud ${on?"on":""}" style="cursor:default"><span class="bx">${on?"✓":""}</span>${{C:"Create",R:"Read",U:"Update",D:"Delete"}[op]}</span>`;
+          }).join("")+`</div>`;
+          if(f.actions) h+=`<div class="actlbl">Actions</div>`+f.actions.map(a=>{
+            const on=actDefault(libSel.id,a.k);
+            return `<div class="actrow ${on?"on":""}" style="cursor:default"><span class="bx">${on?"✓":""}</span>${a.n}<span class="tier">${a.tier}</span><span class="key">${a.k}</span></div>`;
+          }).join("");
+          return h+`</div>`;
+        }).join("");
+        return `<div class="mod open"><div class="modh" style="cursor:default"><span class="mn">${m.icon} ${m.n}</span></div><div class="modb">${body}</div></div>`;
+      }).join("")}`;
+  } else {
+    const g=GRANTS[libSel.id];
+    let inner="";
+    if(g.global){
+      inner=`<div class="grantcap" style="border-color:var(--amber-line);background:var(--amber-bg)"><div class="t">Superuser — its check never says no</div>
+        <div class="s">Every CRUD tick, every action, every admin capability, at every plant — including the 3 exception permissions (remote actuation, view-as, sensor health), which nobody else holds by default. Every use is audited.</div></div>`;
+    } else if(g.union){
+      inner=`<div class="grantcap"><div class="t">People Admin — everything it administers</div><ul>${GRANTS.people.caps.map(c=>`<li>${c}</li>`).join("")}</ul></div>
+        <div class="grantcap"><div class="t">Technical Admin — everything it administers</div><ul>${GRANTS.tech.caps.map(c=>`<li>${c}</li>`).join("")}</ul></div>
+        <div class="note" style="margin:0"><span>＝</span><span><b>Full Site is computed as the union of the two</b> — never a third list that could drift.</span></div>`;
+    } else {
+      inner=`<div class="grantcap"><div class="t">${g.n} — everything it administers</div><ul>${g.caps.map(c=>`<li>${c}</li>`).join("")}</ul></div>`;
+    }
+    box.innerHTML=`<div class="gh">${g.n} — capability plane (read-only)</div>
+      <div style="margin-bottom:10px"><span class="chip grant">at most one grant per person</span><span class="chip dim">non-Global grants carry a cluster or plant scope</span></div>
+      ${inner}
+      <div class="note" style="margin-top:12px"><span>🧭</span><span><b>Grants share zero permissions with the roles.</b> Roles operate and view; grants configure and administer. Same modules, different checkboxes — one licence flag caps both sides together.</span></div>`;
+  }
+}
+
+/* ================= SCREEN 3 — PLANTS ================= */
+let wiz=null;
+function renderPlants(){
+  const groups={};
+  PLANTS.forEach(p=>{ (groups[p.cluster]=groups[p.cluster]||[]).push(p); });
+  document.getElementById("kplants").textContent=PLANTS.length;
+  document.getElementById("kclusters").textContent=Object.keys(groups).length;
+  document.getElementById("lictotal").textContent=PLANTS.reduce((n,p)=>n+p.mods.filter(m=>m!=="core").length,0);
+  document.getElementById("plantlist").innerHTML=Object.entries(groups).map(([cl,pls])=>`
+    <div class="plgroup">${cl} · cluster</div>`+pls.map(p=>{
+      const ppl=USERS.filter(u=>u.plants.includes(p.name)).length;
+      return `<div class="plrow">
+        <span class="pn">${p.name}<span class="tt">${cl} · ${p.mods.length} licensed modules</span></span>
+        <span class="modchips">`+MODULES.map(m=>{
+          if(m.always) return `<span class="mc core" title="always included">🧩 Core</span>`;
+          const on=p.mods.includes(m.id);
+          return `<span class="mc ${on?"on":"off"}" title="${m.n} — click to ${on?"remove from":"add to"} the contract (DigitalPaani admin only)" onclick="togLic('${p.name}','${m.id}')">${m.icon} ${m.n.split(" ")[0].replace(",","")}</span>`;
+        }).join("")+`</span>
+        <span class="plmeta">${ppl} ${ppl===1?"person":"people"} ›</span>
+      </div>`;
+    }).join("")).join("");
+}
+function togLic(plant,mod){
+  const p=plantByName(plant);
+  p.mods=p.mods.includes(mod)?p.mods.filter(x=>x!==mod):[...p.mods,mod];
+  renderPlants();
+  if(selUser) renderEditor(); // the tree dims/undims live — one licence flag, every screen
+}
+function wizOpen(){ wiz={step:1,name:"",cluster:"Vedanta",newCluster:"",mods:new Set(["tasks"]),people:new Set(),done:false}; renderWiz(); }
+function wizClose(){ wiz=null; renderWiz(); }
+function wizGo(s){ if(wiz.step===1){ wiz.name=document.getElementById("wname").value; const c=document.getElementById("wcluster").value; wiz.cluster=c; } wiz.step=s; renderWiz(); }
+function wizMod(id){ wiz.mods.has(id)?wiz.mods.delete(id):wiz.mods.add(id); renderWiz(); }
+function wizPpl(id){ wiz.people.has(id)?wiz.people.delete(id):wiz.people.add(id); renderWiz(); }
+function wizFinish(){
+  const name=wiz.name.trim()||"New plant";
+  PLANTS.push({name,cluster:wiz.cluster,mods:[...wiz.mods]});
+  wiz.people.forEach(id=>{ const u=USERS.find(x=>x.id===id); if(u&&!u.plants.includes(name)) u.plants.push(name); });
+  wiz.done=name; renderWiz(); renderPlants(); renderDir();
+}
+function renderWiz(){
+  const box=document.getElementById("wizbox");
+  if(!wiz){ box.innerHTML=""; return; }
+  if(wiz.done){ box.innerHTML=`<div class="wiz"><div class="okmsg">✓ <b>${wiz.done}</b> created — ${wiz.mods.size} module${wiz.mods.size!==1?"s":""} licensed, ${wiz.people.size} ${wiz.people.size===1?"person":"people"} given access at their existing role. One audited action.</div>
+    <div class="wfoot"><button class="btn ghost sm" onclick="wizClose()">Close</button></div></div>`; return; }
+  const steps=`<div class="wsteps">${["1 · Plant details","2 · Product modules","3 · People"].map((s,i)=>`<span class="wstep ${wiz.step===i+1?"on":wiz.step>i+1?"done":""}">${wiz.step>i+1?"✓ ":""}${s}</span>`).join("")}</div>`;
+  let body="";
+  if(wiz.step===1) body=`
+    <div class="wfield"><label>Plant name</label><input type="text" id="wname" value="${wiz.name}" placeholder="e.g. Vedanta- 500 KLD (STP)"></div>
+    <div class="wfield"><label>Cluster label — groups plants in pickers; not a folder</label>
+      <select id="wcluster">${[...new Set(PLANTS.map(p=>p.cluster))].map(c=>`<option ${wiz.cluster===c?"selected":""}>${c}</option>`).join("")}<option>＋ New cluster label…</option></select></div>
+    <div class="wfoot"><button class="btn ghost sm" onclick="wizClose()">Cancel</button><span style="flex:1"></span><button class="btn primary" onclick="wizGo(2)">Next — modules →</button></div>`;
+  if(wiz.step===2) body=`
+    <div class="wmods">${MODULES.filter(m=>!m.always).map(m=>`
+      <div class="wmod ${wiz.mods.has(m.id)?"on":""}" onclick="wizMod('${m.id}')"><span>${m.icon}</span><span><b>${m.n}</b>${m.noperm?`<span class="d"> — hardware add-on, no user permissions</span>`:""}${m.id==="ops"?`<span class="d"> — ships dark until the feature launches; approval actions light up here on licensing day</span>`:""}</span><span class="tk">${wiz.mods.has(m.id)?"✓":""}</span></div>`).join("")}</div>
+    <div class="wfoot"><button class="btn ghost sm" onclick="wizGo(1)">← Back</button><span style="flex:1"></span><button class="btn primary" onclick="wizGo(3)">Next — people →</button></div>`;
+  if(wiz.step===3) body=`
+    <div class="wppl">${USERS.map(u=>`<label><input type="checkbox" ${wiz.people.has(u.id)?"checked":""} onchange="wizPpl('${u.id}')"> ${u.n} <span class="tt">· joins at their account role — ${ROLES[u.role].n}</span></label>`).join("")}</div>
+    <div class="note" style="margin-top:8px"><span>💡</span><span>People join at their <b>existing account-wide role</b> — the wizard never asks for a role. Nothing is created until Finish; then it's one audited action.</span></div>
+    <div class="wfoot"><button class="btn ghost sm" onclick="wizGo(2)">← Back</button><span style="flex:1"></span><button class="btn primary" onclick="wizFinish()">Create ${wiz.name.trim()||"plant"}${wiz.people.size?` · ${wiz.people.size} ${wiz.people.size===1?"person":"people"}`:""}</button></div>`;
+  box.innerHTML=`<div class="wiz">${steps}${body}</div>`;
+}
+
+/* boot */
+renderDir(); renderEditor(); renderLib(); renderPlants();
+</script>
+</body>
+</html>

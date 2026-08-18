@@ -304,6 +304,17 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
   People/Technical/Full Site; Global is the deliberate superuser exception),
   the operate-vs-configure module table, the 5-step runtime-check flow chart,
   and the build rules to assert. Linked from the PRD reference index.
+- `design-mockups.html` — interactive design mockups (added 2026-08-14, owner
+  request) for the three screens ON THE ACCEPTED DEV MODEL (the tree:
+  Module → Feature → CRUD + named amber action leaves with real keys):
+  1) User Center — directory → identity fields (role / grant+scope /
+  exceptions dropdowns) → plant access → per-plant tree with licence
+  dimming and amber reasoned overrides; 2) Roles & grants library —
+  read-only tick-patterns per role (co-sign visibly L4-only) + grant
+  capability planes (Full Site = computed union, Global = superuser);
+  3) Plants — licence chips as the single write surface + 3-step add-plant
+  wizard (commit-on-finish). CRUD ticks illustrative, action keys real.
+  Standalone mockup — does NOT replace index.html as the model prototype.
 - `reference/module-feature-permission-map.xlsx` — the dev lookup workbook
   (added 2026-08-13): module → feature → v2 permission tags (with legacy
   sources), role × permission and grant × permission matrices, and the
