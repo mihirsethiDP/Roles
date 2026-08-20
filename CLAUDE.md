@@ -323,6 +323,16 @@ Lead), Ranjana (design), Shivam Jisoriya (tech).
   (name/title/role/grant/cluster, zero plant access on create, opens
   settings); full dark theme — three-state tokens (system default via
   prefers-color-scheme, manual ◐/◑ header toggle stamps data-theme).
+  v4 (dev write-up rev): the tree now carries BOTH planes — 20 violet
+  admin-plane leaves under their real modules (people.*/tech.plant/sitetpl/
+  templates.* on core; tech.rules/flows/routing on ops; people.rosters on
+  tasks; tech.formulas/dashcfg/sensors/iot/stores on their modules); a grant
+  = locked tick-pattern over them (People 7 · Technical 10 · Full Site 17 =
+  derived union · Global all + step-up note); person tree shows the admin
+  plane ticked by the grant with people.grants/templates.* fenced (never
+  via override); library grant view renders the admin-plane tree; new
+  governance card (Tree Manager + Template editor + override fences,
+  Global-only); floc = licensable, leaves arrive with the widget.
   Standalone mockup — does NOT replace index.html as the model prototype.
 - `reference/module-feature-permission-map.xlsx` — the dev lookup workbook
   (added 2026-08-13): module → feature → v2 permission tags (with legacy

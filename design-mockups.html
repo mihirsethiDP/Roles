@@ -19,6 +19,7 @@
   --mono:'Spline Sans Mono',ui-monospace,Consolas,monospace;
   --r:12px;
   --bad:#B3362B; --bad-bg:#FBEAE7;
+  --adm:#5B4E9E; --adm-bg:#EFEDF8; --adm-line:#D6D1EC;        /* admin plane — ticked by grants */
   --ink-3:var(--faint); /* alias used by inline styles */
 }
 @media (prefers-color-scheme:dark){
@@ -30,6 +31,7 @@
     --act:#E3B45C; --act-bg:#2A2413; --act-line:#554920;
     --off:#8A8D93; --off-bg:#232529;
     --bad:#F08A7A; --bad-bg:#33201C;
+    --adm:#A99DE4; --adm-bg:#232035; --adm-line:#443C63;
   }
 }
 :root[data-theme="dark"]{
@@ -40,6 +42,7 @@
   --act:#E3B45C; --act-bg:#2A2413; --act-line:#554920;
   --off:#8A8D93; --off-bg:#232529;
   --bad:#F08A7A; --bad-bg:#33201C;
+  --adm:#A99DE4; --adm-bg:#232035; --adm-line:#443C63;
 }
 *{box-sizing:border-box}
 ::selection{background:var(--ink);color:var(--paper)}
@@ -62,7 +65,7 @@ header{background:var(--surface);border-bottom:1px solid var(--hair)}
 .legend .in{display:flex;gap:20px;flex-wrap:wrap;align-items:center;padding:9px 0;font-size:12px;color:var(--muted)}
 .legend .k{display:inline-flex;align-items:center;gap:6px}
 .sw{width:11px;height:11px;border-radius:3.5px;display:inline-block}
-.sw.ok{background:var(--ok)} .sw.act{background:var(--act)} .sw.off{background:var(--off-bg);border:1px solid var(--hair-2)}
+.sw.ok{background:var(--ok)} .sw.act{background:var(--act)} .sw.adm{background:var(--adm)} .sw.off{background:var(--off-bg);border:1px solid var(--hair-2)}
 .legend b{color:var(--ink);font-weight:600}
 
 main{padding:26px 0 80px}
@@ -138,6 +141,19 @@ table.dir tr:last-child td{border-bottom:none}
 .actrow .key{margin-left:auto;font:500 10.5px var(--mono);color:var(--act);white-space:nowrap}
 .actrow .tier{font:600 10px var(--mono);background:var(--surface);border:1px solid var(--act-line);color:var(--act);border-radius:999px;padding:1px 8px;white-space:nowrap}
 .excrowline{display:flex;align-items:center;gap:8px;padding:7px 11px;border-radius:9px;margin:4px 0;font-size:12.5px;border:1.5px dashed var(--act-line);color:var(--act);background:var(--surface)}
+.admlbl{font:600 9.5px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--adm);margin:10px 0 5px}
+.admrow{display:flex;align-items:center;gap:9px;padding:7px 11px;border-radius:9px;margin:4px 0;font-size:13px;background:var(--adm-bg);border:1px solid var(--adm-line);cursor:pointer;user-select:none;flex-wrap:wrap}
+.admrow .bx{width:16px;height:16px;border-radius:5px;border:1.5px solid var(--adm-line);background:var(--surface);display:inline-flex;align-items:center;justify-content:center;font-size:9px;color:#fff;flex:none}
+.admrow.on .bx{background:var(--adm);border-color:var(--adm)}
+.admrow.ovr{box-shadow:0 0 0 1.5px var(--adm)}
+.admrow .key{margin-left:auto;font:500 10.5px var(--mono);color:var(--adm);white-space:nowrap}
+.admrow .tier{font:600 10px var(--mono);background:var(--surface);border:1px solid var(--adm-line);color:var(--adm);border-radius:999px;padding:1px 8px;white-space:nowrap}
+.admrow.lock{cursor:not-allowed;border-style:dashed;opacity:.85}
+.govgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;margin-top:10px}
+.govcard{border:1px solid var(--adm-line);background:var(--adm-bg);border-radius:10px;padding:12px 15px}
+.govcard .t{font-weight:700;font-size:13.5px;color:var(--adm)}
+.govcard ul{margin:7px 0 0;padding-left:17px;font-size:12.5px;color:var(--muted)}
+.govcard li{margin:3px 0}
 .ovrbar{display:none;background:var(--act-bg);border:1px solid var(--act-line);border-radius:10px;padding:10px 14px;font-size:13px;color:var(--act);margin-top:12px;align-items:center;gap:10px;flex-wrap:wrap}
 .ovrbar.show{display:flex}
 .plantpick{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:0 0 12px}
@@ -210,7 +226,7 @@ footer{border-top:1px solid var(--hair);padding:18px 0 46px;color:var(--faint);f
 <header><div class="wrap">
   <div class="hrow">
     <span class="mark">User Center<span class="dot"> · access console</span></span>
-    <span class="hsub">One role per person · plant licences cap everything · every deviation carries a reason</span>
+    <span class="hsub">One role per person · grants tick the violet admin plane · licences cap everything · every deviation carries a reason</span>
     <span class="study">design study · v2</span>
     <button class="btn ghost sm" id="themebtn" onclick="cycleTheme()" style="margin-left:10px">◐ Dark mode</button>
   </div>
@@ -224,6 +240,7 @@ footer{border-top:1px solid var(--hair);padding:18px 0 46px;color:var(--faint);f
   <b>How to read every screen:</b>
   <span class="k"><span class="sw ok"></span> granted by the role</span>
   <span class="k"><span class="sw act"></span> named action / override — always carries a reason</span>
+  <span class="k"><span class="sw adm"></span> admin plane — ticked by grants, never by roles</span>
   <span class="k"><span class="sw off"></span> not licensed here — greyed, never deleted</span>
 </div></div></div>
 <main><div class="wrap">
@@ -246,13 +263,13 @@ footer{border-top:1px solid var(--hair);padding:18px 0 46px;color:var(--faint);f
     <div class="backbar"><button class="btn ghost sm" onclick="backToList()">← All people</button></div>
     <div class="card" id="editor"></div>
   </div>
-  <p class="intent" style="margin-top:14px"><b>Why it looks like this:</b> the list and a person’s settings are separate views — you’re always doing one thing (Hick’s law). Inside settings it’s one decision per moment: role, then grant, then plants, then fine detail (progressive disclosure). The tree is read-mostly; anything you change turns amber and asks for a reason, so the safe path is always the default path.</p>
+  <p class="intent" style="margin-top:14px"><b>Why it looks like this:</b> the list and a person’s settings are separate views — you’re always doing one thing (Hick’s law). Inside settings it’s one decision per moment: role, then grant, then plants, then fine detail (progressive disclosure). The tree shows both planes so “what can this person do here?” has exactly one answer surface — green from the role, violet from the grant, amber where a human deviated. The tree is read-mostly; anything you change turns amber and asks for a reason, so the safe path is always the default path.</p>
 </div>
 
 <!-- ============ SCREEN 2 · LIBRARY ============ -->
 <div class="scr" id="scr1">
   <h2>Roles &amp; admin grants</h2>
-  <p class="sub">A read-only register. Five roles, four grants — the whole vocabulary. Nothing here can be created, renamed or edited.</p>
+  <p class="sub">A read-only register. Five roles over the job plane, four grants as locked tick-patterns over the violet admin plane — the whole vocabulary, plus the rules for changing it.</p>
   <div class="callout"><span>🔒</span><span><b>The catalog is closed.</b> When a role isn't quite right, the answer is a per-person override with a reason on that person's record — never a new role.</span></div>
   <div class="libgrid">
     <div>
@@ -263,7 +280,18 @@ footer{border-top:1px solid var(--hair);padding:18px 0 46px;color:var(--faint);f
     </div>
     <div class="card" style="margin:0" id="libdetail"></div>
   </div>
-  <p class="intent" style="margin-top:14px"><b>Why it looks like this:</b> the pattern is the content — you learn a role by seeing its exact ticks, not by reading prose. Actions stay amber here too, so “dangerous” looks the same everywhere it appears.</p>
+  <div class="card" style="margin-top:16px">
+    <div class="lbl">Governance — who may change the tree and the templates (Global Admin only)</div>
+    <div class="govgrid">
+      <div class="govcard"><div class="t">Tree Manager <span style="font-weight:400;font-size:11px">· templates.library</span></div>
+        <ul><li>Adds modules, features and leaves — both planes</li><li>New leaves are <b>born unticked</b> in every template</li><li><b>Retire, never delete</b> — dry-run impact report first; overrides, audit history and licences stay intact</li><li>Every change is versioned and audited</li></ul></div>
+      <div class="govcard"><div class="t">Template editor <span style="font-weight:400;font-size:11px">· the 5 roles + People / Technical</span></div>
+        <ul><li>Versioned, one-step rollback; <b>dry-run before publish</b> (“affects N holders”)</li><li>Mandatory written reason on every change</li><li>The catalog stays closed — editing what L3 ticks is content evolution, never a 6th role</li><li>Full Site is derived; Global isn't editable</li></ul></div>
+      <div class="govcard"><div class="t">Admin-plane overrides <span style="font-weight:400;font-size:11px">· hard fences</span></div>
+        <ul><li><b>people.grants and templates.* are never grantable via override</b> — the escalation channel stays closed (removal is allowed)</li><li>Every admin-plane override counts in the drift review</li><li><b>Editor ≠ target, always</b> — nobody can expand their own record</li><li>Changing a grant resets that person's admin-plane overrides</li></ul></div>
+    </div>
+  </div>
+  <p class="intent" style="margin-top:14px"><b>Why it looks like this:</b> the pattern is the content — you learn a role or a grant by seeing its exact ticks, not by reading prose. Amber means action everywhere; violet means admin plane everywhere; and the rules for changing the vocabulary itself sit on the same screen as the vocabulary.</p>
 </div>
 
 <!-- ============ SCREEN 3 · PLANTS ============ -->
@@ -304,7 +332,7 @@ footer{border-top:1px solid var(--hair);padding:18px 0 46px;color:var(--faint);f
   </div>
 </div>
 
-<footer><div class="wrap">Design study · the accepted model: permission tree (CRUD + named actions) · one role per person · plant licences cap everything · CRUD ticks illustrative, action keys real</div></footer>
+<footer><div class="wrap">Design study · the accepted model: permission tree (CRUD + named actions) · one role per person · plant licences cap everything · CRUD ticks illustrative; action &amp; admin-plane keys real</div></footer>
 
 <script>
 /* ================= DATA (real demo data; ticks illustrative, action keys real) ================= */
@@ -338,28 +366,56 @@ const TREE=[
      {k:"approve.forceclose",n:"Force-close (auto issues need a co-sign)",tier:"L3+"},
      {k:"oversight.cosign",n:"Co-sign a force-close",tier:"L4 only"},
      {k:"approve.reopen",n:"Reopen & change root cause",tier:"L3+"},
-     {k:"approve.override",n:"Photo override (waive evidence)",tier:"L3+"}]}]},
+     {k:"approve.override",n:"Photo override (waive evidence)",tier:"L3+"}]},
+   {n:"Configuration (admin plane)",admin:[
+     {k:"tech.rules",n:"Issue rules"},
+     {k:"tech.flows",n:"Diagnostic flows"},
+     {k:"tech.routing",n:"Notification routing, SLAs & escalation"}]}]},
  {mod:"tasks",feats:[
    {n:"Tasks / shifts",crud:true},
    {n:"Task actions",actions:[
      {k:"approve.assign",n:"Assign one-off tasks & insights",tier:"L3+"},
-     {k:"approve.shiftview",n:"Plant-wide shift view",tier:"L3+"}]}]},
+     {k:"approve.shiftview",n:"Plant-wide shift view",tier:"L3+"}]},
+   {n:"Configuration (admin plane)",admin:[
+     {k:"people.rosters",n:"Rosters & schedules"}]}]},
  {mod:"data",feats:[
    {n:"Lab entry / logbook",crud:true},
    {n:"Data actions",actions:[
-     {k:"approve.datacorrect",n:"Data correction — edit recorded entries",tier:"L3+ · Tech Admin+"}]}]},
+     {k:"approve.datacorrect",n:"Data correction — edit recorded entries",tier:"L3+ · Tech Admin+"}]},
+   {n:"Configuration (admin plane)",admin:[
+     {k:"tech.formulas",n:"Site analytics formulas"}]}]},
  {mod:"analytics",feats:[
    {n:"Dashboards / reports",crud:true},
-   {n:"Insights & events",crud:true}]},
+   {n:"Insights & events",crud:true},
+   {n:"Configuration (admin plane)",admin:[
+     {k:"tech.dashcfg",n:"Dashboard configuration"}]}]},
  {mod:"iot",feats:[
    {n:"Live sensors",crud:true},
-   {n:"Remote actuation",exception:true}]},
+   {n:"Remote actuation",exception:true},
+   {n:"Configuration (admin plane)",admin:[
+     {k:"tech.sensors",n:"Sensor configuration"},
+     {k:"tech.iot",n:"IoT hardware config"}]}]},
  {mod:"inv",feats:[
    {n:"Stock items (usage / expiry / purchase)",crud:true},
    {n:"Inventory actions",actions:[
-     {k:"approve.invlogs",n:"Movement log — every item movement",tier:"L3+"}]}]},
+     {k:"approve.invlogs",n:"Movement log — every item movement",tier:"L3+"}]},
+   {n:"Configuration (admin plane)",admin:[
+     {k:"tech.stores",n:"Store & catalog setup"}]}]},
  {mod:"core",feats:[
-   {n:"Plant dashboard",crud:true}]},
+   {n:"Plant dashboard",crud:true},
+   {n:"People & site administration (admin plane)",admin:[
+     {k:"people.invite",n:"Invite / edit / offboard users"},
+     {k:"people.grants",n:"Assign / revoke roles & grants",fence:true},
+     {k:"people.groups",n:"Plant rosters & directories"},
+     {k:"people.skills",n:"Skills & competencies"},
+     {k:"people.notif",n:"Per-user notification overrides"},
+     {k:"people.audit",n:"Directory & audit-log export"},
+     {k:"tech.plant",n:"Plant details, layout, lab setup"},
+     {k:"tech.sitetpl",n:"Site templates"}]},
+   {n:"Global governance (admin plane)",admin:[
+     {k:"templates.library",n:"Global template & role governance — the Tree Manager power",fence:true},
+     {k:"templates.publish",n:"Publish versions to all sites",fence:true},
+     {k:"templates.onboard",n:"Company onboarding",fence:true}]}]},
 ];
 const ROLES={
  l1:{n:"L1 Operator",s:"works the plant — no approval actions"},
@@ -383,11 +439,21 @@ function actDefault(role,key){
   return false;
 }
 const GRANTS={
- people:{n:"People Admin",s:"manages the humans",caps:["Invite / edit / offboard users","Rosters & shift schedules","Skills & competencies","Plant rosters & directories","Assign roles & grants","Per-user notification overrides","Directory & audit-log export"]},
- tech:{n:"Technical Admin",s:"configures the plant",caps:["Dashboards & widgets","Issue / task / trigger rules","Diagnostic flows & workflows","Plant, lab & test setup","Sensors & thresholds","PLC / data logger","Escalation routing & auto email","Site templates","Site analytics formulas","Store & item catalog setup"]},
- fullsite:{n:"Full Site Admin",s:"People + Technical, combined",union:true},
+ people:{n:"People Admin",s:"manages the humans"},
+ tech:{n:"Technical Admin",s:"configures the plant"},
+ fullsite:{n:"Full Site Admin",s:"People + Technical — the derived union",union:true},
  global:{n:"Global Admin",s:"the superuser — staff only",global:true},
 };
+/* a grant is a locked tick-pattern over the admin-plane leaves — exactly like a role template */
+function grantTick(g,k){
+  if(!g) return false;
+  if(g==="global") return true;
+  if(g==="fullsite") return k.startsWith("people.")||k.startsWith("tech.");
+  if(g==="people") return k.startsWith("people.");
+  if(g==="tech") return k.startsWith("tech.");
+  return false;
+}
+const admLeaves=()=>TREE.flatMap(n=>n.feats.flatMap(f=>f.admin||[]));
 let USERS=[
  {id:"satyadev",n:"Satyadev Singh",t:"Shift supervisor",cluster:"Adern",role:"l3",grant:"",plants:["Essentia STP","Vedanta- 200 KLD (WTP)"],
   exceptions:[{k:"remote.actuate",n:"Remote actuation",plant:"Essentia STP",reason:"Trained & certified for remote blower control, DP-1188"}],overrides:[]},
@@ -494,13 +560,20 @@ function renderTree(u,pl){
           ${ovr?`<span class="tier" title="${ovr.reason}">override ⊘ · reasoned</span>`:`<span class="tier">${a.tier}</span>`}
           <span class="key">${a.k}</span></div>`;
       }).join(""); }
+      if(f.admin){ h+=`<div class="admlbl">Admin plane — ticked by the grant${u.grant?` (${GRANTS[u.grant].n})`:""}, never by the role</div>`+f.admin.map(a=>{
+        const on=grantTick(u.grant,a.k);
+        return `<div class="admrow ${on?"on":""} ${a.fence?"lock":""}" ${a.fence?`title="Never grantable via override — the escalation channel stays closed (removal for de-escalation is allowed)"`:(lic?`onclick="mockToggle(this)" title="Admin-plane override — Global Admin only, reason required"`:"")}>
+          <span class="bx">${on?"✓":""}</span>${a.n}
+          ${a.fence?`<span class="tier">🔒 never via override</span>`:""}
+          <span class="key">${a.k}</span></div>`;
+      }).join(""); }
       return h+`</div>`;
     }).join("");
     return `<div class="mod ${lic?"":"dark"} ${open?"open":""}">
       <div class="modh" onclick="toggleMod('${node.mod}')"><span class="chev">▶</span><span class="mn">${m.n}</span>
         <span class="lic ${lic?"on":"off"}">${lic?"Licensed":"Not licensed — greyed, never deleted"}</span></div>
       <div class="modb">${body}</div></div>`;
-  }).join("")+`<div class="mod dark"><div class="modh" style="cursor:default"><span class="mn">Floc Detector</span><span class="lic off">Hardware add-on — no user permissions</span></div></div>`;
+  }).join("")+`<div class="mod dark"><div class="modh" style="cursor:default"><span class="mn">Floc Detector</span><span class="lic off">Licensable — no permission leaves yet; they arrive when the widget ships</span></div></div>`;
 }
 
 /* ================= SCREEN 2 — LIBRARY ================= */
@@ -519,8 +592,8 @@ function renderLib(){
       if(f.crud) ["C","R","U","D"].forEach(op=>{ if(crudDefault(libSel.id,f.n,op)) crudN++; });
       (f.actions||[]).forEach(a=>{ if(actDefault(libSel.id,a.k)) actN++; });
     }));
-    box.innerHTML=`<div class="lbl">${r.n} — default pattern (read-only)</div>
-      <div style="margin-bottom:12px"><span class="chip ok">${crudN} CRUD ticks</span><span class="chip amber">${actN} action permissions</span><span class="chip dim">applies at every plant on the person's list, capped by licences</span></div>
+    box.innerHTML=`<div class="lbl">${r.n} — default pattern, job plane (read-only)</div>
+      <div style="margin-bottom:12px"><span class="chip ok">${crudN} CRUD ticks</span><span class="chip amber">${actN} action permissions</span><span class="chip" style="background:var(--adm-bg);border-color:var(--adm-line);color:var(--adm)">0 admin leaves — the admin plane comes from a grant, never a role</span></div>
       ${TREE.map(node=>{
         const m=modById[node.mod];
         const body=node.feats.map(f=>{
@@ -540,21 +613,26 @@ function renderLib(){
       }).join("")}`;
   } else {
     const g=GRANTS[libSel.id];
-    let inner="";
-    if(g.global){
-      inner=`<div class="grantcap" style="border-color:var(--act-line);background:var(--act-bg)"><div class="t">Superuser — its check never says no</div>
-        <div class="s">Every tick, every action, every admin capability, at every plant — including the 3 exception permissions, which nobody else holds by default. Every use is audited.</div></div>`;
-    } else if(g.union){
-      inner=`<div class="grantcap"><div class="t">People Admin — everything it administers</div><ul>${GRANTS.people.caps.map(c=>`<li>${c}</li>`).join("")}</ul></div>
-        <div class="grantcap"><div class="t">Technical Admin — everything it administers</div><ul>${GRANTS.tech.caps.map(c=>`<li>${c}</li>`).join("")}</ul></div>
-        <div class="callout" style="margin:0"><span>＝</span><span><b>Full Site is computed as the union of the two</b> — never a third list that could drift.</span></div>`;
-    } else {
-      inner=`<div class="grantcap"><div class="t">${g.n} — everything it administers</div><ul>${g.caps.map(c=>`<li>${c}</li>`).join("")}</ul></div>`;
-    }
-    box.innerHTML=`<div class="lbl">${g.n} — capability plane (read-only)</div>
-      <div style="margin-bottom:12px"><span class="chip grant">at most one grant per person</span><span class="chip dim">non-Global grants carry a cluster or plant scope</span></div>
-      ${inner}
-      <div class="callout" style="margin-top:12px"><span>🧭</span><span><b>Grants share zero permissions with the roles.</b> Roles operate and view; grants configure and administer. Same modules, different checkboxes — one licence caps both sides together.</span></div>`;
+    const total=admLeaves().length;
+    const ticked=admLeaves().filter(a=>grantTick(libSel.id,a.k)).length;
+    const tree=TREE.filter(n=>n.feats.some(f=>f.admin)).map(node=>{
+      const m=modById[node.mod];
+      const body=node.feats.filter(f=>f.admin).map(f=>`<div class="feat"><div class="featn">${f.n.replace(" (admin plane)","")}</div>`+
+        f.admin.map(a=>{
+          const on=grantTick(libSel.id,a.k);
+          return `<div class="admrow ${on?"on":""}" style="cursor:default"><span class="bx">${on?"✓":""}</span>${a.n}${a.fence&&libSel.id!=="global"?`<span class="tier">Global only</span>`:""}<span class="key">${a.k}</span></div>`;
+        }).join("")+`</div>`).join("");
+      return `<div class="mod open"><div class="modh" style="cursor:default"><span class="mn">${m.n}</span></div><div class="modb">${body}</div></div>`;
+    }).join("");
+    let note="";
+    if(g.global) note=`<div class="grantcap" style="border-color:var(--act-line);background:var(--act-bg)"><div class="t" style="color:var(--act)">Superuser — its check never says no</div>
+      <div class="s">All ${total} admin leaves and every job-role leaf, at every plant — plus the 3 exception permissions, implicitly. Every use is audited; actuation and view-as prompt for a reason (step-up).</div></div>`;
+    else if(g.union) note=`<div class="callout" style="margin:0 0 12px"><span>＝</span><span><b>Full Site is derived — the union of People + Technical</b> (${ticked} of ${total} leaves), never a third list that could drift. The ${total-ticked} global-governance leaves stay Global-only.</span></div>`;
+    box.innerHTML=`<div class="lbl">${g.n} — locked tick-pattern over the admin plane (read-only)</div>
+      <div style="margin-bottom:12px"><span class="chip" style="background:var(--adm-bg);border-color:var(--adm-line);color:var(--adm)">${g.global?total+" of "+total:ticked+" of "+total} admin leaves</span><span class="chip grant">at most one grant per person</span><span class="chip dim">non-Global grants carry a cluster or plant scope</span></div>
+      ${note}
+      ${tree}
+      <div class="callout" style="margin-top:12px"><span>🧭</span><span><b>Grants share zero permissions with the roles.</b> A grant is configured once at the grant level — exactly like a role template — and a user only ever receives one of the 4 pre-built patterns from a dropdown, never loose checkboxes.</span></div>`;
   }
 }
 
@@ -611,7 +689,7 @@ function renderWiz(){
     <div class="wfoot"><button class="btn ghost sm" onclick="wizClose()">Cancel</button><span style="flex:1"></span><button class="btn" onclick="wizGo(2)">Next — modules →</button></div>`;
   if(wiz.step===2) body=`
     <div class="wmods">${MODULES.filter(m=>!m.always).map(m=>`
-      <div class="wmod ${wiz.mods.has(m.id)?"on":""}" onclick="wizMod('${m.id}')"><span><b>${m.n}</b>${m.noperm?`<span class="d"> — hardware add-on, no user permissions</span>`:""}${m.id==="ops"?`<span class="d"> — ships dark until the feature launches; approval actions light up here on licensing day</span>`:""}</span><span class="tk">${wiz.mods.has(m.id)?"✓":""}</span></div>`).join("")}</div>
+      <div class="wmod ${wiz.mods.has(m.id)?"on":""}" onclick="wizMod('${m.id}')"><span><b>${m.n}</b>${m.noperm?`<span class="d"> — licensable; no permission leaves yet</span>`:""}${m.id==="ops"?`<span class="d"> — ships dark until the feature launches; approval actions light up here on licensing day</span>`:""}</span><span class="tk">${wiz.mods.has(m.id)?"✓":""}</span></div>`).join("")}</div>
     <div class="wfoot"><button class="btn ghost sm" onclick="wizGo(1)">← Back</button><span style="flex:1"></span><button class="btn" onclick="wizGo(3)">Next — people →</button></div>`;
   if(wiz.step===3) body=`
     <div class="wppl">${USERS.map(u=>`<label><input type="checkbox" ${wiz.people.has(u.id)?"checked":""} onchange="wizPpl('${u.id}')"> ${u.n} <span class="tt">· joins at their account role — ${ROLES[u.role].n}</span></label>`).join("")}</div>
